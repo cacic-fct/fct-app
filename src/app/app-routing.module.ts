@@ -8,7 +8,7 @@ const routes: Routes = [
       import('./tabs/tabs.module').then((m) => m.TabsPageModule),
   },
   {
-    path: 'event',
+    path: 'calendario/evento/:id',
     loadChildren: () =>
       import('./page-calendar-event/page-calendar-event.module').then(
         (m) => m.PageCalendarEventPageModule

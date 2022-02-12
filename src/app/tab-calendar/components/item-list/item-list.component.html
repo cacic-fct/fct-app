@@ -1,0 +1,21 @@
+<ion-list>
+  <ion-item
+    *ngFor="let item of items | async | keyvalue"
+    (click)="openItem(item.value)"
+    style="cursor: pointer">
+    <ion-avatar slot="start">
+      <ion-img src="assets/calendar/{{ item.value.icon }}.png"></ion-img>
+    </ion-avatar>
+    <ion-label>
+      <h2>{{ item.value.name }}</h2>
+      <p (style)="('color: ' + courses[item.value.course].color)">
+        {{ courses[item.value.course].name }}
+      </p>
+    </ion-label>
+    <div slot="end">
+      <h4 style="font-weight: 400">
+        {{ unixToDate(item.value.date) | date: 'HH:mm' }}
+      </h4>
+    </div>
+  </ion-item>
+</ion-list>

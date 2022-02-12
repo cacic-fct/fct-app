@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TabCalendarPage } from './tab-calendar.page';
 
 import { TabCalendarPageRoutingModule } from './tab-calendar-routing.module';
+import { ItemListComponent } from './components/item-list/item-list.component';
 
 @NgModule({
   imports: [
@@ -13,6 +14,6 @@ import { TabCalendarPageRoutingModule } from './tab-calendar-routing.module';
     FormsModule,
     TabCalendarPageRoutingModule,
   ],
-  declarations: [TabCalendarPage],
+  declarations: [TabCalendarPage, ItemListComponent],
 })
 export class TabCalendarPageModule {}

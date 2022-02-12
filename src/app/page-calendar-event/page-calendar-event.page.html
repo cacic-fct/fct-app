@@ -1,89 +1,36 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>page-calendar-event</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Evento</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-row>
-          <ion-col
-            size-xs="12"
-            size-sm="12"
-            size-md="12"
-            size-lg="12"
-            size-xl="12">
-            <svg width="90" height="90">
-              <image
-                xlink:href="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f5fa.svg"
-                width="90"
-                height="90" />
-            </svg>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <!-- event title-->
-          <ion-col
-            size-xs="12"
-            size-sm="12"
-            size-md="12"
-            size-lg="12"
-            size-xl="12">
-            <h1>Integração com veteranos</h1>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <!-- event subtitle -->
-          <ion-col
-            size-xs="12"
-            size-sm="12"
-            size-md="12"
-            size-lg="12"
-            size-xl="12">
-            <h2>Engenharia cartográfica</h2>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <!-- event date -->
-          <ion-col
-            size-xs="12"
-            size-sm="12"
-            size-md="12"
-            size-lg="12"
-            size-xl="12">
-            <h3>Terça-feira, 1 de março de 2022</h3>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <!-- event hour -->
-          <ion-col
-            size-xs="12"
-            size-sm="12"
-            size-md="12"
-            size-lg="12"
-            size-xl="12">
-            <h4>16:00 - 17:00</h4>
-          </ion-col>
-        </ion-row>
-      </ion-col>
-    </ion-row>
+  <div class="margin-horizontal-auto content-container ion-padding">
+    <img
+      class="margin-horizontal-auto"
+      style="width: 90px; height: 90px; display: block"
+      src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f5fa.png" />
 
-    <!-- event description -->
-    <ion-row>
-      <ion-col size-xs="12" size-sm="12" size-md="12" size-lg="12" size-xl="12">
-        <h2>Sobre</h2>
-        <p>Waaaaaa</p>
-      </ion-col>
-    </ion-row>
+    <div class="ion-text-center">
+      <h1 style="margin: 0">{{ item.name }}</h1>
+      <h5 style="margin: 0; font-weight: 500">Engenharia cartográfica</h5>
+      <h4 style="margin: 0; font-weight: 400">
+        Terça-feira, 1 de março de 2022
+      </h4>
+      <h3 style="margin: 0; font-weight: 400">16:00</h3>
+    </div>
 
-    <!-- event map -->
-    <ion-row>
-      <ion-col size-xs="12" size-sm="12" size-md="12" size-lg="12" size-xl="12">
-        <h2>Localização</h2>
-        <div id="map">MAPAAA</div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    <div>
+      <h2>Sobre</h2>
+      <p>{{ item.description }}</p>
+    </div>
+
+    <div>
+      <h2>Localização</h2>
+      <div id="mapId"></div>
+    </div>
+  </div>
 </ion-content>
