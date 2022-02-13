@@ -9,7 +9,14 @@ import {
 import { Observable } from 'rxjs';
 
 import { GlobalConstantsService } from '../shared/services/global-constants.service';
-import { startOfWeek, endOfWeek, addDays, subDays, isSameDay } from 'date-fns';
+import {
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  subDays,
+  isSameDay,
+  getTime,
+} from 'date-fns';
 
 import { filter, map } from 'rxjs/operators';
 
@@ -31,9 +38,7 @@ export interface Event {
   styleUrls: ['tab-calendar.page.scss'],
 })
 export class TabCalendarPage {
-  eventCollection: AngularFirestoreCollection<Event>;
   courses = GlobalConstantsService.courses;
-  items: Observable<any>;
 
   // Today's date
   today = new Date();
@@ -49,38 +54,7 @@ export class TabCalendarPage {
     weekStartsOn: 0,
   });
 
-  constructor(firestore: AngularFirestore) {
-    /*   this.items = firestore
-      .collection('events', (ref) =>
-        ref
-          .where('date', '>=', this.calendarBaseDate)
-          .where('date', '<=', this.calendarEndDate)
-      )
-      .valueChanges({ idField: 'id' });*/
-
-    this.eventCollection = firestore.collection('events');
-    // .snapshotChanges() returns a DocumentChangeAction[], which contains
-    // a lot of information about "what happened" with each change. If you want to
-    // get the data and the id use the map operator.
-    this.items = this.eventCollection.snapshotChanges().pipe(
-      map((actions) =>
-        actions.map((a) => {
-          const data = a.payload.doc.data() as Event;
-          const id = a.payload.doc.id;
-          return { id, ...data };
-        })
-      )
-    );
-  }
-
-  // Function to get items that match day, month and year using filter from rxjs/operators
-  getItems(date) {
-    return this.items.pipe(
-      filter((item) => {
-        return isSameDay(item.date, date);
-      })
-    );
-  }
+  constructor() {}
 
   dow1Char = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
@@ -126,8 +100,6 @@ export class TabCalendarPage {
     this.generateCalendar(this.calendarBaseDate);
   }
 
-  itemsDOW;
-
   // On click, set active class to clicked element
   dateClick(string) {
     if (string.target.id === this.active) {
@@ -144,9 +116,6 @@ export class TabCalendarPage {
     string.target.classList.add('active');
 
     this.refreshDateFull();
-
-    // Pass items that match clicked date to itemsDOW
-    this.itemsDOW = this.getItems(this.dowList[this.active].date);
   }
 
   refreshDateFull() {
@@ -213,7 +182,6 @@ export class TabCalendarPage {
       if (todayISO == base.toISOString().slice(0, 10)) {
         dowElement.classList.add('active');
         this.active = dow;
-        this.itemsDOW = this.getItems(this.dowList[this.active].date);
       }
 
       // Add one day to calendarBaseDate
