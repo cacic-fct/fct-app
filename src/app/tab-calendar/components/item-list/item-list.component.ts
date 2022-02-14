@@ -1,21 +1,12 @@
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
 
-import {
-  getTime,
-  startOfDay,
-  endOfDay,
-  fromUnixTime,
-  getUnixTime,
-} from 'date-fns';
+import { startOfDay, endOfDay, fromUnixTime, getDate } from 'date-fns';
 
 import { NavController } from '@ionic/angular';
-import {
-  AngularFirestore,
-  AngularFirestoreCollection,
-} from '@angular/fire/compat/firestore';
-import { map, switchMap } from 'rxjs/operators';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { switchMap } from 'rxjs/operators';
 
 export interface Event {
   name: string;
@@ -63,7 +54,7 @@ export class ItemListComponent implements OnChanges {
             }
             return query;
           })
-          .valueChanges();
+          .valueChanges({ idField: 'id' });
       })
     );
   }
@@ -79,8 +70,15 @@ export class ItemListComponent implements OnChanges {
     });
   }
 
-  // Unix timestamp to date
-  unixToDate(unix: number): Date {
-    return new Date(unix * 1000);
+  getDateFromTimestamp(timestamp: any): Date {
+    return fromUnixTime(timestamp);
+  }
+
+  // Convert emoji string to utf-8 code
+  getEmoji(emoji: string): string {
+    return emoji
+      .split('-')
+      .map((str) => String.fromCodePoint(parseInt(str, 16)))
+      .join('');
   }
 }
