@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
+import { Router } from '@angular/router';
+
 import { GlobalConstantsService } from '../shared/services/global-constants.service';
 
 import * as L from 'leaflet';
@@ -7,6 +9,10 @@ import 'leaflet-easybutton';
 
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
+import {
+  AngularFirestore,
+  AngularFirestoreDocument,
+} from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -22,12 +28,25 @@ export class PageCalendarEventPage implements OnInit {
 
   constructor(
     private toastController: ToastController,
-    private route: ActivatedRoute
-  ) {}
-
-  ngOnInit() {
-    this.item = history.state.item;
+    private route: ActivatedRoute,
+    private afs: AngularFirestore,
+    private router: Router
+  ) {
+    if (history.state.item === undefined) {
+      // Get this item from the database
+      this.route.paramMap.subscribe((paramMap) => {
+        if (!paramMap.has('id')) {
+          this.router.navigate(['/calendario']);
+        }
+        const id = paramMap.get('id');
+        this.item = this.afs.doc<any>(`events/${id}`).valueChanges();
+      });
+    } else {
+      this.item = history.state.item;
+    }
   }
+
+  ngOnInit() {}
 
   ionViewWillEnter() {
     this.leafletMap();
@@ -40,8 +59,8 @@ export class PageCalendarEventPage implements OnInit {
 
   leafletMap() {
     let home = {
-      lat: this.item.location.lat,
-      lng: this.item.location.lng,
+      lat: this.item.location?.lat,
+      lng: this.item.location?.lng,
       zoom: 18,
     };
 
