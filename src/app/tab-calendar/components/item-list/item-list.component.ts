@@ -1,6 +1,6 @@
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges } from '@angular/core';
-import { CoursesService } from '../../../shared/services/courses.service';
+import { CoursesService } from 'src/app/shared/services/courses.service';
 
 import { startOfDay, endOfDay, fromUnixTime, getDate } from 'date-fns';
 

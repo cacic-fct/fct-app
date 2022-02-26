@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/calendario"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Filtro</ion-title>
+    <ion-buttons slot="end">
+      <ion-button onclick="clearSelection()">Limpar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-list-header> Cursos </ion-list-header>
+    <ng-container *ngFor="let course of courses | keyvalue">
+      <ion-item>
+        <ion-label>{{ course.value.name }}</ion-label>
+        <ion-checkbox slot="start"></ion-checkbox>
+      </ion-item>
+    </ng-container>
+  </ion-list>
+</ion-content>
