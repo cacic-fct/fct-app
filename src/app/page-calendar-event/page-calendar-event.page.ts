@@ -34,7 +34,6 @@ export class PageCalendarEventPage implements OnInit {
   }
 
   ionViewWillLeave() {
-    console.log('ok');
     this.map.off();
     this.map.remove();
   }

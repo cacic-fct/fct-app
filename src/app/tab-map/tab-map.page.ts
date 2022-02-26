@@ -21,6 +21,7 @@ export class TabMapPage {
 
   ionViewWillLeave() {
     // Remove map on leave
+    console.log('aaa');
     this.map.off();
     this.map.remove();
   }
