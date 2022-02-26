@@ -11,16 +11,24 @@
   <div class="margin-horizontal-auto content-container ion-padding">
     <img
       class="margin-horizontal-auto"
-      style="width: 90px; height: 90px; display: block"
-      src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f5fa.png" />
+      style="width: 72px; height: 72px; display: block; padding: 10px"
+      [src]="
+      'https://twemoji.maxcdn.com/v/latest/72x72/' +
+      getEmojiCode(item.icon) +
+      '.png'
+    "
+      (click)="presentToast()" />
 
     <div class="ion-text-center">
       <h1 style="margin: 0">{{ item?.name }}</h1>
-      <h5 style="margin: 0; font-weight: 500">Engenharia cartográfica</h5>
+      <h5 style="margin: 0; font-weight: 500">{{ getCourse() }}</h5>
       <h4 style="margin: 0; font-weight: 400">
-        Terça-feira, 1 de março de 2022
+        <!-- prettier-ignore -->
+        {{ toUppercase(getDateFromTimestamp(item?.date) | date: "EEEE, dd 'de' MMMM 'de' y") }}
       </h4>
-      <h3 style="margin: 0; font-weight: 400">16:00</h3>
+      <h3 style="margin: 0; font-weight: 400">
+        {{ getDateFromTimestamp(item?.date) | date: 'HH:mm' }}
+      </h3>
     </div>
 
     <div *ngIf="item?.description">
@@ -28,9 +36,17 @@
       <p>{{ item?.description }}</p>
     </div>
 
-    <div *ngIf="item?.location?.lat && item?.location?.lng">
+    <div *ngIf="item?.location">
       <h2>Localização</h2>
-      <div id="mapId"></div>
+
+      <div *ngIf="item?.location.description">
+        <ion-item lines="none">
+          <ion-icon name="pin" slot="start"></ion-icon>
+          <ion-label>{{ item?.location.description }}</ion-label>
+        </ion-item>
+      </div>
+
+      <div id="mapId" *ngIf="item?.location.lat && item?.location.lng"></div>
     </div>
   </div>
 </ion-content>

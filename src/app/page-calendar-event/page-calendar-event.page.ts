@@ -1,12 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { GlobalConstantsService } from '../shared/services/global-constants.service';
-
+import { CoursesService } from '../shared/services/courses.service';
 import * as L from 'leaflet';
 import 'leaflet-easybutton';
 
 import { ToastController } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
+
+import { fromUnixTime } from 'date-fns';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -14,15 +15,14 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./page-calendar-event.page.scss'],
 })
 export class PageCalendarEventPage implements OnInit {
-  courses = GlobalConstantsService.courses;
-
   private map: L.Map;
+  courses = CoursesService.courses;
 
   item: any;
 
   constructor(
     private toastController: ToastController,
-    private route: ActivatedRoute
+    private clipboardService: ClipboardService
   ) {}
 
   ngOnInit() {
@@ -34,6 +34,7 @@ export class PageCalendarEventPage implements OnInit {
   }
 
   ionViewWillLeave() {
+    console.log('ok');
     this.map.off();
     this.map.remove();
   }
@@ -44,6 +45,17 @@ export class PageCalendarEventPage implements OnInit {
       lng: this.item.location.lng,
       zoom: 18,
     };
+
+    let icon = new L.Icon({
+      iconUrl:
+        'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+      shadowUrl:
+        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41],
+    });
 
     this.map = L.map('mapId').setView([home.lat, home.lng], home.zoom);
 
@@ -56,36 +68,53 @@ export class PageCalendarEventPage implements OnInit {
       this.map.setView([home.lat, home.lng], home.zoom);
     }).addTo(this.map);
 
+    L.marker([home.lat, home.lng], { icon: icon }).addTo(this.map);
+
     L.map('mapId').invalidateSize();
   }
 
-  async presentToastWithOptions() {
+  getCourse(): string {
+    return this.courses[this.item.course].name;
+  }
+
+  getDateFromTimestamp(timestamp: any): Date {
+    return fromUnixTime(timestamp.seconds);
+  }
+
+  toUppercase(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  async presentToast() {
     const toast = await this.toastController.create({
-      header: 'Toast header',
-      message: 'Click to Close',
+      header: 'ID do evento',
+      message: this.item.id,
       icon: 'information-circle',
-      position: 'top',
+      position: 'bottom',
+      duration: 5000,
       buttons: [
         {
-          side: 'start',
-          icon: 'star',
-          text: 'Favorite',
+          side: 'end',
+          text: 'Copiar',
           handler: () => {
-            console.log('Favorite clicked');
+            this.clipboardService.copy(this.item.id);
           },
         },
         {
-          text: 'Done',
+          side: 'end',
+          text: 'Fechar',
           role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          },
         },
       ],
     });
     await toast.present();
+  }
 
-    const { role } = await toast.onDidDismiss();
-    console.log('onDidDismiss resolved with role', role);
+  // Emoji to codepoint
+  getEmojiCode(emoji: string): string {
+    if (emoji === undefined) {
+      return '❔'.codePointAt(0).toString(16);
+    }
+    return emoji.codePointAt(0).toString(16);
   }
 }

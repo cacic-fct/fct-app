@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { KeyValue } from '@angular/common';
+import { KeyValue, formatDate } from '@angular/common';
 
 import {
   startOfWeek,
@@ -11,8 +11,6 @@ import {
   format,
   isSameWeek,
 } from 'date-fns';
-
-import { ptBR } from 'date-fns/locale';
 
 @Component({
   selector: 'app-tab-calendar',
@@ -101,12 +99,10 @@ export class TabCalendarPage {
   }
 
   formatDate(): string {
-    let formated = format(
+    let formated = formatDate(
       this.dowList[this.active]?.date,
       "EEEE, dd 'de' MMMM 'de' yyyy",
-      {
-        locale: ptBR,
-      }
+      'pt-BR'
     );
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);

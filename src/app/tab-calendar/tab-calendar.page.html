@@ -6,13 +6,13 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="primary">
-      <ion-button (click)="prevWeek()">
+      <ion-button (click)="prevWeek()" aria-label="Semana anterior">
         <ion-icon name="chevron-back"></ion-icon>
       </ion-button>
-      <ion-button (click)="todayClick()">
+      <ion-button (click)="todayClick()" aria-label="Ir para a data de hoje">
         <ion-icon name="today-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="nextWeek()">
+      <ion-button (click)="nextWeek()" aria-label="Próxima semana">
         <ion-icon name="chevron-forward"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -21,34 +21,33 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-content>
-    <div class="hcal">
-      <div class="hcal-header">
-        <!-- Days of week -->
-        <div class="hcal-header-days">
-          <div class="hcal-header-day" *ngFor="let dow1Char of dow1Char">
-            {{ dow1Char }}
-          </div>
+  <div class="hcal margin-horizontal-auto">
+    <div class="hcal-header">
+      <!-- Days of week -->
+      <div class="hcal-header-days" aria-hidden="true">
+        <div class="hcal-header-day" *ngFor="let dow1Char of dow1Char">
+          {{ dow1Char }}
         </div>
-        <!-- Day number -->
-        <div class="hcal-header-dates">
-          <a
-            class="hcal-header-date"
-            *ngFor="let dowhtml of dowList | keyvalue: originalOrder">
-            <div
-              [ngClass]="{'active' : active === dowhtml.key}"
-              class="hcal-header-date-inner"
-              (click)="dateClick(dowhtml.key)"
-              id="{{dowhtml.key}}">
-              {{ getDayFromDate(dowhtml.value.date) }}
-            </div>
-          </a>
-        </div>
-        <!-- Full date -->
-        <div class="hcal-header-today" id="date-full">{{ fullDate }}</div>
       </div>
+      <!-- Day number -->
+      <div class="hcal-header-dates">
+        <a
+          class="hcal-header-date"
+          *ngFor="let dowhtml of dowList | keyvalue: originalOrder">
+          <div
+            [ngClass]="{'active' : active === dowhtml.key}"
+            class="hcal-header-date-inner"
+            (click)="dateClick(dowhtml.key)"
+            [id]="dowhtml.key"
+            [attr.aria-label]="dowhtml.value.date">
+            {{ getDayFromDate(dowhtml.value.date) }}
+          </div>
+        </a>
+      </div>
+      <!-- Full date -->
+      <div class="hcal-header-today" id="date-full">{{ fullDate }}</div>
     </div>
+  </div>
 
-    <app-item-list [date]="dowList[active]?.date"></app-item-list>
-  </ion-content>
+  <app-item-list [date]="dowList[active]?.date"></app-item-list>
 </ion-content>

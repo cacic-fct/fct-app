@@ -1,6 +1,6 @@
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges } from '@angular/core';
-import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
+import { CoursesService } from '../../../shared/services/courses.service';
 
 import { startOfDay, endOfDay, fromUnixTime, getDate } from 'date-fns';
 
@@ -25,7 +25,7 @@ export interface Event {
   styleUrls: ['./item-list.component.scss'],
 })
 export class ItemListComponent implements OnChanges {
-  courses = GlobalConstantsService.courses;
+  courses = CoursesService.courses;
 
   @Input() date: Date;
   @Input() course: string;
@@ -52,7 +52,7 @@ export class ItemListComponent implements OnChanges {
             if (course) {
               query = query.where('course', '==', '12');
             }
-            return query;
+            return query.orderBy('date', 'asc');
           })
           .valueChanges({ idField: 'id' });
       })
@@ -80,5 +80,13 @@ export class ItemListComponent implements OnChanges {
       .split('-')
       .map((str) => String.fromCodePoint(parseInt(str, 16)))
       .join('');
+  }
+
+  // Emoji to codepoint
+  getEmojiCode(emoji: string): string {
+    if (emoji === undefined) {
+      return '❔'.codePointAt(0).toString(16);
+    }
+    return emoji.codePointAt(0).toString(16);
   }
 }

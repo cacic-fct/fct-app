@@ -1,13 +1,11 @@
-ion-radio {
-  display: none;
-}
-
 .hcal {
   font-size: 20px;
   font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
-    Helvetica, arial, sans-serif;
+    Helvetica, 'Roboto', arial, sans-serif;
   background: #fff;
   position: relative;
+  max-width: 1600px;
+  display: block;
 }
 
 .hcal,
