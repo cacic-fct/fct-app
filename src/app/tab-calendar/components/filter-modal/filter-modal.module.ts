@@ -13,8 +13,8 @@ import { FilterModalPage } from './filter-modal.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    FilterModalPageRoutingModule
+    FilterModalPageRoutingModule,
   ],
-  declarations: [FilterModalPage]
+  declarations: [FilterModalPage],
 })
 export class FilterModalPageModule {}

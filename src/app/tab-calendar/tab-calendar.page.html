@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="secondary">
-      <ion-button icon-only (click)="list()">
+      <ion-button icon-only (click)="halt()">
         <ion-icon name="list"></ion-icon>
       </ion-button>
       <ion-button icon-only (click)="filter()">
@@ -52,5 +52,7 @@
     </div>
   </div>
 
-  <app-item-list [date]="dowList[active]?.date"></app-item-list>
+  <app-item-list
+    [date]="dowList[active]?.date"
+    [filter]="selectedFilter"></app-item-list>
 </ion-content>

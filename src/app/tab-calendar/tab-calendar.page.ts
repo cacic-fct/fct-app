@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { KeyValue, formatDate } from '@angular/common';
 
+import { CoursesService } from 'src/app/shared/services/courses.service';
+
 import {
   startOfWeek,
   endOfWeek,
@@ -11,6 +13,8 @@ import {
   format,
   isSameWeek,
 } from 'date-fns';
+import { ModalController } from '@ionic/angular';
+import { FilterModalPage } from './components/filter-modal/filter-modal.page';
 
 @Component({
   selector: 'app-tab-calendar',
@@ -26,6 +30,8 @@ export class TabCalendarPage {
   today = new Date();
 
   dow1Char = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+
+  courses = CoursesService.courses;
 
   // List of days of week and date
   dowList = {
@@ -49,7 +55,7 @@ export class TabCalendarPage {
     weekStartsOn: 0,
   });
 
-  constructor() {
+  constructor(private modalController: ModalController) {
     this.active = format(this.today, 'eeee').toLowerCase();
     this.generateCalendarData();
   }
@@ -122,6 +128,27 @@ export class TabCalendarPage {
     return getDate(date);
   }
 
-  // Set array depending on selected items
-  filter() {}
+  selectedFilter = [];
+
+  async filter() {
+    const modal = await this.modalController.create({
+      component: FilterModalPage,
+      componentProps: {
+        selectedFilter: this.selectedFilter,
+      },
+    });
+
+    modal.onDidDismiss().then((selectedFilter) => {
+      if (selectedFilter) {
+        // ... changes reference and triggers ngOnChanges
+        this.selectedFilter = [...selectedFilter.data.selectedFilter];
+        return true;
+      }
+      return false;
+    });
+    return await modal.present();
+  }
+  halt() {
+    debugger;
+  }
 }

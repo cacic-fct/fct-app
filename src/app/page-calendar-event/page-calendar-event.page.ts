@@ -8,6 +8,7 @@ import { ToastController } from '@ionic/angular';
 
 import { fromUnixTime } from 'date-fns';
 import { ClipboardService } from 'ngx-clipboard';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -22,20 +23,28 @@ export class PageCalendarEventPage implements OnInit {
 
   constructor(
     private toastController: ToastController,
-    private clipboardService: ClipboardService
+    private clipboardService: ClipboardService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.item = history.state.item;
+    if (this.item === undefined) {
+      this.router.navigate(['/calendario']);
+    }
   }
 
   ionViewWillEnter() {
-    this.leafletMap();
+    if (this.item.location?.lat && this.item.location?.lng) {
+      this.leafletMap();
+    }
   }
 
   ionViewWillLeave() {
-    this.map.off();
-    this.map.remove();
+    if (this.map) {
+      this.map.off();
+      this.map.remove();
+    }
   }
 
   leafletMap() {

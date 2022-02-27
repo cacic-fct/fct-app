@@ -28,10 +28,10 @@ export class ItemListComponent implements OnChanges {
   courses = CoursesService.courses;
 
   @Input() date: Date;
-  @Input() course: string;
+  @Input() filter: Array<string>;
 
   dateFilter$: BehaviorSubject<Date | null>;
-  courseFilter$: BehaviorSubject<string | null>;
+  courseFilter$: BehaviorSubject<Array<string> | null>;
 
   items$: Observable<Event[]>;
 
@@ -40,7 +40,7 @@ export class ItemListComponent implements OnChanges {
     this.courseFilter$ = new BehaviorSubject(null);
 
     this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
-      switchMap(([date, course]) => {
+      switchMap(([date, filter]) => {
         return firestore
           .collection<Event>('events', (ref) => {
             let query: any = ref;
@@ -49,8 +49,8 @@ export class ItemListComponent implements OnChanges {
                 .where('date', '>=', startOfDay(date))
                 .where('date', '<=', endOfDay(date));
             }
-            if (course) {
-              query = query.where('course', '==', '12');
+            if (filter.length > 0) {
+              query = query.where('course', 'in', filter);
             }
             return query.orderBy('date', 'asc');
           })
@@ -61,7 +61,7 @@ export class ItemListComponent implements OnChanges {
 
   ngOnChanges() {
     this.dateFilter$.next(this.date);
-    this.courseFilter$.next(this.course);
+    this.courseFilter$.next(this.filter);
   }
 
   public openItem(item: any): void {
