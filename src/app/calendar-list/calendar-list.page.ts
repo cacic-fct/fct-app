@@ -2,13 +2,22 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
-import { startOfDay, endOfDay, fromUnixTime, getDate } from 'date-fns';
+// Import parse from twemoji-parser
+import { parse } from 'twemoji-parser';
+
+import {
+  startOfDay,
+  endOfDay,
+  fromUnixTime,
+  getDate,
+  isSameDay,
+} from 'date-fns';
 
 import { NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
+import { formatDate } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
-import { parse } from 'twemoji-parser';
 
 export interface Event {
   name: string;
@@ -21,12 +30,13 @@ export interface Event {
   };
   description: string;
 }
+
 @Component({
-  selector: 'app-item-list',
-  templateUrl: './item-list.component.html',
-  styleUrls: ['./item-list.component.scss'],
+  selector: 'app-calendar-list',
+  templateUrl: './calendar-list.page.html',
+  styleUrls: ['./calendar-list.page.scss'],
 })
-export class ItemListComponent implements OnChanges {
+export class CalendarListPage implements OnChanges {
   courses = CoursesService.courses;
 
   @Input() date: Date;
@@ -49,16 +59,7 @@ export class ItemListComponent implements OnChanges {
       switchMap(([date, filter]) => {
         return firestore
           .collection<Event>('events', (ref) => {
-            let query: any = ref;
-            if (date) {
-              query = query
-                .where('date', '>=', startOfDay(date))
-                .where('date', '<=', endOfDay(date));
-            }
-            if (filter.length > 0) {
-              query = query.where('course', 'in', filter);
-            }
-            return query.orderBy('date', 'asc');
+            return ref;
           })
           .valueChanges({ idField: 'id' });
       })
@@ -77,7 +78,7 @@ export class ItemListComponent implements OnChanges {
   }
 
   getDateFromTimestamp(timestamp: any): Date {
-    return fromUnixTime(timestamp);
+    return fromUnixTime(parseInt(timestamp.seconds));
   }
 
   getEmoji(emoji: string): any {
@@ -87,11 +88,14 @@ export class ItemListComponent implements OnChanges {
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 
-  // Emoji to codepoint
-  getEmojiCode(emoji: string): string {
-    if (emoji === undefined) {
-      return '❔'.codePointAt(0).toString(16);
-    }
-    return emoji.codePointAt(0).toString(16);
+  dateCompare(date1: any, date2: any) {
+    return isSameDay(fromUnixTime(date1), fromUnixTime(date2));
+  }
+
+  formatDate(date: Date): string {
+    let formated = formatDate(date, "EEEE, dd 'de' MMMM 'de' yyyy", 'pt-BR');
+
+    formated = formated.charAt(0).toUpperCase() + formated.slice(1);
+    return formated;
   }
 }

@@ -136,6 +136,8 @@ export class TabCalendarPage {
       componentProps: {
         selectedFilter: this.selectedFilter,
       },
+      backdropDismiss: false,
+      swipeToClose: false,
     });
 
     modal.onDidDismiss().then((selectedFilter) => {

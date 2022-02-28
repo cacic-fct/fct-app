@@ -27,6 +27,7 @@ export class FilterModalPage implements OnInit, AfterViewInit {
       }
     }
   }
+
   ngOnInit() {}
 
   checkBoxClick(coursekey: string) {

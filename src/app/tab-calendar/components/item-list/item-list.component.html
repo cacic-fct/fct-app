@@ -7,16 +7,12 @@
         *ngFor="let item of items"
         (click)="openItem(item)"
         style="cursor: pointer">
-        <img
-          [src]="
-            'https://twemoji.maxcdn.com/v/latest/72x72/' +
-            getEmojiCode(item.icon) +
-            '.png'
-          "
-          slot="start"
-          type="image/svg+xml"
+        <object
+          [data]="getEmoji(item.icon)"
           class="twemoji"
-          aria-hidden="true" />
+          slot="start"
+          aria-hidden="true"
+          tabindex="-1"></object>
 
         <ion-label>
           <h2 class="ion-text-wrap">{{ item.name }}</h2>

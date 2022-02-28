@@ -2,7 +2,6 @@
   font-size: 20px;
   font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
     Helvetica, 'Roboto', arial, sans-serif;
-  background: #fff;
   position: relative;
   max-width: 1600px;
   display: block;
@@ -16,7 +15,6 @@
 }
 
 .hcal .hcal-header {
-  background-color: #f8f8f8;
   height: 100%;
   padding-top: 30px;
   border-bottom: 1px solid #ddd;
@@ -83,4 +81,7 @@
   .hcal {
     background: #000;
   }
+}
+
+.active {
 }
