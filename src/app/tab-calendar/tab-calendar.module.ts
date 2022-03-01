@@ -1,3 +1,4 @@
+import { CalendarListViewComponent } from './components/calendar-list-view/calendar-list-view.component';
 import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,6 +15,6 @@ import { ItemListComponent } from './components/item-list/item-list.component';
     FormsModule,
     TabCalendarPageRoutingModule,
   ],
-  declarations: [TabCalendarPage, ItemListComponent],
+  declarations: [TabCalendarPage, ItemListComponent, CalendarListViewComponent],
 })
 export class TabCalendarPageModule {}

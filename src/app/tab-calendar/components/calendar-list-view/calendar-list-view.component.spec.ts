@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { CalendarListPage } from './calendar-list.page';
+import { CalendarListViewComponent } from './calendar-list-view.component';
 
-describe('CalendarListPage', () => {
-  let component: CalendarListPage;
-  let fixture: ComponentFixture<CalendarListPage>;
+describe('CalendarListViewComponent', () => {
+  let component: CalendarListViewComponent;
+  let fixture: ComponentFixture<CalendarListViewComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CalendarListPage ],
+      declarations: [ CalendarListViewComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CalendarListPage);
+    fixture = TestBed.createComponent(CalendarListViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

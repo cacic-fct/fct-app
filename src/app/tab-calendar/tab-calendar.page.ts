@@ -25,7 +25,8 @@ export class TabCalendarPage {
   // Selected calendar date
   active: string;
   fullDate: string;
-
+  itemView: boolean = false;
+  selectedFilter: Array<string> = [];
   // Today's date
   today = new Date();
 
@@ -128,8 +129,6 @@ export class TabCalendarPage {
     return getDate(date);
   }
 
-  selectedFilter = [];
-
   async filter() {
     const modal = await this.modalController.create({
       component: FilterModalPage,
@@ -152,5 +151,8 @@ export class TabCalendarPage {
   }
   halt() {
     debugger;
+  }
+  viewToggle() {
+    this.itemView = !this.itemView;
   }
 }

@@ -1,7 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { CheckboxChangeEventDetail, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
 @Component({

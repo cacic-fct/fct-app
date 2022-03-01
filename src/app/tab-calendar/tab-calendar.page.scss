@@ -75,13 +75,18 @@
   }
 
   .hcal .hcal-header {
-    background-color: #000;
     border-bottom: 1px solid #989898;
-  }
-  .hcal {
-    background: #000;
   }
 }
 
-.active {
+.btn-active {
+  --background: #fc3d39;
+  --border-radius: 5px;
+  --color: #fff !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-active {
+    --color: #000 !important;
+  }
 }

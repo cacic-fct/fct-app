@@ -12,11 +12,7 @@
     <img
       class="margin-horizontal-auto"
       style="width: 72px; height: 72px; display: block; padding: 10px"
-      [src]="
-      'https://twemoji.maxcdn.com/v/latest/72x72/' +
-      getEmojiCode(item.icon) +
-      '.png'
-    "
+      [src]="getEmoji(item.icon) "
       (click)="presentToast()" />
 
     <div class="ion-text-center">

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-
-import * as L from 'leaflet';
-import 'leaflet-easybutton';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
 
 @Component({
   selector: 'app-tab-map',
@@ -9,22 +10,32 @@ import 'leaflet-easybutton';
   styleUrls: ['tab-map.page.scss'],
 })
 export class TabMapPage {
-  private map: L.Map;
+  private map: Map;
 
   constructor() {}
 
-  ngOnInit() {}
-
-  ionViewWillEnter() {
-    this.leafletMap();
+  ngOnInit() {
+    this.map = new Map({
+      view: new View({
+        center: [-51.40775, -22.12103],
+        zoom: 18,
+        //       projection: 'EPSG:3857',
+      }),
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      target: 'ol-map',
+    });
   }
+
+  ionViewWillEnter() {}
 
   ionViewWillLeave() {
     // Remove map on leave
-    this.map.off();
-    this.map.remove();
   }
-
+  /*
   leafletMap() {
     let home = {
       lat: -22.12103,
@@ -44,5 +55,5 @@ export class TabMapPage {
     }).addTo(this.map);
 
     L.map('mapId').invalidateSize();
-  }
+  }*/
 }

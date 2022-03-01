@@ -11,6 +11,7 @@ import {
   fromUnixTime,
   getDate,
   isSameDay,
+  isSameMonth,
 } from 'date-fns';
 
 import { NavController } from '@ionic/angular';
@@ -32,17 +33,15 @@ export interface Event {
 }
 
 @Component({
-  selector: 'app-calendar-list',
-  templateUrl: './calendar-list.page.html',
-  styleUrls: ['./calendar-list.page.scss'],
+  selector: 'app-calendar-list-view',
+  templateUrl: './calendar-list-view.component.html',
+  styleUrls: ['./calendar-list-view.component.scss'],
 })
-export class CalendarListPage implements OnChanges {
+export class CalendarListViewComponent implements OnChanges {
   courses = CoursesService.courses;
 
-  @Input() date: Date;
   @Input() filter: Array<string>;
 
-  dateFilter$: BehaviorSubject<Date | null>;
   courseFilter$: BehaviorSubject<Array<string> | null>;
 
   items$: Observable<Event[]>;
@@ -52,14 +51,17 @@ export class CalendarListPage implements OnChanges {
     private navCtrl: NavController,
     private sanitizer: DomSanitizer
   ) {
-    this.dateFilter$ = new BehaviorSubject(null);
     this.courseFilter$ = new BehaviorSubject(null);
 
-    this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
-      switchMap(([date, filter]) => {
+    this.items$ = combineLatest([this.courseFilter$]).pipe(
+      switchMap(([filter]) => {
         return firestore
           .collection<Event>('events', (ref) => {
-            return ref;
+            let query: any = ref;
+            if (filter.length > 0) {
+              query = query.where('course', 'in', filter);
+            }
+            return query.orderBy('date', 'asc');
           })
           .valueChanges({ idField: 'id' });
       })
@@ -67,7 +69,6 @@ export class CalendarListPage implements OnChanges {
   }
 
   ngOnChanges() {
-    this.dateFilter$.next(this.date);
     this.courseFilter$.next(this.filter);
   }
 
@@ -88,12 +89,23 @@ export class CalendarListPage implements OnChanges {
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 
-  dateCompare(date1: any, date2: any) {
+  dayCompare(date1: any, date2: any) {
     return isSameDay(fromUnixTime(date1), fromUnixTime(date2));
+  }
+
+  monthCompare(date1: any, date2: any) {
+    return isSameMonth(fromUnixTime(date1), fromUnixTime(date2));
   }
 
   formatDate(date: Date): string {
     let formated = formatDate(date, "EEEE, dd 'de' MMMM 'de' yyyy", 'pt-BR');
+
+    formated = formated.charAt(0).toUpperCase() + formated.slice(1);
+    return formated;
+  }
+
+  formatMonth(date: Date): string {
+    let formated = formatDate(date, "MMMM 'de' yyyy", 'pt-BR');
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);
     return formated;

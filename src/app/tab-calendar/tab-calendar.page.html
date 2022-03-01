@@ -1,14 +1,20 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="secondary">
-      <ion-button icon-only (click)="halt()">
-        <ion-icon name="list"></ion-icon>
-      </ion-button>
-      <ion-button icon-only (click)="filter()" class="active">
+      <ion-button
+        icon-only
+        [ngClass]="{'btn-active': selectedFilter.length > 0}"
+        (click)="filter()">
         <ion-icon name="filter"></ion-icon>
       </ion-button>
+      <ion-button
+        icon-only
+        [ngClass]="{'btn-active': this.itemView}"
+        (click)="viewToggle()">
+        <ion-icon name="list"></ion-icon>
+      </ion-button>
     </ion-buttons>
-    <ion-buttons slot="primary">
+    <ion-buttons slot="primary" *ngIf="!this.itemView">
       <ion-button (click)="prevWeek()" aria-label="Semana anterior">
         <ion-icon name="chevron-back"></ion-icon>
       </ion-button>
@@ -24,7 +30,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="hcal margin-horizontal-auto">
+  <div class="hcal margin-horizontal-auto" *ngIf="!this.itemView">
     <div class="hcal-header">
       <!-- Days of week -->
       <div class="hcal-header-days" aria-hidden="true">
@@ -54,5 +60,9 @@
 
   <app-item-list
     [date]="dowList[active]?.date"
-    [filter]="selectedFilter"></app-item-list>
+    [filter]="selectedFilter"
+    *ngIf="!this.itemView"></app-item-list>
+
+  <app-calendar-list-view [filter]="selectedFilter" *ngIf="this.itemView">
+  </app-calendar-list-view>
 </ion-content>

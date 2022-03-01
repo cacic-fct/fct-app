@@ -1,31 +1,34 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>calendar-list</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
   <ion-list
     style="max-width: 1600px; display: block"
     class="margin-horizontal-auto">
     <ng-container>
       <div *ngIf="items$ | async; let items; else: loading">
-        <ng-container *ngFor="let item of items; index as i ">
+        <ng-container *ngFor="let item of items; index as i">
+          <ion-list-header
+            mode="ios"
+            *ngIf="i == 0 || !monthCompare(items[i - 1].date, items[i].date)">
+            <ion-label>{{
+              formatMonth(getDateFromTimestamp(item.date))
+            }}</ion-label>
+          </ion-list-header>
+
           <ion-item-divider
             mode="ios"
             sticky="true"
-            *ngIf="i == 0 || ! dateCompare(items[i - 1].date , items[i].date)">
+            *ngIf="i == 0 || !dayCompare(items[i - 1].date, items[i].date)">
             <ion-label>
               {{ formatDate(getDateFromTimestamp(item.date)) }}
             </ion-label>
           </ion-item-divider>
           <ion-item (click)="openItem(item)" style="cursor: pointer">
-            <object
-              [data]="getEmoji(item.icon)"
+            <img
+              [src]="getEmoji(item.icon)"
               class="twemoji"
               slot="start"
               aria-hidden="true"
-              tabindex="-1"></object>
+              tabindex="-1"
+              loading="lazy" />
 
             <ion-label>
               <h2 class="ion-text-wrap">{{ item.name }}</h2>

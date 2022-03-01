@@ -1,8 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { CoursesService } from '../shared/services/courses.service';
-import * as L from 'leaflet';
-import 'leaflet-easybutton';
 
 import { ToastController } from '@ionic/angular';
 
@@ -10,13 +8,15 @@ import { fromUnixTime } from 'date-fns';
 import { ClipboardService } from 'ngx-clipboard';
 import { Router } from '@angular/router';
 
+import { DomSanitizer } from '@angular/platform-browser';
+import { parse } from 'twemoji-parser';
+
 @Component({
   selector: 'app-page-calendar-event',
   templateUrl: './page-calendar-event.page.html',
   styleUrls: ['./page-calendar-event.page.scss'],
 })
 export class PageCalendarEventPage implements OnInit {
-  private map: L.Map;
   courses = CoursesService.courses;
 
   item: any;
@@ -24,7 +24,8 @@ export class PageCalendarEventPage implements OnInit {
   constructor(
     private toastController: ToastController,
     private clipboardService: ClipboardService,
-    private router: Router
+    private router: Router,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -33,7 +34,7 @@ export class PageCalendarEventPage implements OnInit {
       this.router.navigate(['/calendario']);
     }
   }
-
+  /*
   ionViewWillEnter() {
     if (this.item.location?.lat && this.item.location?.lng) {
       this.leafletMap();
@@ -79,7 +80,7 @@ export class PageCalendarEventPage implements OnInit {
     L.marker([home.lat, home.lng], { icon: icon }).addTo(this.map);
 
     L.map('mapId').invalidateSize();
-  }
+  }*/
 
   getCourse(): string {
     return this.courses[this.item.course].name;
@@ -118,11 +119,10 @@ export class PageCalendarEventPage implements OnInit {
     await toast.present();
   }
 
-  // Emoji to codepoint
-  getEmojiCode(emoji: string): string {
+  getEmoji(emoji: string): any {
     if (emoji === undefined) {
-      return '❔'.codePointAt(0).toString(16);
+      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
-    return emoji.codePointAt(0).toString(16);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 }
