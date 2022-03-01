@@ -8,29 +8,56 @@
 </ion-header>
 
 <ion-content>
-  <div class="margin-horizontal-auto content-container ion-padding">
-    <img
+  <ng-container *ngIf="item ; let items; else: loading">
+    <div class="margin-horizontal-auto content-container ion-padding">
+      <img
+        class="margin-horizontal-auto"
+        style="width: 72px; height: 72px; display: block; padding: 10px"
+        [src]="getEmoji(item.icon) "
+        (click)="presentToast()" />
+
+      <div class="ion-text-center">
+        <h1 style="margin: 0">{{ item?.name }}</h1>
+        <h5 style="margin: 0; font-weight: 500">{{ getCourse() }}</h5>
+        <h4 style="margin: 0; font-weight: 400">
+          <!-- prettier-ignore -->
+          {{ toUppercase(getDateFromTimestamp(item?.date) | date: "EEEE, dd 'de' MMMM 'de' y") }}
+        </h4>
+        <h3 style="margin: 0; font-weight: 400">
+          {{ getDateFromTimestamp(item?.date) | date: 'HH:mm' }}
+        </h3>
+      </div>
+
+      <div *ngIf="item?.description">
+        <h2>Sobre</h2>
+        <p>{{ item?.description }}</p>
+      </div>
+
+      <div *ngIf="item?.location">
+        <h2>Localização</h2>
+
+        <div *ngIf="item?.location.description">
+          <ion-item lines="none">
+            <ion-icon name="pin" slot="start"></ion-icon>
+            <ion-label>{{ item?.location.description }}</ion-label>
+          </ion-item>
+        </div>
+
+        <div
+          id="ol-map"
+          class="map-container"
+          *ngIf="item?.location.lat && item?.location.lng"></div>
+      </div>
+
+      <div *ngIf="item?.url">
+        <ion-button>Link do evento</ion-button>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #loading>
+    <ion-spinner
+      name="lines-small"
       class="margin-horizontal-auto"
-      style="width: 90px; height: 90px; display: block"
-      src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f5fa.png" />
-
-    <div class="ion-text-center">
-      <h1 style="margin: 0">{{ item?.name }}</h1>
-      <h5 style="margin: 0; font-weight: 500">Engenharia cartográfica</h5>
-      <h4 style="margin: 0; font-weight: 400">
-        Terça-feira, 1 de março de 2022
-      </h4>
-      <h3 style="margin: 0; font-weight: 400">16:00</h3>
-    </div>
-
-    <div *ngIf="item.description">
-      <h2>Sobre</h2>
-      <p>{{ item?.description }}</p>
-    </div>
-
-    <div *ngIf="item.location?.lat && item.location?.lng">
-      <h2>Localização</h2>
-      <div id="mapId"></div>
-    </div>
-  </div>
+      style="display: block"></ion-spinner>
+  </ng-template>
 </ion-content>
