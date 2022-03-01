@@ -14,6 +14,20 @@ const routes: Routes = [
         (m) => m.PageCalendarEventPageModule
       ),
   },
+  {
+    path: 'about',
+    loadChildren: () =>
+      import('./page-about/page-about.module').then(
+        (m) => m.PageAboutPageModule
+      ),
+  } /*
+  {
+    path: 'licenses',
+    loadChildren: () =>
+      import('./page-licenses/page-licenses.module').then(
+        (m) => m.PageLegalPageModule
+      ),
+  }, */,
 ];
 @NgModule({
   imports: [

@@ -42,7 +42,10 @@
         </ion-item>
       </div>
 
-      <div id="mapId" *ngIf="item?.location.lat && item?.location.lng"></div>
+      <div
+        id="ol-map"
+        class="map-container"
+        *ngIf="item?.location.lat && item?.location.lng"></div>
     </div>
   </div>
 </ion-content>

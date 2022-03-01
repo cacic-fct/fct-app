@@ -11,6 +11,13 @@ import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
 
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import { useGeographic } from 'ol/proj';
+import { Control, defaults as defaultControls } from 'ol/control';
+
 @Component({
   selector: 'app-page-calendar-event',
   templateUrl: './page-calendar-event.page.html',
@@ -20,6 +27,7 @@ export class PageCalendarEventPage implements OnInit {
   courses = CoursesService.courses;
 
   item: any;
+  map: Map;
 
   constructor(
     private toastController: ToastController,
@@ -33,6 +41,23 @@ export class PageCalendarEventPage implements OnInit {
     if (this.item === undefined) {
       this.router.navigate(['/calendario']);
     }
+  }
+
+  ionViewWillEnter() {
+    this.map = new Map({
+      view: new View({
+        center: [-51.40775, -22.12103],
+        zoom: 18,
+        maxZoom: 19,
+        projection: 'EPSG:3857',
+      }),
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      target: 'ol-map',
+    });
   }
   /*
   ionViewWillEnter() {
