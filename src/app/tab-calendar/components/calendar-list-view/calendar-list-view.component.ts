@@ -2,17 +2,9 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
-// Import parse from twemoji-parser
 import { parse } from 'twemoji-parser';
 
-import {
-  startOfDay,
-  endOfDay,
-  fromUnixTime,
-  getDate,
-  isSameDay,
-  isSameMonth,
-} from 'date-fns';
+import { fromUnixTime, isSameDay, isSameMonth } from 'date-fns';
 
 import { NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';

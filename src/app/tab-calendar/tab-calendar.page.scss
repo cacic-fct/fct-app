@@ -82,11 +82,11 @@
 .btn-active {
   --background: #fc3d39;
   --border-radius: 5px;
-  --color: #fff !important;
+  --color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
   .btn-active {
-    --color: #000 !important;
+    --color: #000;
   }
 }
