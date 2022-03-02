@@ -25,6 +25,8 @@ export class CalendarListViewComponent implements OnChanges {
   @Input() filter: Array<string>;
 
   courseFilter$: BehaviorSubject<Array<string> | null>;
+  isUnesp$: BehaviorSubject<string | null>;
+  isUnespObs: Observable<any>;
 
   items$: Observable<EventItem[]>;
 
@@ -42,6 +44,9 @@ export class CalendarListViewComponent implements OnChanges {
             let query: any = ref;
             if (filter.length > 0) {
               query = query.where('course', 'in', filter);
+            }
+            if (localStorage.getItem('isUnesp') !== 'true') {
+              query = query.where('public', '==', true);
             }
             return query.orderBy('date', 'asc');
           })

@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { KeyValue, formatDate } from '@angular/common';
 
@@ -59,7 +60,11 @@ export class TabCalendarPage {
     weekStartsOn: 0,
   });
 
-  constructor(private modalController: ModalController) {
+  constructor(private modalController: ModalController, public router: Router) {
+    // If isUnesp on local storage is not set, navigate to /vinculo
+    if (localStorage.getItem('isUnesp') === null) {
+      this.router.navigate(['/vinculo']);
+    }
     this.active = format(this.today, 'eeee').toLowerCase();
     this.generateCalendarData();
   }

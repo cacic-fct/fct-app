@@ -21,31 +21,27 @@ const routes: Routes = [
         (m) => m.PageAboutPageModule
       ),
   },
-  {
-    path: 'login',
-    loadChildren: () =>
-      import('./page-login/page-login.module').then(
-        (m) => m.PageLoginPageModule
-      ),
-  } /*
+
+  /*
   {
     path: 'licenses',
     loadChildren: () =>
       import('./page-licenses/page-licenses.module').then(
         (m) => m.PageLegalPageModule
       ),
-  }, */,
-  {
-    path: 'add-event',
-    loadChildren: () => import('./event-editor/add-event/add-event.module').then( m => m.AddEventPageModule)
+  }, */ {
+    path: 'vinculo',
+    loadChildren: () =>
+      import('./customize-experience/customize-experience.module').then(
+        (m) => m.CustomizeExperiencePageModule
+      ),
   },
   {
-    path: 'customize-experience',
-    loadChildren: () => import('./customize-experience/customize-experience.module').then( m => m.CustomizeExperiencePageModule)
-  },
-  {
-    path: 'page-settings',
-    loadChildren: () => import('./page-settings/page-settings.module').then( m => m.PageSettingsPageModule)
+    path: 'settings',
+    loadChildren: () =>
+      import('./page-settings/page-settings.module').then(
+        (m) => m.PageSettingsPageModule
+      ),
   },
 ];
 @NgModule({
