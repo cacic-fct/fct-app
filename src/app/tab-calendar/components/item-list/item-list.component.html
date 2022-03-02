@@ -5,7 +5,8 @@
     <ion-item
       *ngFor="let item of items"
       (click)="openItem(item)"
-      style="cursor: pointer">
+      style="cursor: pointer"
+      [style.--background]="courses[item.course]?.color + '25'">
       <img
         [src]="getEmoji(item.icon)"
         class="twemoji"

@@ -10,17 +10,8 @@ import { switchMap } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
 
-export interface Event {
-  name: string;
-  icon: string;
-  course: number;
-  date: string;
-  location: {
-    lat: number;
-    lng: number;
-  };
-  description: string;
-}
+import { EventItem } from 'src/app/shared/services/event';
+
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
@@ -35,7 +26,7 @@ export class ItemListComponent implements OnChanges {
   dateFilter$: BehaviorSubject<Date | null>;
   courseFilter$: BehaviorSubject<Array<string> | null>;
 
-  items$: Observable<Event[]>;
+  items$: Observable<EventItem[]>;
 
   constructor(
     firestore: AngularFirestore,
@@ -48,7 +39,7 @@ export class ItemListComponent implements OnChanges {
     this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
       switchMap(([date, filter]) => {
         return firestore
-          .collection<Event>('events', (ref) => {
+          .collection<EventItem>('events', (ref) => {
             let query: any = ref;
             if (date) {
               query = query

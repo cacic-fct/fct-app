@@ -5,6 +5,7 @@ export class CoursesService {
     },
     '12': {
       name: 'Ciência da computação',
+      color: '#51aaf2',
     },
   };
 }

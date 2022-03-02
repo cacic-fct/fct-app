@@ -47,5 +47,9 @@
         class="map-container"
         *ngIf="item?.location.lat && item?.location.lng"></div>
     </div>
+
+    <div *ngIf="item?.url">
+      <ion-button>Link do evento</ion-button>
+    </div>
   </div>
 </ion-content>

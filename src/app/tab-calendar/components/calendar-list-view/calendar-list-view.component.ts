@@ -12,17 +12,7 @@ import { switchMap } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
-export interface Event {
-  name: string;
-  icon: string;
-  course: number;
-  date: string;
-  location: {
-    lat: number;
-    lng: number;
-  };
-  description: string;
-}
+import { EventItem } from 'src/app/shared/services/event';
 
 @Component({
   selector: 'app-calendar-list-view',
@@ -36,7 +26,7 @@ export class CalendarListViewComponent implements OnChanges {
 
   courseFilter$: BehaviorSubject<Array<string> | null>;
 
-  items$: Observable<Event[]>;
+  items$: Observable<EventItem[]>;
 
   constructor(
     firestore: AngularFirestore,
@@ -48,7 +38,7 @@ export class CalendarListViewComponent implements OnChanges {
     this.items$ = combineLatest([this.courseFilter$]).pipe(
       switchMap(([filter]) => {
         return firestore
-          .collection<Event>('events', (ref) => {
+          .collection<EventItem>('events', (ref) => {
             let query: any = ref;
             if (filter.length > 0) {
               query = query.where('course', 'in', filter);

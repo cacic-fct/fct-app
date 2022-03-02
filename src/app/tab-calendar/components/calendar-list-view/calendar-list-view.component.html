@@ -21,7 +21,10 @@
               {{ formatDate(getDateFromTimestamp(item.date)) }}
             </ion-label>
           </ion-item-divider>
-          <ion-item (click)="openItem(item)" style="cursor: pointer">
+          <ion-item
+            (click)="openItem(item)"
+            style="cursor: pointer"
+            [style.--background]="courses[item.course].color + '25'">
             <img
               [src]="getEmoji(item.icon)"
               class="twemoji"
@@ -31,6 +34,7 @@
 
             <ion-label>
               <h2 class="ion-text-wrap">{{ item.name }}</h2>
+              <h3>{{ item.shortDescription }}</h3>
               <p>{{ courses[item.course].name }}</p>
             </ion-label>
             <div slot="end">

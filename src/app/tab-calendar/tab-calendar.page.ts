@@ -3,6 +3,8 @@ import { KeyValue, formatDate } from '@angular/common';
 
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
+import { RemoteConfigService } from '../shared/services/remote-config.service';
+
 import {
   startOfWeek,
   endOfWeek,
@@ -22,6 +24,7 @@ import { FilterModalPage } from './components/filter-modal/filter-modal.page';
   styleUrls: ['tab-calendar.page.scss'],
 })
 export class TabCalendarPage {
+  remoteConfig = RemoteConfigService;
   // Selected calendar date
   active: string;
   fullDate: string;
@@ -61,7 +64,9 @@ export class TabCalendarPage {
     this.generateCalendarData();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.remoteConfig;
+  }
 
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>): number => {
     return 0;
