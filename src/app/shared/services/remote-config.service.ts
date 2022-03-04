@@ -22,11 +22,8 @@ export class RemoteConfigService {
           mapTabEnabled: true,
         })
       )
-      .subscribe((user) => {
-        debugger;
-        console.log(user);
-      });
-    debugger;
+      .subscribe((user) => {});
+
     this.mapEnabled = remoteConfig.getValue('mapTabEnabled');
   }
 }

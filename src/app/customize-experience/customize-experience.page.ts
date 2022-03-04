@@ -1,3 +1,4 @@
+import { GlobalConstantsService } from './../shared/services/global-constants.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 
@@ -14,6 +15,10 @@ export class CustomizeExperiencePage implements OnInit {
   // Register answer on local storage
   registerAnswer(answer: string) {
     localStorage.setItem('isUnesp', answer);
+    localStorage.setItem(
+      'userDataVersion',
+      GlobalConstantsService.userDataVersion
+    );
 
     // Navigate to calendario page
     this.router.navigate(['/calendario']);

@@ -1,5 +1,6 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
+import { GlobalConstantsService } from '../shared/services/global-constants.service';
 
 @Component({
   selector: 'app-page-settings',
@@ -19,9 +20,12 @@ export class PageSettingsPage implements OnInit {
     }
   }
 
-  isUnespFun(event: string) {
-    localStorage.setItem('isUnesp', event);
-
+  isUnespFun(event) {
+    localStorage.setItem('isUnesp', event.detail.checked);
+    localStorage.setItem(
+      'userDataVersion',
+      GlobalConstantsService.userDataVersion
+    );
     // Reload cuz calendar doesn't listen to localStorage changes
     // TODO: Fix this
     window.location.reload();

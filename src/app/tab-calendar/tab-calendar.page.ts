@@ -29,7 +29,7 @@ export class TabCalendarPage {
   // Selected calendar date
   active: string;
   fullDate: string;
-  itemView: boolean = false;
+  itemView: boolean = true;
   selectedFilter: Array<string> = [];
   // Today's date
   today = new Date();
@@ -61,9 +61,11 @@ export class TabCalendarPage {
   });
 
   constructor(private modalController: ModalController, public router: Router) {
-    // If isUnesp on local storage is not set, navigate to /vinculo
     if (localStorage.getItem('isUnesp') === null) {
       this.router.navigate(['/vinculo']);
+    }
+    if (localStorage.getItem('isUnesp') === 'false') {
+      this.itemView = true;
     }
     this.active = format(this.today, 'eeee').toLowerCase();
     this.generateCalendarData();
@@ -158,9 +160,6 @@ export class TabCalendarPage {
       return false;
     });
     return await modal.present();
-  }
-  halt() {
-    debugger;
   }
   viewToggle() {
     this.itemView = !this.itemView;

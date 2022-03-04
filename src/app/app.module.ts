@@ -7,8 +7,16 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
+import {
+  AngularFireAnalyticsModule,
+  ScreenTrackingService,
+  UserTrackingService,
+} from '@angular/fire/compat/analytics';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import {
+  AngularFirePerformanceModule,
+  PerformanceMonitoringService,
+} from '@angular/fire/compat/performance';
 import {
   AngularFireRemoteConfigModule,
   DEFAULTS,
@@ -25,6 +33,8 @@ registerLocaleData(localePt);
 import { AuthService } from './shared/services/auth.service';
 import { RemoteConfigService } from './shared/services/remote-config.service';
 
+import { ServiceWorkerModule } from '@angular/service-worker';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -36,8 +46,16 @@ import { RemoteConfigService } from './shared/services/remote-config.service';
     AngularFireAnalyticsModule,
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
     AngularFireRemoteConfigModule,
+    AngularFirePerformanceModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerImmediately',
+    }),
   ],
   providers: [
+    ScreenTrackingService,
+    UserTrackingService,
+    PerformanceMonitoringService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     {

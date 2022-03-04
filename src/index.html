@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <title>FCT App</title>
+    <meta
+      name="description"
+      content="Calendário de eventos da FCT Unesp, Faculdade de Ciências e Tecnologia da Universidade Estadual Paulista Júlio de Mesquita Filho elaborado pelo Centro Acadêmico de Ciência da Computação Alan Turing." />
 
     <base href="/" />
 
@@ -15,9 +18,20 @@
 
     <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
 
-    <!-- add to homescreen for ios -->
+    <!-- OGP -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="FCT App" />
+    <meta
+      property="og:description"
+      content="Calendário de eventos dos estudantes da FCT-Unesp." />
+    <meta property="og:image" content="assets/icon/favicon.png" />
+
+    <!-- PWA  -->
+    <link rel="manifest" href="manifest.webmanifest" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-icon" href="assets/icon/apple-touch-icon.png" />
+    <meta name="theme-color" content="#009ee2" />
 
     <link
       rel="apple-touch-startup-image"
