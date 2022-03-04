@@ -54,11 +54,11 @@
     </div>
 
     <div *ngIf="item?.youtubeCode">
-      <ion-button>Transmissão do evento</ion-button>
+      <h2>Transmissão do evento</h2>
       <iframe
         width="400"
         height="225"
-        [src]="'https://www.youtube-nocookie.com/embed/' + item?.youtubeCode"
+        [src]="'https://www.youtube-nocookie.com/embed/' + item?.youtubeCode | safe: 'resourceUrl'"
         title="YouTube"
         frameborder="0"
         allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
