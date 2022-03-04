@@ -17,7 +17,12 @@
 
     <div class="ion-text-center">
       <h1 style="margin: 0">{{ item?.name }}</h1>
-      <h5 style="margin: 0; font-weight: 500">{{ getCourse() }}</h5>
+      <h5 style="margin: 0; margin-bottom: 5px; font-weight: 500">
+        {{ item?.shortDescription }}
+      </h5>
+      <h5 style="margin: 0; margin-bottom: 5px; font-weight: 500">
+        {{ getCourse() }}
+      </h5>
       <h4 style="margin: 0; font-weight: 400">
         <!-- prettier-ignore -->
         {{ toUppercase(getDateFromTimestamp(item?.date) | date: "EEEE, dd 'de' MMMM 'de' y") }}
@@ -48,8 +53,16 @@
         *ngIf="item?.location.lat && item?.location.lng"></div>
     </div>
 
-    <div *ngIf="item?.url">
-      <ion-button>Link do evento</ion-button>
+    <div *ngIf="item?.youtubeCode">
+      <ion-button>Transmissão do evento</ion-button>
+      <iframe
+        width="400"
+        height="225"
+        [src]="'https://www.youtube-nocookie.com/embed/' + item?.youtubeCode"
+        title="YouTube"
+        frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+        allowfullscreen></iframe>
     </div>
   </div>
 </ion-content>

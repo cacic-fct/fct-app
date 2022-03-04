@@ -24,8 +24,9 @@ registerLocaleData(localePt);
 
 import { AuthService } from './shared/services/auth.service';
 import { RemoteConfigService } from './shared/services/remote-config.service';
+import { SafePipe } from './shared/safe.pipe';
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SafePipe],
   entryComponents: [],
   imports: [
     BrowserModule,

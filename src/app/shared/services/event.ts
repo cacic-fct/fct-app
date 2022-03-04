@@ -9,4 +9,5 @@ export interface EventItem {
   };
   description: string;
   shortDescription: string;
+  youtubeCode: string;
 }
