@@ -34,6 +34,8 @@ import { AuthService } from './shared/services/auth.service';
 import { RemoteConfigService } from './shared/services/remote-config.service';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { MarkdownModule } from 'ngx-markdown';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -51,6 +53,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       enabled: environment.production,
       registrationStrategy: 'registerImmediately',
     }),
+    HttpClientModule,
+    MarkdownModule.forRoot({ loader: HttpClient }),
   ],
   providers: [
     ScreenTrackingService,

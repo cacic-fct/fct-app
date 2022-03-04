@@ -22,14 +22,14 @@ const routes: Routes = [
       ),
   },
 
-  /*
   {
     path: 'licenses',
     loadChildren: () =>
       import('./page-licenses/page-licenses.module').then(
         (m) => m.PageLegalPageModule
       ),
-  }, */ {
+  },
+  {
     path: 'vinculo',
     loadChildren: () =>
       import('./customize-experience/customize-experience.module').then(
