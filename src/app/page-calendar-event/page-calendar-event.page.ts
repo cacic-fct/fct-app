@@ -153,5 +153,4 @@ export class PageCalendarEventPage implements OnInit {
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
-  
 }
