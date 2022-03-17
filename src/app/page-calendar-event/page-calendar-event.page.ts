@@ -35,7 +35,7 @@ export class PageCalendarEventPage implements OnInit {
     private router: Router,
     private sanitizer: DomSanitizer
   ) {}
-
+  
   ngOnInit() {
     this.item = history.state.item;
     if (this.item === undefined) {
@@ -153,4 +153,5 @@ export class PageCalendarEventPage implements OnInit {
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
+  
 }
