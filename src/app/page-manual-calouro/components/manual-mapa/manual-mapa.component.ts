@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import * as L from 'leaflet';
-import 'leaflet-easybutton';
-
 @Component({
   selector: 'app-manual-mapa',
   templateUrl: './manual-mapa.component.html',
