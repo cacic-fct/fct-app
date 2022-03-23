@@ -1,0 +1,65 @@
+<ion-list>
+  <ion-item *ngFor="let centrosAcademicos of contacts">
+    <ion-label>
+      <ion-row>
+        <ion-col style="padding-bottom: 0">
+          <h2 class="ion-text-wrap">{{ centrosAcademicos.name }}</h2>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col style="padding-top: 0">
+          <p class="ion-text-wrap">
+            {{ centrosAcademicos.acronym }}
+          </p>
+        </ion-col>
+      </ion-row>
+
+      <!-- <ion-row>
+        <ion-col class="ion-text-wrap">
+          <ion-button *ngIf="contributor['emailAcademic']" href="mailto:{{ contributor.emailAcademic }}@unesp.br"
+            attr.aria-label="E-mail institucional de {{ contributor.name }}">
+            <ion-icon name="school-outline"></ion-icon>
+          </ion-button>
+
+          <ion-button *ngIf="contributor['email']" href="mailto:{{ contributor.email }}"
+            attr.aria-label="E-mail pessoal de {{ contributor.name }}">
+            <ion-icon name="mail-outline"></ion-icon>
+          </ion-button>
+
+          <ion-button *ngIf="contributor['lattes']" href="https://lattes.cnpq.br/{{ contributor.lattes }}"
+            target="_blank" attr.aria-label="Currículo Lattes de {{ contributor.name }}">
+            <ion-icon style="font-size: 14px" class="ai ai-lattes ai-3x"></ion-icon>
+          </ion-button>
+
+          <ion-button *ngIf="contributor['website']" href="{{ contributor.website }}" target="_blank"
+            attr.aria-label="Site pessoal de {{ contributor.name }}">
+            <ion-icon name="globe-outline"></ion-icon>
+          </ion-button>
+
+          <ng-container *ngIf="contributor['social']">
+            <ion-button *ngIf="contributor.social['github']"
+              [href]="'https://github.com/' + contributor.social['github']" target="_blank"
+              attr.aria-label="Perfil no GitHub de {{ contributor.name }}">
+              <ion-icon name="logo-github"></ion-icon>
+            </ion-button>
+            <ion-button *ngIf="contributor.social['whatsapp']"
+              [href]="'https://wa.me/' + contributor.social['whatsapp']" target="_blank"
+              attr.aria-label="WhatsApp de {{ contributor.name }}">
+              <ion-icon name="logo-whatsapp"></ion-icon>
+            </ion-button> -->
+      <ng-container *ngFor="let socialmedia of socialMedia | keyvalue">
+        <ion-button *ngIf="centrosAcademicos.social[socialmedia.key]"
+          [href]="socialmedia.value + centrosAcademicos.social[socialmedia.key]" target="_blank" attr.aria-label="{{ socialmedia.key }} de {{
+                  centrosAcademicos.name
+                }} ">
+          <ion-icon [name]="'logo-' + socialmedia.key"></ion-icon>
+        </ion-button>
+      </ng-container>
+      <!-- </ng-container>
+        </ion-col>
+      </ion-row> -->
+    </ion-label>
+
+  </ion-item>
+</ion-list>
