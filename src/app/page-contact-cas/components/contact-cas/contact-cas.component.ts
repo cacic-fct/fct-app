@@ -76,7 +76,7 @@ export class ContactCasComponent implements OnInit {
       name: 'Geografia',
       acronym: 'CAGEO',
       social: {
-        facebook: '',
+        facebook: 'cageo.geografia',
         instagram: 'cageo.fctunesp',
       },
     },
@@ -85,25 +85,25 @@ export class ContactCasComponent implements OnInit {
       acronym: 'CENTRAMA',
       social: {
         facebook: '',
-        instagram: '',
+        instagram: 'centramafct',
       },
     },
-    {
-      name: 'Pedagogia',
-      acronym: '',
-      social: {
-        facebook: '',
-        instagram: '',
-      },
-    },
-    {
-      name: 'Química',
-      acronym: '',
-      social: {
-        facebook: '',
-        instagram: '',
-      },
-    },
+    // {
+    //   name: 'Pedagogia',
+    //   acronym: '',
+    //   social: {
+    //     facebook: '',
+    //     instagram: '',
+    //   },
+    // },
+    // {
+    //   name: 'Química',
+    //   acronym: '',
+    //   social: {
+    //     facebook: '',
+    //     instagram: '',
+    //   },
+    // },
   ];
   socialMedia = {
     linkedin: 'https://linkedin.com/in/',
