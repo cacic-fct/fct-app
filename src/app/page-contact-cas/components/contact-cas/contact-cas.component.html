@@ -15,19 +15,19 @@
         </ion-col>
       </ion-row>
 
-      <!-- <ion-row>
-        <ion-col class="ion-text-wrap">
+      <ion-row>
+        <!-- <ion-col class="ion-text-wrap">
           <ion-button *ngIf="contributor['emailAcademic']" href="mailto:{{ contributor.emailAcademic }}@unesp.br"
             attr.aria-label="E-mail institucional de {{ contributor.name }}">
             <ion-icon name="school-outline"></ion-icon>
-          </ion-button>
+          </ion-button> -->
 
-          <ion-button *ngIf="contributor['email']" href="mailto:{{ contributor.email }}"
-            attr.aria-label="E-mail pessoal de {{ contributor.name }}">
-            <ion-icon name="mail-outline"></ion-icon>
-          </ion-button>
+        <ion-button *ngIf="centrosAcademicos['email']" href="mailto:{{ centrosAcademicos.email }}"
+          attr.aria-label="E-mail do Centro Acadêmico da {{ centrosAcademicos.name }}">
+          <ion-icon name="mail-outline"></ion-icon>
+        </ion-button>
 
-          <ion-button *ngIf="contributor['lattes']" href="https://lattes.cnpq.br/{{ contributor.lattes }}"
+        <!-- <ion-button *ngIf="contributor['lattes']" href="https://lattes.cnpq.br/{{ contributor.lattes }}"
             target="_blank" attr.aria-label="Currículo Lattes de {{ contributor.name }}">
             <ion-icon style="font-size: 14px" class="ai ai-lattes ai-3x"></ion-icon>
           </ion-button>
@@ -48,17 +48,17 @@
               attr.aria-label="WhatsApp de {{ contributor.name }}">
               <ion-icon name="logo-whatsapp"></ion-icon>
             </ion-button> -->
-      <ng-container *ngFor="let socialmedia of socialMedia | keyvalue">
-        <ion-button *ngIf="centrosAcademicos.social[socialmedia.key]"
-          [href]="socialmedia.value + centrosAcademicos.social[socialmedia.key]" target="_blank" attr.aria-label="{{ socialmedia.key }} de {{
+        <ng-container *ngFor="let socialmedia of socialMedia | keyvalue">
+          <ion-button *ngIf="centrosAcademicos.social[socialmedia.key]"
+            [href]="socialmedia.value + centrosAcademicos.social[socialmedia.key]" target="_blank" attr.aria-label="{{ socialmedia.key }} de {{
                   centrosAcademicos.name
                 }} ">
-          <ion-icon [name]="'logo-' + socialmedia.key"></ion-icon>
-        </ion-button>
-      </ng-container>
-      <!-- </ng-container>
-        </ion-col>
-      </ion-row> -->
+            <ion-icon [name]="'logo-' + socialmedia.key"></ion-icon>
+          </ion-button>
+        </ng-container>
+        <!-- </ng-container>
+        </ion-col> -->
+      </ion-row>
     </ion-label>
 
   </ion-item>
