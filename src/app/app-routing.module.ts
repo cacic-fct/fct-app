@@ -57,6 +57,13 @@ const routes: Routes = [
         (m) => m.PageCalourosPageModule
       ),
   },
+  {
+    path: 'contato-cas',
+    loadChildren: () =>
+      import('./page-contact-cas/page-contact-cas.module').then(
+        (m) => m.PageContactCasPageModule
+      ),
+  },
 ];
 @NgModule({
   imports: [
