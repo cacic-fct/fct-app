@@ -10,6 +10,7 @@ export class ContactCasComponent implements OnInit {
     {
       name: 'Ciência da Computação',
       acronym: 'CACiC',
+      email: 'cacic.fct@gmail.com',
       social: {
         facebook: 'cacic.fct',
         instagram: 'cacic.fct',
@@ -35,6 +36,7 @@ export class ContactCasComponent implements OnInit {
     {
       name: 'Engenharia Ambiental',
       acronym: 'CAEA',
+      email: 'caeng.ambiental@gmail.com',
       social: {
         facebook: '',
         instagram: 'caengambiental',
@@ -78,6 +80,8 @@ export class ContactCasComponent implements OnInit {
       social: {
         facebook: 'cageo.geografia',
         instagram: 'cageo.fctunesp',
+        youtube: 'UC5fOz1IJ2_aFqnEDFFEDKAA',
+        twitter: 'CageoFct',
       },
     },
     {
