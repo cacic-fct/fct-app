@@ -1,58 +1,59 @@
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges } from '@angular/core';
-import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
+import { CoursesService } from 'src/app/shared/services/courses.service';
 
 import { startOfDay, endOfDay, fromUnixTime, getDate } from 'date-fns';
 
 import { NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
+import { DomSanitizer } from '@angular/platform-browser';
+import { parse } from 'twemoji-parser';
 
-export interface Event {
-  name: string;
-  icon: string;
-  course: number;
-  date: string;
-  location: {
-    lat: number;
-    lng: number;
-  };
-  description: string;
-}
+import { EventItem } from 'src/app/shared/services/event';
+
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.scss'],
 })
 export class ItemListComponent implements OnChanges {
-  courses = GlobalConstantsService.courses;
+  courses = CoursesService.courses;
 
   @Input() date: Date;
-  @Input() course: string;
+  @Input() filter: Array<string>;
 
   dateFilter$: BehaviorSubject<Date | null>;
-  courseFilter$: BehaviorSubject<string | null>;
+  courseFilter$: BehaviorSubject<Array<string> | null>;
 
-  items$: Observable<Event[]>;
+  items$: Observable<EventItem[]>;
 
-  constructor(firestore: AngularFirestore, private navCtrl: NavController) {
+  constructor(
+    firestore: AngularFirestore,
+    private navCtrl: NavController,
+    private sanitizer: DomSanitizer
+  ) {
     this.dateFilter$ = new BehaviorSubject(null);
     this.courseFilter$ = new BehaviorSubject(null);
 
     this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
-      switchMap(([date, course]) => {
+      switchMap(([date, filter]) => {
         return firestore
-          .collection<Event>('events', (ref) => {
+          .collection<EventItem>('events', (ref) => {
             let query: any = ref;
             if (date) {
               query = query
                 .where('date', '>=', startOfDay(date))
                 .where('date', '<=', endOfDay(date));
             }
-            if (course) {
-              query = query.where('course', '==', '12');
+            if (filter.length > 0) {
+              query = query.where('course', 'in', filter);
             }
-            return query;
+            if (localStorage.getItem('isUnesp') !== 'true') {
+              query = query.where('public', '==', true);
+            }
+
+            return query.orderBy('date', 'asc');
           })
           .valueChanges({ idField: 'id' });
       })
@@ -61,7 +62,7 @@ export class ItemListComponent implements OnChanges {
 
   ngOnChanges() {
     this.dateFilter$.next(this.date);
-    this.courseFilter$.next(this.course);
+    this.courseFilter$.next(this.filter);
   }
 
   public openItem(item: any): void {
@@ -74,11 +75,18 @@ export class ItemListComponent implements OnChanges {
     return fromUnixTime(timestamp);
   }
 
-  // Convert emoji string to utf-8 code
-  getEmoji(emoji: string): string {
-    return emoji
-      .split('-')
-      .map((str) => String.fromCodePoint(parseInt(str, 16)))
-      .join('');
+  getEmoji(emoji: string): any {
+    if (emoji === undefined) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
+    }
+    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
+  }
+
+  // Emoji to codepoint
+  getEmojiCode(emoji: string): string {
+    if (emoji === undefined) {
+      return '❔'.codePointAt(0).toString(16);
+    }
+    return emoji.codePointAt(0).toString(16);
   }
 }

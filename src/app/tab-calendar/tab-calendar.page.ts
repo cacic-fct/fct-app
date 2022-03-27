@@ -1,5 +1,10 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
-import { KeyValue } from '@angular/common';
+import { KeyValue, formatDate } from '@angular/common';
+
+import { CoursesService } from 'src/app/shared/services/courses.service';
+
+import { RemoteConfigService } from '../shared/services/remote-config.service';
 
 import {
   startOfWeek,
@@ -11,8 +16,8 @@ import {
   format,
   isSameWeek,
 } from 'date-fns';
-
-import { ptBR } from 'date-fns/locale';
+import { ModalController } from '@ionic/angular';
+import { FilterModalPage } from './components/filter-modal/filter-modal.page';
 
 @Component({
   selector: 'app-tab-calendar',
@@ -20,14 +25,18 @@ import { ptBR } from 'date-fns/locale';
   styleUrls: ['tab-calendar.page.scss'],
 })
 export class TabCalendarPage {
+  remoteConfig = RemoteConfigService;
   // Selected calendar date
   active: string;
   fullDate: string;
-
+  itemView: boolean = true;
+  selectedFilter: Array<string> = [];
   // Today's date
   today = new Date();
 
   dow1Char = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+
+  courses = CoursesService.courses;
 
   // List of days of week and date
   dowList = {
@@ -51,12 +60,20 @@ export class TabCalendarPage {
     weekStartsOn: 0,
   });
 
-  constructor() {
+  constructor(private modalController: ModalController, public router: Router) {
+    if (localStorage.getItem('isUnesp') === null) {
+      this.router.navigate(['/vinculo']);
+    }
+    if (localStorage.getItem('isUnesp') === 'false') {
+      this.itemView = true;
+    }
     this.active = format(this.today, 'eeee').toLowerCase();
     this.generateCalendarData();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.remoteConfig;
+  }
 
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>): number => {
     return 0;
@@ -101,12 +118,10 @@ export class TabCalendarPage {
   }
 
   formatDate(): string {
-    let formated = format(
+    let formated = formatDate(
       this.dowList[this.active]?.date,
       "EEEE, dd 'de' MMMM 'de' yyyy",
-      {
-        locale: ptBR,
-      }
+      'pt-BR'
     );
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);
@@ -126,6 +141,27 @@ export class TabCalendarPage {
     return getDate(date);
   }
 
-  // Set array depending on selected items
-  filter() {}
+  async filter() {
+    const modal = await this.modalController.create({
+      component: FilterModalPage,
+      componentProps: {
+        selectedFilter: this.selectedFilter,
+      },
+      backdropDismiss: false,
+      swipeToClose: false,
+    });
+
+    modal.onDidDismiss().then((selectedFilter) => {
+      if (selectedFilter) {
+        // ... changes reference and triggers ngOnChanges
+        this.selectedFilter = [...selectedFilter.data.selectedFilter];
+        return true;
+      }
+      return false;
+    });
+    return await modal.present();
+  }
+  viewToggle() {
+    this.itemView = !this.itemView;
+  }
 }

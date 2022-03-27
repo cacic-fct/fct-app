@@ -8,6 +8,13 @@ const routes: Routes = [
     path: '',
     component: TabCalendarPage,
   },
+  {
+    path: 'filter-modal',
+    loadChildren: () =>
+      import('./components/filter-modal/filter-modal.module').then(
+        (m) => m.FilterModalPageModule
+      ),
+  },
 ];
 
 @NgModule({
