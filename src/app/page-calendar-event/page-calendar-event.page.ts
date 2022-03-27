@@ -1,4 +1,3 @@
-import { Event } from './../tab-calendar/components/calendar-list-view/calendar-list-view.component';
 import { Component, OnInit } from '@angular/core';
 
 import { CoursesService } from '../shared/services/courses.service';
@@ -29,6 +28,7 @@ import {
 } from '@angular/fire/compat/firestore';
 
 import { EventItem } from '../shared/services/event';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -37,8 +37,8 @@ import { EventItem } from '../shared/services/event';
 })
 export class PageCalendarEventPage implements OnInit {
   courses = CoursesService.courses;
-
-  item: any;
+  item: EventItem;
+  item$: Observable<EventItem>;
   map: Map;
 
   constructor(
@@ -47,16 +47,22 @@ export class PageCalendarEventPage implements OnInit {
     private router: Router,
     private sanitizer: DomSanitizer,
     private afs: AngularFirestore
-  ) {}
-
-  ngOnInit() {
-    this.item = history.state.item;
-    if (this.item === undefined) {
-      this.router.navigate(['/calendario']);
-    }
+  ) {
+    const id = this.router.url.split('/')[3];
+    this.item$ = this.afs
+      .doc<EventItem>(`events/${id}`)
+      .valueChanges({ idField: 'id' });
   }
 
+  ngOnInit() {}
+
   ionViewWillEnter() {
+    // Console log item
+    this.item$.subscribe((item) => {
+      this.item = item;
+      console.log(item);
+    });
+
     useGeographic();
     const iconStyle = new Style({
       image: new Icon({
@@ -69,7 +75,7 @@ export class PageCalendarEventPage implements OnInit {
     });
 
     let iconFeature = new Feature({
-      geometry: new Point([this.item.location?.lon, this.item.location?.lat]),
+      geometry: new Point([this.item?.location.lon, this.item.location?.lat]),
       name: this.item?.name,
     });
 

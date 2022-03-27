@@ -5,9 +5,10 @@ export interface EventItem {
   date: string;
   location: {
     lat: number;
-    lng: number;
+    lon: number;
   };
   description: string;
   shortDescription: string;
   youtubeCode: string;
+  id: string;
 }
