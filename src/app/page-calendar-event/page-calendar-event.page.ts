@@ -28,7 +28,7 @@ import {
 } from '@angular/fire/compat/firestore';
 
 import { EventItem } from '../shared/services/event';
-import { Observable } from 'rxjs';
+import { first, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -57,63 +57,68 @@ export class PageCalendarEventPage implements OnInit {
   ngOnInit() {}
 
   ionViewWillEnter() {
-    // Console log item
-    this.item$.subscribe((item) => {
+    // first() unsubscribes after the first value is emitted
+    // This is necessary because the map would be created multiple times otherwise
+    this.item$.pipe(first()).subscribe((item) => {
       this.item = item;
-      console.log(item);
-    });
+      if (!item.location) {
+        return;
+      }
 
-    useGeographic();
-    const iconStyle = new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        scale: 0.5,
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'fraction',
-        src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-      }),
-    });
+      useGeographic();
+      const iconStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          scale: 0.5,
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+        }),
+      });
 
-    let iconFeature = new Feature({
-      geometry: new Point([this.item?.location.lon, this.item.location?.lat]),
-      name: this.item?.name,
-    });
+      let iconFeature = new Feature({
+        geometry: new Point([this.item?.location.lon, this.item.location?.lat]),
+        name: this.item?.name,
+      });
 
-    iconFeature.setStyle(iconStyle);
+      iconFeature.setStyle(iconStyle);
 
-    const vectorSource = new VectorSource({
-      features: [iconFeature],
-    });
+      const vectorSource = new VectorSource({
+        features: [iconFeature],
+      });
 
-    const vectorLayer = new VectorLayer({
-      source: vectorSource,
-    });
+      const vectorLayer = new VectorLayer({
+        source: vectorSource,
+      });
 
-    const rasterLayer = new TileLayer({
-      source: new OSM(),
-    });
+      const rasterLayer = new TileLayer({
+        source: new OSM(),
+      });
 
-    this.map = new Map({
-      view: new View({
-        center: [this.item.location?.lon, this.item.location?.lat],
-        zoom: 18,
-        maxZoom: 19,
-        projection: 'EPSG:3857',
-      }),
-      layers: [rasterLayer, vectorLayer],
-      target: 'ol-map',
+      this.map = new Map({
+        view: new View({
+          center: [this.item.location?.lon, this.item.location?.lat],
+          zoom: 18,
+          maxZoom: 19,
+          projection: 'EPSG:3857',
+        }),
+        layers: [rasterLayer, vectorLayer],
+        target: 'ol-map',
+      });
     });
   }
 
   ionViewWillLeave() {
-    // Remove map on leave
-    this.map.setTarget(null);
-    this.map = null;
+    // Remove map on leave if it exists
+    if (this.map) {
+      this.map.setTarget(null);
+      this.map = null;
+    }
   }
 
-  getCourse(): string {
-    if (this.courses[this.item.course]) {
-      return this.courses[this.item.course].name;
+  getCourse(course: string): string {
+    if (this.courses[course]) {
+      return this.courses[course].name;
     }
     return '';
   }
