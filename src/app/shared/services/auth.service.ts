@@ -12,7 +12,7 @@ import { ModalController } from '@ionic/angular';
 
 @Injectable()
 export class AuthService {
-  userData: any;
+  userData: firebase.User;
 
   constructor(
     public auth: AngularFireAuth,
@@ -21,7 +21,7 @@ export class AuthService {
     public ngZone: NgZone,
     public modalController: ModalController
   ) {
-    this.auth.useEmulator('http://localhost:8124');
+    //  this.auth.useEmulator('http://localhost:8124');
     this.auth.authState.subscribe((user) => {
       if (user) {
         this.userData = user;
@@ -37,11 +37,10 @@ export class AuthService {
   async SignOut() {
     await this.auth.signOut();
     localStorage.removeItem('user');
-    this.router.navigate(['login']);
   }
 
   GoogleAuth() {
-    return this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
   }
 
   anonAuth() {
@@ -59,9 +58,6 @@ export class AuthService {
     this.auth.useDeviceLanguage();
     try {
       const result = await this.auth.signInWithPopup(provider);
-      this.ngZone.run(() => {
-        this.router.navigate(['tabs']);
-      });
       this.SetUserData(result.user);
     } catch (error) {
       console.error('Login failed');
@@ -77,6 +73,7 @@ export class AuthService {
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
+      academicID: '',
       dataVersion: '',
     };
     return userRef.set(userData, {

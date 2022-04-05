@@ -37,6 +37,12 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { MarkdownModule } from 'ngx-markdown';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
+// Alerts
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
+// QR Code
+import { NgxKjuaModule } from 'ngx-kjua';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -55,6 +61,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     }),
     HttpClientModule,
     MarkdownModule.forRoot({ loader: HttpClient }),
+    SweetAlert2Module.forRoot(),
+    NgxKjuaModule,
   ],
   providers: [
     ScreenTrackingService,

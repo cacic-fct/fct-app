@@ -72,10 +72,10 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'login',
+    path: 'profile',
     loadChildren: () =>
-      import('./page-login/page-login.module').then(
-        (m) => m.PageLoginPageModule
+      import('./page-profile/page-profile.module').then(
+        (m) => m.PageProfilePageModule
       ),
   },
 ];

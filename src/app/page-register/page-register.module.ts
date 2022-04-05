@@ -8,6 +8,8 @@ import { PageRegisterPageRoutingModule } from './page-register-routing.module';
 
 import { PageRegisterPage } from './page-register.page';
 
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +17,7 @@ import { PageRegisterPage } from './page-register.page';
     ReactiveFormsModule,
     IonicModule,
     PageRegisterPageRoutingModule,
+    SweetAlert2Module,
   ],
   declarations: [PageRegisterPage],
 })

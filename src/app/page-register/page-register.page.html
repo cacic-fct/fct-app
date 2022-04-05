@@ -25,71 +25,13 @@
           inputmode="numeric"
           type="text"
           placeholder="RA"
-          maxlength="9"
-        >
+          maxlength="9">
         </ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-label class="ion-text-wrap">Data de nascimento</ion-label>
-        <ion-input
-          [value]="dobInput"
-          formControlName="dob"
-          autocomplete="bday"
-          type="bday"
-          placeholder="DD/MM/AAAA"
-          maxlength="10"
-        ></ion-input>
-
-        <ion-button fill="clear" id="open-date-input">
-          <ion-icon icon="calendar"></ion-icon>
-        </ion-button>
-
-        <ion-modal trigger="open-date-input">
-          <ng-template>
-            <ion-datetime
-              showDefaultButtons
-              doneText="OK"
-              cancelText="Cancelar"
-              min="{{minDate}}"
-              max="{{maxDate}}"
-              locale="pt-BR"
-              #popoverDate
-              presentation="date"
-              size="cover"
-              (ionChange)="dobInput = formatDate(popoverDate.value)"
-            >
-            </ion-datetime>
-          </ng-template>
-        </ion-modal>
-      </ion-item>
-
-      <ion-item>
-        <ion-label class="ion-text-wrap">Celular</ion-label>
-        <ion-input
-          formControlName="phone"
-          inputmode="numeric"
-          type="tel"
-          autocomplete="tel"
-          placeholder="DDD e número"
-          maxlength="14"
-          (ionBlur)="formatPhone()"
-        >
-        </ion-input>
-      </ion-item>
       <p style="font-size: 0.75em" class="ion-padding-horizontal">
         Poderemos entrar em contato para confirmar ou complementar estas
         informações.
-      </p>
-      <p style="font-size: 0.75em" class="ion-padding-horizontal">
-        Solicitamos sua data de nascimento tratar seus dados de acordo com a
-        LGPD. Ela não será compartilhada.
-      </p>
-      <p style="font-size: 0.75em" class="ion-padding-horizontal">
-        Se você não possui um número de celular,
-        <a [href]="mailTo">
-          entre em contato com o Centro Acadêmico de Ciência da Computação</a
-        >.
       </p>
       <ion-button
         style="margin-top: 30px"
@@ -99,5 +41,14 @@
         >Continuar
       </ion-button>
     </form>
+    <swal [swalOptions]="{ confirmButtonText: 'I understand' }"></swal>
   </ion-grid>
+  <swal
+    #mySwal
+    title="Dados registrados"
+    icon="success"
+    [heightAuto]="false"
+    [showCancelButton]="false"
+    [showCloseButton]="false"
+    [showConfirmButton]="false"></swal>
 </ion-content>
