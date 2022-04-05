@@ -57,6 +57,27 @@ const routes: Routes = [
         (m) => m.PageCalourosPageModule
       ),
   },
+  {
+    path: 'scan',
+    loadChildren: () =>
+      import('./page-qr-scanner/page-qr-scanner.module').then(
+        (m) => m.PageQrScannerPageModule
+      ),
+  },
+  {
+    path: 'register',
+    loadChildren: () =>
+      import('./page-register/page-register.module').then(
+        (m) => m.PageRegisterPageModule
+      ),
+  },
+  {
+    path: 'login',
+    loadChildren: () =>
+      import('./page-login/page-login.module').then(
+        (m) => m.PageLoginPageModule
+      ),
+  },
 ];
 @NgModule({
   imports: [
