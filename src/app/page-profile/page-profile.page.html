@@ -8,15 +8,18 @@
 </ion-header>
 
 <ion-content>
-  <ion-avatar>
-    <img [src]="user.photoURL" />
-  </ion-avatar>
-  <h2>{{user.displayName}}</h2>
-  <p>{{user.email}}</p>
-
-  <ngx-kjua
-    class="qr-code"
-    [text]="'uid:' + user.uid"
-    [renderAsync]="true"
-    render="svg"></ngx-kjua>
+  <ion-card>
+    <div class="ion-text-center">
+      <ion-avatar class="margin-horizontal-auto">
+        <img [src]="user.photoURL" />
+      </ion-avatar>
+      <h2 class="margin-horizontal-auto">{{user.displayName}}</h2>
+      <p class="margin-horizontal-auto">{{user.email}}</p>
+      <ngx-kjua
+        class="qr-code"
+        [text]="'uid:' + user.uid"
+        [renderAsync]="true"
+        [render]="'svg'"></ngx-kjua>
+    </div>
+  </ion-card>
 </ion-content>
