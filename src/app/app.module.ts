@@ -22,6 +22,7 @@ import {
   DEFAULTS,
   SETTINGS,
 } from '@angular/fire/compat/remote-config';
+import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
 
 import { environment } from '../environments/environment';
 
@@ -55,6 +56,7 @@ import { NgxKjuaModule } from 'ngx-kjua';
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
     AngularFireRemoteConfigModule,
     AngularFirePerformanceModule,
+    AngularFireFunctionsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       registrationStrategy: 'registerImmediately',
