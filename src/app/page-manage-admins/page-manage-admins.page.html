@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Gerenciar admins</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <form [formGroup]="addAdminForm" (ngSubmit)="addAdmin()">
+          <ion-item>
+            <ion-label position="floating">Adicionar admin</ion-label>
+            <ion-input type="text" formControlName="adminEmail"></ion-input>
+          </ion-item>
+          <ion-button expand="block" type="submit">Add</ion-button>
+        </form>
+      </ion-col>
+    </ion-row>
+
+    <br />
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <form [formGroup]="removeAdminForm" (ngSubmit)="removeAdmin()">
+            <ion-item>
+              <ion-label position="floating">Remover admin</ion-label>
+              <ion-input type="text" formControlName="adminEmail"></ion-input>
+            </ion-item>
+            <ion-button expand="block" type="submit">Remove</ion-button>
+          </form>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

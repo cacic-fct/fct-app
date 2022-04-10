@@ -6,8 +6,22 @@ import { PageRestrictedAreaPage } from './page-restricted-area.page';
 const routes: Routes = [
   {
     path: '',
-    component: PageRestrictedAreaPage
-  }
+    component: PageRestrictedAreaPage,
+  },
+  {
+    path: 'coletar-presencas',
+    loadChildren: () =>
+      import('../page-attendance-collect/page-attendance-collect.module').then(
+        (m) => m.PageAttendanceCollectPageModule
+      ),
+  },
+  {
+    path: 'gerenciar-admins',
+    loadChildren: () =>
+      import('../page-manage-admins/page-manage-admins.module').then(
+        (m) => m.PageManageAdminsPageModule
+      ),
+  },
 ];
 
 @NgModule({

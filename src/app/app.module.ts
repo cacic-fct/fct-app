@@ -44,6 +44,14 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 // QR Code
 import { NgxKjuaModule } from 'ngx-kjua';
 
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+
+import {
+  provideAppCheck,
+  initializeAppCheck,
+  ReCaptchaV3Provider,
+} from '@angular/fire/app-check';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -65,6 +73,14 @@ import { NgxKjuaModule } from 'ngx-kjua';
     MarkdownModule.forRoot({ loader: HttpClient }),
     SweetAlert2Module.forRoot(),
     NgxKjuaModule,
+    provideAppCheck(() => {
+      const provider = new ReCaptchaV3Provider(environment.recaptcha3SiteKey);
+      return initializeAppCheck(undefined, {
+        provider,
+        isTokenAutoRefreshEnabled: true,
+      });
+    }),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
   ],
   providers: [
     ScreenTrackingService,

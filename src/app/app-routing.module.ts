@@ -78,13 +78,6 @@ const routes: Routes = [
         (m) => m.PageProfilePageModule
       ),
   },
-  {
-    path: 'page-attendance-collect',
-    loadChildren: () =>
-      import('./page-attendance-collect/page-attendance-collect.module').then(
-        (m) => m.PageAttendanceCollectPageModule
-      ),
-  },
 ];
 @NgModule({
   imports: [
