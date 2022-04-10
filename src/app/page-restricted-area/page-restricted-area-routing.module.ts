@@ -9,7 +9,7 @@ const routes: Routes = [
     component: PageRestrictedAreaPage,
   },
   {
-    path: 'coletar-presencas',
+    path: 'coletar-presenca',
     loadChildren: () =>
       import('../page-attendance-collect/page-attendance-collect.module').then(
         (m) => m.PageAttendanceCollectPageModule
