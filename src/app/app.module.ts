@@ -11,6 +11,8 @@ import {
   AngularFireAnalyticsModule,
   ScreenTrackingService,
   UserTrackingService,
+  APP_NAME,
+  APP_VERSION,
 } from '@angular/fire/compat/analytics';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import {
@@ -19,8 +21,8 @@ import {
 } from '@angular/fire/compat/performance';
 import {
   AngularFireRemoteConfigModule,
-  DEFAULTS,
-  SETTINGS,
+  DEFAULTS as REMOTE_CONFIG_DEFAULTS,
+  SETTINGS as REMOTE_CONFIG_SETTING,
 } from '@angular/fire/compat/remote-config';
 import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
 
@@ -51,6 +53,8 @@ import {
   initializeAppCheck,
   ReCaptchaV3Provider,
 } from '@angular/fire/app-check';
+
+import { GlobalConstantsService } from './shared/services/global-constants.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -89,10 +93,12 @@ import {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     {
-      provide: SETTINGS,
+      provide: REMOTE_CONFIG_SETTING,
       useFactory: () =>
         isDevMode() ? { minimumFetchIntervalMillis: 10_000 } : {},
     },
+    { provide: APP_VERSION, useValue: GlobalConstantsService.appVersion },
+    { provide: APP_NAME, useValue: GlobalConstantsService.appName },
     AuthService,
     RemoteConfigService,
   ],

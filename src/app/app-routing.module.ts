@@ -1,5 +1,12 @@
 import { NgModule } from '@angular/core';
+import {
+  AngularFireAuthGuard,
+  canActivate,
+  redirectUnauthorizedTo,
+} from '@angular/fire/compat/auth-guard';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['menu']);
 
 const routes: Routes = [
   {
@@ -21,7 +28,6 @@ const routes: Routes = [
         (m) => m.PageAboutPageModule
       ),
   },
-
   {
     path: 'licenses',
     loadChildren: () =>
@@ -63,6 +69,7 @@ const routes: Routes = [
       import('./page-qr-scanner/page-qr-scanner.module').then(
         (m) => m.PageQrScannerPageModule
       ),
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'register',
@@ -70,6 +77,7 @@ const routes: Routes = [
       import('./page-register/page-register.module').then(
         (m) => m.PageRegisterPageModule
       ),
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'profile',
@@ -77,6 +85,7 @@ const routes: Routes = [
       import('./page-profile/page-profile.module').then(
         (m) => m.PageProfilePageModule
       ),
+    ...canActivate(redirectUnauthorizedToLogin),
   },
 ];
 @NgModule({

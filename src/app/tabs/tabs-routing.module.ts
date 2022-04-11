@@ -46,8 +46,7 @@ const routes: Routes = [
           import('../page-restricted-area/page-restricted-area.module').then(
             (m) => m.PageRestrictedAreaPageModule
           ),
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: adminOnly },
+        ...canActivate(adminOnly),
       },
     ],
   },

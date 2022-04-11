@@ -1,11 +1,27 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Gerenciar administradores</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/area-restrita"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-grid>
+    <ion-row>
+      <ion-col>
+        <p class="ion-padding-horizontal">
+          Administrador é a permissão máxima e absoluta do aplicativo.
+          <br />
+          Só podem ter esta permissão pessoas confiáveis do CACiC que podem
+          contribuir para o app e desenvolvedores selecionados.
+          <br />
+          Toda adição e remoção é gravada nos registros e deve ser documentada
+          em um arquivo interno.
+        </p>
+      </ion-col>
+    </ion-row>
     <ion-row>
       <ion-col>
         <form [formGroup]="addAdminForm" (ngSubmit)="addAdmin()">

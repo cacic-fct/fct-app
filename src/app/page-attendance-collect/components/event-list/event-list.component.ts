@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
 import { startOfDay, endOfDay, fromUnixTime, getDate } from 'date-fns';
@@ -13,11 +13,11 @@ import { parse } from 'twemoji-parser';
 import { EventItem } from 'src/app/shared/services/event';
 
 @Component({
-  selector: 'app-item-list',
-  templateUrl: './item-list.component.html',
-  styleUrls: ['./item-list.component.scss'],
+  selector: 'app-event-list',
+  templateUrl: './event-list.component.html',
+  styleUrls: ['./event-list.component.scss'],
 })
-export class ItemListComponent implements OnChanges {
+export class EventListComponent implements OnChanges {
   courses = CoursesService.courses;
 
   @Input() date: Date;
@@ -46,13 +46,6 @@ export class ItemListComponent implements OnChanges {
                 .where('date', '>=', startOfDay(date))
                 .where('date', '<=', endOfDay(date));
             }
-            if (filter.length > 0) {
-              query = query.where('course', 'in', filter);
-            }
-            if (localStorage.getItem('isUnesp') !== 'true') {
-              query = query.where('public', '==', true);
-            }
-
             return query.orderBy('date', 'asc');
           })
           .valueChanges({ idField: 'id' });
