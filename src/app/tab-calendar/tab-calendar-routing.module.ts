@@ -15,6 +15,13 @@ const routes: Routes = [
         (m) => m.FilterModalPageModule
       ),
   },
+  {
+    path: 'evento/:id',
+    loadChildren: () =>
+      import('../page-calendar-event/page-calendar-event.module').then(
+        (m) => m.PageCalendarEventPageModule
+      ),
+  },
 ];
 
 @NgModule({

@@ -6,8 +6,15 @@ import { PageAttendanceCollectPage } from './page-attendance-collect.page';
 const routes: Routes = [
   {
     path: '',
-    component: PageAttendanceCollectPage
-  }
+    component: PageAttendanceCollectPage,
+  },
+  {
+    path: 'scanner/:id',
+    loadChildren: () =>
+      import('./components/scanner/scanner.module').then(
+        (m) => m.ScannerPageModule
+      ),
+  },
 ];
 
 @NgModule({

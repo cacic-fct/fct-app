@@ -24,7 +24,6 @@ export class EventListComponent implements OnChanges {
   @Input() filter: Array<string>;
 
   dateFilter$: BehaviorSubject<Date | null>;
-  courseFilter$: BehaviorSubject<Array<string> | null>;
 
   items$: Observable<EventItem[]>;
 
@@ -34,10 +33,9 @@ export class EventListComponent implements OnChanges {
     private sanitizer: DomSanitizer
   ) {
     this.dateFilter$ = new BehaviorSubject(null);
-    this.courseFilter$ = new BehaviorSubject(null);
 
-    this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
-      switchMap(([date, filter]) => {
+    this.items$ = combineLatest([this.dateFilter$]).pipe(
+      switchMap(([date]) => {
         return firestore
           .collection<EventItem>('events', (ref) => {
             let query: any = ref;
@@ -55,7 +53,6 @@ export class EventListComponent implements OnChanges {
 
   ngOnChanges() {
     this.dateFilter$.next(this.date);
-    this.courseFilter$.next(this.filter);
   }
 
   getDateFromTimestamp(timestamp: any): Date {
