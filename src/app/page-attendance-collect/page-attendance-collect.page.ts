@@ -19,7 +19,8 @@ export class PageAttendanceCollectPage implements OnInit {
     return formated;
   }
 
-  updateDate() {
-    this.dateDate = parseISO(this.dateValue);
+  updateDate(date: string) {
+    this.dateValue = date;
+    this.dateDate = parseISO(date);
   }
 }

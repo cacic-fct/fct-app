@@ -2,25 +2,28 @@
   <ion-toolbar>
     <ion-title>Coletar presença</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button
+        defaultHref="area-restrita/coletar-presenca"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <h2 *ngIf="hasPermission === false">
-    Você não concedeu permissão para acessar a câmera.
-  </h2>
+  <div class="ion-padding-horizontal">
+    <h2 *ngIf="hasPermission === false">
+      Você não concedeu permissão para acessar a câmera.
+    </h2>
 
-  <p *ngIf="hasDevices === undefined">
-    Verifique se o app tem permissão para acessar a câmera e se o dispositivo
-    está conectado.
-  </p>
+    <p *ngIf="hasDevices === undefined">
+      Verifique se o app tem permissão para acessar a câmera e se o dispositivo
+      está conectado.
+    </p>
 
-  <h2 *ngIf="hasDevices === false">
-    Nenhuma câmera foi detectada. Verifique se o dispositivo está conectado e se
-    o app tem permissão para acessar a câmera.
-  </h2>
+    <h2 *ngIf="hasDevices === false">
+      Nenhuma câmera foi detectada. Verifique se o dispositivo está conectado e
+      se o app tem permissão para acessar a câmera.
+    </h2>
+  </div>
 
   <div *ngIf="showScanner">
     <zxing-scanner
@@ -35,30 +38,34 @@
     </zxing-scanner>
   </div>
   <div>
-    <p>Scans desta sessão:</p>
-    <p>Total de scans:</p>
-
     <ion-list
-      style="max-width: 1600px; display: block"
-      class="margin-horizontal-auto">
-      <ng-container *ngIf="items$ | async; let items; else: loading">
-        <ion-item *ngFor="let item of items" style="cursor: pointer">
-          <ng-container *ngIf="(receiveID(item.id) | async) as user">
-            <img
-              [src]="user.photoURL"
-              class="twemoji"
-              slot="start"
-              aria-hidden="true"
-              loading="lazy" />
-
-            <ion-label>
+      style="max-width: 1600px; display: block; overflow-y: scroll"
+      class="margin-horizontal-auto"
+      id="item">
+      <ng-container *ngIf="(items$) as items; else: loading">
+        <div class="ion-padding-horizontal">
+          <p>
+            <b>Scans desta sessão:</b> {{ attendanceSessionScans }}
+            <br />
+            <b>Total de scans:</b> {{items.length}}
+          </p>
+        </div>
+        <ion-item *ngFor="let item of items">
+          <ion-label>
+            <ng-container *ngIf="(item.user | async) as user">
               <h2 class="ion-text-wrap">{{ user.displayName }}</h2>
-              <h3 class="ion-text-wrap">{{ item.time }}</h3>
-            </ion-label>
-          </ng-container>
+              <h3 class="ion-text-wrap">
+                {{ courses.getCourse(user.academicID) }} | {{ user.academicID }}
+              </h3>
+            </ng-container>
+            <h3 class="ion-text-wrap">
+              {{ getDateFromTimestamp(item.time) | date: "HH:mm:ss - dd/MM/y" }}
+            </h3>
+          </ion-label>
         </ion-item>
+
         <h1 *ngIf="items.length === 0" class="ion-text-center">
-          Nenhum evento encontrado
+          Nenhum usuário encontrado
         </h1>
       </ng-container>
 

@@ -34,15 +34,6 @@ export class TabsPage {
       }
     });
 
-    remoteConfig.changes.pipe(
-      trace('remote-config'),
-      filterFresh(172_800_000), // 48 hours
-      first(),
-      scanToObject({
-        manualTabEnabled: false,
-      })
-    );
-
     this.manual$ = this.remoteConfig.booleans.manualTabEnabled;
   }
 }

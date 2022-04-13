@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { BarcodeFormat } from '@zxing/library';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ToastController } from '@ionic/angular';
+import { BehaviorSubject, map, Observable, take } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-
+import { ToastController } from '@ionic/angular';
 import { User } from 'src/app/shared/services/user';
+
+import { CoursesService } from 'src/app/shared/services/courses.service';
+import { fromUnixTime } from 'date-fns';
 
 @Component({
   selector: 'app-scanner',
@@ -23,17 +25,40 @@ export class ScannerPage implements OnInit {
   qrResultString: string;
   deviceIndex: number = -1;
   showScanner = true;
-  items$: Observable<any[]>;
+  items$: attendance[];
   id: string;
 
-  constructor(public firestore: AngularFirestore, private router: Router) {
+  attendanceSessionScans: number = 0;
+
+  constructor(
+    private afs: AngularFirestore,
+    private router: Router,
+    public courses: CoursesService,
+    private toastController: ToastController
+  ) {
     this.id = this.router.url.split('/')[4];
 
-    this.items$ = firestore
+    // Get the attendance scan on the database.
+    // With the id of the attendance session get the user displayName on users/id
+
+    this.afs
       .collection<any>(`events/${this.id}/attendance`, (ref) => {
         return ref.orderBy('time', 'desc');
       })
-      .valueChanges({ idField: 'id' });
+      .valueChanges({ idField: 'id' })
+      .subscribe((items: any[]) => {
+        // For each id on items, get user displayname from users collection
+
+        this.items$ = items.map((item) => {
+          return {
+            ...item,
+            user: this.afs
+              .collection('users')
+              .doc<User>(item.id)
+              .valueChanges(),
+          };
+        });
+      });
   }
 
   ngOnInit() {}
@@ -55,8 +80,29 @@ export class ScannerPage implements OnInit {
     console.log(resultString);
 
     if (resultString.startsWith('uid:')) {
-      //this.presentModal(resultString.substring(4));
+      resultString = resultString.substring(4);
+      this.afs
+        .collection<attendance>(`events/${this.id}/attendance`)
+        .doc(resultString)
+        .get()
+        .subscribe((document) => {
+          if (document.exists) {
+            this.toastDuplicate();
+            return false;
+          } else {
+            this.afs
+              .collection(`events/${this.id}/attendance`)
+              .doc(resultString)
+              .set({
+                uid: resultString,
+                time: new Date(),
+              });
+            this.toastSucess();
+            this.attendanceSessionScans++;
+          }
+        });
     } else {
+      return false;
     }
   }
 
@@ -72,7 +118,43 @@ export class ScannerPage implements OnInit {
     this.hasPermission = has;
   }
 
-  receiveID(string: any): Observable<User> {
-    return this.firestore.collection('users').doc<User>(string).valueChanges();
+  getDateFromTimestamp(timestamp: any): Date {
+    return fromUnixTime(timestamp.seconds);
   }
+
+  async toastSucess() {
+    const toast = await this.toastController.create({
+      header: 'Escaneado com sucesso',
+      icon: 'checkmark-circle',
+      position: 'top',
+      duration: 3000,
+    });
+    await toast.present();
+  }
+
+  async toastDuplicate() {
+    const toast = await this.toastController.create({
+      header: 'Já escaneado',
+      icon: 'copy',
+      position: 'top',
+      duration: 2000,
+    });
+    await toast.present();
+  }
+
+  async toastInvalid() {
+    const toast = await this.toastController.create({
+      header: 'QR Code inválido',
+      icon: 'close-circle',
+      position: 'top',
+      duration: 2000,
+    });
+    await toast.present();
+  }
+}
+
+interface attendance {
+  user: Observable<User>;
+  time: string | number | Date;
+  uid: string;
 }

@@ -4,8 +4,6 @@ import { KeyValue, formatDate } from '@angular/common';
 
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
-import { RemoteConfigService } from '../shared/services/remote-config.service';
-
 import {
   startOfWeek,
   endOfWeek,
@@ -18,6 +16,14 @@ import {
 } from 'date-fns';
 import { ModalController } from '@ionic/angular';
 import { FilterModalPage } from './components/filter-modal/filter-modal.page';
+import {
+  AngularFireRemoteConfig,
+  filterFresh,
+  mapToObject,
+  scanToObject,
+} from '@angular/fire/compat/remote-config';
+import { trace } from '@angular/fire/compat/performance';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-tab-calendar',
@@ -25,7 +31,6 @@ import { FilterModalPage } from './components/filter-modal/filter-modal.page';
   styleUrls: ['tab-calendar.page.scss'],
 })
 export class TabCalendarPage {
-  remoteConfig = RemoteConfigService;
   // Selected calendar date
   active: string;
   fullDate: string;
@@ -60,13 +65,15 @@ export class TabCalendarPage {
     weekStartsOn: 0,
   });
 
-  constructor(private modalController: ModalController, public router: Router) {
-    if (localStorage.getItem('isUnesp') === null) {
-      this.router.navigate(['/vinculo']);
-    }
-    if (localStorage.getItem('isUnesp') === 'false') {
-      this.itemView = true;
-    }
+  constructor(
+    private modalController: ModalController,
+    public router: Router,
+    public remoteConfig: AngularFireRemoteConfig
+  ) {
+    this.remoteConfig.booleans.calendarItemViewDefault.subscribe((value) => {
+      this.itemView = value;
+    });
+
     this.active = format(this.today, 'eeee').toLowerCase();
     this.generateCalendarData();
   }

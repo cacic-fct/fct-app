@@ -20,7 +20,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card>
+  <ion-card *ngIf="auth.authState | async">
     <ion-item routerLink="/profile">
       <ion-icon
         name="person-circle-outline"

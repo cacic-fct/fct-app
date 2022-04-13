@@ -8,18 +8,13 @@
 </ion-header>
 
 <ion-content>
-  <ion-button id="open-modal"> {{ formatDate(dateValue) }} </ion-button>
-  <ion-popover trigger="open-modal" show-backdrop="false">
-    <ng-template>
-      <ion-datetime
-        [value]="dateValue"
-        #popoverDatetime
-        presentation="date"
-        localte="pt-BR"
-        (ionChange)="dateValue = popoverDatetime.value"
-        (ionChange)="updateDate()"></ion-datetime>
-    </ng-template>
-  </ion-popover>
+  <ion-datetime
+    [value]="dateValue"
+    #popoverDatetime
+    presentation="date"
+    localte="pt-BR"
+    class="margin-horizontal-auto"
+    (ionChange)="updateDate(popoverDatetime.value)"></ion-datetime>
 
   <app-event-list [date]="dateDate"> </app-event-list>
 </ion-content>

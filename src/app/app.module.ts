@@ -56,6 +56,8 @@ import {
 
 import { GlobalConstantsService } from './shared/services/global-constants.service';
 
+import { CoursesService } from './shared/services/courses.service';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -101,6 +103,7 @@ import { GlobalConstantsService } from './shared/services/global-constants.servi
     { provide: APP_NAME, useValue: GlobalConstantsService.appName },
     AuthService,
     RemoteConfigService,
+    CoursesService,
   ],
   bootstrap: [AppComponent],
 })
