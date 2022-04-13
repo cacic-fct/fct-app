@@ -47,8 +47,8 @@ export class EventListComponent implements OnChanges {
             }
             return query.orderBy('date', 'asc');
           })
-          .valueChanges({ idField: 'id' }).pipe(
-            trace('firestore');
+          .valueChanges({ idField: 'id' })
+          .pipe(trace('firestore'));
       })
     );
   }
