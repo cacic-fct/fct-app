@@ -20,6 +20,7 @@ import { formatDate } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { EventItem } from 'src/app/shared/services/event';
+import { trace } from '@angular/fire/compat/performance';
 
 @Component({
   selector: 'app-calendar-list-view',
@@ -67,7 +68,8 @@ export class CalendarListViewComponent implements OnChanges {
             }
             return query.orderBy('date', 'asc');
           })
-          .valueChanges({ idField: 'id' });
+          .valueChanges({ idField: 'id' })
+          .pipe(trace('firestore'));
       })
     );
   }

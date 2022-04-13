@@ -29,6 +29,7 @@ import {
 
 import { EventItem } from '../shared/services/event';
 import { first, Observable } from 'rxjs';
+import { trace } from '@angular/fire/compat/performance';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -51,7 +52,8 @@ export class PageCalendarEventPage implements OnInit {
     const id = this.router.url.split('/')[3];
     this.item$ = this.afs
       .doc<EventItem>(`events/${id}`)
-      .valueChanges({ idField: 'id' });
+      .valueChanges({ idField: 'id' })
+      .pipe(trace('firestore'));
   }
 
   ngOnInit() {}

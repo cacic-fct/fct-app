@@ -8,6 +8,7 @@ import { User } from 'src/app/shared/services/user';
 
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { fromUnixTime } from 'date-fns';
+import { trace } from '@angular/fire/compat/performance';
 
 @Component({
   selector: 'app-scanner',
@@ -55,7 +56,8 @@ export class ScannerPage implements OnInit {
             user: this.afs
               .collection('users')
               .doc<User>(item.id)
-              .valueChanges(),
+              .valueChanges()
+              .pipe(trace('firestore')),
           };
         });
       });

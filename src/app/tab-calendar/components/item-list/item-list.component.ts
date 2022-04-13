@@ -11,6 +11,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
 
 import { EventItem } from 'src/app/shared/services/event';
+import { trace } from '@angular/fire/compat/performance';
 
 @Component({
   selector: 'app-item-list',
@@ -55,7 +56,8 @@ export class ItemListComponent implements OnChanges {
 
             return query.orderBy('date', 'asc');
           })
-          .valueChanges({ idField: 'id' });
+          .valueChanges({ idField: 'id' })
+          .pipe(trace('firestore'));
       })
     );
   }
