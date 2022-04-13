@@ -24,7 +24,7 @@ const routes: Routes = [
   {
     path: 'licenses',
     loadChildren: () =>
-      import('./page-licenses/page-licenses.module').then(
+      import('./page-about/page-licenses/page-licenses.module').then(
         (m) => m.PageLegalPageModule
       ),
   },
@@ -59,7 +59,7 @@ const routes: Routes = [
   {
     path: 'scan',
     loadChildren: () =>
-      import('./page-qr-scanner/page-qr-scanner.module').then(
+      import('./page-qr-scanner-public/page-qr-scanner.module').then(
         (m) => m.PageQrScannerPageModule
       ),
     ...canActivate(redirectUnauthorizedToLogin),

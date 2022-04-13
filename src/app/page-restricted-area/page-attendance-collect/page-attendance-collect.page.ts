@@ -14,11 +14,6 @@ export class PageAttendanceCollectPage implements OnInit {
 
   ngOnInit() {}
 
-  formatDate(dateValue: string): string {
-    let formated = formatDate(dateValue, 'dd/MMMM/yyyy', 'pt-BR');
-    return formated;
-  }
-
   updateDate(date: string) {
     this.dateValue = date;
     this.dateDate = parseISO(date);

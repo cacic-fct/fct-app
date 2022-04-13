@@ -11,9 +11,7 @@ const routes: Routes = [
   {
     path: 'scanner/:id',
     loadChildren: () =>
-      import('./components/scanner/scanner.module').then(
-        (m) => m.ScannerPageModule
-      ),
+      import('./page-scanner/scanner.module').then((m) => m.ScannerPageModule),
   },
 ];
 

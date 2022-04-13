@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { CoursesService } from '../shared/services/courses.service';
+import { CoursesService } from '../../shared/services/courses.service';
 
 import { ToastController } from '@ionic/angular';
 
@@ -27,7 +27,7 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
 
-import { EventItem } from '../shared/services/event';
+import { EventItem } from '../../shared/services/event';
 import { first, Observable } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 

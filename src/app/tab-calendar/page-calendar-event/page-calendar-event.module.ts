@@ -8,7 +8,7 @@ import { PageCalendarEventPageRoutingModule } from './page-calendar-event-routin
 
 import { PageCalendarEventPage } from './page-calendar-event.page';
 
-import { SafeModule } from '../shared/pipes/safe.module';
+import { SafeModule } from '../../shared/pipes/safe.module';
 
 @NgModule({
   imports: [
