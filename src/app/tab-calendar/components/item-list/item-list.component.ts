@@ -50,9 +50,6 @@ export class ItemListComponent implements OnChanges {
             if (filter.length > 0) {
               query = query.where('course', 'in', filter);
             }
-            if (localStorage.getItem('isUnesp') !== 'true') {
-              query = query.where('public', '==', true);
-            }
 
             return query.orderBy('date', 'asc');
           })
