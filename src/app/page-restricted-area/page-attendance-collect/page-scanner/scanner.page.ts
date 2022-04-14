@@ -104,6 +104,7 @@ export class ScannerPage implements OnInit {
           }
         });
     } else {
+      this.toastInvalid();
       return false;
     }
   }
@@ -146,7 +147,7 @@ export class ScannerPage implements OnInit {
 
   async toastInvalid() {
     const toast = await this.toastController.create({
-      header: 'QR Code inválido',
+      header: 'QR Code incompatível',
       icon: 'close-circle',
       position: 'top',
       duration: 2000,
