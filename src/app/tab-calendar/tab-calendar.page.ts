@@ -182,10 +182,23 @@ export class TabCalendarPage {
 
   async presentToast() {
     const toast = await this.toastController.create({
-      header: 'Você é aluno da Unesp?',
-      message: 'Faça login para visualizar todos os eventos',
-      duration: 2000,
+      header: 'Você tem vínculo com a Unesp?',
+      message: 'Faça login no menu para visualizar todos os eventos',
       position: 'bottom',
+      buttons: [
+        {
+          side: 'end',
+          text: 'Menu',
+          handler: () => {
+            this.router.navigate(['/menu']);
+          },
+        },
+        {
+          side: 'end',
+          text: 'Fechar',
+          role: 'cancel',
+        },
+      ],
     });
     await toast.present();
   }
