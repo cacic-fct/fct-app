@@ -2,20 +2,15 @@ import * as functions from 'firebase-functions';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
 initializeApp({
   credential: applicationDefault(),
 });
 
+// Attribution: The Net Ninja
+// https://youtube.com/watch?v=VvcBqPua2DI&list=PL4cUxeGkcC9jUPIes_B8vRjn1_GaplOPQ
+
 exports.addAdminRole = functions.https.onCall((data, context) => {
-  // check request is made by an admin
+  // Check if request is made by an admin
   if (!context.auth) {
     throw new functions.https.HttpsError(
       'failed-precondition',
@@ -30,7 +25,7 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
     );
   }
 
-  // get user and add custom claim (admin)
+  // Get user and add custom claim (admin)
   return getAuth()
     .getUserByEmail(data.email)
     .then((user) => {
