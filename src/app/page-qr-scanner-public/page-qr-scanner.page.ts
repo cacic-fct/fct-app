@@ -75,6 +75,8 @@ export class PageQrScannerPage implements OnInit {
   onCodeResult(resultString: string) {
     if (resultString.startsWith('uid:')) {
       //this.presentModal(resultString.substring(4));
+    } else {
+      this.toastInvalid();
     }
   }
 
@@ -88,5 +90,15 @@ export class PageQrScannerPage implements OnInit {
 
   onHasPermission(has: boolean) {
     this.hasPermission = has;
+  }
+
+  async toastInvalid() {
+    const toast = await this.toastController.create({
+      header: 'QR Code incompatível',
+      icon: 'close-circle',
+      position: 'top',
+      duration: 2000,
+    });
+    await toast.present();
   }
 }

@@ -44,6 +44,11 @@
       id="item">
       <ng-container *ngIf="(items$) as items; else: loading">
         <div class="ion-padding-horizontal">
+          <h3 style="margin-bottom: 0">{{ event.name }}</h3>
+          <h4 style="margin: 0">{{ event.shortDescription }}</h4>
+          <h5 style="margin-top: 0">
+            {{ getDateFromTimestamp(event.date) | date: "dd/MM/y - HH:mm" }}
+          </h5>
           <p>
             <b>Scans desta sessão:</b> {{ attendanceSessionScans }}
             <br />

@@ -9,6 +9,7 @@ import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { fromUnixTime } from 'date-fns';
 import { trace } from '@angular/fire/compat/performance';
+import { EventItem } from 'src/app/shared/services/event';
 
 @Component({
   selector: 'app-scanner',
@@ -28,6 +29,7 @@ export class ScannerPage implements OnInit {
   showScanner = true;
   items$: attendance[];
   id: string;
+  event: EventItem;
 
   attendanceSessionScans: number = 0;
 
@@ -39,8 +41,13 @@ export class ScannerPage implements OnInit {
   ) {
     this.id = this.router.url.split('/')[4];
 
-    // Get the attendance scan on the database.
-    // With the id of the attendance session get the user displayName on users/id
+    this.afs
+      .collection('events')
+      .doc<EventItem>(this.id)
+      .valueChanges()
+      .subscribe((event) => {
+        this.event = event;
+      });
 
     this.afs
       .collection<any>(`events/${this.id}/attendance`, (ref) => {
@@ -48,8 +55,6 @@ export class ScannerPage implements OnInit {
       })
       .valueChanges({ idField: 'id' })
       .subscribe((items: any[]) => {
-        // For each id on items, get user displayname from users collection
-
         this.items$ = items.map((item) => {
           return {
             ...item,
