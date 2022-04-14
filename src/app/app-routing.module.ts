@@ -29,20 +29,6 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'vinculo',
-    loadChildren: () =>
-      import('./customize-experience/customize-experience.module').then(
-        (m) => m.CustomizeExperiencePageModule
-      ),
-  },
-  {
-    path: 'settings',
-    loadChildren: () =>
-      import('./page-settings/page-settings.module').then(
-        (m) => m.PageSettingsPageModule
-      ),
-  },
-  {
     path: 'manual-do-calouro',
     loadChildren: () =>
       import('./page-manual-calouro/page-manual-calouro.module').then(

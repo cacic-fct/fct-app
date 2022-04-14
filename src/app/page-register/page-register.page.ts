@@ -17,6 +17,10 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { textHeights } from 'ol/render/canvas';
+import { User } from '../shared/services/user';
+
+import { GlobalConstantsService } from '../shared/services/global-constants.service';
 
 @Component({
   selector: 'app-page-register',
@@ -27,7 +31,7 @@ export class PageRegisterPage implements OnInit {
   @ViewChild('mySwal')
   private mySwal: SwalComponent;
 
-  dataVersion = '0.1.0';
+  dataVersion: string = GlobalConstantsService.userDataVersion;
   userData: any;
   dataForm: FormGroup = new FormGroup({
     academicID: new FormControl(''),
@@ -41,10 +45,18 @@ export class PageRegisterPage implements OnInit {
     public formBuilder: FormBuilder,
     public afs: AngularFirestore,
     public router: Router
-  ) {}
+  ) {
+    this.userData = JSON.parse(localStorage.getItem('user'));
+  }
 
   ngOnInit() {
-    this.userData = JSON.parse(localStorage.getItem('user'));
+    this.afs
+      .collection('users')
+      .doc<User>(this.userData.uid)
+      .valueChanges()
+      .subscribe((user) => {
+        this.dataForm.value.academicID = user.academicID;
+      });
     this.userData.uid.replace(/%20/g, ' ') +
       '%0D%0Anome%3A%20' +
       this.userData.displayName.replace(/%20/g, ' ') +
@@ -52,7 +64,11 @@ export class PageRegisterPage implements OnInit {
       this.userData.email.replace(/%20/g, ' ') +
       '%0D%0A';
     this.dataForm = this.formBuilder.group({
-      academicID: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
+      // Validator doesn't update when value changes programatically
+      // https://github.com/angular/angular/issues/30616
+      academicID: [
+        '' /*[Validators.required, Validators.pattern('^[0-9]{9}$')]*/,
+      ],
     });
   }
 
@@ -67,7 +83,7 @@ export class PageRegisterPage implements OnInit {
       academicID: this.dataForm.value.academicID,
       dataVersion: this.dataVersion,
     };
-
+    debugger;
     userRef.set(user, {
       merge: true,
     });

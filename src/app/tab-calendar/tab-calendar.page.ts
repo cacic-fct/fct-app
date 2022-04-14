@@ -22,8 +22,7 @@ import {
   mapToObject,
   scanToObject,
 } from '@angular/fire/compat/remote-config';
-import { trace } from '@angular/fire/compat/performance';
-import { first } from 'rxjs';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab-calendar',
@@ -35,11 +34,11 @@ export class TabCalendarPage {
   active: string;
   fullDate: string;
   itemView: boolean = true;
-  selectedFilter: Array<string> = [];
+  selectedFilter: string[] = [];
   // Today's date
-  today = new Date();
+  today: Date = new Date();
 
-  dow1Char = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+  dow1Char: string[] = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
   courses = CoursesService.courses;
 
@@ -56,19 +55,20 @@ export class TabCalendarPage {
 
   // This is sunday in the calendar
   // Get startofWeek based on today's date
-  calendarBaseDate = startOfWeek(this.today, {
+  calendarBaseDate: Date = startOfWeek(this.today, {
     weekStartsOn: 0,
   });
 
   // Get end of week from today
-  calendarEndDate = endOfWeek(this.today, {
+  calendarEndDate: Date = endOfWeek(this.today, {
     weekStartsOn: 0,
   });
 
   constructor(
     private modalController: ModalController,
     public router: Router,
-    public remoteConfig: AngularFireRemoteConfig
+    public remoteConfig: AngularFireRemoteConfig,
+    public toastController: ToastController
   ) {
     this.remoteConfig.booleans.calendarItemViewDefault.subscribe((value) => {
       this.itemView = value;
@@ -78,8 +78,16 @@ export class TabCalendarPage {
     this.generateCalendarData();
   }
 
-  ngOnInit() {
-    this.remoteConfig;
+  ngOnInit() {}
+
+  ionViewDidEnter() {
+    if (
+      localStorage.getItem('user') === null &&
+      sessionStorage.getItem('calendarLoginToast') !== 'true'
+    ) {
+      sessionStorage.setItem('calendarLoginToast', 'true');
+      this.presentToast();
+    }
   }
 
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>): number => {
@@ -170,5 +178,16 @@ export class TabCalendarPage {
   }
   viewToggle() {
     this.itemView = !this.itemView;
+  }
+
+  async presentToast() {
+    console.log('present');
+    const toast = await this.toastController.create({
+      header: 'Você é aluno da Unesp?',
+      message: 'Faça login para visualizar todos os eventos',
+      duration: 2000,
+      position: 'bottom',
+    });
+    await toast.present();
   }
 }

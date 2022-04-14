@@ -9,10 +9,12 @@ import firebase from 'firebase/compat/app';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { ModalController } from '@ionic/angular';
+import { GlobalConstantsService } from './global-constants.service';
 
 @Injectable()
 export class AuthService {
   userData: firebase.User;
+  dataVersion = GlobalConstantsService.userDataVersion;
 
   constructor(
     public auth: AngularFireAuth,
@@ -27,9 +29,9 @@ export class AuthService {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem('user'));
+        this.CompareUserdataVersion(this.userData);
       } else {
-        localStorage.setItem('user', null);
-        JSON.parse(localStorage.getItem('user'));
+        localStorage.removeItem('user');
       }
     });
   }
@@ -77,6 +79,18 @@ export class AuthService {
     return userRef.set(userData, {
       merge: true,
     });
+  }
+
+  CompareUserdataVersion(user: firebase.User) {
+    this.afs
+      .doc<User>(`users/${user.uid}`)
+      .valueChanges()
+      .subscribe((data) => {
+        debugger;
+        if (data.dataVersion !== this.dataVersion) {
+          this.router.navigate(['/register']);
+        }
+      });
   }
 
   async isLoggedIn(): Promise<boolean> {

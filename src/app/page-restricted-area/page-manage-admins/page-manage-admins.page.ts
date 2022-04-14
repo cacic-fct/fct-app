@@ -51,7 +51,6 @@ export class PageManageAdminsPage implements OnInit {
 
   // TODO: Write user additions and removals to Firestore claims/admin
   addAdmin() {
-    console.log(this.addAdminForm.value.adminEmail);
     const addAdminRole = this.fns.httpsCallable('addAdminRole');
     addAdminRole({ email: this.addAdminForm.value.adminEmail })
       .pipe(first())
@@ -62,7 +61,6 @@ export class PageManageAdminsPage implements OnInit {
   }
 
   removeAdmin() {
-    console.log(this.removeAdminForm.value.adminEmail);
     const removeAdminRole = this.fns.httpsCallable('removeAdminRole');
     removeAdminRole({ email: this.removeAdminForm.value.adminEmail })
       .pipe(first())
