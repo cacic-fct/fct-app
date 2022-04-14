@@ -73,8 +73,6 @@ export class PageQrScannerPage implements OnInit {
   }
 
   onCodeResult(resultString: string) {
-    console.log(resultString);
-
     if (resultString.startsWith('uid:')) {
       //this.presentModal(resultString.substring(4));
     }

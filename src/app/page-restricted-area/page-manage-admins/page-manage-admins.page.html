@@ -27,9 +27,12 @@
         <form [formGroup]="addAdminForm" (ngSubmit)="addAdmin()">
           <ion-item>
             <ion-label position="floating">Adicionar admin</ion-label>
-            <ion-input type="text" formControlName="adminEmail"></ion-input>
+            <ion-input
+              type="text"
+              formControlName="adminEmail"
+              placeholder="E-mail acadêmico"></ion-input>
           </ion-item>
-          <ion-button expand="block" type="submit">Add</ion-button>
+          <ion-button expand="block" type="submit">Adicionar</ion-button>
         </form>
       </ion-col>
     </ion-row>
@@ -41,9 +44,12 @@
           <form [formGroup]="removeAdminForm" (ngSubmit)="removeAdmin()">
             <ion-item>
               <ion-label position="floating">Remover admin</ion-label>
-              <ion-input type="text" formControlName="adminEmail"></ion-input>
+              <ion-input
+                type="text"
+                formControlName="adminEmail"
+                placeholder="E-mail acadêmico"></ion-input>
             </ion-item>
-            <ion-button expand="block" type="submit">Remove</ion-button>
+            <ion-button expand="block" type="submit">Remover</ion-button>
           </form>
         </ion-list>
       </ion-col>

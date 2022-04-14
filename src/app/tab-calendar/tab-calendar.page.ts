@@ -181,7 +181,6 @@ export class TabCalendarPage {
   }
 
   async presentToast() {
-    console.log('present');
     const toast = await this.toastController.create({
       header: 'Você é aluno da Unesp?',
       message: 'Faça login para visualizar todos os eventos',

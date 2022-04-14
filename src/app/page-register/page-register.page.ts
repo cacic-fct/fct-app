@@ -83,11 +83,11 @@ export class PageRegisterPage implements OnInit {
       academicID: this.dataForm.value.academicID,
       dataVersion: this.dataVersion,
     };
-    debugger;
     userRef.set(user, {
       merge: true,
     });
     this.mySwal.fire();
+    // Fake delay to let animation finish
     setTimeout(() => {
       this.mySwal.close();
       this.router.navigate(['/menu']);
