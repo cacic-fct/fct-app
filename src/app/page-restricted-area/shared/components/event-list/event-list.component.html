@@ -8,7 +8,7 @@
       [style.--background]="
         courses[item.course] ? courses[item.course].color + '25' : undefined
       "
-      [routerLink]="['./scanner', item.id]">
+      [routerLink]="[redirection, item.id]">
       <img
         [src]="getEmoji(item.icon)"
         class="twemoji"
