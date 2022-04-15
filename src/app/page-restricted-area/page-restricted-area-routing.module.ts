@@ -16,6 +16,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'listar-presenca',
+    loadChildren: () =>
+      import('./page-attendance-list/page-attendance-list.module').then(
+        (m) => m.PageAttendanceListPageModule
+      ),
+  },
+  {
     path: 'gerenciar-admins',
     loadChildren: () =>
       import('./page-manage-admins/page-manage-admins.module').then(
