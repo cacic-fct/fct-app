@@ -7,4 +7,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content> </ion-content>
+<ion-content>
+  <ion-datetime
+    [value]="dateAsString"
+    #popoverDatetime
+    presentation="date"
+    locale="pt-BR"
+    class="margin-horizontal-auto"
+    (ionChange)="updateDate(popoverDatetime.value)"
+  ></ion-datetime>
+  <app-event-list [date]="properDate"></app-event-list>
+</ion-content>
