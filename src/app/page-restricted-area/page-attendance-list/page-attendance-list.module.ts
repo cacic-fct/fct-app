@@ -7,15 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { PageAttendanceListPageRoutingModule } from './page-attendance-list-routing.module';
 
 import { PageAttendanceListPage } from './page-attendance-list.page';
-import { EventListComponent } from '../shared/components/event-list/event-list.component'
+import { EventListModule } from '../shared/components/event-list/event-list.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PageAttendanceListPageRoutingModule
+    PageAttendanceListPageRoutingModule,
+    EventListModule
   ],
-  declarations: [PageAttendanceListPage, EventListComponent]
+  declarations: [PageAttendanceListPage]
 })
 export class PageAttendanceListPageModule {}
