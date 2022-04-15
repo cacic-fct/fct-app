@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { PageAttendanceCollectPageRoutingModule } from './page-attendance-collect-routing.module';
 
 import { PageAttendanceCollectPage } from './page-attendance-collect.page';
-import { EventListComponent } from './components/event-list/event-list.component';
+import { EventListComponent } from '../shared/components/event-list/event-list.component'
 
 @NgModule({
   imports: [
