@@ -73,6 +73,13 @@ const routes: Routes = [
         (m) => m.PageContactCasPageModule
       ),
   },
+  {
+    path: 'contato-ejs',
+    loadChildren: () =>
+      import('./page-contact-ejs/page-contact-ejs.module').then(
+        (m) => m.PageContactEjsPageModule
+      ),
+  },
 ];
 @NgModule({
   imports: [

@@ -8,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class ContactCasComponent implements OnInit {
   contacts: any = [
     {
-      name: 'Ciência da Computação',
+      course: 'Ciência da Computação',
       acronym: 'CACiC',
       email: 'cacic.fct@gmail.com',
+      website: 'https://cacic-fct.web.app',
       social: {
         facebook: 'cacic.fct',
         instagram: 'cacic.fct',
@@ -18,7 +19,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     {
-      name: 'Arquitetura e Urbanismo',
+      course: 'Arquitetura e Urbanismo',
       acronym: 'CACAU',
       social: {
         facebook: '',
@@ -26,7 +27,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     {
-      name: 'Educação Física',
+      course: 'Educação Física',
       acronym: 'CAEF',
       social: {
         facebook: '',
@@ -34,7 +35,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     {
-      name: 'Engenharia Ambiental',
+      course: 'Engenharia Ambiental',
       acronym: 'CAEA',
       email: 'caeng.ambiental@gmail.com',
       social: {
@@ -43,7 +44,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     {
-      name: 'Engenharia Cartográfica e de Agrimensura',
+      course: 'Engenharia Cartográfica e de Agrimensura',
       acronym: 'CAMA',
       social: {
         facebook: '',
@@ -51,7 +52,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     {
-      name: 'Estatística',
+      course: 'Estatística',
       acronym: 'CAE',
       social: {
         facebook: '',
@@ -59,7 +60,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     // {
-    //   name: 'Física',
+    //   course: 'Física',
     //   acronym: '',
     //   social: {
     //     facebook: '',
@@ -67,7 +68,7 @@ export class ContactCasComponent implements OnInit {
     //   },
     // },
     {
-      name: 'Fisioterapia',
+      course: 'Fisioterapia',
       acronym: 'CAF',
       social: {
         facebook: '',
@@ -75,7 +76,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     {
-      name: 'Geografia',
+      course: 'Geografia',
       acronym: 'CAGEO',
       social: {
         facebook: 'cageo.geografia',
@@ -85,7 +86,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     {
-      name: 'Matemática',
+      course: 'Matemática',
       acronym: 'CENTRAMA',
       social: {
         facebook: '',
@@ -93,7 +94,7 @@ export class ContactCasComponent implements OnInit {
       },
     },
     // {
-    //   name: 'Pedagogia',
+    //   course: 'Pedagogia',
     //   acronym: '',
     //   social: {
     //     facebook: '',
@@ -101,7 +102,7 @@ export class ContactCasComponent implements OnInit {
     //   },
     // },
     // {
-    //   name: 'Química',
+    //   course: 'Química',
     //   acronym: '',
     //   social: {
     //     facebook: '',
