@@ -5,9 +5,9 @@
 }
 
 ion-backdrop {
-  opacity: 0.5;
+  opacity: 0;
   visibility: hidden;
-  color: #000;
+  transition: background-color 1s, opacity 1s, visibility 1s;
 }
 
 .success {
@@ -23,5 +23,6 @@ ion-backdrop {
 }
 
 .backdropvisible {
+  opacity: 0.5;
   visibility: visible;
 }

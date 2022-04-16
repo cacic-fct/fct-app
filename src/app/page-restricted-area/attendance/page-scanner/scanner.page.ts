@@ -160,18 +160,18 @@ export class ScannerPage implements OnInit {
   }
 
   async backdropColor(color: string) {
-    // Change backdrop class to color
-    this._backdropVisibleSubject.next(true);
-
     // Add class to ion-backdrop
     document.querySelector('ion-backdrop').classList.add(color);
 
+    // Change backdrop class to color
+    this._backdropVisibleSubject.next(true);
+
     // Wait for 1 second
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    // Remove backdrop class
-    document.querySelector('ion-backdrop').classList.remove(color);
 
     this._backdropVisibleSubject.next(false);
+    // Remove backdrop class
+    document.querySelector('ion-backdrop').classList.remove(color);
   }
 }
 
