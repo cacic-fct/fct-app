@@ -3,3 +3,25 @@
   width: 100vw;
   object-fit: contain;
 }
+
+ion-backdrop {
+  opacity: 0.5;
+  visibility: hidden;
+  color: #000;
+}
+
+.success {
+  background-color: #00ff00;
+}
+
+.duplicate {
+  background-color: #ffff00;
+}
+
+.invalid {
+  background-color: #ff0000;
+}
+
+.backdropvisible {
+  visibility: visible;
+}

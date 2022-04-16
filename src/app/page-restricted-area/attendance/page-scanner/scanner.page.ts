@@ -17,6 +17,7 @@ import { EventItem } from 'src/app/shared/services/event';
   styleUrls: ['./scanner.page.scss'],
 })
 export class ScannerPage implements OnInit {
+  // QR Code scanner
   availableDevices: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo = null;
   allowedFormats = [BarcodeFormat.QR_CODE];
@@ -27,9 +28,13 @@ export class ScannerPage implements OnInit {
   qrResultString: string;
   deviceIndex: number = -1;
   showScanner = true;
+
   attendanceCollection: attendance[];
-  id: string;
+  eventID: string;
   event: EventItem;
+
+  _backdropVisibleSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  backdropVisible$: Observable<boolean> = this._backdropVisibleSubject.asObservable();
 
   attendanceSessionScans: number = 0;
 
@@ -39,18 +44,18 @@ export class ScannerPage implements OnInit {
     public courses: CoursesService,
     private toastController: ToastController
   ) {
-    this.id = this.router.url.split('/')[4];
+    this.eventID = this.router.url.split('/')[4];
 
     this.afs
       .collection('events')
-      .doc<EventItem>(this.id)
+      .doc<EventItem>(this.eventID)
       .valueChanges()
       .subscribe((event) => {
         this.event = event;
       });
 
     this.afs
-      .collection<any>(`events/${this.id}/attendance`, (ref) => {
+      .collection<any>(`events/${this.eventID}/attendance`, (ref) => {
         return ref.orderBy('time', 'desc');
       })
       .valueChanges({ idField: 'id' })
@@ -58,11 +63,7 @@ export class ScannerPage implements OnInit {
         this.attendanceCollection = items.map((item) => {
           return {
             ...item,
-            user: this.afs
-              .collection('users')
-              .doc<User>(item.id)
-              .valueChanges()
-              .pipe(trace('firestore')),
+            user: this.afs.collection('users').doc<User>(item.id).valueChanges().pipe(trace('firestore')),
           };
         });
       });
@@ -87,26 +88,26 @@ export class ScannerPage implements OnInit {
     if (resultString.startsWith('uid:')) {
       resultString = resultString.substring(4);
       this.afs
-        .collection<attendance>(`events/${this.id}/attendance`)
+        .collection<attendance>(`events/${this.eventID}/attendance`)
         .doc(resultString)
         .get()
         .subscribe((document) => {
           if (document.exists) {
+            this.backdropColor('duplicate');
             this.toastDuplicate();
             return false;
           } else {
-            this.afs
-              .collection(`events/${this.id}/attendance`)
-              .doc(resultString)
-              .set({
-                time: new Date(),
-              });
+            this.afs.collection(`events/${this.eventID}/attendance`).doc(resultString).set({
+              time: new Date(),
+            });
             this.toastSucess();
+            this.backdropColor('success');
             this.attendanceSessionScans++;
             return true;
           }
         });
     } else {
+      this.backdropColor('invalid');
       this.toastInvalid();
       return false;
     }
@@ -135,7 +136,7 @@ export class ScannerPage implements OnInit {
       position: 'top',
       duration: 3000,
     });
-    await toast.present();
+    toast.present();
   }
 
   async toastDuplicate() {
@@ -145,7 +146,7 @@ export class ScannerPage implements OnInit {
       position: 'top',
       duration: 2000,
     });
-    await toast.present();
+    toast.present();
   }
 
   async toastInvalid() {
@@ -155,7 +156,22 @@ export class ScannerPage implements OnInit {
       position: 'top',
       duration: 2000,
     });
-    await toast.present();
+    toast.present();
+  }
+
+  async backdropColor(color: string) {
+    // Change backdrop class to color
+    this._backdropVisibleSubject.next(true);
+
+    // Add class to ion-backdrop
+    document.querySelector('ion-backdrop').classList.add(color);
+
+    // Wait for 1 second
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Remove backdrop class
+    document.querySelector('ion-backdrop').classList.remove(color);
+
+    this._backdropVisibleSubject.next(false);
   }
 }
 
