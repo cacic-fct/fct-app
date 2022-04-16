@@ -3,8 +3,7 @@
     <ion-item
       *ngFor="let item of items"
       style="cursor: pointer"
-      [style.--background]="courses[item.course] ? courses[item.course].color + '25' : undefined"
-      [routerLink]="[redirection, item.id]">
+      [style.--background]="courses[item.course] ? courses[item.course].color + '25' : undefined">
       <img [src]="getEmoji(item.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
 
       <ion-label>
