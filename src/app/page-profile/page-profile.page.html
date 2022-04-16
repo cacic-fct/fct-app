@@ -15,11 +15,7 @@
       </ion-avatar>
       <h2 class="margin-horizontal-auto">{{user.displayName}}</h2>
       <p class="margin-horizontal-auto">{{user.email}}</p>
-      <ngx-kjua
-        class="qr-code"
-        [text]="'uid:' + user.uid"
-        [renderAsync]="true"
-        [render]="'svg'"></ngx-kjua>
+      <ngx-kjua class="qr-code" [text]="'uid:' + user.uid" [renderAsync]="true" render="svg" fill="'#000'"></ngx-kjua>
     </div>
   </ion-card>
 </ion-content>
