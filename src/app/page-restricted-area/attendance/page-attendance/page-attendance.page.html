@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Listar presenças</ion-title>
+    <ion-title>Presenças</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/area-restrita"></ion-back-button>
     </ion-buttons>
@@ -9,12 +9,11 @@
 
 <ion-content>
   <ion-datetime
-    [value]="dateAsString"
+    [value]="dateValue"
     #popoverDatetime
     presentation="date"
-    locale="pt-BR"
+    localte="pt-BR"
     class="margin-horizontal-auto"
-    (ionChange)="updateDate(popoverDatetime.value)"
-  ></ion-datetime>
-  <app-event-list [date]="properDate" [redirection]="'list'"></app-event-list>
+    (ionChange)="updateDate(popoverDatetime.value)"></ion-datetime>
+  <app-event-list [date]="dateDate" [redirection]="'scanner'"> </app-event-list>
 </ion-content>

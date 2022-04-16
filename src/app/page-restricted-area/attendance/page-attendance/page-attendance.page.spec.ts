@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PageAttendanceCollectPage } from './page-attendance-collect.page';
+import { PageAttendancePage } from './page-attendance.page';
 
 describe('PageAttendanceCollectPage', () => {
-  let component: PageAttendanceCollectPage;
-  let fixture: ComponentFixture<PageAttendanceCollectPage>;
+  let component: PageAttendancePage;
+  let fixture: ComponentFixture<PageAttendancePage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageAttendanceCollectPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [PageAttendancePage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageAttendanceCollectPage);
+    fixture = TestBed.createComponent(PageAttendancePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
