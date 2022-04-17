@@ -10,7 +10,9 @@
 <ion-content>
   <ng-container *ngIf="attendanceCollection as attendancePeople; else: loading">
     <div class="ion-padding">
-      <h1>{{ event.name }}</h1>
+      <h3 style="margin-bottom: 0">{{ event.name }}</h3>
+      <h4 style="margin: 0">{{ event.shortDescription }}</h4>
+      <h5 style="margin-top: 0">{{ getDateFromTimestamp(event.date) | date: "dd/MM/y - HH:mm" }}</h5>
       <ion-button (click)="generateCSV()">Baixar CSV</ion-button>
     </div>
     <div class="ion-padding-horizontal">
@@ -30,12 +32,13 @@
   <ng-template #loading>
     <ion-spinner name="lines-small" class="margin-horizontal-auto" style="display: block"></ion-spinner>
   </ng-template>
-  <swal
-    #mySwal
-    title="Evento inexistente"
-    icon="error"
-    [heightAuto]="false"
-    [showCancelButton]="false"
-    [showCloseButton]="false"
-    [showConfirmButton]="false"></swal>
 </ion-content>
+
+<swal
+  #mySwal
+  title="Evento inexistente"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>

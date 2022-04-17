@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BarcodeFormat } from '@zxing/library';
 import { BehaviorSubject, map, Observable, take } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -10,6 +10,7 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { fromUnixTime } from 'date-fns';
 import { trace } from '@angular/fire/compat/performance';
 import { EventItem } from 'src/app/shared/services/event';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
 @Component({
   selector: 'app-scanner',
@@ -17,6 +18,9 @@ import { EventItem } from 'src/app/shared/services/event';
   styleUrls: ['./scanner.page.scss'],
 })
 export class ScannerPage implements OnInit {
+  @ViewChild('mySwal')
+  private mySwal: SwalComponent;
+
   // QR Code scanner
   availableDevices: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo = null;
@@ -46,7 +50,6 @@ export class ScannerPage implements OnInit {
   ) {
     this.eventID = this.router.url.split('/')[4];
 
-    // Check if event document exists
     this.afs
       .collection('events')
       .doc(this.eventID)
@@ -54,6 +57,10 @@ export class ScannerPage implements OnInit {
       .subscribe((document) => {
         if (!document.exists) {
           this.router.navigate(['area-restrita/coletar-presenca']);
+          this.mySwal.fire();
+          setTimeout(() => {
+            this.mySwal.close();
+          }, 1000);
         }
       });
 

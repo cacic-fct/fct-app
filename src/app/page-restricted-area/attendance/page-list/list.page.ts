@@ -35,7 +35,7 @@ export class ListPage implements OnInit {
           this.mySwal.fire();
           setTimeout(() => {
             this.mySwal.close();
-          }, 1500);
+          }, 1000);
         }
       });
 
