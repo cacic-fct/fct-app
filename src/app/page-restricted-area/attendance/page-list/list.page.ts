@@ -14,15 +14,11 @@ import { fromUnixTime } from 'date-fns';
   styleUrls: ['./list.page.scss'],
 })
 export class ListPage implements OnInit {
-  attendanceCollection : attendance[]
-  eventID : string;
-  event : EventItem;  
+  attendanceCollection: attendance[];
+  eventID: string;
+  event: EventItem;
 
-  constructor(
-    private afs: AngularFirestore,
-    private router: Router,
-    public courses: CoursesService,
-  ) {
+  constructor(private afs: AngularFirestore, private router: Router, public courses: CoursesService) {
     this.eventID = this.router.url.split('/')[4];
 
     this.afs
@@ -52,6 +48,42 @@ export class ListPage implements OnInit {
 
   getDateFromTimestamp(timestamp: any): Date {
     return fromUnixTime(timestamp.seconds);
+  }
+
+  generateCSV() {
+    this.afs
+      .collection<User>('users')
+      .valueChanges({ idfield: 'id' })
+      .subscribe((users) => {
+        const csv = [];
+        const headers = ['Nome', 'RA', 'Email', 'Data_locale', 'Data_iso'];
+        csv.push(headers);
+        this.attendanceCollection.forEach((attendance) => {
+          const user = users.find((user) => user.uid === attendance.id);
+          const row = [
+            user.displayName,
+            user.academicID,
+            user.email,
+            this.getDateFromTimestamp(attendance.time).toLocaleString('pt-BR', {
+              timeZone: 'America/Sao_Paulo',
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+            }),
+            this.getDateFromTimestamp(attendance.time).toISOString(),
+          ];
+          csv.push(row);
+        });
+
+        const csvString = csv.map((row) => row.join(',')).join('\n');
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(new Blob([csvString], { type: 'text/csv' }));
+        a.download = `${this.event.name}_${this.getDateFromTimestamp(this.event.date).toISOString()}.csv`;
+        a.click();
+      });
   }
 }
 
