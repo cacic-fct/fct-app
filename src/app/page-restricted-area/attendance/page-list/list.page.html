@@ -30,4 +30,12 @@
   <ng-template #loading>
     <ion-spinner name="lines-small" class="margin-horizontal-auto" style="display: block"></ion-spinner>
   </ng-template>
+  <swal
+    #mySwal
+    title="Evento inexistente"
+    icon="error"
+    [heightAuto]="false"
+    [showCancelButton]="false"
+    [showCloseButton]="false"
+    [showConfirmButton]="false"></swal>
 </ion-content>

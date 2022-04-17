@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { ListPageRoutingModule } from './list-routing.module';
 
 import { ListPage } from './list.page';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ListPageRoutingModule
+    ListPageRoutingModule,
+    SweetAlert2Module
   ],
   declarations: [ListPage]
 })

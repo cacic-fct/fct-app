@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
@@ -7,6 +7,7 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { EventItem } from 'src/app/shared/services/event';
 import { User } from 'src/app/shared/services/user';
 import { fromUnixTime } from 'date-fns';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
 @Component({
   selector: 'app-list',
@@ -14,12 +15,29 @@ import { fromUnixTime } from 'date-fns';
   styleUrls: ['./list.page.scss'],
 })
 export class ListPage implements OnInit {
+  @ViewChild('mySwal')
+  private mySwal: SwalComponent;
+
   attendanceCollection: attendance[];
   eventID: string;
   event: EventItem;
 
   constructor(private afs: AngularFirestore, private router: Router, public courses: CoursesService) {
     this.eventID = this.router.url.split('/')[4];
+
+    this.afs
+      .collection('events')
+      .doc(this.eventID)
+      .get()
+      .subscribe((document) => {
+        if (!document.exists) {
+          this.router.navigate(['area-restrita/coletar-presenca']);
+          this.mySwal.fire();
+          setTimeout(() => {
+            this.mySwal.close();
+          }, 1500);
+        }
+      });
 
     this.afs
       .collection('events')
