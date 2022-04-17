@@ -46,6 +46,17 @@ export class ScannerPage implements OnInit {
   ) {
     this.eventID = this.router.url.split('/')[4];
 
+    // Check if event document exists
+    this.afs
+      .collection('events')
+      .doc(this.eventID)
+      .get()
+      .subscribe((document) => {
+        if (!document.exists) {
+          this.router.navigate(['area-restrita/coletar-presenca']);
+        }
+      });
+
     this.afs
       .collection('events')
       .doc<EventItem>(this.eventID)
