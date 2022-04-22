@@ -9,13 +9,7 @@ import { AddEventPageRoutingModule } from './add-event-routing.module';
 import { AddEventPage } from './add-event.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    IonicModule,
-    AddEventPageRoutingModule
-  ],
-  declarations: [AddEventPage]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, AddEventPageRoutingModule],
+  declarations: [AddEventPage],
 })
 export class AddEventPageModule {}

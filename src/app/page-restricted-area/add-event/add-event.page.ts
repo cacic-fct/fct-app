@@ -10,7 +10,7 @@ import { format, parseISO, getDate, getMonth, getYear } from 'date-fns';
 })
 export class AddEventPage implements OnInit {
   courses = CoursesService.courses;
-  dateValue = "";
+  dateValue = '';
 
   dataForm: FormGroup = new FormGroup({
     course: new FormControl(''),
@@ -27,10 +27,9 @@ export class AddEventPage implements OnInit {
     buttonText: new FormControl(''),
     buttonUrl: new FormControl(''),
   });
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   formatDate(value: string) {
     return format(parseISO(value), 'dd/MM/yyyy HH:mm');
