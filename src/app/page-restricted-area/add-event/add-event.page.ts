@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { format, parseISO, getDate, getMonth, getYear } from 'date-fns';
 
@@ -23,13 +23,34 @@ export class AddEventPage implements OnInit {
     locationLat: new FormControl(''),
     locationLon: new FormControl(''),
     youtubeCode: new FormControl(''),
-    public: new FormControl('on'),
+    public: new FormControl(''),
     buttonText: new FormControl(''),
     buttonUrl: new FormControl(''),
   });
-  constructor() {}
 
-  ngOnInit() {}
+  userData: any;
+  constructor(public formBuilder: FormBuilder) {
+    this.userData = JSON.parse(localStorage.getItem('user'));
+  }
+
+  ngOnInit() {
+    this.dataForm = this.formBuilder.group({
+      course: ['', Validators.required],
+      icon: ['', Validators.required],
+      name: ['', Validators.required],
+      shortDescription: '',
+      description: '',
+      date: ['', Validators.required],
+      locationDescription: '',
+      locationLat: '',
+      locationLon: '',
+      youtubeCode: '',
+      public: '',
+      buttonText: '',
+      buttonUrl: '',
+    });
+    this.userData.displayName.replace(/%20/g, ' ');
+  }
 
   formatDate(value: string) {
     return format(parseISO(value), 'dd/MM/yyyy HH:mm');

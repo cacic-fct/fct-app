@@ -14,7 +14,7 @@
       <ion-card-content>
         <ion-item>
           <ion-label position="floating">Curso</ion-label>
-          <ion-select interface="popover">
+          <ion-select interface="popover" formControlName="course">
             <ng-container *ngFor="let course of courses | keyvalue">
               <ion-select-option slot="start" class="course" [id]="course.key">
                 {{ course.value.name }}
@@ -25,7 +25,7 @@
 
         <ion-item>
           <ion-label position="floating">Nome do evento</ion-label>
-          <ion-input formControlName="name" required="true"></ion-input>
+          <ion-input formControlName="name"></ion-input>
         </ion-item>
 
         <ion-item>
@@ -44,7 +44,7 @@
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Data do evento</ion-label>
+          <ion-label>Data do evento</ion-label>
           <ion-input
             formControlName="date"
             [value]="dataForm.value.date"
@@ -53,15 +53,6 @@
           <ion-button fill="clear" id="open-date-input">
             <ion-icon icon="calendar"></ion-icon>
           </ion-button>
-          <ion-modal trigger="open-date-input" id="modal-date">
-            <ng-template>
-              <ion-datetime
-                #dateInput
-                presentation="date-time"
-                (ionChange)="dataForm.value.date = formatDate(dateInput.value)"
-                class="margin-horizontal-auto"></ion-datetime>
-            </ng-template>
-          </ion-modal>
         </ion-item>
       </ion-card-content>
     </ion-card>
@@ -73,7 +64,7 @@
 
       <ion-card-content>
         <ion-item>
-          <ion-label position="floating">Descrição do local</ion-label>
+          <ion-label position="floating">Endereço ou descrição</ion-label>
           <ion-input formControlName="locationDescription"></ion-input>
         </ion-item>
 
@@ -91,25 +82,7 @@
 
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Outras informações</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <ion-item>
-          <ion-label position="floating">Código do youtube</ion-label>
-          <ion-input formControlName="youtubeCode" placeholder="Código do vídeo/live no youtube"></ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-label>Evento é público?</ion-label>
-          <ion-toggle slot="end" formControlName="public" checked="off"></ion-toggle>
-        </ion-item>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Botão do evento</ion-card-title>
+        <ion-card-title>Botão</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
@@ -119,11 +92,46 @@
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Link redirecionado</ion-label>
+          <ion-label position="floating">Link</ion-label>
           <ion-input formControlName="buttonUrl"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Outras informações</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Código do YouTube</ion-label>
+          <ion-input formControlName="youtubeCode" placeholder="Código do vídeo/live no youtube"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Evento aberto ao público</ion-label>
+          <ion-toggle slot="end" formControlName="public" checked="off"></ion-toggle>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Criador do evento</ion-label>
+          <ion-input value="{{ userData.displayName }}" readonly> </ion-input>
         </ion-item>
       </ion-card-content>
     </ion-card>
   </form>
   <ion-button> Criar evento </ion-button>
+  <p style="font-size: 0.75em" class="ion-padding-horizontal">
+    Para fins de controle e registro, seu nome será gravado junto ao evento.
+  </p>
 </ion-content>
+
+<ion-modal trigger="open-date-input" id="modal-date">
+  <ng-template>
+    <ion-datetime
+      #dateInput
+      presentation="date-time"
+      (ionChange)="dataForm.value.date = formatDate(dateInput.value)"
+      class="margin-horizontal-auto"></ion-datetime>
+  </ng-template>
+</ion-modal>
