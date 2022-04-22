@@ -5,31 +5,142 @@
 </ion-header>
 
 <ion-content>
-  <ion-item>
-    <ion-label>Nome do evento</ion-label>
-    <ion-input></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Descrição do evento</ion-label>
-    <ion-input></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Emoji do evento</ion-label>
-    <ion-input></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Data do evento</ion-label>
-    <ion-input></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Latitude</ion-label>
-    <ion-input></ion-input>
-  </ion-item>
+  <form [formGroup]="dataForm" (ngSubmit)="onSubmit()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Informações do evento</ion-card-title>
+      </ion-card-header>
 
-  <ion-item>
-    <ion-label>Longitude</ion-label>
-    <ion-input></ion-input>
-  </ion-item>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position='floating'>Curso:</ion-label>
+          <ion-select
+          interface="popover">
 
+            <ng-container *ngFor="let course of courses | keyvalue">
+              <ion-select-option
+              slot="start"
+              class="course"
+              [id]="course.key"
+              >
+                {{ course.value.name }}
+              </ion-select-option>
+            </ng-container>
+
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position='floating'>Nome do evento:</ion-label>
+          <ion-input
+          formControlName="name"
+          required="true"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position='floating'>Descrição curta do evento:</ion-label>
+          <ion-input
+          formControlName="shortDescription"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position='floating'>Descrição do evento:</ion-label>
+          <ion-input
+          formControlName="description"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position='floating'>Emoji do evento:</ion-label>
+          <ion-input
+          formControlName="icon">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Data do evento:</ion-label>
+          <ion-input
+          formControlName="date"
+          [value]="dataForm.value.date"
+          placeholder="dd/MM/yyyy HH:mm"
+          readonly
+          ></ion-input>
+          <ion-button fill="clear" id="open-date-input">
+            <ion-icon icon="calendar"></ion-icon>
+          </ion-button>
+          <ion-modal trigger="open-date-input" id="modal-date">
+            <ng-template>
+              <ion-datetime
+                #dateInput
+                presentation="date-time"
+                (ionChange)="dataForm.value.date = formatDate(dateInput.value)"
+                class="margin-horizontal-auto"
+              ></ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Localização (opcional)</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position='floating'>Descrição do local:</ion-label>
+          <ion-input formControlName="locationDescription"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position='floating'>Latitude:</ion-label>
+          <ion-input formControlName="locationLat"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position='floating'>Longitude:</ion-label>
+          <ion-input formControlName="locationLon"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Outras informações</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position='floating'>Código do youtube</ion-label>
+          <ion-input formControlName="youtubeCode" placeholder="Código do vídeo/live no youtube"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Evento é público?</ion-label>
+          <ion-toggle slot="end"
+          formControlName="public"
+          checked="off"></ion-toggle>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Botão do evento</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position='floating'>Texto:</ion-label>
+          <ion-input formControlName="buttonText"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position='floating'>Link redirecionado</ion-label>
+          <ion-input formControlName="buttonUrl"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </form>
   <ion-button> Criar evento </ion-button>
 </ion-content>
