@@ -39,7 +39,7 @@ export class AddEventPage implements OnInit {
         course: ['', Validators.required],
         icon: ['', Validators.required],
         name: ['', Validators.required],
-        shortDescription: '',
+        shortDescription: ['', Validators.maxLength(80)],
         description: '',
         date: ['', Validators.required],
         locationDescription: '',
