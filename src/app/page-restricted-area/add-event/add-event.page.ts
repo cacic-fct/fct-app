@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { format, parseISO, getDate, getMonth, getYear } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 @Component({
   selector: 'app-add-event',
@@ -34,21 +34,36 @@ export class AddEventPage implements OnInit {
   }
 
   ngOnInit() {
-    this.dataForm = this.formBuilder.group({
-      course: ['', Validators.required],
-      icon: ['', Validators.required],
-      name: ['', Validators.required],
-      shortDescription: '',
-      description: '',
-      date: ['', Validators.required],
-      locationDescription: '',
-      locationLat: '',
-      locationLon: '',
-      youtubeCode: '',
-      public: '',
-      buttonText: '',
-      buttonUrl: '',
-    });
+    this.dataForm = this.formBuilder.group(
+      {
+        course: ['', Validators.required],
+        icon: ['', Validators.required],
+        name: ['', Validators.required],
+        shortDescription: '',
+        description: '',
+        date: ['', Validators.required],
+        locationDescription: '',
+        locationLat: [
+          '',
+          [
+            //Validators.pattern('^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$')
+          ],
+        ],
+        locationLon: [
+          '',
+          [
+            //Validators.pattern('^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$')
+          ],
+        ],
+        youtubeCode: '',
+        public: '',
+        buttonText: '',
+        buttonUrl: '',
+      },
+      {
+        validators: [this.validatorLatLong, this.validatorButton],
+      }
+    );
     this.userData.displayName.replace(/%20/g, ' ');
   }
 
@@ -56,5 +71,27 @@ export class AddEventPage implements OnInit {
     return format(parseISO(value), 'dd/MM/yyyy HH:mm');
   }
 
-  onSubmit() {}
+  onSubmit(
+    // TODO implementar
+  ) {}
+
+  validatorLatLong(control: AbstractControl): ValidationErrors | null {
+    if (control.get('locationLat').value == '' && control.get('locationLon').value == '') {
+      control.get('locationLat').removeValidators(Validators.required);
+      control.get('locationLon').removeValidators(Validators.required);
+    }
+
+    if (control.get('locationLon').value != '') control.get('locationLat').addValidators(Validators.required);
+
+    if (control.get('locationLat').value != '') control.get('locationLon').addValidators(Validators.required);
+
+    return null;
+  }
+
+  validatorButton(control: AbstractControl): ValidationErrors | null {
+    if (control.get('buttonText').value != '') control.get('buttonUrl').addValidators(Validators.required);
+    else control.get('buttonUrl').removeValidators(Validators.required);
+
+    return null;
+  }
 }
