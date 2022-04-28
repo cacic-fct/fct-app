@@ -13,48 +13,48 @@ export class ContactEjsComponent implements OnInit {
       email: '',
       website: '',
       social: {
-        facebook: '',
-        instagram: '',
+        facebook: 'EJComp.UNESP',
+        instagram: 'ejcompunesp',
       },
     },
-    {
-      course: 'Arquitetura e Urbanismo',
-      acronym: '',
-      social: {
-        facebook: '',
-        instagram: '',
-      },
-    },
-    {
-      course: 'Educação Física',
-      acronym: '',
-      social: {
-        facebook: '',
-        instagram: '',
-      },
-    },
-    {
-      course: 'Engenharia Ambiental',
-      acronym: '',
-      social: {
-        facebook: '',
-        instagram: '',
-      },
-    },
+    // {
+    //   course: 'Arquitetura e Urbanismo',
+    //   acronym: '',
+    //   social: {
+    //     facebook: '',
+    //     instagram: '',
+    //   },
+    // },
+    // {
+    //   course: 'Educação Física',
+    //   acronym: '',
+    //   social: {
+    //     facebook: '',
+    //     instagram: '',
+    //   },
+    // },
+    // {
+    //   course: 'Engenharia Ambiental',
+    //   acronym: '',
+    //   social: {
+    //     facebook: '',
+    //     instagram: '',
+    //   },
+    // },
     {
       course: 'Engenharia Cartográfica e de Agrimensura',
-      acronym: '',
+      acronym: 'EJECart',
       social: {
         facebook: '',
-        instagram: '',
+        instagram: 'ejecart',
       },
     },
     {
       course: 'Estatística',
-      acronym: '',
+      acronym: 'EJEST',
       social: {
         facebook: '',
-        instagram: '',
+        instagram: 'ejest.unesp',
       },
     },
     // {
@@ -65,30 +65,30 @@ export class ContactEjsComponent implements OnInit {
     //     instagram: '',
     //   },
     // },
-    {
-      course: 'Fisioterapia',
-      acronym: '',
-      social: {
-        facebook: '',
-        instagram: '',
-      },
-    },
-    {
-      course: 'Geografia',
-      acronym: '',
-      social: {
-        facebook: '',
-        instagram: '',
-      },
-    },
-    {
-      course: 'Matemática',
-      acronym: '',
-      social: {
-        facebook: '',
-        instagram: '',
-      },
-    },
+    // {
+    //   course: 'Fisioterapia',
+    //   acronym: '',
+    //   social: {
+    //     facebook: '',
+    //     instagram: '',
+    //   },
+    // },
+    // {
+    //   course: 'Geografia',
+    //   acronym: '',
+    //   social: {
+    //     facebook: '',
+    //     instagram: '',
+    //   },
+    // },
+    // {
+    //   course: 'Matemática',
+    //   acronym: '',
+    //   social: {
+    //     facebook: '',
+    //     instagram: '',
+    //   },
+    // },
     // {
     //   course: 'Pedagogia',
     //   acronym: '',
