@@ -41,6 +41,15 @@
               fill="clear">
               <ion-icon name="globe-outline"></ion-icon>
             </ion-button>
+            <ion-button
+              *ngIf="centrosAcademicos.tel"
+              href="tel:{{ centrosAcademicos.tel }}"
+              attr.aria-label="Telefone da empresa júnior do curso de {{
+                centrosAcademicos.course
+              }}"
+              fill="clear">
+              <ion-icon name="call-outline"></ion-icon>
+            </ion-button>
           </div>
         </ion-card-content>
       </ion-card>
