@@ -44,7 +44,7 @@ export class ContactEjsComponent implements OnInit {
       acronym: 'GeoAmbiental Jr.',
       email:'acessogajr@gmail.com',
       website:'https://www.geoambientaljr.com/',
-      phone:'+17997212929',
+      phone:'+5517997212929',
       social: {
         facebook: 'GeoAmbientalJr',
         instagram: 'geoambientaljr',
