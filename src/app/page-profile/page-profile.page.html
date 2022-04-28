@@ -4,22 +4,35 @@
       <ion-back-button defaultHref="/menu"></ion-back-button>
     </ion-buttons>
     <ion-title>Seu perfil</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button [routerLink]="'/register'"> <ion-icon slot="icon-only" name="pencil-outline"></ion-icon></ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card>
-    <div class="ion-text-center">
-      <ion-avatar class="margin-horizontal-auto">
-        <img [src]="user.photoURL" />
-      </ion-avatar>
-      <h2 class="margin-horizontal-auto">{{user.displayName}}</h2>
-      <p class="margin-horizontal-auto">{{user.email}}</p>
-      <ngx-kjua
-        class="qr-code"
-        [text]="'uid:' + user.uid"
-        [renderAsync]="true"
-        [render]="'svg'"></ngx-kjua>
-    </div>
+    <ion-card-header>
+      <div class="ion-text-center">
+        <ion-avatar class="margin-horizontal-auto">
+          <img [src]="user.photoURL" />
+        </ion-avatar>
+        <ion-card-title>
+          <h2 class="margin-horizontal-auto">{{user.displayName}}</h2>
+          <p class="margin-horizontal-auto" style="font-size: 20px">{{user.email}}</p>
+        </ion-card-title>
+      </div>
+    </ion-card-header>
+    <ngx-kjua
+      class="qr-code ion-text-center"
+      [text]="'uid:' + user.uid"
+      [renderAsync]="true"
+      render="image"
+      ecLevel="H"
+      [minVersion]="7"
+      fill="#000"
+      [size]="320"
+      [quiet]="2"
+      back="#fff"></ngx-kjua>
   </ion-card>
 </ion-content>

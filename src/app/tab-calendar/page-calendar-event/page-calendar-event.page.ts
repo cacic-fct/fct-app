@@ -22,10 +22,7 @@ import { Control, defaults as defaultControls } from 'ol/control';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 
-import {
-  AngularFirestore,
-  AngularFirestoreDocument,
-} from '@angular/fire/compat/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { EventItem } from '../../shared/services/event';
 import { first, Observable } from 'rxjs';
@@ -50,10 +47,7 @@ export class PageCalendarEventPage implements OnInit {
     private afs: AngularFirestore
   ) {
     const id = this.router.url.split('/')[3];
-    this.item$ = this.afs
-      .doc<EventItem>(`events/${id}`)
-      .valueChanges({ idField: 'id' })
-      .pipe(trace('firestore'));
+    this.item$ = this.afs.doc<EventItem>(`events/${id}`).valueChanges({ idField: 'id' }).pipe(trace('firestore'));
   }
 
   ngOnInit() {}
@@ -74,7 +68,7 @@ export class PageCalendarEventPage implements OnInit {
           scale: 0.5,
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',
-          src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+          src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-blue.png',
         }),
       });
 
@@ -155,7 +149,26 @@ export class PageCalendarEventPage implements OnInit {
         },
       ],
     });
-    await toast.present();
+    toast.present();
+  }
+
+  async presentToastShare() {
+    const toast = await this.toastController.create({
+      header: 'Compartilhar evento',
+      message: 'Link copiado para a área de transferência.',
+      icon: 'copy',
+      position: 'bottom',
+      duration: 2000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    this.clipboardService.copy('https://fct-pp.web.app' + this.router.url);
+    toast.present();
   }
 
   getEmoji(emoji: string): any {

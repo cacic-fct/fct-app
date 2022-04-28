@@ -5,23 +5,20 @@ import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { AlertController } from '@ionic/angular';
 
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormControl,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
-import {
-  AngularFirestore,
-  AngularFirestoreDocument,
-} from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { textHeights } from 'ol/render/canvas';
+
 import { User } from '../shared/services/user';
 
 import { GlobalConstantsService } from '../shared/services/global-constants.service';
 
+import { trace } from '@angular/fire/compat/performance';
+
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+@UntilDestroy()
 @Component({
   selector: 'app-page-register',
   templateUrl: './page-register.page.html',
@@ -44,7 +41,8 @@ export class PageRegisterPage implements OnInit {
     public alertController: AlertController,
     public formBuilder: FormBuilder,
     public afs: AngularFirestore,
-    public router: Router
+    public router: Router,
+    public auth: AngularFireAuth
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
   }
@@ -54,6 +52,7 @@ export class PageRegisterPage implements OnInit {
       .collection('users')
       .doc<User>(this.userData.uid)
       .valueChanges()
+      .pipe(untilDestroyed(this), trace('firestore'))
       .subscribe((user) => {
         this.dataForm.value.academicID = user.academicID;
       });
@@ -66,9 +65,7 @@ export class PageRegisterPage implements OnInit {
     this.dataForm = this.formBuilder.group({
       // Validator doesn't update when value changes programatically
       // https://github.com/angular/angular/issues/30616
-      academicID: [
-        '' /*[Validators.required, Validators.pattern('^[0-9]{9}$')]*/,
-      ],
+      academicID: ['' /*[Validators.required, Validators.pattern('^[0-9]{9}$')]*/],
     });
   }
 
@@ -76,21 +73,21 @@ export class PageRegisterPage implements OnInit {
     if (!this.dataForm.valid) {
       return;
     }
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(
-      `users/${this.userData.uid}`
-    );
-    const user = {
-      academicID: this.dataForm.value.academicID,
-      dataVersion: this.dataVersion,
-    };
-    userRef.set(user, {
-      merge: true,
+    this.auth.authState.subscribe((user) => {
+      const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+      const userData = {
+        academicID: this.dataForm.value.academicID,
+        dataVersion: this.dataVersion,
+      };
+      userRef.set(userData, {
+        merge: true,
+      });
+      this.mySwal.fire();
+      // Fake delay to let animation finish
+      setTimeout(() => {
+        this.mySwal.close();
+        this.router.navigate(['/menu']);
+      }, 1500);
     });
-    this.mySwal.fire();
-    // Fake delay to let animation finish
-    setTimeout(() => {
-      this.mySwal.close();
-      this.router.navigate(['/menu']);
-    }, 1500);
   }
 }

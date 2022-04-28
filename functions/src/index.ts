@@ -12,10 +12,7 @@ initializeApp({
 exports.addAdminRole = functions.https.onCall((data, context) => {
   // Check if request is made by an admin
   if (!context.auth) {
-    throw new functions.https.HttpsError(
-      'failed-precondition',
-      'The function must be called while authenticated.'
-    );
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
   }
 
   if (context.app == undefined) {
@@ -25,12 +22,16 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
     );
   }
 
+  if (context.auth.token.role !== 1000) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+  }
+
   // Get user and add custom claim (admin)
   return getAuth()
     .getUserByEmail(data.email)
     .then((user) => {
       return getAuth().setCustomUserClaims(user.uid, {
-        admin: true,
+        role: 1000,
       });
     })
     .then(() => {
@@ -47,10 +48,7 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
 
 exports.removeAdminRole = functions.https.onCall((data, context) => {
   if (!context.auth) {
-    throw new functions.https.HttpsError(
-      'failed-precondition',
-      'The function must be called while authenticated.'
-    );
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
   }
 
   if (context.app == undefined) {
@@ -60,24 +58,21 @@ exports.removeAdminRole = functions.https.onCall((data, context) => {
     );
   }
 
-  const whitelist = [
-    'renan.yudi@unesp.br',
-    'willian.murayama@unesp.br',
-    'gc.tomiasi@unesp.br',
-  ];
+  if (context.auth.token.role !== 1000) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+  }
+
+  const whitelist = ['renan.yudi@unesp.br', 'willian.murayama@unesp.br', 'gc.tomiasi@unesp.br'];
 
   if (whitelist.includes(data.email)) {
-    throw new functions.https.HttpsError(
-      'failed-precondition',
-      'You cannot remove this user.'
-    );
+    throw new functions.https.HttpsError('failed-precondition', 'You cannot remove this user.');
   }
 
   return getAuth()
     .getUserByEmail(data.email)
     .then((user) => {
       return getAuth().setCustomUserClaims(user.uid, {
-        admin: undefined,
+        role: undefined,
       });
     })
     .then(() => {

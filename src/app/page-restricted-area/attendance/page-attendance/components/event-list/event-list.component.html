@@ -2,23 +2,26 @@
   <ng-container *ngIf="items$ | async; let items; else: loading">
     <ion-item
       *ngFor="let item of items"
-      style="cursor: pointer"
-      [style.--background]="courses[item.course] ? courses[item.course].color + '25' : undefined"
-      [routerLink]="['./evento', item.id]">
+      [style.--background]="courses[item.course] ? courses[item.course].color + '25' : undefined">
       <img [src]="getEmoji(item.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
 
       <ion-label>
         <h2 class="ion-text-wrap">{{ item.name }}</h2>
         <h3 class="ion-text-wrap">{{ item.shortDescription }}</h3>
-        <p *ngIf="courses[item.course]">
-          {{ courses[item.course].name }}
-        </p>
-      </ion-label>
-      <div slot="end">
         <h4 style="font-weight: 400">
           {{ getDateFromTimestamp(item.date) | date: 'HH:mm' }}
         </h4>
-      </div>
+        <p *ngIf="courses[item.course]" class="ion-text-wrap">{{ courses[item.course].name }}</p>
+        <ion-button fill="clear" [routerLink]="['scanner', item.id]">
+          <ion-icon name="qr-code-outline" slot="start"></ion-icon>
+          <p slot="end">Escanear</p>
+        </ion-button>
+
+        <ion-button fill="clear" [routerLink]="['list', item.id]">
+          <ion-icon name="list-outline" slot="start"></ion-icon>
+          <p slot="end">Listar</p>
+        </ion-button>
+      </ion-label>
     </ion-item>
     <h1 *ngIf="items.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
   </ng-container>

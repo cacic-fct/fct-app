@@ -1,6 +1,5 @@
 import Map from 'ol/Map';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Fill, Icon, Stroke, Style } from 'ol/style';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
@@ -11,13 +10,7 @@ import Overlay from 'ol/Overlay';
   providedIn: 'root',
 })
 export class MarkerService {
-  layers: Array<string> = [
-    'mercados',
-    'compras',
-    'hospitais',
-    'farmacias',
-    'autoridades',
-  ];
+  layers: Array<string> = ['mercados', 'compras', 'hospitais', 'farmacias', 'autoridades'];
 
   mercadosIcon = new Style({
     image: new Icon({
@@ -25,7 +18,7 @@ export class MarkerService {
       scale: 0.5,
       anchorXUnits: 'fraction',
       anchorYUnits: 'fraction',
-      src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+      src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-blue.png',
     }),
     stroke: new Stroke({
       color: '#3274A3',
@@ -39,7 +32,7 @@ export class MarkerService {
       scale: 0.5,
       anchorXUnits: 'fraction',
       anchorYUnits: 'fraction',
-      src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+      src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-gold.png',
     }),
     stroke: new Stroke({
       color: '#C1A32D',
@@ -53,7 +46,7 @@ export class MarkerService {
       scale: 0.5,
       anchorXUnits: 'fraction',
       anchorYUnits: 'fraction',
-      src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+      src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-red.png',
     }),
     stroke: new Stroke({
       color: '#982E40',
@@ -67,7 +60,7 @@ export class MarkerService {
       scale: 0.5,
       anchorXUnits: 'fraction',
       anchorYUnits: 'fraction',
-      src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+      src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-orange.png',
     }),
     stroke: new Stroke({
       color: '#98652E',
@@ -81,7 +74,7 @@ export class MarkerService {
       scale: 0.5,
       anchorXUnits: 'fraction',
       anchorYUnits: 'fraction',
-      src: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png',
+      src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-grey.png',
     }),
     stroke: new Stroke({
       color: '#6B6B6B',
@@ -135,14 +128,10 @@ export class MarkerService {
         map.forEachFeatureAtPixel(
           event.pixel,
           (feature) => {
-            popup.innerHTML = `<b>${feature.get('name')}</b><br>${
-              feature.get('description') || ''
-            }
+            popup.innerHTML = `<b>${feature.get('name')}</b><br>${feature.get('description') || ''}
           ${
             feature.get('maps')
-              ? `<br><a href="https://goo.gl/maps/${feature.get(
-                  'maps'
-                )}" target="_blank">Mais informações</a>`
+              ? `<br><a href="https://goo.gl/maps/${feature.get('maps')}" target="_blank">Mais informações</a>`
               : ''
           }
           `;

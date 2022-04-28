@@ -73,7 +73,7 @@ export class PageQrScannerPage implements OnInit {
   }
 
   onCodeResult(resultString: string) {
-    if (resultString.startsWith('uid:')) {
+    if (resultString.startsWith('uid:') && resultString.length === 32) {
       //this.presentModal(resultString.substring(4));
     } else {
       this.toastInvalid();
@@ -99,6 +99,6 @@ export class PageQrScannerPage implements OnInit {
       position: 'top',
       duration: 2000,
     });
-    await toast.present();
+    toast.present();
   }
 }

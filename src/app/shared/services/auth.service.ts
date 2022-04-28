@@ -1,15 +1,15 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  AngularFirestore,
-  AngularFirestoreDocument,
-} from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { User } from '../services/user';
 import firebase from 'firebase/compat/app';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
+import { AngularFireRemoteConfig } from '@angular/fire/compat/remote-config';
+import { first } from 'rxjs';
+import { trace } from '@angular/fire/compat/performance';
 
 @Injectable()
 export class AuthService {
@@ -21,9 +21,10 @@ export class AuthService {
     public router: Router,
     public afs: AngularFirestore,
     public ngZone: NgZone,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public remoteConfig: AngularFireRemoteConfig,
+    public toastController: ToastController
   ) {
-    //  this.auth.useEmulator('http://localhost:8124');
     this.auth.authState.subscribe((user) => {
       if (user) {
         this.userData = user;
@@ -52,7 +53,7 @@ export class AuthService {
         console.log('Signed in');
       })
       .catch((error) => {
-        console.log('error');
+        console.error(error);
       });
   }
 
@@ -63,13 +64,32 @@ export class AuthService {
       this.SetUserData(result.user);
     } catch (error) {
       console.error('Login failed');
+      console.error(error);
+      this.toastLoginFailed();
+      this.SignOut();
     }
   }
 
+  async toastLoginFailed() {
+    const toast = await this.toastController.create({
+      header: 'Houve um erro no seu login',
+      message: 'Verifique a sua conexão e faça login novamente.',
+      icon: 'close-circle',
+      position: 'bottom',
+      duration: 5000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    toast.present();
+  }
+
   SetUserData(user: firebase.User) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(
-      `users/${user.uid}`
-    );
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
     const userData = {
       uid: user.uid,
       email: user.email,
@@ -82,17 +102,20 @@ export class AuthService {
   }
 
   CompareUserdataVersion(user: firebase.User) {
-    this.afs
-      .doc<User>(`users/${user.uid}`)
-      .valueChanges()
-      .subscribe((data) => {
-        if (data.dataVersion && data.dataVersion !== this.dataVersion) {
-          this.router.navigate(['/register']);
-        }
-      });
-  }
-
-  async isLoggedIn(): Promise<boolean> {
-    return this.auth.authState !== null;
+    this.remoteConfig.booleans.registerPrompt.pipe(first(), trace('remoteconfig')).subscribe((registerPrompt) => {
+      if (registerPrompt) {
+        this.afs
+          .doc<User>(`users/${user.uid}`)
+          .valueChanges()
+          .subscribe((data) => {
+            if (data === undefined) {
+              return;
+            }
+            if (!data.dataVersion || data.dataVersion !== this.dataVersion) {
+              this.router.navigate(['/register']);
+            }
+          });
+      }
+    });
   }
 }

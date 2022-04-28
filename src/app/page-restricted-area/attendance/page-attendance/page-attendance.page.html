@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Coleta de presença</ion-title>
+    <ion-title>Presenças</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/area-restrita"></ion-back-button>
     </ion-buttons>
@@ -10,10 +10,10 @@
 <ion-content>
   <ion-datetime
     [value]="dateValue"
-    #popoverDatetime
+    #datePicker
     presentation="date"
     localte="pt-BR"
     class="margin-horizontal-auto"
-    (ionChange)="updateDate(popoverDatetime.value)"></ion-datetime>
-  <app-event-list [date]="dateDate"> </app-event-list>
+    (ionChange)="updateDate(datePicker.value)"></ion-datetime>
+  <app-event-list [date]="dateDate" [redirection]="'scanner'"> </app-event-list>
 </ion-content>
