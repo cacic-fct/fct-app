@@ -10,50 +10,64 @@ export class ContactEjsComponent implements OnInit {
     {
       course: 'Ciência da Computação',
       acronym: 'EJComp',
-      email: '',
-      website: '',
+      email: 'computacaojr@gmail.com',
+      website: 'https://www.ejcomp.com.br',
+      tel:'(18) 3229-5466',
       social: {
         facebook: 'EJComp.UNESP',
         instagram: 'ejcompunesp',
       },
     },
-    // {
-    //   course: 'Arquitetura e Urbanismo',
-    //   acronym: '',
-    //   social: {
-    //     facebook: '',
-    //     instagram: '',
-    //   },
-    // },
-    // {
-    //   course: 'Educação Física',
-    //   acronym: '',
-    //   social: {
-    //     facebook: '',
-    //     instagram: '',
-    //   },
-    // },
-    // {
-    //   course: 'Engenharia Ambiental',
-    //   acronym: '',
-    //   social: {
-    //     facebook: '',
-    //     instagram: '',
-    //   },
-    // },
+    {
+      course: 'Arquitetura e Urbanismo',
+      acronym: 'Ópera Krios',
+      email:'operakrios@gmail.com',
+      website:'http://www.operakrios.com.br',
+      tel:'(18) 99777-3004',
+      social: {
+        facebook: 'operakrios',
+        instagram: 'operakrios',
+      },
+    },
+    {
+      course: 'Educação Física',
+      acronym: 'Performance Jr',
+      website:'https://empresaperformance1.wixsite.com/performancejr',
+      tel:'(18) 99735-0415',
+      social: {
+        facebook: 'performance.junior',
+        instagram: 'performance.jr',
+      },
+    },
+    {
+      course: 'Geografia e Engenharia Ambiental',
+      acronym: 'GeoAmbiental Jr.',
+      email:'acessogajr@gmail.com',
+      website:'https://www.geoambientaljr.com/',
+      tel:'(17) 99721-2929',
+      social: {
+        facebook: 'GeoAmbientalJr',
+        instagram: 'geoambientaljr',
+        linkedin:'geoambiental-jr',
+      },
+    },
     {
       course: 'Engenharia Cartográfica e de Agrimensura',
       acronym: 'EJECart',
+      email:'contato.ejecart@gmail.com',
+      tel:'(18) 3229-5411',
       social: {
-        facebook: '',
+        facebook: 'ejecart',
         instagram: 'ejecart',
       },
     },
     {
       course: 'Estatística',
       acronym: 'EJEST',
+      email:'ejest.unesp@gmail.com',
+      tel:'(18) 3229-5413',
       social: {
-        facebook: '',
+        facebook: 'ejest.consultoria',
         instagram: 'ejest.unesp',
       },
     },
