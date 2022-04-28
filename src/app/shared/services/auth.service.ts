@@ -73,7 +73,7 @@ export class AuthService {
   async toastLoginFailed() {
     const toast = await this.toastController.create({
       header: 'Houve um erro no seu login',
-      message: 'Por favor, faça login novamente.',
+      message: 'Verifique a sua conexão e faça login novamente.',
       icon: 'close-circle',
       position: 'bottom',
       duration: 5000,
