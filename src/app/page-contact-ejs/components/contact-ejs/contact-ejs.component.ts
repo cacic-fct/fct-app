@@ -12,7 +12,7 @@ export class ContactEjsComponent implements OnInit {
       acronym: 'EJComp',
       email: 'computacaojr@gmail.com',
       website: 'https://www.ejcomp.com.br',
-      phone:'+551832295466',
+      phone: '+551832295466',
       social: {
         facebook: 'EJComp.UNESP',
         instagram: 'ejcompunesp',
@@ -21,9 +21,9 @@ export class ContactEjsComponent implements OnInit {
     {
       course: 'Arquitetura e Urbanismo',
       acronym: 'Ópera Krios',
-      email:'operakrios@gmail.com',
-      website:'http://www.operakrios.com.br',
-      phone:'+5518997773004',
+      email: 'operakrios@gmail.com',
+      website: 'http://www.operakrios.com.br',
+      phone: '+5518997773004',
       social: {
         facebook: 'operakrios',
         instagram: 'operakrios',
@@ -32,8 +32,8 @@ export class ContactEjsComponent implements OnInit {
     {
       course: 'Educação Física',
       acronym: 'Performance Jr',
-      website:'https://empresaperformance1.wixsite.com/performancejr',
-      phone:'+5518997350415',
+      website: 'https://empresaperformance1.wixsite.com/performancejr',
+      phone: '+5518997350415',
       social: {
         facebook: 'performance.junior',
         instagram: 'performance.jr',
@@ -42,20 +42,20 @@ export class ContactEjsComponent implements OnInit {
     {
       course: 'Geografia e Engenharia Ambiental',
       acronym: 'GeoAmbiental Jr.',
-      email:'acessogajr@gmail.com',
-      website:'https://www.geoambientaljr.com/',
-      phone:'+5517997212929',
+      email: 'acessogajr@gmail.com',
+      website: 'https://www.geoambientaljr.com/',
+      phone: '+5517997212929',
       social: {
         facebook: 'GeoAmbientalJr',
         instagram: 'geoambientaljr',
-        linkedin:'geoambiental-jr',
+        linkedin: 'geoambiental-jr',
       },
     },
     {
       course: 'Engenharia Cartográfica e de Agrimensura',
       acronym: 'EJECart',
-      email:'contato.ejecart@gmail.com',
-      phone:'+551832295411',
+      email: 'contato.ejecart@gmail.com',
+      phone: '+551832295411',
       social: {
         facebook: 'ejecart',
         instagram: 'ejecart',
@@ -64,8 +64,8 @@ export class ContactEjsComponent implements OnInit {
     {
       course: 'Estatística',
       acronym: 'EJEST',
-      email:'ejest.unesp@gmail.com',
-      phone:'+551832295413',
+      email: 'ejest.unesp@gmail.com',
+      phone: '+551832295413',
       social: {
         facebook: 'ejest.consultoria',
         instagram: 'ejest.unesp',
@@ -126,15 +126,6 @@ export class ContactEjsComponent implements OnInit {
     facebook: 'https://fb.com/',
     instagram: 'https://instagram.com/',
     youtube: 'https://youtube.com/channel/',
-    medium: 'https://medium.com/@',
-    flickr: 'https://flickr.com/photos/',
-    twitch: 'https://twitch.tv/',
-    soundcloud: 'https://soundcloud.com/',
-    spotify: 'https://open.spotify.com/user/',
-    reddit: 'https://reddit.com/u/',
-    deviantart: 'https://deviantart.com/',
-    steam: 'https://steamcommunity.com/id/',
-    xbox: 'http://live.xbox.com/Profile?Gamertag=',
   };
   constructor() {}
 

@@ -116,15 +116,6 @@ export class ContactCasComponent implements OnInit {
     facebook: 'https://fb.com/',
     instagram: 'https://instagram.com/',
     youtube: 'https://youtube.com/channel/',
-    medium: 'https://medium.com/@',
-    flickr: 'https://flickr.com/photos/',
-    twitch: 'https://twitch.tv/',
-    soundcloud: 'https://soundcloud.com/',
-    spotify: 'https://open.spotify.com/user/',
-    reddit: 'https://reddit.com/u/',
-    deviantart: 'https://deviantart.com/',
-    steam: 'https://steamcommunity.com/id/',
-    xbox: 'http://live.xbox.com/Profile?Gamertag=',
   };
   constructor() {}
 
