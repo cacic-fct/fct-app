@@ -1,16 +1,42 @@
-ion-col {
+.flex-card {
   display: flex;
-  min-width: 320px;
-  max-width: 400px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
 }
 
-ion-card {
-  width: 100%;
+.card-item {
+  //   flex-grow: 1;
+  flex: 1 1 0px;
 }
 
-@media (max-width: 1280px) {
-  ion-col {
+@media (min-width: 320px) and (max-width: 480px) {
+  .card-item {
     min-width: 320px;
-    max-width: 640px;
+    max-width: 480px;
+  }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  .card-item {
+    min-width: 400px;
+    max-width: 600px;
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .card-item {
+    min-width: 400px;
+    max-width: 600px;
+  }
+}
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .card-item {
+    min-width: 600px;
+    max-width: 1200px;
+  }
+}
+@media (min-width: 1201px) {
+  .card-item {
+    min-width: 600px;
+    max-width: 1200px;
   }
 }
