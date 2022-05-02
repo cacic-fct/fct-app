@@ -32,6 +32,7 @@ export class ContactEjsComponent implements OnInit {
     {
       course: 'Educação Física',
       acronym: 'Performance Jr',
+      email: 'marketingperformancejr@gmail.com',
       website: 'https://empresaperformance1.wixsite.com/performancejr',
       phone: '+5518997350415',
       social: {
