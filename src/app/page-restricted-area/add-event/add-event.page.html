@@ -59,7 +59,7 @@
 
     <ion-card-content>
       <ion-item>
-        <ion-label position="floating">Pré-definição</ion-label>
+        <ion-label position="floating">Predefinição</ion-label>
         <ion-select (ionChange)="placeChange($event)" interface="popover" placeholder="Personalizado" #selectPlace>
           <ng-container *ngFor="let places of places | keyvalue">
             <ion-select-option slot="start" class="course" [value]="places.key">
