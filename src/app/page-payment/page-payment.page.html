@@ -1,0 +1,103 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pagamentos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="items$ | async; let items; else: loading">
+    <ion-card *ngFor="let item of items">
+      <ion-card-header>
+        <ion-card-title>{{ item.name }}</ion-card-title>
+        <ion-card-subtitle>{{ item.price }}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ng-container *ngIf="!items.receiptUploaded;">
+          <p>Pagamento pendente</p>
+          <ng-container *ngIf="items.erroMessage;">
+            <p>Erro na confirmação do pagamento: {{ item.errorMessage }}</p>
+          </ng-container>
+
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-button (click)="viewReceipt(item.id)">
+                  <ion-icon slot="start" name="cash"></ion-icon>
+                  Efetuar pagamento
+                </ion-button>
+              </ion-col>
+              <ion-col>
+                <ion-button (click)="viewReceipt(item.id)">
+                  <ion-icon slot="start" name="paper-plane"></ion-icon>
+                  Enviar comprovante
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ng-container>
+
+        <ng-container *ngIf="items.receiptUploaded && !items.paid;">
+          <p>Aguardando confirmação do pagamento</p>
+          <ion-button (click)="viewReceipt(item.id)">
+            <ion-icon slot="start" name="paper-plane"></ion-icon>
+            Reenviar comprovante
+          </ion-button>
+        </ng-container>
+
+        <ng-container *ngIf="items.paid;">
+          <p>Pagamento confirmado</p>
+        </ng-container>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title><ion-skeleton-text animated style="width: 200px"> </ion-skeleton-text></ion-card-title>
+        <ion-card-subtitle><ion-skeleton-text animated style="width: 50px"> </ion-skeleton-text></ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-skeleton-text animated style="width: 150px"> </ion-skeleton-text>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>SECOMPP 2022</ion-card-title>
+      <ion-card-subtitle>R$ 10,00</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      Aguardando pagamento
+      <br />
+      Aguardando confirmação do pagamento
+      <br />
+      Pagamento confirmado
+      <br />
+      Erro no pagamento: mensagem
+    </ion-card-content>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button>
+            <ion-icon slot="start" name="cash"></ion-icon>
+            Efetuar pagamento
+          </ion-button>
+          <ion-button>
+            <ion-icon slot="start" name="paper-plane"></ion-icon>
+            Enviar comprovante
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card></ion-content
+>
