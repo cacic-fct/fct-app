@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/pagamentos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pagar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>SECOMPP 2022</ion-card-title>
+      <ion-card-subtitle>R$ 10,00</ion-card-subtitle>
+      <ion-card-content>
+        Método de pagamento: Pix
+        <br />
+        Data limite para o pagamento: 01/01/2020
+        <br />
+        Chave Pix: aaaaa
+      </ion-card-content>
+    </ion-card-header>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button>
+            <ion-icon slot="start" name="copy"></ion-icon>
+            Copiar chave Pix
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <ion-card>
+    <!-- <ng-container>
+     TODO:
+       <p class="ion-padding-horizontal">Você já enviou um comprovante.</p>
+      <br />
+      <ion-button (click)="viewReceipt()">
+        <ion-icon slot="start" name="eye"></ion-icon>
+        Visualizar comprovante
+      </ion-button>
+    </ng-container>-->
+
+    <ng-container *ngIf="uploadPercent | async as countValue">
+      <ion-progress-bar [value]="countValue / 10"></ion-progress-bar>
+    </ng-container>
+
+    <input
+      type="file"
+      class="file-input"
+      (change)="uploadFile($event)"
+      accept="image/png, image/jpeg, image/webp, image/heic, image/heif"
+      #fileUpload />
+
+    <div class="file-upload">
+      <p class="ion-padding-horizontal">
+        {{ fileName ? (fileName + ": " + ( uploadPercent | async) + "%") : "Nenhum arquivo selecionado."}}
+      </p>
+
+      <br />
+
+      <ion-button (click)="fileUpload.click()">
+        <ion-icon slot="start" name="paper-plane"></ion-icon>
+        Enviar comprovante
+      </ion-button>
+    </div>
+  </ion-card>
+</ion-content>

@@ -8,6 +8,10 @@ const routes: Routes = [
     path: '',
     component: PagePaymentPage,
   },
+  {
+    path: 'pagar/:id',
+    loadChildren: () => import('./page-pay/page-pay.module').then((m) => m.PagePayPageModule),
+  },
 ];
 
 @NgModule({
