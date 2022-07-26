@@ -85,5 +85,7 @@ baseline.json
 *-debug.log
 .runtimeconfig.json
 firestore.rules
+storage.rules
+emulator-data/
 
 .eslintcache
