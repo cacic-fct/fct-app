@@ -9,8 +9,8 @@ const routes: Routes = [
     component: PageAboutPage,
   },
   {
-    path: 'page-support',
-    loadChildren: () => import('./page-support/page-support.module').then( m => m.PageSupportPageModule)
+    path: 'suporte',
+    loadChildren: () => import('./page-support/page-support.module').then((m) => m.PageSupportPageModule),
   },
 ];
 
