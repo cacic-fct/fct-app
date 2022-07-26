@@ -18,6 +18,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./page-manage-admins/page-manage-admins.module').then((m) => m.PageManageAdminsPageModule),
   },
+  {
+    path: 'adicionar-grande-evento',
+    loadChildren: () => import('./add-major-event/add-major-event.module').then((m) => m.AddMajorEventPageModule),
+  },
 ];
 
 @NgModule({
