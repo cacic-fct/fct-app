@@ -10,6 +10,9 @@ import { GlobalConstantsService } from './global-constants.service';
 import { AngularFireRemoteConfig } from '@angular/fire/compat/remote-config';
 import { first } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
+import { PageVerifyPhonePage } from 'src/app/page-verify-phone/page-verify-phone.page';
+
+import * as firebaseAuth from 'firebase/auth';
 
 @Injectable()
 export class AuthService {
@@ -117,5 +120,27 @@ export class AuthService {
           });
       }
     });
+  }
+
+  async verifyPhoneModal(phone: string): Promise<boolean> {
+    const modal = await this.modalController.create({
+      component: PageVerifyPhonePage,
+      componentProps: {
+        phone: phone,
+      },
+    });
+
+    await modal.present();
+
+    return await modal.onDidDismiss().then((data) => {
+      if (data) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  async phoneUnlink() {
+    firebaseAuth.unlink(this.userData, firebase.auth.PhoneAuthProvider.PROVIDER_ID);
   }
 }

@@ -50,6 +50,10 @@ const routes: Routes = [
     path: 'entidades',
     loadChildren: () => import('./page-contact-cas/page-contact-cas.module').then((m) => m.PageContactCasPageModule),
   },
+  {
+    path: 'page-debug',
+    loadChildren: () => import('./page-debug/page-debug.module').then( m => m.PageDebugPageModule)
+  },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadingStrategyService })],
