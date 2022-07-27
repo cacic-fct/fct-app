@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { BarcodeFormat } from '@zxing/library';
-import { BehaviorSubject, first, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, first, Observable, of } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
@@ -15,6 +15,7 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { Timestamp } from '@firebase/firestore-types';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 @UntilDestroy()
 @Component({
   selector: 'app-scanner',
@@ -22,6 +23,7 @@ import { Timestamp } from '@firebase/firestore-types';
   styleUrls: ['./scanner.page.scss'],
 })
 export class ScannerPage implements OnInit {
+  @Input('manualInput') manualInput: string;
   @ViewChild('mySwal')
   private mySwal: SwalComponent;
 
@@ -52,7 +54,8 @@ export class ScannerPage implements OnInit {
     private afs: AngularFirestore,
     private router: Router,
     public courses: CoursesService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private fns: AngularFireFunctions
   ) {
     this.eventID = this.router.url.split('/')[4];
 
@@ -238,6 +241,66 @@ export class ScannerPage implements OnInit {
     this._backdropVisibleSubject.next(false);
     // Remove backdrop class
     document.querySelector('ion-backdrop').classList.remove(color);
+  }
+
+  getUserUid() {
+    let manualInput = this.manualInput;
+    if ((!manualInput.includes('@') && !manualInput.match(/^\+?[0-9]+$/)) || manualInput === '') {
+      this.toastInvalid();
+      return;
+    }
+
+    if (manualInput.match(/^[0-9]+$/) && manualInput.length === 11) {
+      manualInput = `+55${manualInput}`;
+    }
+
+    // TODO: Exibit toastinvalid se retornar erro. Deve retornar THROW ou MESSAGE?
+    const getUserUid = this.fns.httpsCallable('getUserUid');
+    getUserUid({ string: manualInput })
+      .pipe(first())
+      .subscribe((response) => {
+        debugger;
+        this.manualInput = '';
+        if (response.uid === undefined) {
+        }
+        const uid = response.uid;
+        this.afs
+          .collection<attendance>(`events/${this.eventID}/attendance`)
+          .doc(uid)
+          .get()
+          .pipe(first(), trace('firestore'))
+          .subscribe((document) => {
+            // If document with user uid already exists
+            if (document.exists) {
+              this.backdropColor('duplicate');
+              this.toastDuplicate();
+              return false;
+            } else {
+              // Check if user uid exists
+              this.afs
+                .collection('users')
+                .doc(uid)
+                .get()
+                .pipe(first(), trace('firestore'))
+                .subscribe((user) => {
+                  if (user.exists) {
+                    this.afs.collection(`events/${this.eventID}/attendance`).doc(uid).set({
+                      time: new Date(),
+                    });
+                    this.audioSuccess.play();
+                    this.toastSucess();
+                    this.backdropColor('success');
+                    this.attendanceSessionScans++;
+                    return true;
+                  } else {
+                    this.backdropColor('invalid');
+                    this.toastInvalid();
+                    return false;
+                  }
+                });
+            }
+          });
+      });
   }
 }
 

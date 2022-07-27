@@ -41,7 +41,7 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
     })
     .catch((error) => {
       return {
-        message: `An error occured: ${error}`,
+        message: `An error has occured: ${error}`,
       };
     });
 });
@@ -82,7 +82,60 @@ exports.removeAdminRole = functions.https.onCall((data, context) => {
     })
     .catch((error) => {
       return {
-        message: `An error occured: ${error}`,
+        message: `An error has occured: ${error}`,
       };
+    });
+});
+
+exports.getUserUid = functions.https.onCall((data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+  }
+
+  if (context.app == undefined) {
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'The function must be called from an App Check verified app.'
+    );
+  }
+
+  if (context.auth.token.role !== 1000) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+  }
+
+  if (data.string === '') {
+    throw new functions.https.HttpsError('invalid-argument', 'A string must be provided.');
+  }
+
+  if (data.string.includes('@')) {
+    return getAuth()
+      .getUserByEmail(data.string)
+      .then((user) => {
+        return {
+          uid: user.uid,
+        };
+      })
+      .catch((error) => {
+        throw new functions.https.HttpsError('aborted', `An error has occured: ${error}`);
+      });
+  }
+  // Check if string only has numbers
+  if (!data.string.match(/^\+?[0-9]+$/)) {
+    throw new functions.https.HttpsError('invalid-argument', `The string is invalid.`);
+  }
+
+  if (data.string.length === 11) {
+    data.string = `+55${data.string}`;
+  }
+
+  return getAuth()
+    .getUserByPhoneNumber(data.string)
+    .then((user) => {
+      return {
+        uid: user.uid,
+      };
+    })
+    .catch((error) => {
+      throw new functions.https.HttpsError('aborted', `An error has occured: ${error}`);
     });
 });
