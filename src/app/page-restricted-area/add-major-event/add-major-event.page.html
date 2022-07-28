@@ -123,24 +123,37 @@
         <ion-label>Diferenciar preço por tipo de inscrição</ion-label>
         <ion-toggle slot="end" formControlName="public" (ionChange)="priceDiferentiateChange()"></ion-toggle>
       </ion-item>
+
       <ng-container *ngIf="(priceDiferentiate$ | async); else noPriceDiferentiation">
         <ion-item>
           <ion-label position="floating">Aluno da Unesp</ion-label>
-          <ion-input formControlName="priceStudents"></ion-input>
+          <ion-input
+            formControlName="priceStudents"
+            inputmode="numeric"
+            placeholder="Somente números"
+            (keypress)="inputNumbersOnly($event)"></ion-input>
           <ion-text slot="end" color="medium"
             ><p>{{ dataForm.value.priceStudents / 100 | currency: 'BRL'}}</p></ion-text
           >
         </ion-item>
         <ion-item>
           <ion-label position="floating">Aluno de outras instituições de ensino superior</ion-label>
-          <ion-input formControlName="priceOtherStudents"></ion-input>
+          <ion-input
+            formControlName="priceOtherStudents"
+            inputmode="numeric"
+            placeholder="Somente números"
+            (keypress)="inputNumbersOnly($event)"></ion-input>
           <ion-text slot="end" color="medium"
             ><p>{{ dataForm.value.priceOtherStudents / 100 | currency: 'BRL'}}</p></ion-text
           >
         </ion-item>
         <ion-item>
           <ion-label position="floating">Professor</ion-label>
-          <ion-input formControlName="priceProfessors"></ion-input>
+          <ion-input
+            formControlName="priceProfessors"
+            inputmode="numeric"
+            placeholder="Somente números"
+            (keypress)="inputNumbersOnly($event)"></ion-input>
           <ion-text slot="end" color="medium"
             ><p>{{ dataForm.value.priceProfessors / 100 | currency: 'BRL'}}</p></ion-text
           >
@@ -149,25 +162,48 @@
       <ng-template #noPriceDiferentiation>
         <ion-item>
           <ion-label position="floating">Preço</ion-label>
-          <ion-input formControlName="price"></ion-input>
+          <ion-input
+            formControlName="price"
+            inputmode="numeric"
+            placeholder="Somente números"
+            (keypress)="inputNumbersOnly($event)"></ion-input>
           <ion-text slot="end" color="medium"><p>{{ dataForm.value.price / 100 | currency: 'BRL'}}</p></ion-text>
         </ion-item>
       </ng-template>
       <ion-card-header>
         <ion-card-title>Informações de pagamento</ion-card-title>
       </ion-card-header>
-
       <ion-item>
-        <ion-label position="floating">Chave Pix</ion-label>
-        <ion-input formControlName="accountChavePix"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Nome completo do titular da conta</ion-label>
+        <ion-label position="floating">Nome completo do beneficiário</ion-label>
         <ion-input formControlName="accountName"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Instituição da conta</ion-label>
-        <ion-input formControlName="accountBank"></ion-input>
+        <ion-label position="floating">CPF ou CNPJ</ion-label>
+        <ion-input
+          formControlName="accountBank"
+          placeholder="Somente números"
+          inputmode="numeric"
+          (keypress)="inputNumbersOnly($event)"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Instituição bancária</ion-label>
+        <ion-input formControlName="accountBank" placeholder="Inclua o número do banco"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Agência - Sem dígito verificador</ion-label>
+        <ion-input
+          formControlName="accountBank"
+          placeholder="XXXX"
+          inputmode="numeric"
+          (keypress)="inputNumbersOnly($event)"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Conta - Com dígito verificador</ion-label>
+        <ion-input formControlName="accountBank" placeholder="XXXX-X"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Chave Pix</ion-label>
+        <ion-input formControlName="accountChavePix"></ion-input>
       </ion-item>
     </ng-container>
 

@@ -146,4 +146,13 @@ export class AddMajorEventPage implements OnInit {
     this.priceDiferentiate = !this.priceDiferentiate;
     this._priceDiferentiateSubject.next(this.priceDiferentiate);
   }
+
+  inputNumbersOnly(event) {
+    const pattern = /\d/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // Not a number, prevent input
+      event.preventDefault();
+    }
+  }
 }
