@@ -180,26 +180,26 @@
       <ion-item>
         <ion-label position="floating">CPF ou CNPJ</ion-label>
         <ion-input
-          formControlName="accountBank"
+          formControlName="accountDocument"
           placeholder="Somente números"
           inputmode="numeric"
           (keypress)="inputNumbersOnly($event)"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Instituição bancária</ion-label>
-        <ion-input formControlName="accountBank" placeholder="Inclua o número do banco"></ion-input>
+        <ion-input formControlName="accountBank" placeholder="Inclua o número e nome extenso do banco"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Agência - Sem dígito verificador</ion-label>
         <ion-input
-          formControlName="accountBank"
+          formControlName="accountAgency"
           placeholder="XXXX"
           inputmode="numeric"
           (keypress)="inputNumbersOnly($event)"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Conta - Com dígito verificador</ion-label>
-        <ion-input formControlName="accountBank" placeholder="XXXX-X"></ion-input>
+        <ion-input formControlName="accountNumber" placeholder="XXXX-X"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Chave Pix</ion-label>
@@ -235,7 +235,9 @@
       <ion-input value="{{ userData.displayName }}" color="medium" readonly> </ion-input>
     </ion-item>
 
-    <ion-button class="ion-padding-horizontal" id="check-modal" type="submit">Criar evento</ion-button>
+    <ion-button class="ion-padding-horizontal" id="check-modal" type="submit" [disabled]="!dataForm.valid"
+      >Criar evento</ion-button
+    >
     <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, seu nome será gravado junto ao evento.</p>
   </form>
 </ion-content>
