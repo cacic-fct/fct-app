@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-page-profile',
@@ -7,9 +10,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PageProfilePage implements OnInit {
   user: any;
-  constructor() {}
+  uid: string;
+  constructor(public auth: AngularFireAuth) {}
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('user'));
+
+    this.auth.user.pipe(first()).subscribe((user) => {
+      if (user) {
+        this.uid = user.uid;
+      }
+    });
   }
 }

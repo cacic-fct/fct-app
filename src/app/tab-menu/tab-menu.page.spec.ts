@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PageContactEjsPage } from './page-contact-ejs.page';
+import { TabMenuPage } from './tab-menu.page';
 
-describe('PageContactEjsPage', () => {
-  let component: PageContactEjsPage;
-  let fixture: ComponentFixture<PageContactEjsPage>;
+describe('TabInfoPage', () => {
+  let component: TabMenuPage;
+  let fixture: ComponentFixture<TabMenuPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageContactEjsPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [TabMenuPage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageContactEjsPage);
+    fixture = TestBed.createComponent(TabMenuPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

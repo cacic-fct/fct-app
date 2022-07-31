@@ -1,16 +1,19 @@
 import { NgModule } from '@angular/core';
 import { canActivate, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { PreloadingStrategyService } from './shared/services/preloading-strategy.service';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['menu']);
 
 const routes: Routes = [
   {
     path: '',
+    data: { preload: true },
     loadChildren: () => import('./tabs/tabs.module').then((m) => m.TabsPageModule),
   },
   {
     path: 'about',
+    data: { preload: true },
     loadChildren: () => import('./page-about/page-about.module').then((m) => m.PageAboutPageModule),
   },
   {
@@ -39,20 +42,17 @@ const routes: Routes = [
   },
   {
     path: 'profile',
+    data: { preload: true },
     loadChildren: () => import('./page-profile/page-profile.module').then((m) => m.PageProfilePageModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
-    path: 'contato/cas',
+    path: 'entidades',
     loadChildren: () => import('./page-contact-cas/page-contact-cas.module').then((m) => m.PageContactCasPageModule),
-  },
-  {
-    path: 'contato/ejs',
-    loadChildren: () => import('./page-contact-ejs/page-contact-ejs.module').then((m) => m.PageContactEjsPageModule),
   },
 ];
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
+  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadingStrategyService })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
