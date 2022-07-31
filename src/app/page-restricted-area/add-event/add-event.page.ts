@@ -9,6 +9,8 @@ import { format, parseISO } from 'date-fns';
 import { parse as parseDate } from 'date-fns';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { colorDecodeId } from 'ol/renderer/webgl/Layer';
 
 @Component({
   selector: 'app-add-event',
@@ -42,7 +44,8 @@ export class AddEventPage implements OnInit {
   constructor(
     public formBuilder: FormBuilder,
     private modalController: ModalController,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private afs: AngularFirestore
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
   }
@@ -85,7 +88,17 @@ export class AddEventPage implements OnInit {
     return format(parseISO(value), 'dd/MM/yyyy HH:mm');
   }
 
-  onSubmit() {} // TODO implementar
+  onSubmit() {
+    debugger;
+    if (this.dataForm.invalid) return;
+    const data = this.dataForm.value;
+    Object.keys(data).forEach((key) => {
+      if (data[key] == '') delete data[key];
+    });
+    this.afs.collection('events').add(data).then(res => {
+      console.log(res);
+    });
+  } // TODO implementar
 
   validatorLatLong(control: AbstractControl): ValidationErrors | null {
     if (control.get('locationLat').value == '' && control.get('locationLon').value == '') {
