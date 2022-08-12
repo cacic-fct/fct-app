@@ -122,10 +122,10 @@ export class AuthService {
   }
 
   getUserUid(manualInput: string): { message?: string; status?: boolean; uid?: string } | Observable<any> {
-    // Remove whitespace
+    // Remove spaces from the string
     manualInput = manualInput.replace(/\s/g, '');
 
-    // Check if input has only one + and numbers
+    // Check if input has only one '+' and numbers
     const isNumeric: boolean = manualInput.match(/^\+?\d+$/) ? true : false;
 
     // If string doesn't include "@" and isn't numeric only or is empty, return false
@@ -133,13 +133,17 @@ export class AuthService {
       return { message: 'Os dados inseridos são inválidos', status: false };
     }
 
-    if (isNumeric && (manualInput.length < 11 || manualInput.length > 14)) {
-      return { message: 'O número de telefone deve ter entre 11 e 14 dígitos', status: false };
-    }
+    if (isNumeric) {
+      if (manualInput.length < 11 || manualInput.length > 14) {
+        return { message: 'O número de telefone deve ter entre 11 e 14 dígitos', status: false };
+      }
 
-    // If string is numeric only and has length of 11, add country code
-    if (isNumeric && manualInput.length === 11) {
-      manualInput = `+55${manualInput}`;
+      // If string is numeric only and has length of 11, add country code
+      if (manualInput.length === 11) {
+        manualInput = `+55${manualInput}`;
+      } else if (manualInput.length === 13) {
+        manualInput = `+${manualInput}`;
+      }
     }
 
     const getUserUid = this.fns.httpsCallable('getUserUid');

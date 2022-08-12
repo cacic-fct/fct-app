@@ -136,6 +136,8 @@ exports.getUserUid = functions.https.onCall((data, context) => {
 
   if (data.string.length === 11) {
     data.string = `+55${data.string}`;
+  } else if (data.string.length === 13) {
+    data.string = `+${data.string}`;
   }
 
   return getAuth()
