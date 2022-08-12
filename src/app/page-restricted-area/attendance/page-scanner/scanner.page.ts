@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { BarcodeFormat } from '@zxing/library';
-import { BehaviorSubject, catchError, first, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, first, isObservable, Observable, of } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
@@ -16,6 +16,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { Timestamp } from '@firebase/firestore-types';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { AuthService } from 'src/app/shared/services/auth.service';
 @UntilDestroy()
 @Component({
   selector: 'app-scanner',
@@ -55,10 +56,11 @@ export class ScannerPage implements OnInit {
     private router: Router,
     public courses: CoursesService,
     private toastController: ToastController,
-    private fns: AngularFireFunctions
+    private authService: AuthService
   ) {
     this.eventID = this.router.url.split('/')[4];
 
+    // If eventID is not valid, redirect
     this.afs
       .collection('events')
       .doc(this.eventID)
@@ -83,6 +85,7 @@ export class ScannerPage implements OnInit {
         this.event = event;
       });
 
+    // Get attendance list
     this.afs
       .collection<any>(`events/${this.eventID}/attendance`, (ref) => {
         return ref.orderBy('time', 'desc');
@@ -98,6 +101,7 @@ export class ScannerPage implements OnInit {
         });
       });
 
+    // Load audio asset (beep)
     this.audioSuccess = new Audio();
     this.audioSuccess.src = 'assets/sounds/scanner-beep.mp3';
     this.audioSuccess.load();
@@ -181,6 +185,71 @@ export class ScannerPage implements OnInit {
     return fromUnixTime(timestamp.seconds);
   }
 
+  manualAttendance() {
+    const response = this.authService.getUserUid(this.manualInput);
+
+    this.manualInput = '';
+    if (this.authService.instanceOfResponse(response) && response.status === false) {
+      if (response.message) {
+        this.backdropColor('invalid');
+        this.toastRequestError(response.message);
+        return;
+      }
+      return;
+    }
+
+    if (isObservable(response)) {
+      response.pipe(first()).subscribe((response) => {
+        // If cloud function returns a message, it's an error
+        if (response.message) {
+          this.backdropColor('invalid');
+          this.toastRequestError(response.message);
+          console.error(response.message);
+          return;
+        } else {
+          const uid = response.uid;
+          this.afs
+            .collection<attendance>(`events/${this.eventID}/attendance`)
+            .doc(uid)
+            .get()
+            .pipe(first(), trace('firestore'))
+            .subscribe((document) => {
+              // If document with user uid already exists in attendance list
+              if (document.exists) {
+                this.backdropColor('duplicate');
+                this.toastDuplicate();
+                return false;
+              } else {
+                // Check if user uid exists in user list
+                this.afs
+                  .collection('users')
+                  .doc(uid)
+                  .get()
+                  .pipe(first(), trace('firestore'))
+                  .subscribe((user) => {
+                    // If user uid exists, register attendance
+                    if (user.exists) {
+                      this.afs.collection(`events/${this.eventID}/attendance`).doc(uid).set({
+                        time: new Date(),
+                      });
+                      this.audioSuccess.play();
+                      this.toastSucess();
+                      this.backdropColor('success');
+                      this.attendanceSessionScans++;
+                      return true;
+                    } else {
+                      this.backdropColor('invalid');
+                      this.toastInvalid();
+                      return false;
+                    }
+                  });
+              }
+            });
+        }
+      });
+    }
+  }
+
   async toastSucess() {
     const toast = await this.toastController.create({
       header: 'Escaneado com sucesso',
@@ -228,6 +297,24 @@ export class ScannerPage implements OnInit {
     toast.present();
   }
 
+  async toastRequestError(message: string) {
+    const toast = await this.toastController.create({
+      header: 'Ocorreu um erro ao processar a sua solicitação',
+      message: message,
+      icon: 'close-circle',
+      position: 'top',
+      duration: 5000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    toast.present();
+  }
+
   async backdropColor(color: string) {
     // Add class to ion-backdrop
     document.querySelector('ion-backdrop').classList.add(color);
@@ -242,70 +329,9 @@ export class ScannerPage implements OnInit {
     // Remove backdrop class
     document.querySelector('ion-backdrop').classList.remove(color);
   }
-
-  getUserUid() {
-    let manualInput = this.manualInput;
-    if ((!manualInput.includes('@') && !manualInput.match(/^\+?[0-9]+$/)) || manualInput === '') {
-      this.toastInvalid();
-      return;
-    }
-
-    if (manualInput.match(/^[0-9]+$/) && manualInput.length === 11) {
-      manualInput = `+55${manualInput}`;
-    }
-
-    // TODO: Exibit toastinvalid se retornar erro. Deve retornar THROW ou MESSAGE?
-    const getUserUid = this.fns.httpsCallable('getUserUid');
-    getUserUid({ string: manualInput })
-      .pipe(first())
-      .subscribe((response) => {
-        debugger;
-        this.manualInput = '';
-        if (response.uid === undefined) {
-        }
-        const uid = response.uid;
-        this.afs
-          .collection<attendance>(`events/${this.eventID}/attendance`)
-          .doc(uid)
-          .get()
-          .pipe(first(), trace('firestore'))
-          .subscribe((document) => {
-            // If document with user uid already exists
-            if (document.exists) {
-              this.backdropColor('duplicate');
-              this.toastDuplicate();
-              return false;
-            } else {
-              // Check if user uid exists
-              this.afs
-                .collection('users')
-                .doc(uid)
-                .get()
-                .pipe(first(), trace('firestore'))
-                .subscribe((user) => {
-                  if (user.exists) {
-                    this.afs.collection(`events/${this.eventID}/attendance`).doc(uid).set({
-                      time: new Date(),
-                    });
-                    this.audioSuccess.play();
-                    this.toastSucess();
-                    this.backdropColor('success');
-                    this.attendanceSessionScans++;
-                    return true;
-                  } else {
-                    this.backdropColor('invalid');
-                    this.toastInvalid();
-                    return false;
-                  }
-                });
-            }
-          });
-      });
-  }
 }
 
 interface attendance {
   user: Observable<User>;
   time: Timestamp;
-  id?: string;
 }

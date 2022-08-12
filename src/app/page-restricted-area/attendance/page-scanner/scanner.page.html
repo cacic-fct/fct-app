@@ -46,7 +46,7 @@
           <p>
             <b>Scans desta sessão:</b> {{ attendanceSessionScans }}
             <br />
-            <b>Total de scans:</b> {{attendancePeople.length}}
+            <b>Total de presentes:</b> {{attendancePeople.length}}
           </p>
 
           <ion-item>
@@ -55,7 +55,7 @@
               type="text"
               placeholder="Celular com DDD (somente números) ou e-mail do cadastro"
               [(ngModel)]="manualInput"></ion-textarea>
-            <ion-button fill="clear" slot="end" (click)="getUserUid()">
+            <ion-button fill="clear" slot="end" (click)="manualAttendance()">
               <ion-icon slot="icon-only" name="send-outline"></ion-icon>
             </ion-button>
           </ion-item>
