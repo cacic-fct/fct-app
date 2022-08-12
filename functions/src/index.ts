@@ -119,9 +119,19 @@ exports.getUserUid = functions.https.onCall((data, context) => {
         return { message: `${error}` };
       });
   }
+  // Remove spaces from the string
+  data.string = data.string.replace(/\s/g, '');
+
+  // Check if input has only one '+' and numbers
+  const isNumeric: boolean = data.string.match(/^\+?\d+$/) ? true : false;
+
   // Check if string only has numbers
-  if (!data.string.match(/^\+?[0-9]+$/)) {
-    return { message: 'Invalid argument: Invalid string' };
+  if (!isNumeric) {
+    return { message: 'Invalid argument: Invalid input' };
+  }
+
+  if (data.string.length < 11 || data.string.length > 14) {
+    return { message: 'Invalid argument: Invalid input' };
   }
 
   if (data.string.length === 11) {
