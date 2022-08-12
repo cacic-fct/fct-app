@@ -104,7 +104,7 @@ exports.getUserUid = functions.https.onCall((data, context) => {
   }
 
   if (data.string === '') {
-    throw new functions.https.HttpsError('invalid-argument', 'A string must be provided.');
+    return { message: 'Invalid argument: A string must be provided.' };
   }
 
   if (data.string.includes('@')) {
@@ -116,12 +116,12 @@ exports.getUserUid = functions.https.onCall((data, context) => {
         };
       })
       .catch((error) => {
-        throw new functions.https.HttpsError('aborted', `An error has occured: ${error}`);
+        return { message: `${error}` };
       });
   }
   // Check if string only has numbers
   if (!data.string.match(/^\+?[0-9]+$/)) {
-    throw new functions.https.HttpsError('invalid-argument', `The string is invalid.`);
+    return { message: 'Invalid argument: Invalid string' };
   }
 
   if (data.string.length === 11) {
@@ -136,6 +136,6 @@ exports.getUserUid = functions.https.onCall((data, context) => {
       };
     })
     .catch((error) => {
-      throw new functions.https.HttpsError('aborted', `An error has occured: ${error}`);
+      return { message: `${error}` };
     });
 });
