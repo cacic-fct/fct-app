@@ -132,11 +132,15 @@ export class AuthService {
 
     await modal.present();
 
-    return await modal.onDidDismiss().then((data) => {
+    return modal.onDidDismiss().then((data) => {
       if (data) {
-        return true;
+        return new Promise<boolean>((resolve) => {
+          resolve(true);
+        });
       }
-      return false;
+      return new Promise<boolean>((resolve) => {
+        resolve(false);
+      });
     });
   }
 

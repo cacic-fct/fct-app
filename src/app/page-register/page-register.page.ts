@@ -23,6 +23,10 @@ import { first, firstValueFrom } from 'rxjs';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { UserTrackingService } from '@angular/fire/compat/analytics';
+import { WindowService } from '../shared/services/window.service';
+
+import firebase from 'firebase/compat/app';
+
 @UntilDestroy()
 @Component({
   selector: 'app-page-register',
@@ -32,6 +36,7 @@ import { UserTrackingService } from '@angular/fire/compat/analytics';
 export class PageRegisterPage implements OnInit {
   @ViewChild('mySwal')
   private mySwal: SwalComponent;
+  windowRef: any;
 
   dataVersion: string = GlobalConstantsService.userDataVersion;
   userData: any;
@@ -49,7 +54,8 @@ export class PageRegisterPage implements OnInit {
     public afs: AngularFirestore,
     public router: Router,
     public auth: AngularFireAuth,
-    private mailtoService: NgxMailtoService
+    private mailtoService: NgxMailtoService,
+    private win: WindowService
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
 
@@ -67,7 +73,7 @@ export class PageRegisterPage implements OnInit {
       .collection('users')
       .doc<User>(this.userData.uid)
       .valueChanges()
-      .pipe(untilDestroyed(this), trace('firestore'))
+      .pipe(first(), trace('firestore'))
       .subscribe((user) => {
         this.dataForm.controls.academicID.setValue(user.academicID);
         this.dataForm.controls.phone.setValue(user.phone);
@@ -80,6 +86,11 @@ export class PageRegisterPage implements OnInit {
       '%0D%0Ae-mail%20institucional%3A%20' +
       this.userData.email.replace(/%20/g, ' ') +
       '%0D%0A';
+
+    this.windowRef = this.win.windowRef;
+    this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      size: 'invisible',
+    });
   }
 
   onSubmit() {
@@ -93,22 +104,27 @@ export class PageRegisterPage implements OnInit {
       .valueChanges()
       .pipe(first())
       .subscribe(async (user) => {
-        if (
-          (user.phone && user.phone === this.dataForm.value.phone) ||
-          (await this.authService.verifyPhoneModal(this.dataForm.value.phone))
-        ) {
+        if (user.phone && user.phone === this.dataForm.value.phone) {
           this.submitUserData(user);
           return;
         }
+
+        this.authService.verifyPhoneModal(this.dataForm.value.phone).then((response) => {
+          if (response) {
+            this.submitUserData(user);
+          }
+          return;
+        });
       });
   }
 
   submitUserData(user: User) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
     const userData = {
       academicID: this.dataForm.value.academicID,
       phone: this.dataForm.value.phone,
       dataVersion: this.dataVersion,
+      cpf: this.dataForm.value.cpf,
     };
     userRef.set(userData, {
       merge: true,
