@@ -193,7 +193,6 @@ export class ScannerPage implements OnInit {
       if (response.message) {
         this.backdropColor('invalid');
         this.toastRequestError(response.message);
-        return;
       }
       return;
     }
