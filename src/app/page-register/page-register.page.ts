@@ -6,7 +6,15 @@ import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { AlertController } from '@ionic/angular';
 
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
@@ -19,7 +27,7 @@ import { Mailto, NgxMailtoService } from 'ngx-mailto';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-import { first, firstValueFrom } from 'rxjs';
+import { first, Observable, BehaviorSubject } from 'rxjs';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { UserTrackingService } from '@angular/fire/compat/analytics';
@@ -47,6 +55,9 @@ export class PageRegisterPage implements OnInit {
     cpf: new FormControl(''),
   });
 
+  _isUnespSubject: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  isUnesp$: Observable<boolean> = this._isUnespSubject.asObservable();
+
   constructor(
     public authService: AuthService,
     public alertController: AlertController,
@@ -63,8 +74,9 @@ export class PageRegisterPage implements OnInit {
       // Validator doesn't update when value changes programatically
       // https://github.com/angular/angular/issues/30616
       academicID: ['' /*[Validators.required, Validators.pattern('^[0-9]{9}$')]*/],
-      phone: '',
-      cpf: ['', this.validarCPF.bind(this)],
+      phone: ['', Validators.required],
+      cpf: ['', this.validarCPF.bind(this), Validators.required],
+      fullName: '',
     });
   }
 
@@ -75,6 +87,12 @@ export class PageRegisterPage implements OnInit {
       .valueChanges()
       .pipe(first(), trace('firestore'))
       .subscribe((user) => {
+        if (user.email.includes('@unesp.br')) {
+          this._isUnespSubject.next(true);
+          this.dataForm.removeValidators(Validators.required);
+        } else {
+          this.dataForm.addValidators(Validators.required);
+        }
         this.dataForm.controls.academicID.setValue(user.academicID);
         this.dataForm.controls.phone.setValue(user.phone);
         this.dataForm.controls.cpf.setValue(user.cpf);
@@ -136,10 +154,6 @@ export class PageRegisterPage implements OnInit {
       this.mySwal.close();
       this.router.navigate(['/menu']);
     }, 1500);
-  }
-
-  isUnesp() {
-    return this.userData.email.includes('@unesp.br');
   }
 
   formatPhone() {

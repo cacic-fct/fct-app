@@ -49,6 +49,10 @@ export class AuthService {
     return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
   }
 
+  GoogleLink() {
+    return this.LinkProfile(new firebase.auth.GoogleAuthProvider());
+  }
+
   anonAuth() {
     return this.auth
       .signInAnonymously()
@@ -73,10 +77,28 @@ export class AuthService {
     }
   }
 
+  async LinkProfile(provider: firebase.auth.AuthProvider) {
+    this.auth.useDeviceLanguage();
+    try {
+      const result = await (await this.auth.currentUser).linkWithPopup(provider);
+      const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${result.user.uid}`);
+      const userData: User = {
+        linkedPersonalEmail: true,
+      };
+      return userRef.set(userData, {
+        merge: true,
+      });
+    } catch (error) {
+      console.error('Link profile failed');
+      console.error(error);
+      this.toastLoginFailed();
+    }
+  }
+
   async toastLoginFailed() {
     const toast = await this.toastController.create({
-      header: 'Houve um erro no seu login',
-      message: 'Verifique a sua conexão e faça login novamente.',
+      header: 'Ocorreu um erro no seu login',
+      message: 'Verifique a sua conexão e tente novamente.',
       icon: 'close-circle',
       position: 'bottom',
       duration: 5000,
@@ -92,11 +114,12 @@ export class AuthService {
   }
 
   SetUserData(user: firebase.User) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
     const userData: User = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
+      fullName: user.email.includes('@unesp.br') ? user.displayName : '',
       photoURL: user.photoURL,
     };
     return userRef.set(userData, {

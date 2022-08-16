@@ -1,6 +1,7 @@
 export interface User {
   uid?: string;
   email?: string;
+  linkedPersonalEmail?: boolean;
   displayName?: string;
   fullName?: string;
   cpf?: string;

@@ -1,12 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Entrar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
-  <ion-grid
-    style="
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%;
-    ">
+  <ion-grid style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%">
     <ion-row>
       <ion-col class="ion-text-center">
         <span style="font-size: 3em; font-weight: bold">Olá</span>
@@ -15,14 +17,14 @@
     <ion-row>
       <ion-col class="ion-text-center">
         <p style="margin-bottom: 10px">
-          Para continuar, faça login com o seu e&#8209;mail&nbsp;institucional.
+          Se você tem vínculo com a Unesp, entre utilizando o seu
+          <a
+            style="text-decoration: none"
+            href="https://unesp.br/portal#!/ai/servicos/ativacao-dos-servicos-de-rede"
+            target="_blank"
+            >e&#8209;mail&nbsp;institucional</a
+          >
         </p>
-        <a
-          style="text-decoration: none"
-          href="https://unesp.br/portal#!/ai/servicos/ativacao-dos-servicos-de-rede"
-          target="_blank"
-          >O que é isso?</a
-        >
       </ion-col>
     </ion-row>
     <ion-row style="margin-top: 40px">
@@ -37,42 +39,21 @@
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g
-              id="Page-1"
-              stroke="none"
-              stroke-width="1"
-              fill="none"
-              fill-rule="evenodd">
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g id="btn_google_dark_normal_ios">
                 <g id="button">
                   <g id="button-bg">
                     <g id="path-2-link" fill="#4285F4">
-                      <rect
-                        id="path-2"
-                        x="0"
-                        y="0"
-                        width="185"
-                        height="40"
-                        rx="2"></rect>
+                      <rect id="path-2" x="0" y="0" width="185" height="40" rx="2"></rect>
                     </g>
                   </g>
                 </g>
-                <g
-                  id="button-bg-copy"
-                  transform="translate(1.000000, 1.000000)">
+                <g id="button-bg-copy" transform="translate(1.000000, 1.000000)">
                   <g id="path-3-link" fill="#FFFFFF">
-                    <rect
-                      id="path-3"
-                      x="0"
-                      y="0"
-                      width="38"
-                      height="38"
-                      rx="1"></rect>
+                    <rect id="path-3" x="0" y="0" width="38" height="38" rx="1"></rect>
                   </g>
                 </g>
-                <g
-                  id="logo_googleg_48dp"
-                  transform="translate(11.000000, 11.000000)">
+                <g id="logo_googleg_48dp" transform="translate(11.000000, 11.000000)">
                   <path
                     d="M17.64,9.20454545 C17.64,8.56636364 17.5827273,7.95272727 17.4763636,7.36363636 L9,7.36363636 L9,10.845 L13.8436364,10.845 C13.635,11.97 13.0009091,12.9231818 12.0477273,13.5613636 L12.0477273,15.8195455 L14.9563636,15.8195455 C16.6581818,14.2527273 17.64,11.9454545 17.64,9.20454545 L17.64,9.20454545 Z"
                     id="Shape"
@@ -107,8 +88,8 @@
             </g>
           </svg>
           <p style="font-size: 0.75em" class="ion-padding-horizontal">
-            Ao continuar, você está concordando com a nossa
-            <a routerLink="/privacidade">Política de Privacidade</a>.
+            Ao continuar, você estará concordando com a nossa
+            <a href="https://cacic-fct.web.app/privacy" target="_blank">Política de Privacidade</a>.
           </p>
         </div>
       </ion-col>

@@ -7,7 +7,7 @@
 <ion-content>
   <ion-grid style="margin-top: 30px; max-width: 500px; overflow: scroll">
     <form [formGroup]="dataForm" (ngSubmit)="onSubmit()">
-      <ng-container *ngIf="isUnesp(); else notUnesp">
+      <ng-container *ngIf="isUnesp$ | async; else notUnesp">
         <ion-item>
           <ion-label class="ion-text-wrap">Nome completo</ion-label>
           <ion-input type="text" value="{{userData.displayName}}" readonly> </ion-input>
@@ -38,7 +38,7 @@
 
         <ion-item>
           <ion-label class="ion-text-wrap">Nome completo</ion-label>
-          <ion-input type="text" value="{{userData.fullName}}"> </ion-input>
+          <ion-input type="text" value="{{userData.fullName}}" placeholder="Sem abreviações"> </ion-input>
         </ion-item>
 
         <ion-item>
@@ -65,13 +65,18 @@
         </ion-input>
       </ion-item>
 
+      <p *ngIf="isUnesp$ | async" style="font-size: 0.75em" class="ion-padding-horizontal">
+        Para não perder o acesso à sua conta quando o seu e-mail institucional for desativado, vincule o seu e-mail
+        pessoal nas configurações do perfil.
+      </p>
+
       <p style="font-size: 0.75em" class="ion-padding-horizontal">
         Poderemos entrar em contato para confirmar ou complementar estas informações ou para informar sobre eventuais
         problemas com pagamentos.
       </p>
 
       <p style="font-size: 0.75em" class="ion-padding-horizontal">
-        Utilizamos o seu CPF apenas para a geração de certificados de participação.
+        Utilizamos o seu nome completo e CPF apenas para a geração de certificados de participação.
       </p>
 
       <p style="font-size: 0.75em" class="ion-padding-horizontal">

@@ -62,13 +62,15 @@ export class PageVerifyPhonePage implements OnInit {
 
   async setTimer() {
     this.attempts++;
+    this.cooldown = true;
     this.windowRef.lastExecution = new Date().getTime();
-    this.timer = timer(60000 * this.attempts).subscribe(() => {});
+    this.timer = timer(60000 * this.attempts).subscribe((x) => {
+      this.cooldown = false;
+    });
   }
 
   phoneLink(phone: string) {
-    // Wait 1 minute * this.attempts from last execution
-    if (this.windowRef.lastExecution && new Date().getTime() - this.windowRef.lastExecution < 60000 * this.attempts) {
+    if (this.cooldown) {
       return;
     }
 
@@ -97,8 +99,7 @@ export class PageVerifyPhonePage implements OnInit {
   }
 
   phoneUpdate(phone: string) {
-    // Wait (1 minute * this.attempts) from last execution
-    if (this.windowRef.lastExecution && new Date().getTime() - this.windowRef.lastExecution < 60000 * this.attempts) {
+    if (this.cooldown) {
       return;
     }
 
@@ -147,7 +148,7 @@ export class PageVerifyPhonePage implements OnInit {
     } else {
       this.windowRef.confirmationResult
         .confirm(this.verificationCode)
-        .then((result) => {
+        .then(() => {
           // User signed in successfully.
           this.modalController.dismiss(true);
           // ...
