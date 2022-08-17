@@ -67,8 +67,7 @@ export class AuthService {
   async AuthLogin(provider: firebase.auth.AuthProvider) {
     this.auth.useDeviceLanguage();
     try {
-      const result = await this.auth.signInWithPopup(provider);
-      this.SetUserData(result.user);
+      this.auth.signInWithRedirect(provider);
     } catch (error) {
       console.error('Login failed');
       console.error(error);

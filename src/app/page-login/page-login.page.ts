@@ -9,7 +9,21 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
   styleUrls: ['./page-login.page.scss'],
 })
 export class PageLoginPage implements OnInit {
-  constructor(public authService: AuthService, public auth: AngularFireAuth, public router: Router) {}
+  constructor(public authService: AuthService, public auth: AngularFireAuth, public router: Router) {
+    this.auth
+      .getRedirectResult()
+      .then((result) => {
+        console.log('yes');
+        authService.SetUserData(result.user);
+        this.router.navigate(['/menu']);
+      })
+      .catch((error) => {
+        console.error('Login failed');
+        console.error(error);
+        authService.toastLoginFailed();
+        authService.SignOut();
+      });
+  }
 
   ngOnInit() {}
 }

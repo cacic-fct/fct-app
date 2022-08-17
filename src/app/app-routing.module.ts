@@ -36,6 +36,10 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
+    path: 'login',
+    loadChildren: () => import('./page-login/page-login.module').then((m) => m.PageLoginPageModule),
+  },
+  {
     path: 'register',
     loadChildren: () => import('./page-register/page-register.module').then((m) => m.PageRegisterPageModule),
     ...canActivate(redirectUnauthorizedToLogin),
@@ -52,7 +56,7 @@ const routes: Routes = [
   },
   {
     path: 'page-debug',
-    loadChildren: () => import('./page-debug/page-debug.module').then( m => m.PageDebugPageModule)
+    loadChildren: () => import('./page-debug/page-debug.module').then((m) => m.PageDebugPageModule),
   },
 ];
 @NgModule({

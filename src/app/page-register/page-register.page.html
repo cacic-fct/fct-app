@@ -24,6 +24,7 @@
             inputmode="numeric"
             type="text"
             placeholder="RA"
+            minlength="9"
             maxlength="9"
             required="true">
           </ion-input>
@@ -88,7 +89,14 @@
         <div id="recaptcha-container"></div>
       </ion-row>
 
-      <ion-button style="margin-top: 30px" expand="block" id="continue-button" type="submit"> Continuar </ion-button>
+      <ion-button
+        style="margin-top: 30px"
+        expand="block"
+        id="continue-button"
+        type="submit"
+        [disabled]="!this.dataForm.valid">
+        Continuar
+      </ion-button>
     </form>
   </ion-grid>
   <swal

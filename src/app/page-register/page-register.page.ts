@@ -6,15 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { AlertController } from '@ionic/angular';
 
-import {
-  AbstractControl,
-  AsyncValidatorFn,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
@@ -75,7 +67,7 @@ export class PageRegisterPage implements OnInit {
       // https://github.com/angular/angular/issues/30616
       academicID: ['' /*[Validators.required, Validators.pattern('^[0-9]{9}$')]*/],
       phone: ['', Validators.required],
-      cpf: ['', this.validarCPF.bind(this), Validators.required],
+      cpf: ['', this.validarCPF.bind(this)],
       fullName: '',
     });
   }
