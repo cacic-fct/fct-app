@@ -59,12 +59,16 @@
         {{ fileName ? (fileName + ": " + ( uploadPercent | async) + "%") : "Nenhum arquivo selecionado."}}
       </p>
 
-      <br />
-
-      <ion-button (click)="fileUpload.click()">
-        <ion-icon slot="start" name="paper-plane"></ion-icon>
-        Enviar comprovante
-      </ion-button>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="fileUpload.click()">
+              <ion-icon slot="start" name="cloud-upload"></ion-icon>
+              Enviar comprovante
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
   </ion-card>
 </ion-content>

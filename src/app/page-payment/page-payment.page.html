@@ -50,11 +50,7 @@
         </ng-container>
 
         <ng-container *ngIf="item.receiptUploaded && !item.paid;">
-          <p>Aguardando confirmação do pagamento</p>
-          <ion-button (click)="viewReceipt(item.id)">
-            <ion-icon slot="start" name="paper-plane"></ion-icon>
-            Reenviar comprovante
-          </ion-button>
+          <p>Comprovante enviado - Aguardando confirmação do pagamento</p>
         </ng-container>
 
         <ng-container *ngIf="item.paid;">
@@ -99,7 +95,7 @@
         <ion-col>
           <ion-button>
             <ion-icon slot="start" name="cash"></ion-icon>
-            Efetuar pagamento
+            Informações de pagamento
           </ion-button>
           <ion-button>
             <ion-icon slot="start" name="paper-plane"></ion-icon>
