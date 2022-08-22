@@ -9,9 +9,12 @@ import { timer, first } from 'rxjs';
 
 import { ModalController } from '@ionic/angular';
 
-// import firebase/auth
 import * as authFirebase from 'firebase/auth';
 import { User } from '../shared/services/user';
+
+import { Mailto, NgxMailtoService } from 'ngx-mailto';
+
+import { add } from 'date-fns';
 
 @Component({
   selector: 'app-page-verify-phone',
@@ -29,12 +32,14 @@ export class PageVerifyPhonePage implements OnInit {
   invalidCode: boolean = false;
   updatePhone: boolean = false;
   buttonEnabled: boolean = false;
+  phoneAlreadyRegistered: boolean = false;
 
   constructor(
     public auth: AngularFireAuth,
     public afs: AngularFirestore,
     private win: WindowService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private mailtoService: NgxMailtoService
   ) {}
 
   ngOnInit() {
@@ -43,6 +48,12 @@ export class PageVerifyPhonePage implements OnInit {
   }
 
   linkOrUpdatePhone() {
+    if (this.isOnCooldown()) {
+      return;
+    }
+
+    this.setTimer();
+
     this.auth.authState.pipe(first()).subscribe((userState) => {
       this.afs
         .collection('users')
@@ -60,22 +71,34 @@ export class PageVerifyPhonePage implements OnInit {
     });
   }
 
-  async setTimer() {
-    this.attempts++;
+  setTimer() {
+    const minutes: number = Math.pow(2, this.attempts);
     this.cooldown = true;
-    this.windowRef.lastExecution = new Date().getTime();
-    this.timer = timer(60000 * this.attempts).subscribe((x) => {
+    this.attempts += 1;
+
+    this.windowRef.canExecuteAgainOn = add(new Date(), {
+      minutes: minutes,
+    });
+
+    this.timer = timer(minutes * 60000).subscribe(() => {
       this.cooldown = false;
+      this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+      });
     });
   }
 
-  phoneLink(phone: string) {
-    if (this.cooldown) {
-      return;
+  isOnCooldown(): boolean {
+    if (this.windowRef.canExecuteAgainOn) {
+      if (new Date() < this.windowRef.canExecuteAgainOn) {
+        return true;
+      }
     }
 
-    this.setTimer();
+    return false;
+  }
 
+  phoneLink(phone: string) {
     const fullPhoneNumber = '+55 ' + phone;
     const appVerifier = this.windowRef.recaptchaVerifier;
 
@@ -99,12 +122,6 @@ export class PageVerifyPhonePage implements OnInit {
   }
 
   phoneUpdate(phone: string) {
-    if (this.cooldown) {
-      return;
-    }
-
-    this.setTimer();
-
     const fullPhoneNumber = '+55 ' + phone;
     const appVerifier = this.windowRef.recaptchaVerifier;
 
@@ -113,11 +130,12 @@ export class PageVerifyPhonePage implements OnInit {
     provider
       .verifyPhoneNumber(fullPhoneNumber, appVerifier)
       .then((confirmationResult) => {
+        // SMS sent
         this.windowRef.confirmationResult = confirmationResult;
         this.buttonEnabled = true;
       })
       .catch((error) => {
-        // Error occurred.
+        // Error SMS not sent
         console.error(error);
       });
   }
@@ -137,12 +155,19 @@ export class PageVerifyPhonePage implements OnInit {
         user
           .updatePhoneNumber(phoneCredential)
           .then(() => {
+            // User signed in successfully.
             this.modalController.dismiss(true);
           })
           .catch((error) => {
-            console.error(error);
-            this.lastVerificationCode = this.verificationCode;
-            this.invalidCode = true;
+            // User couldn't sign in
+            if (error.code === 'auth/invalid-verification-code') {
+              console.error(error);
+              this.lastVerificationCode = this.verificationCode;
+              this.invalidCode = true;
+            } else if (error.code === 'auth/account-exists-with-different-credential') {
+              console.error(error);
+              this.phoneAlreadyRegistered = true;
+            }
           });
       });
     } else {
@@ -151,19 +176,32 @@ export class PageVerifyPhonePage implements OnInit {
         .then(() => {
           // User signed in successfully.
           this.modalController.dismiss(true);
-          // ...
         })
         .catch((error) => {
-          // User couldn't sign in (bad verification code?)
-          console.error(error);
-          this.lastVerificationCode = this.verificationCode;
-          this.invalidCode = true;
-          // ...
+          // User couldn't sign in
+          if (error.code === 'auth/invalid-verification-code') {
+            console.error(error);
+            this.lastVerificationCode = this.verificationCode;
+            this.invalidCode = true;
+          } else if (error.code === 'auth/account-exists-with-different-credential') {
+            console.error(error);
+            this.phoneAlreadyRegistered = true;
+          }
         });
     }
   }
 
   verificationCodeChange() {
     this.invalidCode = false;
+  }
+
+  mailto(): void {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    const mailto: Mailto = {
+      receiver: 'cacic.fct@gmail.com',
+      subject: '[FCT-App] Celular já registrado',
+      body: `Olá!\nRecebi a mensagem de que meu celular já pertence a outra conta. Vocês podem me ajudar?\n\n=== Não apague os dados abaixo ===\nE-mail: ${userData.email}\nuid: ${userData.uid}\nCelular: ${this.phone}`,
+    };
+    this.mailtoService.open(mailto);
   }
 }

@@ -14,17 +14,17 @@
 
 <ion-content>
   <ion-card>
-    <ion-card-header>
-      <div class="ion-text-center">
-        <ion-avatar class="margin-horizontal-auto">
-          <img [src]="user.photoURL" />
-        </ion-avatar>
-        <ion-card-title>
-          <h2 class="margin-horizontal-auto">{{user.displayName}}</h2>
-          <p class="margin-horizontal-auto" style="font-size: 20px">{{user.email}}</p>
-        </ion-card-title>
-      </div>
-    </ion-card-header>
+    <div class="ion-text-center">
+      <ion-avatar class="margin-horizontal-auto">
+        <img [src]="user.photoURL" />
+      </ion-avatar>
+      <ion-card-title>
+        <h2 class="margin-horizontal-auto">{{user.displayName}}</h2>
+        <p class="margin-horizontal-auto" style="font-size: 20px">{{user.email}}</p>
+        <div *ngIf="academicID">{{ courses.getCourse(user.academicID) }}</div>
+      </ion-card-title>
+    </div>
+
     <qr-code class="qr-code ion-text-center" [value]="'uid:' + uid" size="320" errorCorrectionLevel="H"></qr-code>
   </ion-card>
 </ion-content>
