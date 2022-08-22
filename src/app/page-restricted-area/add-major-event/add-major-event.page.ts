@@ -32,7 +32,6 @@ export class AddMajorEventPage implements OnInit {
     course: new FormControl(''),
     icon: new FormControl(''),
     name: new FormControl(''),
-    shortDescription: new FormControl(''),
     description: new FormControl(''),
     dateStart: new FormControl(''),
     dateEnd: new FormControl(''),
@@ -67,7 +66,6 @@ export class AddMajorEventPage implements OnInit {
         course: ['', Validators.required],
         icon: ['', Validators.required],
         name: ['', Validators.required],
-        shortDescription: '',
         description: '',
         dateStart: ['', Validators.required],
         dateEnd: '',
@@ -104,7 +102,6 @@ export class AddMajorEventPage implements OnInit {
       course: this.dataForm.get('course').value,
       icon: this.dataForm.get('icon').value,
       name: this.dataForm.get('name').value,
-      shortDescription: this.dataForm.get('shortDescription').value,
       description: this.dataForm.get('description').value,
       dateStart: this.dataForm.get('dateStart').value,
       dateEnd: this.dataForm.get('dateEnd').value,
@@ -125,7 +122,7 @@ export class AddMajorEventPage implements OnInit {
       buttonText: this.dataForm.get('buttonText').value,
       buttonUrl: this.dataForm.get('buttonUrl').value,
       createdBy: this.userData.displayName,
-      createdAt: new Date(),
+      createdOn: new Date(),
     });
   }
 

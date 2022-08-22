@@ -31,11 +31,6 @@
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">Descrição curta do evento</ion-label>
-        <ion-input formControlName="shortDescription"></ion-input>
-      </ion-item>
-
-      <ion-item>
         <ion-label position="floating">Descrição do evento</ion-label>
         <ion-input formControlName="description"></ion-input>
       </ion-item>
@@ -148,7 +143,7 @@
           >
         </ion-item>
         <ion-item>
-          <ion-label position="floating">Professor</ion-label>
+          <ion-label position="floating">Professores e profissionais</ion-label>
           <ion-input
             formControlName="priceProfessors"
             inputmode="numeric"
@@ -213,7 +208,7 @@
 
     <ion-item>
       <ion-label position="floating">Texto (opcional)</ion-label>
-      <ion-input formControlName="buttonText"></ion-input>
+      <ion-input formControlName="buttonText" placeholder="Saiba mais"></ion-input>
     </ion-item>
 
     <ion-item>
@@ -235,7 +230,7 @@
       <ion-input value="{{ userData.displayName }}" color="medium" readonly> </ion-input>
     </ion-item>
 
-    <ion-button class="ion-padding-horizontal" id="check-modal" type="submit" [disabled]="!dataForm.valid"
+    <ion-button class="ion-padding" id="check-modal" type="submit" [disabled]="!dataForm.valid"
       >Criar evento</ion-button
     >
     <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, seu nome será gravado junto ao evento.</p>
