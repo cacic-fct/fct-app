@@ -53,21 +53,22 @@ export class AuthService {
     return this.LinkProfile(new firebase.auth.GoogleAuthProvider());
   }
 
-  anonAuth() {
-    return this.auth
-      .signInAnonymously()
-      .then(() => {
-        console.log('Signed in');
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  async anonAuth() {
+    try {
+      await this.auth.signInAnonymously();
+      console.log('Signed in');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async AuthLogin(provider: firebase.auth.AuthProvider) {
     this.auth.useDeviceLanguage();
     try {
-      this.auth.signInWithRedirect(provider);
+      this.auth.signInWithPopup(provider).then((result) => {
+        this.SetUserData(result.user);
+        this.router.navigate(['/menu']);
+      });
     } catch (error) {
       console.error('Login failed');
       console.error(error);
