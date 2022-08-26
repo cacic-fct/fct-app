@@ -27,7 +27,7 @@
           </ng-container>
 
           <ng-template #notUnesp>
-            <h3 class="ion-text-wrap" *ngIf="user.academicID">Usuário externo</h3>
+            <h3 class="ion-text-wrap" *ngIf="user.academicID">Usuário sem RA</h3>
           </ng-template>
         </ng-container>
         <h3 class="ion-text-wrap">{{ getDateFromTimestamp(attendancePerson.time) | date: "HH:mm:ss - dd/MM/y" }}</h3>
