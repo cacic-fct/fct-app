@@ -17,7 +17,13 @@ export class PageProfilePage implements OnInit {
   uid$: Observable<string> = this._uidSubject.asObservable();
   _academicIDSubject: BehaviorSubject<string> = new BehaviorSubject(undefined);
   academicID$: Observable<string> = this._academicIDSubject.asObservable();
-  constructor(public auth: AngularFireAuth, public courses: CoursesService, private afs: AngularFirestore) {}
+  hasServiceWorker: boolean = false;
+
+  constructor(public auth: AngularFireAuth, public courses: CoursesService, private afs: AngularFirestore) {
+    if ('serviceWorker' in navigator) {
+      this.hasServiceWorker = true;
+    }
+  }
 
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem('user'));
