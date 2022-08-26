@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { CoursesService } from '../shared/services/courses.service';
 
-import { first } from 'rxjs';
+import { BehaviorSubject, first, Observable } from 'rxjs';
 import { User } from '../shared/services/user';
 
 @Component({
@@ -13,8 +13,10 @@ import { User } from '../shared/services/user';
 })
 export class PageProfilePage implements OnInit {
   user: any;
-  uid: string;
-  academicID: string;
+  _uidSubject: BehaviorSubject<string> = new BehaviorSubject(undefined);
+  uid$: Observable<string> = this._uidSubject.asObservable();
+  _academicIDSubject: BehaviorSubject<string> = new BehaviorSubject(undefined);
+  academicID$: Observable<string> = this._academicIDSubject.asObservable();
   constructor(public auth: AngularFireAuth, public courses: CoursesService, private afs: AngularFirestore) {}
 
   ngOnInit() {
@@ -22,13 +24,15 @@ export class PageProfilePage implements OnInit {
 
     this.auth.user.pipe(first()).subscribe((user) => {
       if (user) {
-        this.uid = user.uid;
+        this._uidSubject.next(user.uid);
         this.afs
-          .doc<User>(`users/${this.uid}`)
+          .doc<User>(`users/${user.uid}`)
           .valueChanges()
           .pipe(first())
           .subscribe((user) => {
-            this.academicID = user.academicID;
+            if (user.academicID) {
+              this._academicIDSubject.next(user.academicID);
+            }
           });
       }
     });
