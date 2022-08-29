@@ -50,19 +50,18 @@
     <input
       type="file"
       class="file-input"
-      (change)="uploadFile($event)"
       accept="image/png, image/jpeg, image/webp, image/heic, image/heif"
       #fileUpload />
 
     <div class="file-upload">
       <p class="ion-padding-horizontal">
-        {{ fileName ? (fileName + ": " + ( uploadPercent | async) + "%") : "Nenhum arquivo selecionado."}}
+        {{ fileName ? (fileName + ": " + ( uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
       </p>
 
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-button (click)="fileUpload.click()">
+            <ion-button (click)="compressFile()">
               <ion-icon slot="start" name="cloud-upload"></ion-icon>
               Enviar comprovante
             </ion-button>
