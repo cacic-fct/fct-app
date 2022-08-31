@@ -55,12 +55,12 @@ export class TabEventsPage {
 }
 
 interface majorEvent {
-  price?: any;
   id: string;
   name: string;
   description?: string;
-  enrollmentDateStart: Timestamp;
-  enrollmentDateEnd: Timestamp;
-  eventDateStart: Timestamp;
-  eventDateEnd?: Timestamp;
+  dateStart: Timestamp;
+  dateEnd?: Timestamp;
+  subscriptionDateStart: Timestamp;
+  subscriptionDateEnd: Timestamp;
+  price?: any;
 }
