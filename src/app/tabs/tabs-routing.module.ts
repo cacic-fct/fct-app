@@ -29,6 +29,10 @@ const routes: Routes = [
         loadChildren: () => import('../tab-calendar/tab-calendar.module').then((m) => m.TabCalendarPageModule),
       },
       {
+        path: 'eventos',
+        loadChildren: () => import('../tab-events/tab-events.module').then((m) => m.TabEventsPageModule),
+      },
+      {
         path: 'mapa',
         loadChildren: () => import('../tab-map/tab-map.module').then((m) => m.TabMapPageModule),
       },
