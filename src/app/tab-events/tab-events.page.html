@@ -5,7 +5,9 @@
 </ion-header>
 
 <ion-content>
-  <div class="event-container">
+  <div class="event-container" *ngIf="majorEvents; else loading">
+    <h1 *ngIf="majorEvents.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
+
     <ng-container *ngFor="let event of majorEvents">
       <ion-card>
         <ion-card-header>
@@ -81,4 +83,8 @@
       </ion-card>
     </ng-container>
   </div>
+
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
 </ion-content>

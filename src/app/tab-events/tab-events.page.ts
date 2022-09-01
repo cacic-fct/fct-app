@@ -29,7 +29,6 @@ export class TabEventsPage {
       .valueChanges({ idField: 'id' })
       .pipe(untilDestroyed(this), trace('firestore'))
       .subscribe((items) => {
-        console.log(items)
         this.majorEvents = items;
       })
     });
