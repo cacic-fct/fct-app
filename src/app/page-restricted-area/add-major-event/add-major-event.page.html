@@ -56,27 +56,13 @@
       </ion-item>
 
       <ion-item>
-        <ion-label>Data {{(dateRange$ | async) ? 'do início' : ''}} do evento</ion-label>
-        <ion-input
-          formControlName="dateStart"
-          [value]="dataForm.value.date"
-          placeholder="dd/MM/yyyy HH:mm"
-          readonly></ion-input>
-        <ion-button fill="clear" id="open-date-input">
-          <ion-icon icon="calendar"></ion-icon>
-        </ion-button>
+        <ion-label class="ion-text-wrap">Data {{(dateRange$ | async) ? 'do início' : ''}} do evento</ion-label>
+        <ion-datetime-button datetime="eventStartDate"></ion-datetime-button>
       </ion-item>
 
       <ion-item *ngIf="dateRange$ | async">
-        <ion-label>Data do fim do evento</ion-label>
-        <ion-input
-          formControlName="dateEnd"
-          [value]="dataForm.value.date"
-          placeholder="dd/MM/yyyy HH:mm"
-          readonly></ion-input>
-        <ion-button fill="clear" id="open-date-end-input">
-          <ion-icon icon="calendar"></ion-icon>
-        </ion-button>
+        <ion-label class="ion-text-wrap">Data do fim do evento</ion-label>
+        <ion-datetime-button datetime="eventEndDate"></ion-datetime-button>
       </ion-item>
     </ng-container>
 
@@ -86,26 +72,13 @@
       </ion-card-header>
       <ion-item>
         <ion-label class="ion-text-wrap">Data do início das inscrições</ion-label>
-        <ion-input
-          formControlName="dateStart"
-          [value]="dataForm.value.date"
-          placeholder="dd/MM/yyyy HH:mm"
-          readonly></ion-input>
-        <ion-button fill="clear" id="open-date-input">
-          <ion-icon icon="calendar"></ion-icon>
-        </ion-button>
+
+        <ion-datetime-button datetime="subscriptionStartDate"></ion-datetime-button>
       </ion-item>
 
       <ion-item>
         <ion-label class="ion-text-wrap">Data do fim das inscrições</ion-label>
-        <ion-input
-          formControlName="dateStart"
-          [value]="dataForm.value.date"
-          placeholder="dd/MM/yyyy HH:mm"
-          readonly></ion-input>
-        <ion-button fill="clear" id="open-date-input">
-          <ion-icon icon="calendar"></ion-icon>
-        </ion-button>
+        <ion-datetime-button datetime="subscriptionEndDate"></ion-datetime-button>
       </ion-item>
     </ng-container>
 
@@ -115,91 +88,98 @@
       </ion-card-header>
 
       <ion-item>
-        <ion-label>Diferenciar preço por tipo de inscrição</ion-label>
-        <ion-toggle slot="end" formControlName="public" (ionChange)="priceDiferentiateChange()"></ion-toggle>
+        <ion-label class="ion-text-wrap">Evento pago</ion-label>
+        <ion-toggle slot="end" formControlName="public" (ionChange)="isEventPaidChange()"></ion-toggle>
       </ion-item>
 
-      <ng-container *ngIf="(priceDiferentiate$ | async); else noPriceDiferentiation">
+      <ng-container *ngIf="(isEventPaid$ | async);">
         <ion-item>
-          <ion-label position="floating">Aluno da Unesp</ion-label>
-          <ion-input
-            formControlName="priceStudents"
-            inputmode="numeric"
-            placeholder="Somente números"
-            (keypress)="inputNumbersOnly($event)"></ion-input>
-          <ion-text slot="end" color="medium"
-            ><p>{{ dataForm.value.priceStudents / 100 | currency: 'BRL'}}</p></ion-text
-          >
+          <ion-label class="ion-text-wrap">Diferenciar preço por tipo de inscrição</ion-label>
+          <ion-toggle slot="end" (ionChange)="priceDiferentiateChange()"></ion-toggle>
+        </ion-item>
+
+        <ng-container *ngIf="(priceDiferentiate$ | async); else noPriceDiferentiation">
+          <ion-item>
+            <ion-label position="floating">Aluno da Unesp</ion-label>
+            <ion-input
+              formControlName="priceStudents"
+              inputmode="numeric"
+              placeholder="Somente números"
+              (keypress)="inputNumbersOnly($event)"></ion-input>
+            <ion-text slot="end" color="medium"
+              ><p>{{ dataForm.value.priceStudents / 100 | currency: 'BRL'}}</p></ion-text
+            >
+          </ion-item>
+          <ion-item>
+            <ion-label class="ion-text-nowrap" position="floating"> Aluno de outras IES </ion-label>
+            <ion-input
+              formControlName="priceOtherStudents"
+              inputmode="numeric"
+              placeholder="Somente números"
+              (keypress)="inputNumbersOnly($event)"></ion-input>
+            <ion-text slot="end" color="medium"
+              ><p>{{ dataForm.value.priceOtherStudents / 100 | currency: 'BRL'}}</p></ion-text
+            >
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Professores e profissionais</ion-label>
+            <ion-input
+              formControlName="priceProfessors"
+              inputmode="numeric"
+              placeholder="Somente números"
+              (keypress)="inputNumbersOnly($event)"></ion-input>
+            <ion-text slot="end" color="medium"
+              ><p>{{ dataForm.value.priceProfessors / 100 | currency: 'BRL'}}</p></ion-text
+            >
+          </ion-item>
+        </ng-container>
+        <ng-template #noPriceDiferentiation>
+          <ion-item>
+            <ion-label position="floating">Preço único</ion-label>
+            <ion-input
+              formControlName="price"
+              inputmode="numeric"
+              placeholder="Somente números"
+              (keypress)="inputNumbersOnly($event)"></ion-input>
+            <ion-text slot="end" color="medium"><p>{{ dataForm.value.price / 100 | currency: 'BRL'}}</p></ion-text>
+          </ion-item>
+        </ng-template>
+        <ion-card-header>
+          <ion-card-title>Informações de pagamento</ion-card-title>
+        </ion-card-header>
+        <ion-item>
+          <ion-label position="floating">Nome completo do beneficiário</ion-label>
+          <ion-input formControlName="accountName"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating">Aluno de outras instituições de ensino superior</ion-label>
+          <ion-label position="floating">CPF ou CNPJ</ion-label>
           <ion-input
-            formControlName="priceOtherStudents"
-            inputmode="numeric"
+            formControlName="accountDocument"
             placeholder="Somente números"
+            inputmode="numeric"
             (keypress)="inputNumbersOnly($event)"></ion-input>
-          <ion-text slot="end" color="medium"
-            ><p>{{ dataForm.value.priceOtherStudents / 100 | currency: 'BRL'}}</p></ion-text
-          >
         </ion-item>
         <ion-item>
-          <ion-label position="floating">Professores e profissionais</ion-label>
+          <ion-label position="floating">Instituição bancária</ion-label>
+          <ion-input formControlName="accountBank" placeholder="Inclua o número e nome extenso do banco"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Agência - Sem dígito verificador</ion-label>
           <ion-input
-            formControlName="priceProfessors"
+            formControlName="accountAgency"
+            placeholder="XXXX"
             inputmode="numeric"
-            placeholder="Somente números"
             (keypress)="inputNumbersOnly($event)"></ion-input>
-          <ion-text slot="end" color="medium"
-            ><p>{{ dataForm.value.priceProfessors / 100 | currency: 'BRL'}}</p></ion-text
-          >
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Conta - Com dígito verificador</ion-label>
+          <ion-input formControlName="accountNumber" placeholder="XXXX-X"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Chave Pix</ion-label>
+          <ion-input formControlName="accountChavePix"></ion-input>
         </ion-item>
       </ng-container>
-      <ng-template #noPriceDiferentiation>
-        <ion-item>
-          <ion-label position="floating">Preço</ion-label>
-          <ion-input
-            formControlName="price"
-            inputmode="numeric"
-            placeholder="Somente números"
-            (keypress)="inputNumbersOnly($event)"></ion-input>
-          <ion-text slot="end" color="medium"><p>{{ dataForm.value.price / 100 | currency: 'BRL'}}</p></ion-text>
-        </ion-item>
-      </ng-template>
-      <ion-card-header>
-        <ion-card-title>Informações de pagamento</ion-card-title>
-      </ion-card-header>
-      <ion-item>
-        <ion-label position="floating">Nome completo do beneficiário</ion-label>
-        <ion-input formControlName="accountName"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">CPF ou CNPJ</ion-label>
-        <ion-input
-          formControlName="accountDocument"
-          placeholder="Somente números"
-          inputmode="numeric"
-          (keypress)="inputNumbersOnly($event)"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Instituição bancária</ion-label>
-        <ion-input formControlName="accountBank" placeholder="Inclua o número e nome extenso do banco"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Agência - Sem dígito verificador</ion-label>
-        <ion-input
-          formControlName="accountAgency"
-          placeholder="XXXX"
-          inputmode="numeric"
-          (keypress)="inputNumbersOnly($event)"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Conta - Com dígito verificador</ion-label>
-        <ion-input formControlName="accountNumber" placeholder="XXXX-X"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Chave Pix</ion-label>
-        <ion-input formControlName="accountChavePix"></ion-input>
-      </ion-item>
     </ng-container>
 
     <ion-card-header>
@@ -237,24 +217,34 @@
   </form>
 </ion-content>
 
-<ion-modal trigger="open-date-input" id="modal-date">
+<ion-modal [keepContentsMounted]="true">
   <ng-template>
-    <ion-datetime
-      #dateInput
-      presentation="date-time"
-      showDefaultButtons="true"
-      (ionChange)="dataForm.value.dateStart = formatDate(dateInput.value)"
-      class="margin-horizontal-auto"></ion-datetime>
+    <ion-datetime id="eventStartDate" presentation="date-time" showDefaultButtons="true">
+      <span slot="title">Selecione a data do início do evento</span>
+    </ion-datetime>
   </ng-template>
 </ion-modal>
 
-<ion-modal trigger="open-date-end-input" id="modal-date">
+<ion-modal [keepContentsMounted]="true">
   <ng-template>
-    <ion-datetime
-      #dateInput
-      presentation="date-time"
-      showDefaultButtons="true"
-      (ionChange)="dataForm.value.dateEnd = formatDate(dateInput.value)"
-      class="margin-horizontal-auto"></ion-datetime>
+    <ion-datetime id="eventEndDate" presentation="date-time" showDefaultButtons="true">
+      <span slot="title">Selecione a data do fim do evento</span>
+    </ion-datetime>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime id="subscriptionStartDate" presentation="date-time" showDefaultButtons="true">
+      <span slot="title">Selecione a data do início das inscrições</span>
+    </ion-datetime>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime id="subscriptionEndDate" presentation="date-time" showDefaultButtons="true">
+      <span slot="title">Selecione a data do fim das inscrições</span>
+    </ion-datetime>
   </ng-template>
 </ion-modal>

@@ -27,6 +27,9 @@ export class AddMajorEventPage implements OnInit {
   priceDiferentiate: boolean = true;
   _priceDiferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   priceDiferentiate$: Observable<boolean> = this._priceDiferentiateSubject.asObservable();
+  isEventPaid: boolean = true;
+  _isEventPaidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  isEventPaid$: Observable<boolean> = this._isEventPaidSubject.asObservable();
 
   dataForm: FormGroup = new FormGroup({
     course: new FormControl(''),
@@ -98,20 +101,35 @@ export class AddMajorEventPage implements OnInit {
     if (!this.dataForm.valid) {
       return false;
     }
+
+    let price:
+      | string
+      | {
+          priceStudents: string;
+          priceOtherStudents: string;
+          priceProfessors: string;
+        };
+
+    if (this.isEventPaid) {
+      price = this.priceDiferentiate
+        ? {
+            priceStudents: this.dataForm.get('priceStudents').value,
+            priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
+            priceProfessors: this.dataForm.get('priceProfessors').value,
+          }
+        : this.dataForm.get('price').value;
+    } else {
+      price = '0';
+    }
+
     this.afs.collection('majorEvents').add({
       course: this.dataForm.get('course').value,
       icon: this.dataForm.get('icon').value,
       name: this.dataForm.get('name').value,
       description: this.dataForm.get('description').value,
       dateStart: this.dataForm.get('dateStart').value,
-      dateEnd: this.dataForm.get('dateEnd').value,
-      price: this.dataForm.get('price').value
-        ? this.dataForm.get('price').value
-        : {
-            priceStudents: this.dataForm.get('priceStudents').value,
-            priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
-            priceProfessors: this.dataForm.get('priceProfessors').value,
-          },
+      dateEnd: this.dateRange ? this.dataForm.get('dateEnd').value : undefined,
+      price: price,
       accountChavePix: this.dataForm.get('accountChavePix').value,
       accountBank: this.dataForm.get('accountBank').value,
       accountName: this.dataForm.get('accountName').value,
@@ -134,7 +152,7 @@ export class AddMajorEventPage implements OnInit {
   }
 
   requirePaymentDetails(control: AbstractControl): ValidationErrors | null {
-    if (control.get('accountChavePix').value != '' || control.get('accountNumber').value != '') {
+    if (this.isEventPaid && (control.get('accountChavePix').value != '' || control.get('accountNumber').value != '')) {
       control.get('accountBank').addValidators(Validators.required);
       control.get('accountName').addValidators(Validators.required);
       control.get('accountDocument').addValidators(Validators.required);
@@ -183,6 +201,11 @@ export class AddMajorEventPage implements OnInit {
   priceDiferentiateChange() {
     this.priceDiferentiate = !this.priceDiferentiate;
     this._priceDiferentiateSubject.next(this.priceDiferentiate);
+  }
+
+  isEventPaidChange() {
+    this.isEventPaid = !this.isEventPaid;
+    this._isEventPaidSubject.next(this.isEventPaid);
   }
 
   inputNumbersOnly(event) {
