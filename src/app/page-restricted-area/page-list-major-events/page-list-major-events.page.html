@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/area-restrita"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gerenciar grandes eventos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-datetime-button datetime="dateSelector" class="margin-horizontal-auto"></ion-datetime-button>
+  </ion-item>
+
+  <ion-list>
+    <!-- <ion-item [style.--background]="courses[item.course] ? courses[item.course].color + '25' : undefined"> -->
+    <ion-item>
+      <ion-label>
+        <h2 class="ion-text-wrap">SECOMPP22</h2>
+        <h4 style="font-weight: 400">Inscrições: 05/09 - 10/09</h4>
+        <h4 style="font-weight: 400">Data do evento: 05/09 - 10/09</h4>
+        <p class="ion-text-wrap">Ciência da Computação</p>
+        <ion-grid>
+          <ion-col>
+            <!-- <ion-row>
+              <ion-button fill="clear">
+                <ion-icon name="pencil-outline" slot="start"></ion-icon>
+                <p slot="end">Gerenciar evento</p>
+              </ion-button>
+            </ion-row> -->
+            <ion-row>
+              <ion-button fill="clear">
+                <ion-icon name="people-outline" slot="start"></ion-icon>
+                <p slot="end">Gerenciar inscritos</p>
+              </ion-button>
+            </ion-row>
+            <ion-row>
+              <ion-button fill="clear">
+                <ion-icon name="wallet-outline" slot="start"></ion-icon>
+                <p slot="end" class="ion-text-wrap">Validar comprovantes</p>
+              </ion-button>
+            </ion-row>
+          </ion-col>
+        </ion-grid>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime
+      id="dateSelector"
+      presentation="month-year"
+      showDefaultButtons="true"
+      min="2022-03-01T00:00:00"></ion-datetime>
+  </ng-template>
+</ion-modal>
