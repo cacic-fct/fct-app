@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/about/suporte"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <span style="font-size: 3em; font-weight: bold">Migrar do SYSCOMPP</span>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <p style="margin-bottom: 10px">
+          Se você possui uma conta no antigo sistema da SECOMPP, poderá importar seus certificados para o FCT App.
+        </p>
+        <p style="margin-bottom: 10px">
+          Para isso, você precisará de acesso ao e-mail utilizado no cadastro do SYSCOMPP.
+        </p>
+      </ion-col>
+    </ion-row>
+    <ion-row style="margin-top: 40px">
+      <ion-col class="ion-text-center">
+        <ion-button expand="block" (click)="migrate()" style="max-width: 400px" class="margin-horizontal-auto"
+          >Continuar</ion-button
+        >
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

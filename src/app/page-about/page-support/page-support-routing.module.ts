@@ -6,8 +6,12 @@ import { PageSupportPage } from './page-support.page';
 const routes: Routes = [
   {
     path: '',
-    component: PageSupportPage
-  }
+    component: PageSupportPage,
+  },
+  {
+    path: 'migrar',
+    loadChildren: () => import('./page-migrate/page-migrate.module').then((m) => m.PageMigratePageModule),
+  },
 ];
 
 @NgModule({
