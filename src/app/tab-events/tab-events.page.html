@@ -5,84 +5,86 @@
 </ion-header>
 
 <ion-content>
-  <div class="event-container" *ngIf="majorEvents; else loading">
+  <ng-container *ngIf="majorEvents; else loading">
     <h1 *ngIf="majorEvents.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
 
-    <ng-container *ngFor="let event of majorEvents">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>{{event.name}}</ion-card-title>
-        </ion-card-header>
+    <div *ngIf="majorEvents.length > 0" class="event-container">
+      <ng-container *ngFor="let event of majorEvents">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{event.name}}</ion-card-title>
+          </ion-card-header>
 
-        <ion-card-content>
-          <p>{{event.description}}</p>
-        </ion-card-content>
+          <ion-card-content>
+            <p>{{event.description}}</p>
+          </ion-card-content>
 
-        <div class="card-section">
-          <div>
-            <ion-icon name="calendar-outline"></ion-icon>
-            Datas
+          <div class="card-section">
+            <div>
+              <ion-icon name="calendar-outline"></ion-icon>
+              Datas
+            </div>
+
+            <ion-item lines="none">
+              Evento
+              <span slot="end">
+                {{ getDateFromTimestamp(event.dateStart) | date: 'dd/MM' }}
+                {{ event.dateEnd && '- ' + (getDateFromTimestamp(event.dateEnd) | date: 'dd/MM') }}
+              </span>
+            </ion-item>
+
+            <ion-item lines="none">
+              Inscrição
+              <span slot="end">
+                {{ getDateFromTimestamp(event.subscriptionDateStart) | date: 'dd/MM' }}
+                {{ event.subscriptionDateEnd && '- ' + (getDateFromTimestamp(event.subscriptionDateEnd) | date: 'dd/MM') }}
+              </span>
+            </ion-item>
           </div>
 
-          <ion-item lines="none">
-            Evento
-            <span slot="end">
-              {{ getDateFromTimestamp(event.dateStart) | date: 'dd/MM' }}
-              {{ event.dateEnd && '- ' + (getDateFromTimestamp(event.dateEnd) | date: 'dd/MM') }}
-            </span>
-          </ion-item>
+          <div class="card-section">
+            <div>
+              <ion-icon name="wallet-outline"></ion-icon>
+              Valores
+            </div>
 
-          <ion-item lines="none">
-            Inscrição
-            <span slot="end">
-              {{ getDateFromTimestamp(event.subscriptionDateStart) | date: 'dd/MM' }}
-              {{ event.subscriptionDateEnd && '- ' + (getDateFromTimestamp(event.subscriptionDateEnd) | date: 'dd/MM') }}
-            </span>
-          </ion-item>
-        </div>
+            <ng-container *ngIf="isObject(event.price); then multiPrice else uniquePrice"></ng-container>
 
-        <div class="card-section">
-          <div>
-            <ion-icon name="wallet-outline"></ion-icon>
-            Valores
+            <ng-template #uniquePrice>
+              <ion-item lines="none">
+                Preço único
+                <span slot="end">{{ (event.price / 100) | currency:'BRL' }}</span>
+              </ion-item>
+            </ng-template>
+
+            <ng-template #multiPrice>
+              <ion-item lines="none">
+                Alunos da UNESP
+                <span slot="end">{{ (event.price.priceStudents / 100) | currency:'BRL' }}</span>
+              </ion-item>
+
+              <ion-item lines="none">
+                Alunos
+                <span slot="end">{{ (event.price.priceOtherStudents / 100) | currency:'BRL' }}</span>
+              </ion-item>
+
+              <ion-item lines="none">
+                Professores
+                <span slot="end">{{ (event.price.priceProfessors / 100) | currency:'BRL' }}</span>
+              </ion-item>
+            </ng-template>
           </div>
 
-          <ng-container *ngIf="isObject(event.price); then multiPrice else uniquePrice"></ng-container>
-
-          <ng-template #uniquePrice>
-            <ion-item lines="none">
-              Preço único
-              <span slot="end">{{ (event.price / 100) | currency:'BRL' }}</span>
-            </ion-item>
-          </ng-template>
-
-          <ng-template #multiPrice>
-            <ion-item lines="none">
-              Alunos da UNESP
-              <span slot="end">{{ (event.price.priceStudents / 100) | currency:'BRL' }}</span>
-            </ion-item>
-
-            <ion-item lines="none">
-              Alunos
-              <span slot="end">{{ (event.price.priceOtherStudents / 100) | currency:'BRL' }}</span>
-            </ion-item>
-
-            <ion-item lines="none">
-              Professores
-              <span slot="end">{{ (event.price.priceProfessors / 100) | currency:'BRL' }}</span>
-            </ion-item>
-          </ng-template>
-        </div>
-
-        <div class="card-button-section">
-          <ion-button>
-            INSCREVA-SE
-            <ion-icon name="arrow-forward-outline" slot="end" style="font-size: 16px"></ion-icon>
-          </ion-button>
-        </div>
-      </ion-card>
-    </ng-container>
-  </div>
+          <div class="card-button-section">
+            <ion-button>
+              INSCREVA-SE
+              <ion-icon name="arrow-forward-outline" slot="end" style="font-size: 16px"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card>
+      </ng-container>
+    </div>
+  </ng-container>
 
   <ng-template #loading>
     <ion-progress-bar type="indeterminate"></ion-progress-bar>

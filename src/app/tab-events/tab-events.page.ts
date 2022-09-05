@@ -18,20 +18,14 @@ export class TabEventsPage {
   today: Date = new Date();
 
   constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {
-    this.auth.authState.pipe(first()).subscribe((user) => {
-      this.afs.collection<majorEvent>('majorEvents', (ref) => {
-        return user ? (
-          ref.where('subscriptionDateEnd', '>=', this.today)
-        ) : (
-          ref.where('subscriptionDateEnd', '>=', this.today).where('public', '==', true)
-        )
-      })
-      .valueChanges({ idField: 'id' })
-      .pipe(untilDestroyed(this), trace('firestore'))
-      .subscribe((items) => {
-        this.majorEvents = items;
-      })
-    });
+    this.afs.collection<majorEvent>('majorEvents', (ref) => {
+      return ref.orderBy('subscriptionDateEnd', 'asc')
+    })
+    .valueChanges({ idField: 'id' })
+    .pipe(untilDestroyed(this), trace('firestore'))
+    .subscribe((items) => {
+      this.majorEvents = items;
+    })
   }
 
   ngOnInit() {}
