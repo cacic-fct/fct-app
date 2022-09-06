@@ -5,11 +5,11 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="majorEvents; else loading">
-    <h1 *ngIf="majorEvents.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
+  <ng-container *ngIf="majorEvents$ | async; let majorEventsList; else loading">
+    <h1 *ngIf="majorEventsList.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
 
-    <div *ngIf="majorEvents.length > 0" class="event-container">
-      <ng-container *ngFor="let event of majorEvents">
+    <div *ngIf="majorEventsList.length > 0" class="event-container">
+      <ng-container *ngFor="let event of majorEventsList">
         <ion-card>
           <ion-card-header>
             <ion-card-title>{{event.name}}</ion-card-title>
@@ -33,7 +33,7 @@
               </span>
             </ion-item>
 
-            <ion-item lines="none">
+            <ion-item lines="none" *ngIf="event.subscriptionDateStart && event.subscriptionDateEnd">
               Inscrição
               <span slot="end">
                 {{ getDateFromTimestamp(event.subscriptionDateStart) | date: 'dd/MM' }} {{ event.subscriptionDateEnd &&

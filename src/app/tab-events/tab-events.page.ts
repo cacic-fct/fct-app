@@ -5,6 +5,7 @@ import { trace } from '@angular/fire/compat/performance';
 import { Timestamp } from '@firebase/firestore-types';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { compareAsc, fromUnixTime } from 'date-fns';
+import { Observable } from 'rxjs';
 
 import { MajorEventItem } from '../shared/services/major-event';
 
@@ -15,19 +16,16 @@ import { MajorEventItem } from '../shared/services/major-event';
   styleUrls: ['tab-events.page.scss'],
 })
 export class TabEventsPage {
-  majorEvents: MajorEventItem[];
+  majorEvents$: Observable<MajorEventItem[]>;
   today: Date = new Date();
 
   constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {
-    this.afs
+    this.majorEvents$ = this.afs
       .collection<MajorEventItem>('majorEvents', (ref) => {
         return ref.orderBy('dateStart', 'asc');
       })
       .valueChanges({ idField: 'id' })
-      .pipe(untilDestroyed(this), trace('firestore'))
-      .subscribe((items) => {
-        this.majorEvents = items;
-      });
+      .pipe(trace('firestore'));
   }
 
   ngOnInit() {}
