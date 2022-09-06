@@ -42,15 +42,14 @@
     </ion-item>
 
     <ion-item>
-      <ion-label>Data do evento</ion-label>
-      <ion-input
-        formControlName="date"
-        [value]="dataForm.value.date"
-        placeholder="dd/MM/yyyy HH:mm"
-        readonly></ion-input>
-      <ion-button fill="clear" id="open-date-input">
-        <ion-icon icon="calendar"></ion-icon>
-      </ion-button>
+      <ion-label class="ion-text-wrap">Data do evento</ion-label>
+      <ion-datetime-button datetime="eventDate"></ion-datetime-button>
+    </ion-item>
+
+    <ion-item>
+      <ion-toggle (ionChange)="enableDateEnd = !enableDateEnd"></ion-toggle>
+      <ion-label class="ion-text-wrap">Fim do evento</ion-label>
+      <ion-datetime-button [disabled]="!enableDateEnd" datetime="eventDateEnd"></ion-datetime-button>
     </ion-item>
 
     <ion-card-header>
@@ -116,6 +115,21 @@
         <ion-toggle slot="end" formControlName="public" checked="off"></ion-toggle>
       </ion-item>
 
+      <!--
+        TODO utilizar observables para recuperar grandes eventos
+      <ion-item>
+        <ion-label position="floating">Pertence ao grande evento</ion-label>
+        <ion-select interface="popover" formControlName="inMajorEvent">
+          <ng-container *ngIf="majorEvents.getFutureMajorEvents() | async; let items; else: loading">
+            <ng-container *ngFor="let majorEvent of items | keyvalue">
+              <ion-select-option slot="start" class="majorEvent" [value]="majorEvent.value.name">
+                {{ majorEvent.value.name }}
+              </ion-select-option>
+            </ng-container>
+          </ng-container> 
+        </ion-select>
+      </ion-item> -->
+
       <ion-item>
         <ion-label position="stacked">Criador do evento</ion-label>
         <ion-input value="{{ userData.displayName }}" color="medium" readonly> </ion-input>
@@ -124,20 +138,24 @@
 
     <ion-button class="ion-padding-horizontal" id="check-modal" type="submit">Criar evento</ion-button>
     <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, seu nome será gravado junto ao evento.</p>
+
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="eventDate" presentation="date-time" showDefaultButtons="true" formControlName="date">
+          <span slot="title">Selecione a data do evento</span>
+        </ion-datetime>
+      </ng-template>
+    </ion-modal>
+
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="eventDateEnd" presentation="date-time" showDefaultButtons="true" formControlName="dateEnd">
+          <span slot="title">Selecione a data de término do evento</span>
+        </ion-datetime>
+      </ng-template>
+    </ion-modal>
   </form>
 </ion-content>
-
-<ion-modal trigger="open-date-input" id="modal-date">
-  <ng-template>
-    <ion-datetime
-      #dateInput
-      presentation="date-time"
-      (ionChange)="dataForm.value.date = formatDate(dateInput.value)"
-      class="margin-horizontal-auto"></ion-datetime>
-
-    <ion-button fill="clear" (click)="closeModal()"> Fechar </ion-button>
-  </ng-template>
-</ion-modal>
 
 <ion-modal trigger="check-modal" id="modal-check">
   <ng-template>

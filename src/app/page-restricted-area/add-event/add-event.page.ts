@@ -1,16 +1,14 @@
 import { PlacesService } from './../../shared/services/places.service';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonModal } from '@ionic/angular';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
+import { MajorEventsService } from 'src/app/shared/services/majorEvents.service';
 import { format, parseISO } from 'date-fns';
-
-import { parse as parseDate } from 'date-fns';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { colorDecodeId } from 'ol/renderer/webgl/Layer';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-event',
@@ -22,7 +20,7 @@ export class AddEventPage implements OnInit {
 
   courses = CoursesService.courses;
   places = PlacesService.places;
-  dateValue = '';
+  enableDateEnd = false;
 
   dataForm: FormGroup = new FormGroup({
     course: new FormControl(''),
@@ -31,6 +29,7 @@ export class AddEventPage implements OnInit {
     shortDescription: new FormControl(''),
     description: new FormControl(''),
     date: new FormControl(''),
+    dateEnd: new FormControl(''),
     locationDescription: new FormControl(''),
     locationLat: new FormControl(''),
     locationLon: new FormControl(''),
@@ -38,6 +37,7 @@ export class AddEventPage implements OnInit {
     public: new FormControl(''),
     buttonText: new FormControl(''),
     buttonUrl: new FormControl(''),
+    inMajorEvent: new FormControl(''),
   });
 
   userData: any;
@@ -45,7 +45,9 @@ export class AddEventPage implements OnInit {
     public formBuilder: FormBuilder,
     private modalController: ModalController,
     private sanitizer: DomSanitizer,
-    private afs: AngularFirestore
+    public majorEvents: MajorEventsService,
+    private afs: AngularFirestore,
+    private router: Router
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
   }
@@ -58,7 +60,8 @@ export class AddEventPage implements OnInit {
         name: ['', Validators.required],
         shortDescription: ['', Validators.maxLength(80)],
         description: '',
-        date: ['', Validators.required],
+        date: [new Date().toISOString(), Validators.required],
+        dateEnd: '',
         locationDescription: '',
         locationLat: [
           '',
@@ -76,9 +79,10 @@ export class AddEventPage implements OnInit {
         public: '',
         buttonText: '',
         buttonUrl: '',
+        inMajorEvent: '',
       },
       {
-        validators: [this.validatorLatLong, this.validatorButton],
+        validators: [this.validatorLatLong, this.validatorButton, this.validatorDateEnd],
       }
     );
     this.userData.displayName.replace(/%20/g, ' ');
@@ -89,16 +93,23 @@ export class AddEventPage implements OnInit {
   }
 
   onSubmit() {
-    debugger;
+    // TODO this.dataForm.invalid tem que ser checado antes de abrir o modal de confirmação.
     if (this.dataForm.invalid) return;
     const data = this.dataForm.value;
     Object.keys(data).forEach((key) => {
       if (data[key] == '') delete data[key];
     });
-    this.afs.collection('events').add(data).then(res => {
-      console.log(res);
-    });
-  } // TODO implementar
+    data.date = parseISO(data.date);
+    if (this.enableDateEnd) data.dateEnd = parseISO(data.dateEnd);
+    else delete data.dateEnd;
+    this.afs
+      .collection('events')
+      .add(data)
+      .then((res) => {
+        this.closeModal();
+        this.router.navigate(['area-restrita'], { replaceUrl: true });
+      });
+  }
 
   validatorLatLong(control: AbstractControl): ValidationErrors | null {
     if (control.get('locationLat').value == '' && control.get('locationLon').value == '') {
@@ -111,6 +122,16 @@ export class AddEventPage implements OnInit {
     if (control.get('locationLat').value != '') control.get('locationLon').addValidators(Validators.required);
 
     return null;
+  }
+
+  validatorDateEnd(): ValidationErrors | null {
+    // TODO como fazer a verificação data de término >= data de início
+    if (this.enableDateEnd) {
+      let dateStart = parseISO(this.dataForm.value.date);
+      let dateEnd = parseISO(this.dataForm.value.dateEnd);
+      if (dateEnd >= dateStart) return null;
+      else return { message: 'Data de término deve ser posterior a data de início.' };
+    }
   }
 
   validatorButton(control: AbstractControl): ValidationErrors | null {
@@ -151,8 +172,8 @@ export class AddEventPage implements OnInit {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  getDateFromTimestamp(timestamp: any): Date {
-    return parseDate(timestamp, 'dd/MM/yyyy HH:mm', new Date());
+  getDateFromTimestamp(isoString: string): Date {
+    return parseISO(isoString);
   }
   getCourse(course: string): string {
     if (this.courses[course]) {
