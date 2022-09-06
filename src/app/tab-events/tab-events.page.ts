@@ -3,13 +3,11 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { Timestamp } from '@firebase/firestore-types';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { compareAsc, fromUnixTime } from 'date-fns';
 import { Observable } from 'rxjs';
 
 import { MajorEventItem } from '../shared/services/major-event';
 
-@UntilDestroy()
 @Component({
   selector: 'app-tab-events',
   templateUrl: 'tab-events.page.html',
