@@ -80,6 +80,7 @@ baseline.json
 .husky/_
 
 .angular
+
 # Firebase
 .firebase
 *-debug.log
