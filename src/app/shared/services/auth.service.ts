@@ -8,8 +8,9 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
 import { AngularFireRemoteConfig } from '@angular/fire/compat/remote-config';
-import { first } from 'rxjs';
+import { first, Observable } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
 @Injectable()
 export class AuthService {
@@ -23,9 +24,10 @@ export class AuthService {
     public ngZone: NgZone,
     public modalController: ModalController,
     public remoteConfig: AngularFireRemoteConfig,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private fns: AngularFireFunctions
   ) {
-    this.auth.authState.subscribe((user) => {
+    this.auth.authState.pipe(trace('auth')).subscribe((user) => {
       if (user) {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
@@ -90,7 +92,7 @@ export class AuthService {
 
   SetUserData(user: firebase.User) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    const userData = {
+    const userData: User = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
@@ -107,6 +109,7 @@ export class AuthService {
         this.afs
           .doc<User>(`users/${user.uid}`)
           .valueChanges()
+          .pipe(trace('firestore'))
           .subscribe((data) => {
             if (data === undefined) {
               return;
@@ -118,4 +121,43 @@ export class AuthService {
       }
     });
   }
+
+  getUserUid(manualInput: string): { message?: string; status?: boolean; uid?: string } | Observable<any> {
+    // Remove spaces from the string
+    manualInput = manualInput.replace(/\s/g, '');
+
+    // Check if input has only one '+' and numbers
+    const isNumeric: boolean = manualInput.match(/^\+?\d+$/) ? true : false;
+
+    // If string doesn't include "@" and isn't numeric only or is empty, return false
+    if ((!manualInput.includes('@') && !isNumeric) || manualInput === '') {
+      return { message: 'Os dados inseridos são inválidos', status: false };
+    }
+
+    if (isNumeric) {
+      if (manualInput.length < 11 || manualInput.length > 14) {
+        return { message: 'O número de telefone deve ter entre 11 e 14 dígitos', status: false };
+      }
+
+      // If string is numeric only and has length of 11, add country code
+      if (manualInput.length === 11) {
+        manualInput = `+55${manualInput}`;
+      } else if (manualInput.length === 13) {
+        manualInput = `+${manualInput}`;
+      }
+    }
+
+    const getUserUid = this.fns.httpsCallable('getUserUid');
+
+    return getUserUid({ string: manualInput });
+  }
+
+  instanceOfResponse(object: any): object is Response {
+    return 'message' in object;
+  }
+}
+
+interface Response {
+  status: boolean;
+  message: string;
 }

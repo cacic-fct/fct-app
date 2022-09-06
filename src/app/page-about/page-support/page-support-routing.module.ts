@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PageManualCalouroPage } from './page-manual-calouro.page';
+import { PageSupportPage } from './page-support.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: PageManualCalouroPage,
-  },
+    component: PageSupportPage
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PageManualCalouroPageRoutingModule {}
+export class PageSupportPageRoutingModule {}
