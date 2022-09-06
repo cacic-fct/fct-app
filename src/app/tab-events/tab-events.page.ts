@@ -21,7 +21,7 @@ export class TabEventsPage {
   constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {
     this.afs
       .collection<MajorEventItem>('majorEvents', (ref) => {
-        return ref.orderBy('subscriptionDateEnd', 'asc');
+        return ref.orderBy('dateStart', 'asc');
       })
       .valueChanges({ idField: 'id' })
       .pipe(untilDestroyed(this), trace('firestore'))
@@ -41,13 +41,5 @@ export class TabEventsPage {
     const rightCompare = compareAsc(date2, this.today);
 
     return (leftCompare == -1 || leftCompare === 0) && (rightCompare === 1 || rightCompare === 0);
-  }
-
-  isObject(item: any) {
-    return typeof item === 'object' && item !== null && !Array.isArray(item);
-  }
-
-  isNumber(item: any) {
-    return typeof item === 'number';
   }
 }
