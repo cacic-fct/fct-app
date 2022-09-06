@@ -85,7 +85,7 @@ export class AddMajorEventPage implements OnInit {
         accountNumber: '',
         public: '',
         buttonText: '',
-        buttonUrl: '',
+        buttonUrl: '', // TODO: Verificar se URL inicia-se com http:// ou https://. Caso não, adicionar "https://"
       },
       {
         validators: [this.validatorButton, this.requirePaymentDetails],
