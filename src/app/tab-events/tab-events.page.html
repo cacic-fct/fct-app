@@ -16,7 +16,7 @@
           </ion-card-header>
 
           <ion-card-content>
-            <p>{{event.description}}</p>
+            <p class="ion-text-justify">{{event.description}}</p>
           </ion-card-content>
 
           <div class="card-section">
@@ -84,7 +84,7 @@
               Inscreva-se
             </ion-button>
 
-            <ion-button *ngIf="event.button" [href]="event.button.url" fill="clear" target="_blank">
+            <ion-button *ngIf="event.button?.url" [href]="event.button.url" fill="clear" target="_blank">
               {{ event.button.text || 'Saiba mais' }}
             </ion-button>
           </div>
