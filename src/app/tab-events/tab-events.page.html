@@ -78,9 +78,9 @@
 
           <div class="card-button-section">
             <ion-button
-              *ngIf="isTodayBetweenDates(getDateFromTimestamp(event.subscriptionDateStart), getDateFromTimestamp(event.subscriptionDateEnd))">
-              INSCREVA-SE
-              <ion-icon name="arrow-forward-outline" slot="end" style="font-size: 16px"></ion-icon>
+              class="ion-text-uppercase"
+              *ngIf="(event.subscriptionDateStart && event.subscriptionDateEnd) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionDateStart), getDateFromTimestamp(event.subscriptionDateEnd))">
+              Inscreva-se
             </ion-button>
 
             <ion-button *ngIf="event.button" [href]="event.button.url" fill="clear" target="_blank">
