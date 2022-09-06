@@ -78,7 +78,7 @@ export class AddEventPage implements OnInit {
         youtubeCode: '',
         public: '',
         buttonText: '',
-        buttonUrl: '',
+        buttonUrl: '', // TODO: Verificar se URL inicia-se com http:// ou https://. Caso não, adicionar "https://"
         inMajorEvent: '',
       },
       {
