@@ -36,6 +36,6 @@ export class TabEventsPage {
     const leftCompare = compareAsc(date1, this.today);
     const rightCompare = compareAsc(date2, this.today);
 
-    return leftCompare >= -1 && rightCompare >= 0;
+    return leftCompare <= 0 && rightCompare >= 0;
   }
 }
