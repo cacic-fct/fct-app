@@ -80,6 +80,10 @@
               INSCREVA-SE
               <ion-icon name="arrow-forward-outline" slot="end" style="font-size: 16px"></ion-icon>
             </ion-button>
+
+            <ion-button *ngIf="event.button" [href]="event.button.url" fill="clear" target="_blank">
+              {{ event.button.text ?? 'SAIBA MAIS' }}
+            </ion-button>
           </div>
         </ion-card>
       </ng-container>
