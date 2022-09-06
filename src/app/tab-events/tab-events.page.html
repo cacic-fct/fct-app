@@ -42,7 +42,7 @@
             </ion-item>
           </div>
 
-          <div class="card-section">
+          <div class="card-section" *ngIf="event.price">
             <div>
               <ion-icon name="wallet-outline"></ion-icon>
               Valores
@@ -76,6 +76,7 @@
             </ng-template>
           </div>
 
+          <!-- TODO: Fazer botão de inscrição funcionar -->
           <div class="card-button-section">
             <ion-button
               class="ion-text-uppercase"
@@ -84,7 +85,7 @@
             </ion-button>
 
             <ion-button *ngIf="event.button" [href]="event.button.url" fill="clear" target="_blank">
-              {{ event.button.text || 'SAIBA MAIS' }}
+              {{ event.button.text || 'Saiba mais' }}
             </ion-button>
           </div>
         </ion-card>
