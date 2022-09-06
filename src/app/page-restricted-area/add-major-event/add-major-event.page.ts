@@ -10,6 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { MajorEventItem } from 'src/app/shared/services/major-event';
 
 @Component({
   selector: 'app-add-major-event',
@@ -102,24 +103,22 @@ export class AddMajorEventPage implements OnInit {
       return false;
     }
 
-    let price:
-      | string
-      | {
-          priceStudents: string;
-          priceOtherStudents: string;
-          priceProfessors: string;
-        };
+    let price: MajorEventItem['price'];
 
     if (this.isEventPaid) {
-      price = this.priceDiferentiate
-        ? {
-            priceStudents: this.dataForm.get('priceStudents').value,
-            priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
-            priceProfessors: this.dataForm.get('priceProfessors').value,
-          }
-        : this.dataForm.get('price').value;
+      if (this.priceDiferentiate) {
+        price = {
+          priceStudents: this.dataForm.get('priceStudents').value,
+          priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
+          priceProfessors: this.dataForm.get('priceProfessors').value,
+        };
+      } else {
+        price = {
+          priceSingle: this.dataForm.get('price').value,
+        };
+      }
     } else {
-      price = '0';
+      price.isFree = true;
     }
 
     this.afs.collection('majorEvents').add({
