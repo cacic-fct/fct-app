@@ -48,10 +48,17 @@
               Valores
             </div>
 
-            <!-- TODO: considerar evento gratuito 'event.price.isFree === true' -->
-            <ng-container *ngIf="event.price.priceSingle; then uniquePrice else multiPrice"></ng-container>
+            <ng-container *ngIf="event.price.isFree; else notFree">
+              <ion-item lines="none">
+                <ion-label>Gratuito</ion-label>
+              </ion-item>
+            </ng-container>
 
-            <ng-template #uniquePrice>
+            <ng-template #notFree>
+              <ng-container *ngIf="event.price.priceSingle; then singlePrice else multiPrice"> </ng-container>
+            </ng-template>
+
+            <ng-template #singlePrice>
               <ion-item lines="none">
                 Preço único
                 <span slot="end">{{ (100 / 100) | currency:'BRL' }}</span>
@@ -59,17 +66,17 @@
             </ng-template>
 
             <ng-template #multiPrice>
-              <ion-item lines="none">
+              <ion-item lines="none" *ngIf="event.price?.priceStudents">
                 Alunos da Unesp
                 <span slot="end">{{ (event.price.priceStudents / 100) | currency:'BRL' }}</span>
               </ion-item>
 
-              <ion-item lines="none">
+              <ion-item lines="none" *ngIf="event.price?.priceOtherStudents ">
                 Alunos
                 <span slot="end">{{ (event.price.priceOtherStudents / 100) | currency:'BRL' }}</span>
               </ion-item>
 
-              <ion-item lines="none">
+              <ion-item lines="none" *ngIf="event.price?.priceOtherStudents">
                 Professores
                 <span slot="end">{{ (event.price.priceProfessors / 100) | currency:'BRL' }}</span>
               </ion-item>
