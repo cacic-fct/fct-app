@@ -18,11 +18,15 @@ export class PageProfilePage implements OnInit {
   uid$: Observable<string> = this._uidSubject.asObservable();
   _academicIDSubject: BehaviorSubject<string> = new BehaviorSubject(undefined);
   academicID$: Observable<string> = this._academicIDSubject.asObservable();
-  hasServiceWorker: boolean = false;
+  serviceWorkerActive: boolean = false;
 
   constructor(public auth: AngularFireAuth, public courses: CoursesService, private afs: AngularFirestore) {
+    // If browser supports service worker
     if ('serviceWorker' in navigator) {
-      this.hasServiceWorker = true;
+      // If service worker is "activated" or "activating"
+      if (navigator.serviceWorker.controller) {
+        this.serviceWorkerActive = true;
+      }
     }
   }
 
