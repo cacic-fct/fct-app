@@ -11,16 +11,14 @@
 
   ion-card {
     height: min-content;
+  }
 
-    ion-card-content {
-      p {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 7;
-        -webkit-box-orient: vertical;
-      }
-    }
+  .event-description {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
   }
 }
 
@@ -29,15 +27,13 @@
     margin-top: 8px;
   }
 
-  > div {
+  .card-label {
     display: flex;
-    margin: 0 16px;
     align-items: center;
     font-size: 12px;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 2px;
-
     ion-icon {
       font-size: 24px;
       margin-right: 4px;
@@ -47,9 +43,4 @@
   ion-item {
     --min-height: 32px;
   }
-}
-
-.card-button-section {
-  margin: 0 16px 8px;
-  display: flex;
 }
