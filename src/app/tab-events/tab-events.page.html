@@ -52,7 +52,7 @@
 
             <ng-template #uniquePrice>
               <ion-item lines="none">
-                Preço único
+                Preço
                 <span slot="end">{{ (event.price / 100) | currency:'BRL' }}</span>
               </ion-item>
             </ng-template>
@@ -64,7 +64,7 @@
               </ion-item>
 
               <ion-item lines="none">
-                Alunos
+                Alunos de outras instituições
                 <span slot="end">{{ (event.price.priceOtherStudents / 100) | currency:'BRL' }}</span>
               </ion-item>
 
@@ -82,7 +82,7 @@
             </ion-button>
 
             <ion-button *ngIf="event.button" [href]="event.button.url" fill="clear" target="_blank">
-              {{ event.button.text ?? 'SAIBA MAIS' }}
+              {{ event.button.text || 'SAIBA MAIS' }}
             </ion-button>
           </div>
         </ion-card>

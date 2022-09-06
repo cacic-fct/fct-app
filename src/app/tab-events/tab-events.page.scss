@@ -1,8 +1,13 @@
 .event-container {
-  max-width: 992px;
+  max-width: 1120px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+
+  @media (min-width: 992px) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   ion-card {
     height: min-content;
@@ -16,11 +21,6 @@
         -webkit-box-orient: vertical;
       }
     }
-  }
-
-  @media (min-width: 992px) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -51,4 +51,5 @@
 
 .card-button-section {
   margin: 0 16px 8px;
+  display: flex;
 }
