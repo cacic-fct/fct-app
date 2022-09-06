@@ -6,7 +6,7 @@ import { Timestamp } from '@firebase/firestore-types';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { compareAsc, fromUnixTime } from 'date-fns';
 
-import { EventItem } from '../shared/services/major-event';
+import { MajorEventItem } from '../shared/services/major-event';
 
 @UntilDestroy()
 @Component({
@@ -15,18 +15,19 @@ import { EventItem } from '../shared/services/major-event';
   styleUrls: ['tab-events.page.scss'],
 })
 export class TabEventsPage {
-  majorEvents: EventItem[];
+  majorEvents: MajorEventItem[];
   today: Date = new Date();
 
   constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {
-    this.afs.collection<EventItem>('majorEvents', (ref) => {
-      return ref.orderBy('subscriptionDateEnd', 'asc')
-    })
-    .valueChanges({ idField: 'id' })
-    .pipe(untilDestroyed(this), trace('firestore'))
-    .subscribe((items) => {
-      this.majorEvents = items;
-    })
+    this.afs
+      .collection<MajorEventItem>('majorEvents', (ref) => {
+        return ref.orderBy('subscriptionDateEnd', 'asc');
+      })
+      .valueChanges({ idField: 'id' })
+      .pipe(untilDestroyed(this), trace('firestore'))
+      .subscribe((items) => {
+        this.majorEvents = items;
+      });
   }
 
   ngOnInit() {}
@@ -36,10 +37,10 @@ export class TabEventsPage {
   }
 
   isTodayBetweenDates(date1: Date, date2: Date) {
-    const leftCompare = compareAsc(date1, this.today)
-    const rightCompare = compareAsc(date2, this.today)
+    const leftCompare = compareAsc(date1, this.today);
+    const rightCompare = compareAsc(date2, this.today);
 
-    return (leftCompare == -1 || leftCompare === 0) && (rightCompare === 1 || rightCompare === 0)
+    return (leftCompare == -1 || leftCompare === 0) && (rightCompare === 1 || rightCompare === 0);
   }
 
   isObject(item: any) {

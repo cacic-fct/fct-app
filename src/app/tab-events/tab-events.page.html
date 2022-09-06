@@ -28,16 +28,16 @@
             <ion-item lines="none">
               Evento
               <span slot="end">
-                {{ getDateFromTimestamp(event.dateStart) | date: 'dd/MM' }}
-                {{ event.dateEnd && '- ' + (getDateFromTimestamp(event.dateEnd) | date: 'dd/MM') }}
+                {{ getDateFromTimestamp(event.dateStart) | date: 'dd/MM' }} {{ event.dateEnd && '- ' +
+                (getDateFromTimestamp(event.dateEnd) | date: 'dd/MM') }}
               </span>
             </ion-item>
 
             <ion-item lines="none">
               Inscrição
               <span slot="end">
-                {{ getDateFromTimestamp(event.subscriptionDateStart) | date: 'dd/MM' }}
-                {{ event.subscriptionDateEnd && '- ' + (getDateFromTimestamp(event.subscriptionDateEnd) | date: 'dd/MM') }}
+                {{ getDateFromTimestamp(event.subscriptionDateStart) | date: 'dd/MM' }} {{ event.subscriptionDateEnd &&
+                '- ' + (getDateFromTimestamp(event.subscriptionDateEnd) | date: 'dd/MM') }}
               </span>
             </ion-item>
           </div>
@@ -48,12 +48,13 @@
               Valores
             </div>
 
-            <ng-container *ngIf="isObject(event.price); then multiPrice else uniquePrice"></ng-container>
+            <!-- TODO: considerar evento gratuito 'event.price.isFree === true' -->
+            <ng-container *ngIf="event.price.priceSingle; then uniquePrice else multiPrice"></ng-container>
 
             <ng-template #uniquePrice>
               <ion-item lines="none">
                 Preço
-                <span slot="end">{{ (event.price / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ (event.price.priceSingle / 100) | currency:'BRL' }}</span>
               </ion-item>
             </ng-template>
 
@@ -76,7 +77,8 @@
           </div>
 
           <div class="card-button-section">
-            <ion-button *ngIf="isTodayBetweenDates(getDateFromTimestamp(event.subscriptionDateStart), getDateFromTimestamp(event.subscriptionDateEnd))">
+            <ion-button
+              *ngIf="isTodayBetweenDates(getDateFromTimestamp(event.subscriptionDateStart), getDateFromTimestamp(event.subscriptionDateEnd))">
               INSCREVA-SE
               <ion-icon name="arrow-forward-outline" slot="end" style="font-size: 16px"></ion-icon>
             </ion-button>
