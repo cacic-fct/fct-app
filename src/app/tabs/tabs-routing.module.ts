@@ -31,6 +31,7 @@ const routes: Routes = [
       },
       {
         path: 'eventos',
+        title: 'Lista de eventos',
         loadChildren: () => import('../tab-events/tab-events.module').then((m) => m.TabEventsPageModule),
       },
       {
