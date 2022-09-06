@@ -8,7 +8,7 @@ export interface MajorEventItem {
   dateEnd?: Timestamp;
   subscriptionDateStart?: Timestamp;
   subscriptionDateEnd?: Timestamp;
-  price?: {
+  price: {
     priceStudents?: number;
     priceOtherStudents?: number;
     priceProfessors?: number;
