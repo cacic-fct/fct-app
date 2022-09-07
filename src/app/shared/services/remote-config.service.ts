@@ -14,6 +14,8 @@ export class RemoteConfigService {
 
   constructor(private remoteConfig: RemoteConfig) {}
 
+  // TODO: Fazer retornar configuração por configuração ao invés de um JSON com key de enviroment
+
   /**
    * Get a remote config specific property
    *
@@ -39,13 +41,6 @@ export class RemoteConfigService {
    * Fetch the remote config, filter per environment, convert to object
    */
   private fetchConfig(): Observable<any> {
-    this.remoteConfig.defaultConfig = {
-      calendarItemViewDefault: false,
-      mapTabEnabled: true,
-      manualTabEnabled: false,
-      eventsTabEnabled: true,
-      registerPrompt: true,
-    };
     return from(fetchAndActivate(this.remoteConfig)).pipe(
       switchMap(() => getValueChanges(this.remoteConfig, environment.remoteConfig)),
       map((config) => JSON.parse(config.asString()))

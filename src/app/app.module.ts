@@ -91,6 +91,14 @@ import {
         remoteConfig.settings.fetchTimeoutMillis = 60_000;
       }
 
+      remoteConfig.defaultConfig = {
+        calendarItemViewDefault: true,
+        mapTabEnabled: true,
+        manualTabEnabled: false,
+        eventsTabEnabled: true,
+        registerPrompt: true,
+      };
+
       return remoteConfig;
     }),
 
