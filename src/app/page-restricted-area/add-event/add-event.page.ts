@@ -1,3 +1,4 @@
+import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
 import { PlacesService } from './../../shared/services/places.service';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -5,8 +6,6 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors,
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventsService } from 'src/app/shared/services/majorEvents.service';
 import { format, parseISO } from 'date-fns';
-import { DomSanitizer } from '@angular/platform-browser';
-import { parse } from 'twemoji-parser';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 
@@ -44,7 +43,6 @@ export class AddEventPage implements OnInit {
   constructor(
     public formBuilder: FormBuilder,
     private modalController: ModalController,
-    private sanitizer: DomSanitizer,
     public majorEvents: MajorEventsService,
     private afs: AngularFirestore,
     private router: Router
@@ -82,7 +80,7 @@ export class AddEventPage implements OnInit {
         inMajorEvent: '',
       },
       {
-        validators: [this.validatorLatLong, this.validatorButton, this.validatorDateEnd],
+        validators: [this.validatorLatLong, this.validatorButton],
       }
     );
     this.userData.displayName.replace(/%20/g, ' ');
@@ -93,22 +91,51 @@ export class AddEventPage implements OnInit {
   }
 
   onSubmit() {
-    // TODO this.dataForm.invalid tem que ser checado antes de abrir o modal de confirmação.
-    if (this.dataForm.invalid) return;
-    const data = this.dataForm.value;
-    Object.keys(data).forEach((key) => {
-      if (data[key] == '') delete data[key];
+    if (this.dataForm.invalid) {
+      return;
+    }
+    console.log('welp');
+    this.openConfirmModal().then((response) => {
+      if (response) {
+        const data = this.dataForm.value;
+        Object.keys(data).forEach((key) => {
+          if (data[key] == '') delete data[key];
+        });
+        data.date = parseISO(data.date);
+        if (this.enableDateEnd) data.dateEnd = parseISO(data.dateEnd);
+        else delete data.dateEnd;
+        this.afs
+          .collection('events')
+          .add(data)
+          .then((res) => {
+            this.router.navigate(['area-restrita'], { replaceUrl: true });
+          });
+      }
+      return;
     });
-    data.date = parseISO(data.date);
-    if (this.enableDateEnd) data.dateEnd = parseISO(data.dateEnd);
-    else delete data.dateEnd;
-    this.afs
-      .collection('events')
-      .add(data)
-      .then((res) => {
-        this.closeModal();
-        this.router.navigate(['area-restrita'], { replaceUrl: true });
+  }
+
+  async openConfirmModal(): Promise<boolean> {
+    console.log('wel');
+    const modal = await this.modalController.create({
+      component: ConfirmModalPage,
+      componentProps: {
+        dataForm: this.dataForm,
+      },
+      showBackdrop: true,
+    });
+    await modal.present();
+
+    return modal.onDidDismiss().then((data) => {
+      if (data) {
+        return new Promise<boolean>((resolve) => {
+          resolve(true);
+        });
+      }
+      return new Promise<boolean>((resolve) => {
+        resolve(false);
       });
+    });
   }
 
   validatorLatLong(control: AbstractControl): ValidationErrors | null {
@@ -141,10 +168,6 @@ export class AddEventPage implements OnInit {
     return null;
   }
 
-  closeModal() {
-    this.modalController.dismiss();
-  }
-
   placeChange(ev: any) {
     if (this.places[ev.detail.value] === undefined) return 1;
     this.dataForm
@@ -159,26 +182,5 @@ export class AddEventPage implements OnInit {
 
   placeInputKeyDown() {
     this.selectPlace.value = undefined;
-  }
-
-  getEmoji(emoji: string): any {
-    if (emoji === undefined) {
-      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
-    }
-    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
-  }
-
-  toUppercase(string: string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  getDateFromTimestamp(isoString: string): Date {
-    return parseISO(isoString);
-  }
-  getCourse(course: string): string {
-    if (this.courses[course]) {
-      return this.courses[course].name;
-    }
-    return '';
   }
 }
