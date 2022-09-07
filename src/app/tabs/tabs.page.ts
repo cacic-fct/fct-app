@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFireRemoteConfig } from '@angular/fire/compat/remote-config';
-import { Observable } from 'rxjs';
+import { AngularFireRemoteConfig, filterFresh, scanToObject } from '@angular/fire/compat/remote-config';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
+import { RemoteConfigService } from './../shared/services/remote-config.service';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @UntilDestroy()
@@ -11,22 +13,24 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   styleUrls: ['tabs.page.scss'],
 })
 export class TabsPage {
-  isAdmin: boolean = false;
+  _isAdmin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isAdmin$: Observable<boolean> = this._isAdmin.asObservable();
   readonly manual$: Observable<boolean>;
+  readonly events$: Observable<boolean>;
 
-  constructor(public auth: AngularFireAuth, public remoteConfig: AngularFireRemoteConfig) {
+  constructor(public auth: AngularFireAuth, private remoteConfig: RemoteConfigService) {
     this.auth.idTokenResult.pipe(untilDestroyed(this)).subscribe((idTokenResult) => {
-      if (idTokenResult === null) {
-        this.isAdmin = false;
-        return;
-      }
-
       const claims = idTokenResult.claims;
       if (claims.role === 1000) {
-        this.isAdmin = true;
+        this._isAdmin.next(true);
       }
     });
 
-    this.manual$ = this.remoteConfig.booleans.manualTabEnabled;
+    this.manual$ = remoteConfig.get('manualTabEnabled');
+    this.manual$.subscribe((manual) => {
+      console.log('manualTabEnabled', manual);
+    });
+
+    this.events$ = remoteConfig.get('eventsTabEnabled');
   }
 }
