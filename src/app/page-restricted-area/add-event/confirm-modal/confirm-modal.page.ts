@@ -45,6 +45,6 @@ export class ConfirmModalPage implements OnInit {
   }
 
   closeModal() {
-    this.modalController.dismiss();
+    this.modalController.dismiss(false);
   }
 }

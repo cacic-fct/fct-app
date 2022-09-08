@@ -97,6 +97,7 @@ export class AddEventPage implements OnInit {
     console.log('welp');
     this.openConfirmModal().then((response) => {
       if (response) {
+        console.log('response', response);
         const data = this.dataForm.value;
         Object.keys(data).forEach((key) => {
           if (data[key] == '') delete data[key];
@@ -111,6 +112,7 @@ export class AddEventPage implements OnInit {
             this.router.navigate(['area-restrita'], { replaceUrl: true });
           });
       }
+
       return;
     });
   }
@@ -127,7 +129,7 @@ export class AddEventPage implements OnInit {
     await modal.present();
 
     return modal.onDidDismiss().then((data) => {
-      if (data) {
+      if (data.data) {
         return new Promise<boolean>((resolve) => {
           resolve(true);
         });
