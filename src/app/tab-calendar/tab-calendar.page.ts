@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { KeyValue, formatDate } from '@angular/common';
+import { Observable } from 'rxjs';
 
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
@@ -12,7 +13,6 @@ import { ToastController } from '@ionic/angular';
 import { trace } from '@angular/fire/compat/performance';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Observable } from 'rxjs';
 @UntilDestroy()
 @Component({
   selector: 'app-tab-calendar',
@@ -65,9 +65,11 @@ export class TabCalendarPage {
     public remoteConfig: RemoteConfig,
     public toastController: ToastController
   ) {
-    getBooleanChanges(remoteConfig, 'calendarItemViewDefault').subscribe((value) => {
-      this.itemView = value;
-    });
+    getBooleanChanges(remoteConfig, 'calendarItemViewDefault')
+      .pipe(untilDestroyed(this), trace('remote-config'))
+      .subscribe((value) => {
+        this.itemView = value;
+      });
 
     this.active = format(this.today, 'eeee').toLowerCase();
     this.generateCalendarData();

@@ -4,6 +4,7 @@ import { getBooleanChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { trace } from '@angular/fire/compat/performance';
 @UntilDestroy()
 @Component({
   selector: 'app-tabs',
@@ -25,8 +26,17 @@ export class TabsPage {
       }
     });
 
-    this.map$ = getBooleanChanges(this.remoteConfig, 'mapTabEnabled');
-    this.manual$ = getBooleanChanges(this.remoteConfig, 'manualTabEnabled');
-    this.events$ = getBooleanChanges(this.remoteConfig, 'eventsTabEnabled');
+    this.map$ = getBooleanChanges(this.remoteConfig, 'mapTabEnabled').pipe(
+      untilDestroyed(this),
+      trace('remote-config')
+    );
+    this.manual$ = getBooleanChanges(this.remoteConfig, 'manualTabEnabled').pipe(
+      untilDestroyed(this),
+      trace('remote-config')
+    );
+    this.events$ = getBooleanChanges(this.remoteConfig, 'eventsTabEnabled').pipe(
+      untilDestroyed(this),
+      trace('remote-config')
+    );
   }
 }
