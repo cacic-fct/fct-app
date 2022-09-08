@@ -122,12 +122,12 @@ export class AuthService {
     });
   }
 
-  getUserUid(manualInput: string): { message?: string; status?: boolean; uid?: string } | Observable<any> {
+  getUserUid(manualInput: string): GetUserUIDResponse | Observable<GetUserUIDResponse> {
     // Remove spaces from the string
     manualInput = manualInput.replace(/\s/g, '');
 
     // Check if input has only one '+' and numbers
-    const isNumeric: boolean = manualInput.match(/^\+?\d+$/) ? true : false;
+    const isNumeric: boolean = /^\+?\d+$/.test(manualInput);
 
     // If string doesn't include "@" and isn't numeric only or is empty, return false
     if ((!manualInput.includes('@') && !isNumeric) || manualInput === '') {
@@ -152,12 +152,13 @@ export class AuthService {
     return getUserUid({ string: manualInput });
   }
 
-  instanceOfResponse(object: any): object is Response {
+  instanceOfResponse(object: any): object is GetUserUIDResponse {
     return 'message' in object;
   }
 }
 
-interface Response {
-  status: boolean;
-  message: string;
+export interface GetUserUIDResponse {
+  status?: boolean;
+  message?: string;
+  uid?: string;
 }
