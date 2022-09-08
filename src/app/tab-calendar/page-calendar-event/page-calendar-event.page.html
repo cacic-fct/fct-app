@@ -29,6 +29,13 @@
           {{ toUppercase(getDateFromTimestamp(items?.date) | date: "EEEE, dd 'de' MMMM 'de' y") }}
         </h4>
         <h3 style="margin: 0; font-weight: 400">{{ getDateFromTimestamp(items?.date) | date: 'HH:mm' }}</h3>
+
+        <div class="weather-container">
+          <ng-container *ngIf="items?.location.lat && (weather | async) as weatherInfo">
+            <ion-icon class="weather-icon" [name]="weatherInfo.icon"></ion-icon>
+            <span class="weather-text">{{ weatherInfo.temperature }}°C – {{ weatherInfo.text }}</span>
+          </ng-container>
+        </div>
       </div>
 
       <div *ngIf="items?.description">
@@ -66,6 +73,11 @@
           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
           allowfullscreen></iframe>
       </div>
+    </div>
+    <div class="ion-text-center weather-attribution">
+      <ion-text color="medium">
+        <a href="https://open-meteo.com/" target="_blank">Weather data by Open-Meteo.com</a>
+      </ion-text>
     </div>
   </ng-container>
   <ng-template #loading>
