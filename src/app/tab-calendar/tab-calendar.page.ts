@@ -25,7 +25,6 @@ export class TabCalendarPage {
   fullDate: string;
   itemView: boolean = true;
   selectedFilter: string[] = [];
-  calendarItemViewDefault$: Observable<boolean>;
 
   // Today's date
   today: Date = new Date();
