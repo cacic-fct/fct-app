@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFireRemoteConfig, filterFresh, scanToObject } from '@angular/fire/compat/remote-config';
+import { getBooleanChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { RemoteConfigService } from './../shared/services/remote-config.service';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @UntilDestroy()
@@ -17,8 +15,9 @@ export class TabsPage {
   isAdmin$: Observable<boolean> = this._isAdmin.asObservable();
   readonly manual$: Observable<boolean>;
   readonly events$: Observable<boolean>;
+  readonly map$: Observable<boolean>;
 
-  constructor(public auth: AngularFireAuth, private remoteConfig: RemoteConfigService) {
+  constructor(public auth: AngularFireAuth, private remoteConfig: RemoteConfig) {
     this.auth.idTokenResult.pipe(untilDestroyed(this)).subscribe((idTokenResult) => {
       const claims = idTokenResult.claims;
       if (claims.role === 1000) {
@@ -26,11 +25,8 @@ export class TabsPage {
       }
     });
 
-    this.manual$ = remoteConfig.get('manualTabEnabled');
-    this.manual$.subscribe((manual) => {
-      console.log('manualTabEnabled', manual);
-    });
-
-    this.events$ = remoteConfig.get('eventsTabEnabled');
+    this.map$ = getBooleanChanges(this.remoteConfig, 'mapTabEnabled');
+    this.manual$ = getBooleanChanges(this.remoteConfig, 'manualTabEnabled');
+    this.events$ = getBooleanChanges(this.remoteConfig, 'eventsTabEnabled');
   }
 }
