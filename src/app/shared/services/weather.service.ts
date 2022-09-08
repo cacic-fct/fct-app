@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { format } from 'date-fns';
 import { catchError, first, map, Observable, retry, throwError } from 'rxjs';
+import { add } from 'date-fns';
 
 @Injectable()
 export class WeatherService {
@@ -39,6 +40,10 @@ export class WeatherService {
   constructor(private http: HttpClient) {}
 
   getWeather(date: Date, lat: number, lon: number) {
+    if (date > add(new Date(), { days: 7 })) {
+      return new Observable<never>();
+    }
+
     const eventDateStringFormat = format(date, 'yyyy-MM-dd');
     const req = this.http.get<WeatherApiResponse>(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weathercode&timezone=America%2FSao_Paulo&start_date=${eventDateStringFormat}&end_date=${eventDateStringFormat}`,
