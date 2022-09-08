@@ -54,7 +54,7 @@ export class AddEventPage implements OnInit {
     this.dataForm = this.formBuilder.group(
       {
         course: ['', Validators.required],
-        icon: ['', Validators.required],
+        icon: ['', Validators.required, Validators.pattern(/^\p{Emoji}$/u)],
         name: ['', Validators.required],
         shortDescription: ['', Validators.maxLength(80)],
         description: '',
