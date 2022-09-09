@@ -94,7 +94,6 @@ export class AddEventPage implements OnInit {
     if (this.dataForm.invalid) {
       return;
     }
-    console.log('welp');
     this.openConfirmModal().then((response) => {
       if (response) {
         console.log('response', response);
@@ -118,7 +117,6 @@ export class AddEventPage implements OnInit {
   }
 
   async openConfirmModal(): Promise<boolean> {
-    console.log('wel');
     const modal = await this.modalController.create({
       component: ConfirmModalPage,
       componentProps: {

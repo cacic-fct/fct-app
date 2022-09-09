@@ -110,20 +110,19 @@
       <ion-toggle slot="end" formControlName="public" checked="off"></ion-toggle>
     </ion-item>
 
-    <!--
-        TODO utilizar observables para recuperar grandes eventos
-      <ion-item>
-        <ion-label position="floating">Pertence ao grande evento</ion-label>
-        <ion-select interface="popover" formControlName="inMajorEvent">
-          <ng-container *ngIf="majorEvents.getFutureMajorEvents() | async; let items; else: loading">
-            <ng-container *ngFor="let majorEvent of items | keyvalue">
-              <ion-select-option slot="start" class="majorEvent" [value]="majorEvent.value.name">
-                {{ majorEvent.value.name }}
-              </ion-select-option>
-            </ng-container>
-          </ng-container> 
-        </ion-select>
-      </ion-item> -->
+    <ion-item>
+      <ion-label position="floating">Pertence ao grande evento</ion-label>
+      <ion-select interface="popover" formControlName="inMajorEvent">
+        <ion-select-option slot="start" value="none">Nenhum</ion-select-option>
+        <ng-container *ngIf="majorEvents.getFutureMajorEvents() | async; let items; else: loading">
+          <ng-container *ngFor="let majorEvent of items">
+            <ion-select-option slot="start" [value]="majorEvent.id"> {{ majorEvent.name }} </ion-select-option>
+          </ng-container>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+
+    <ng-template #loading></ng-template>
 
     <ion-item>
       <ion-label position="stacked">Criador do evento</ion-label>

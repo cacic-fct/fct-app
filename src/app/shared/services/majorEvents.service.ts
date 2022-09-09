@@ -9,21 +9,18 @@ import { Observable } from 'rxjs';
 export class MajorEventsService {
   constructor(public afs: AngularFirestore) {}
 
-  getFutureMajorEvents(): Observable<EventItem[]> {
+  getFutureMajorEvents(): Observable<MajorEventItem[]> {
     const date = Date.now();
-    this.afs
-      .collection<EventItem>('majorEvents', (ref) => {
+    return this.afs
+      .collection<MajorEventItem>('majorEvents', (ref) => {
         let query: any = ref;
         query = query.where('dateStart', '>=', date);
         return query.orderBy('dateStart', 'asc');
       })
-      .valueChanges({ idField: 'id' })
-      .subscribe((data) => {});
-    return null;
+      .valueChanges({ idField: 'id' });
   }
 }
-
-export interface EventItem {
+export interface MajorEventItem {
   name: string;
   icon: string;
   course: string;
@@ -31,13 +28,13 @@ export interface EventItem {
   dateEnd?: Timestamp;
   subscriptionDateStart?: Timestamp;
   subscriptionDateEnd?: Timestamp;
-  price?:
-    | string
-    | {
-        priceStudents?: string;
-        priceOtherStudents?: string;
-        priceProfessors?: string;
-      };
+  price: {
+    priceStudents?: number;
+    priceOtherStudents?: number;
+    priceProfessors?: number;
+    priceSingle?: number;
+    isFree?: boolean;
+  };
   accountChavePix?: string;
   accountBank?: string;
   accountName?: string;
