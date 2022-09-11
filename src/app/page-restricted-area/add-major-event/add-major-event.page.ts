@@ -25,9 +25,9 @@ export class AddMajorEventPage implements OnInit {
   dateRange: boolean = true;
   _dateRangeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   dateRange$: Observable<boolean> = this._dateRangeSubject.asObservable();
-  priceDiferentiate: boolean = true;
-  _priceDiferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-  priceDiferentiate$: Observable<boolean> = this._priceDiferentiateSubject.asObservable();
+  priceDifferentiate: boolean = true;
+  _priceDifferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  priceDifferentiate$: Observable<boolean> = this._priceDifferentiateSubject.asObservable();
   isEventPaid: boolean = true;
   _isEventPaidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   isEventPaid$: Observable<boolean> = this._isEventPaidSubject.asObservable();
@@ -106,7 +106,7 @@ export class AddMajorEventPage implements OnInit {
     let price: MajorEventItem['price'];
 
     if (this.isEventPaid) {
-      if (this.priceDiferentiate) {
+      if (this.priceDifferentiate) {
         price = {
           priceStudents: this.dataForm.get('priceStudents').value,
           priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
@@ -197,9 +197,9 @@ export class AddMajorEventPage implements OnInit {
     this._dateRangeSubject.next(this.dateRange);
   }
 
-  priceDiferentiateChange() {
-    this.priceDiferentiate = !this.priceDiferentiate;
-    this._priceDiferentiateSubject.next(this.priceDiferentiate);
+  priceDifferentiateChange() {
+    this.priceDifferentiate = !this.priceDifferentiate;
+    this._priceDifferentiateSubject.next(this.priceDifferentiate);
   }
 
   isEventPaidChange() {
