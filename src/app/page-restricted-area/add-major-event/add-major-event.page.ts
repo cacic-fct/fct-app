@@ -7,11 +7,13 @@ import { format, parseISO } from 'date-fns';
 import { parse as parseDate } from 'date-fns';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, first, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MajorEventItem } from 'src/app/shared/services/major-event';
 
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { trace } from '@angular/fire/compat/performance';
 
 @Component({
   selector: 'app-add-major-event',
@@ -65,7 +67,8 @@ export class AddMajorEventPage implements OnInit {
     public formBuilder: FormBuilder,
     private modalController: ModalController,
     private sanitizer: DomSanitizer,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private auth: AngularFireAuth
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
   }
@@ -143,33 +146,35 @@ export class AddMajorEventPage implements OnInit {
           }
         }
 
-        this.afs.collection('majorEvents').add({
-          course: this.dataForm.get('course').value,
-          name: this.dataForm.get('name').value,
-          description: this.dataForm.get('description').value,
-          dateStart: this.dataForm.get('dateStart').value,
-          dateEnd: this.dateRange ? this.dataForm.get('dateEnd').value : undefined,
-          subscriptionDateStart: this.dataForm.get('subscriptionDateStart').value,
-          subscriptionDateEnd: this.dataForm.get('subscriptionDateEnd').value,
-          maxCourses: this.dataForm.get('maxCourses').value,
-          maxLectures: this.dataForm.get('maxLectures').value,
-          price: price,
-          accountChavePix: this.dataForm.get('accountChavePix').value,
-          accountBank: this.dataForm.get('accountBank').value,
-          accountName: this.dataForm.get('accountName').value,
-          accountDocument: this.dataForm.get('accountDocument').value,
-          accountAgency: this.dataForm.get('accountAgency').value,
-          accountNumber: this.dataForm.get('accountNumber').value,
-          additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
-          public: this.dataForm.get('public').value,
-          button: this.dataForm.get('buttonUrl').value
-            ? {
-                buttonText: this.dataForm.get('buttonText').value,
-                buttonUrl: this.dataForm.get('buttonUrl').value,
-              }
-            : undefined,
-          createdBy: this.userData.displayName,
-          createdOn: new Date(),
+        this.auth.user.pipe(first(), trace('auth')).subscribe((user) => {
+          this.afs.collection('majorEvents').add({
+            course: this.dataForm.get('course').value,
+            name: this.dataForm.get('name').value,
+            description: this.dataForm.get('description').value,
+            dateStart: this.dataForm.get('dateStart').value,
+            dateEnd: this.dateRange ? this.dataForm.get('dateEnd').value : undefined,
+            subscriptionDateStart: this.dataForm.get('subscriptionDateStart').value,
+            subscriptionDateEnd: this.dataForm.get('subscriptionDateEnd').value,
+            maxCourses: this.dataForm.get('maxCourses').value,
+            maxLectures: this.dataForm.get('maxLectures').value,
+            price: price,
+            accountChavePix: this.dataForm.get('accountChavePix').value,
+            accountBank: this.dataForm.get('accountBank').value,
+            accountName: this.dataForm.get('accountName').value,
+            accountDocument: this.dataForm.get('accountDocument').value,
+            accountAgency: this.dataForm.get('accountAgency').value,
+            accountNumber: this.dataForm.get('accountNumber').value,
+            additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
+            public: this.dataForm.get('public').value,
+            button: this.dataForm.get('buttonUrl').value
+              ? {
+                  buttonText: this.dataForm.get('buttonText').value,
+                  buttonUrl: this.dataForm.get('buttonUrl').value,
+                }
+              : undefined,
+            createdBy: user.uid,
+            createdOn: new Date(),
+          });
         });
       }
     });
