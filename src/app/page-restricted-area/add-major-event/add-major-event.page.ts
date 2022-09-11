@@ -1,6 +1,5 @@
 import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonModal } from '@ionic/angular';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { format, parseISO } from 'date-fns';
@@ -12,6 +11,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MajorEventItem } from 'src/app/shared/services/major-event';
 
+import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
+
 @Component({
   selector: 'app-add-major-event',
   templateUrl: './add-major-event.page.html',
@@ -21,7 +22,6 @@ export class AddMajorEventPage implements OnInit {
   @ViewChild('selectPlace', { static: false }) selectPlace: IonSelect;
 
   courses = CoursesService.courses;
-  dateValue = '';
   dateRange: boolean = true;
   _dateRangeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   dateRange$: Observable<boolean> = this._dateRangeSubject.asObservable();
@@ -34,12 +34,17 @@ export class AddMajorEventPage implements OnInit {
 
   dataForm: FormGroup = new FormGroup({
     course: new FormControl(''),
-    icon: new FormControl(''),
     name: new FormControl(''),
     description: new FormControl(''),
+    // TODO: Validar se data de início é menor que data de fim
     dateStart: new FormControl(''),
     dateEnd: new FormControl(''),
-    price: new FormControl(''),
+    subscriptionDateStart: new FormControl(''),
+    subscriptionDateEnd: new FormControl(''),
+    maxCourses: new FormControl(''),
+    maxLectures: new FormControl(''),
+    isEventPaidForm: new FormControl(''),
+    priceSingle: new FormControl(''),
     priceStudents: new FormControl(''),
     priceOtherStudents: new FormControl(''),
     priceProfessors: new FormControl(''),
@@ -49,6 +54,7 @@ export class AddMajorEventPage implements OnInit {
     accountDocument: new FormControl(''),
     accountAgency: new FormControl(''),
     accountNumber: new FormControl(''),
+    additionalPaymentInformation: new FormControl(''),
     public: new FormControl(''),
     buttonText: new FormControl(''),
     buttonUrl: new FormControl(''),
@@ -65,15 +71,20 @@ export class AddMajorEventPage implements OnInit {
   }
 
   ngOnInit() {
+    let dateISO: string = new Date().toISOString();
     this.dataForm = this.formBuilder.group(
       {
         course: ['', Validators.required],
-        icon: ['', Validators.required],
         name: ['', Validators.required],
         description: '',
-        dateStart: ['', Validators.required],
-        dateEnd: '',
-        price: '',
+        dateStart: [dateISO, Validators.required],
+        dateEnd: dateISO,
+        subscriptionDateStart: [dateISO, Validators.required],
+        subscriptionDateEnd: [dateISO, Validators.required],
+        maxCourses: '',
+        maxLectures: '',
+        isEventPaidForm: '',
+        priceSingle: '',
         priceStudents: '',
         priceOtherStudents: '',
         priceProfessors: '',
@@ -83,9 +94,10 @@ export class AddMajorEventPage implements OnInit {
         accountDocument: '',
         accountAgency: '',
         accountNumber: '',
+        additionalPaymentInformation: '',
         public: '',
         buttonText: '',
-        buttonUrl: '', // TODO: Verificar se URL inicia-se com http:// ou https://. Caso não, adicionar "https://"
+        buttonUrl: '',
       },
       {
         validators: [this.validatorButton, this.requirePaymentDetails],
@@ -103,55 +115,75 @@ export class AddMajorEventPage implements OnInit {
       return false;
     }
 
-    let price: MajorEventItem['price'];
+    this.openConfirmModal().then((response) => {
+      if (response) {
+        let price: MajorEventItem['price'];
 
-    if (this.isEventPaid) {
-      if (this.priceDifferentiate) {
-        price = {
-          priceStudents: this.dataForm.get('priceStudents').value,
-          priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
-          priceProfessors: this.dataForm.get('priceProfessors').value,
-        };
-      } else {
-        price = {
-          priceSingle: this.dataForm.get('price').value,
-        };
+        if (this.isEventPaid) {
+          if (this.priceDifferentiate) {
+            price = {
+              priceStudents: this.dataForm.get('priceStudents').value,
+              priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
+              priceProfessors: this.dataForm.get('priceProfessors').value,
+            };
+          } else {
+            price = {
+              priceSingle: this.dataForm.get('priceSingle').value,
+            };
+          }
+        } else {
+          price.isFree = true;
+        }
+
+        let buttonUrl = this.dataForm.get('buttonUrl').value;
+
+        if (buttonUrl) {
+          if (!buttonUrl.test('^https?://(.*)')) {
+            this.dataForm.setValue({ ...this.dataForm.value, buttonUrl: 'https://' + buttonUrl });
+          }
+        }
+
+        this.afs.collection('majorEvents').add({
+          course: this.dataForm.get('course').value,
+          name: this.dataForm.get('name').value,
+          description: this.dataForm.get('description').value,
+          dateStart: this.dataForm.get('dateStart').value,
+          dateEnd: this.dateRange ? this.dataForm.get('dateEnd').value : undefined,
+          subscriptionDateStart: this.dataForm.get('subscriptionDateStart').value,
+          subscriptionDateEnd: this.dataForm.get('subscriptionDateEnd').value,
+          price: price,
+          accountChavePix: this.dataForm.get('accountChavePix').value,
+          accountBank: this.dataForm.get('accountBank').value,
+          accountName: this.dataForm.get('accountName').value,
+          accountDocument: this.dataForm.get('accountDocument').value,
+          accountAgency: this.dataForm.get('accountAgency').value,
+          accountNumber: this.dataForm.get('accountNumber').value,
+          additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
+          public: this.dataForm.get('public').value,
+          buttonText: this.dataForm.get('buttonText').value,
+          buttonUrl: this.dataForm.get('buttonUrl').value,
+          createdBy: this.userData.displayName,
+          createdOn: new Date(),
+        });
       }
-    } else {
-      price.isFree = true;
-    }
-
-    this.afs.collection('majorEvents').add({
-      course: this.dataForm.get('course').value,
-      icon: this.dataForm.get('icon').value,
-      name: this.dataForm.get('name').value,
-      description: this.dataForm.get('description').value,
-      dateStart: this.dataForm.get('dateStart').value,
-      dateEnd: this.dateRange ? this.dataForm.get('dateEnd').value : undefined,
-      price: price,
-      accountChavePix: this.dataForm.get('accountChavePix').value,
-      accountBank: this.dataForm.get('accountBank').value,
-      accountName: this.dataForm.get('accountName').value,
-      accountDocument: this.dataForm.get('accountDocument').value,
-      accountAgency: this.dataForm.get('accountAgency').value,
-      accountNumber: this.dataForm.get('accountNumber').value,
-      public: this.dataForm.get('public').value,
-      buttonText: this.dataForm.get('buttonText').value,
-      buttonUrl: this.dataForm.get('buttonUrl').value,
-      createdBy: this.userData.displayName,
-      createdOn: new Date(),
     });
   }
 
   validatorButton(control: AbstractControl): ValidationErrors | null {
-    if (control.get('buttonText').value != '') control.get('buttonUrl').addValidators(Validators.required);
-    else control.get('buttonUrl').removeValidators(Validators.required);
+    if (control.get('buttonText').value != '') {
+      control.get('buttonUrl').addValidators([Validators.required]);
+    } else {
+      control.get('buttonUrl').removeValidators([Validators.required]);
+    }
 
     return null;
   }
 
   requirePaymentDetails(control: AbstractControl): ValidationErrors | null {
-    if (this.isEventPaid && (control.get('accountChavePix').value != '' || control.get('accountNumber').value != '')) {
+    if (
+      control.get('isEventPaidForm').value === 'on' &&
+      (control.get('accountChavePix').value != '' || control.get('accountNumber').value != '')
+    ) {
       control.get('accountBank').addValidators(Validators.required);
       control.get('accountName').addValidators(Validators.required);
       control.get('accountDocument').addValidators(Validators.required);
@@ -164,6 +196,7 @@ export class AddMajorEventPage implements OnInit {
       control.get('accountAgency').addValidators(Validators.required);
       control.get('accountNumber').addValidators(Validators.required);
     }
+
     return null;
   }
 
@@ -176,10 +209,6 @@ export class AddMajorEventPage implements OnInit {
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
-  }
-
-  toUppercase(string: string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   getDateFromTimestamp(timestamp: any): Date {
@@ -214,5 +243,29 @@ export class AddMajorEventPage implements OnInit {
       // Not a number, prevent input
       event.preventDefault();
     }
+  }
+
+  async openConfirmModal(): Promise<boolean> {
+    const modal = await this.modalController.create({
+      component: ConfirmModalComponent,
+      componentProps: {
+        dataForm: this.dataForm,
+        dateRange: this.dateRange,
+        isEventPaid: this.isEventPaid,
+      },
+      showBackdrop: true,
+    });
+    await modal.present();
+
+    return modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        return new Promise<boolean>((resolve) => {
+          resolve(true);
+        });
+      }
+      return new Promise<boolean>((resolve) => {
+        resolve(false);
+      });
+    });
   }
 }

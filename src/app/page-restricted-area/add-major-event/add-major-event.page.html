@@ -34,11 +34,6 @@
         <ion-label position="floating">Descrição do evento</ion-label>
         <ion-input formControlName="description"></ion-input>
       </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Emoji do evento</ion-label>
-        <ion-input formControlName="icon"> </ion-input>
-      </ion-item>
     </ng-container>
 
     <ng-container>
@@ -76,6 +71,16 @@
         <ion-label class="ion-text-wrap">Data do fim das inscrições</ion-label>
         <ion-datetime-button datetime="subscriptionEndDate"></ion-datetime-button>
       </ion-item>
+
+      <ion-item>
+        <ion-label class="ion-text-wrap">Limite de minicursos para inscrição (opcional)</ion-label>
+        <ion-input formControlName="maxCourses" inputmode="numeric" (keypress)="inputNumbersOnly($event)"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label class="ion-text-wrap">Limite de palestras para inscrição (opcional)</ion-label>
+        <ion-input formControlName="maxLectures" inputmode="numeric" (keypress)="inputNumbersOnly($event)"></ion-input>
+      </ion-item>
     </ng-container>
 
     <ion-card-header>
@@ -84,7 +89,11 @@
 
     <ion-item>
       <ion-label class="ion-text-wrap">Evento pago</ion-label>
-      <ion-toggle slot="end" (ionChange)="isEventPaidChange()"></ion-toggle>
+      <ion-toggle
+        slot="end"
+        [checked]="isEventPaid"
+        (ionChange)="isEventPaidChange()"
+        formControlName="isEventPaidForm"></ion-toggle>
     </ion-item>
 
     <ng-container *ngIf="(isEventPaid$ | async);">
@@ -132,7 +141,7 @@
         <ion-item>
           <ion-label position="floating">Preço único</ion-label>
           <ion-input
-            formControlName="price"
+            formControlName="priceSingle"
             inputmode="numeric"
             placeholder="Somente números"
             (keypress)="inputNumbersOnly($event)"></ion-input>
@@ -174,6 +183,11 @@
         <ion-label position="floating">Chave Pix</ion-label>
         <ion-input formControlName="accountChavePix"></ion-input>
       </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Informações adicionais (opcional)</ion-label>
+        <ion-textarea formControlName="additionalPaymentInformation"></ion-textarea>
+      </ion-item>
     </ng-container>
 
     <ion-card-header>
@@ -204,9 +218,9 @@
       <ion-input value="{{ userData.displayName }}" color="medium" readonly> </ion-input>
     </ion-item>
 
-    <ion-button class="ion-padding" id="check-modal" type="submit" [disabled]="!dataForm.valid"
-      >Criar evento</ion-button
-    >
+    <ion-button class="ion-padding" id="check-modal" type="submit" [disabled]="!dataForm.valid">
+      Criar evento
+    </ion-button>
     <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, seu nome será gravado junto ao evento.</p>
   </form>
 </ion-content>
