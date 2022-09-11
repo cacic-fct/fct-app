@@ -43,7 +43,7 @@ export class AddMajorEventPage implements OnInit {
     subscriptionDateEnd: new FormControl(''),
     maxCourses: new FormControl(''),
     maxLectures: new FormControl(''),
-    isEventPaidForm: new FormControl(''),
+    isEventPaidForm: new FormControl(''), // TODO: arrumar isso
     priceSingle: new FormControl(''),
     priceStudents: new FormControl(''),
     priceOtherStudents: new FormControl(''),
@@ -151,6 +151,8 @@ export class AddMajorEventPage implements OnInit {
           dateEnd: this.dateRange ? this.dataForm.get('dateEnd').value : undefined,
           subscriptionDateStart: this.dataForm.get('subscriptionDateStart').value,
           subscriptionDateEnd: this.dataForm.get('subscriptionDateEnd').value,
+          maxCourses: this.dataForm.get('maxCourses').value,
+          maxLectures: this.dataForm.get('maxLectures').value,
           price: price,
           accountChavePix: this.dataForm.get('accountChavePix').value,
           accountBank: this.dataForm.get('accountBank').value,
@@ -160,8 +162,12 @@ export class AddMajorEventPage implements OnInit {
           accountNumber: this.dataForm.get('accountNumber').value,
           additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
           public: this.dataForm.get('public').value,
-          buttonText: this.dataForm.get('buttonText').value,
-          buttonUrl: this.dataForm.get('buttonUrl').value,
+          button: this.dataForm.get('buttonUrl').value
+            ? {
+                buttonText: this.dataForm.get('buttonText').value,
+                buttonUrl: this.dataForm.get('buttonUrl').value,
+              }
+            : undefined,
           createdBy: this.userData.displayName,
           createdOn: new Date(),
         });
