@@ -1,14 +1,9 @@
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Router } from '@angular/router';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { format, parseISO } from 'date-fns';
 
@@ -27,7 +22,8 @@ import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.
   styleUrls: ['./add-major-event.page.scss'],
 })
 export class AddMajorEventPage implements OnInit {
-  @ViewChild('selectPlace', { static: false }) selectPlace: IonSelect;
+  @ViewChild('successSwal') private successSwal: SwalComponent;
+  @ViewChild('errorSwal') private errorSwal: SwalComponent;
 
   courses = CoursesService.courses;
   dateRange: boolean = true;
@@ -40,18 +36,19 @@ export class AddMajorEventPage implements OnInit {
   _isEventPaidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   isEventPaid$: Observable<boolean> = this._isEventPaidSubject.asObservable();
 
+  // TODO: Verificar se escrever isso duas vezes é necessário ou se estamos reproduzindo código desnecessário em todos os formulários já criados
   dataForm: FormGroup = new FormGroup({
-    course: new FormControl('', [Validators.required]),
-    icon: new FormControl('', [Validators.required]),
-    name: new FormControl('', [Validators.required]),
+    course: new FormControl(''),
+    icon: new FormControl(''),
+    name: new FormControl(''),
     description: new FormControl(''),
-    eventStartDate: new FormControl(new Date().toISOString(), [Validators.required]),
-    eventEndDate: new FormControl(new Date().toISOString()),
-    subscriptionStartDate: new FormControl(new Date().toISOString()),
-    subscriptionEndDate: new FormControl(new Date().toISOString()),
+    eventStartDate: new FormControl(''),
+    eventEndDate: new FormControl(''),
+    subscriptionStartDate: new FormControl(''),
+    subscriptionEndDate: new FormControl(''),
     maxCourses: new FormControl(''),
     maxLectures: new FormControl(''),
-    isEventPaidForm: new FormControl(''), // TODO: arrumar isso
+    isEventPaidForm: new FormControl(''),
     priceSingle: new FormControl(''),
     priceStudents: new FormControl(''),
     priceOtherStudents: new FormControl(''),
@@ -59,11 +56,11 @@ export class AddMajorEventPage implements OnInit {
     accountChavePix: new FormControl(''),
     accountBank: new FormControl(''),
     accountName: new FormControl(''),
-    accountDocument: new FormControl('', [this.validateCPFOrCNPJ]),
+    accountDocument: new FormControl(''),
     accountAgency: new FormControl(''),
     accountNumber: new FormControl(''),
     additionalPaymentInformation: new FormControl(''),
-    public: new FormControl(true),
+    public: new FormControl(''),
     buttonText: new FormControl(''),
     buttonUrl: new FormControl(''),
   });
@@ -73,7 +70,9 @@ export class AddMajorEventPage implements OnInit {
     public formBuilder: FormBuilder,
     private modalController: ModalController,
     private sanitizer: DomSanitizer,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private router: Router,
+    private auth: AngularFireAuth
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
   }
@@ -85,13 +84,13 @@ export class AddMajorEventPage implements OnInit {
         course: ['', Validators.required],
         name: ['', Validators.required],
         description: '',
-        eventStartDate: [new Date().toISOString(), Validators.required],
-        eventEndDate: [new Date().toISOString()],
-        subscriptionStartDate: [new Date().toISOString(), Validators.required],
-        subscriptionEndDate: [new Date().toISOString(), Validators.required],
+        eventStartDate: [dateISO, Validators.required],
+        eventEndDate: [dateISO],
+        subscriptionStartDate: [dateISO, Validators.required],
+        subscriptionEndDate: [dateISO, Validators.required],
         maxCourses: '',
         maxLectures: '',
-        isEventPaidForm: '',
+        isEventPaidForm: this.isEventPaid,
         priceSingle: '',
         price: '0',
         priceStudents: '0',
@@ -100,7 +99,7 @@ export class AddMajorEventPage implements OnInit {
         accountChavePix: '',
         accountBank: '',
         accountName: '',
-        accountDocument: ['', this.validateCPFOrCNPJ],
+        accountDocument: '',
         accountAgency: '',
         accountNumber: '',
         additionalPaymentInformation: '',
@@ -109,7 +108,7 @@ export class AddMajorEventPage implements OnInit {
         buttonUrl: '',
       },
       {
-        validators: [this.validatorButton, this.requirePaymentDetails],
+        validators: [this.validatorButton, this.requirePaymentDetails, this.validateCPFOrCNPJ],
       }
     );
     this.userData.displayName.replace(/%20/g, ' ');
@@ -153,42 +152,49 @@ export class AddMajorEventPage implements OnInit {
             }
           }
 
-          this.afs.collection('majorEvents').add({
-            course: this.dataForm.get('course').value,
-            name: this.dataForm.get('name').value,
-            description: this.dataForm.get('description').value,
-            eventStartDate: this.dataForm.get('eventStartDate').value,
-            eventEndDate: this.dateRange ? this.dataForm.get('eventEndDate').value : undefined,
-            maxCourses: this.dataForm.get('maxCourses').value,
-            maxLectures: this.dataForm.get('maxLectures').value,
-            subscriptionStartDate: this.dataForm.get('subscriptionStartDate').value,
-            subscriptionEndDate: this.dataForm.get('subscriptionEndDate').value,
-            price: price,
-            accountChavePix: this.dataForm.get('accountChavePix').value,
-            accountBank: this.dataForm.get('accountBank').value,
-            accountName: this.dataForm.get('accountName').value,
-            accountDocument: this.dataForm.get('accountDocument').value,
-            accountAgency: this.dataForm.get('accountAgency').value,
-            accountNumber: this.dataForm.get('accountNumber').value,
-            additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
-            public: this.dataForm.get('public').value,
-            button: this.dataForm.get('buttonUrl').value
-              ? {
-                  buttonText: this.dataForm.get('buttonText').value,
-                  buttonUrl: this.dataForm.get('buttonUrl').value,
-                }
-              : undefined,
-            createdBy: this.userData.displayName,
-            createdOn: new Date(),
+          this.auth.user.subscribe((user) => {
+            this.afs.collection('majorEvents').add({
+              course: this.dataForm.get('course').value,
+              name: this.dataForm.get('name').value,
+              description: this.dataForm.get('description').value,
+              eventStartDate: this.dataForm.get('eventStartDate').value,
+              eventEndDate: this.dateRange ? this.dataForm.get('eventEndDate').value : undefined,
+              maxCourses: this.dataForm.get('maxCourses').value,
+              maxLectures: this.dataForm.get('maxLectures').value,
+              subscriptionStartDate: this.dataForm.get('subscriptionStartDate').value,
+              subscriptionEndDate: this.dataForm.get('subscriptionEndDate').value,
+              price: price,
+              accountChavePix: this.dataForm.get('accountChavePix').value,
+              accountBank: this.dataForm.get('accountBank').value,
+              accountName: this.dataForm.get('accountName').value,
+              accountDocument: this.dataForm.get('accountDocument').value,
+              accountAgency: this.dataForm.get('accountAgency').value,
+              accountNumber: this.dataForm.get('accountNumber').value,
+              additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
+              public: this.dataForm.get('public').value,
+              button: this.dataForm.get('buttonUrl').value
+                ? {
+                    buttonText: this.dataForm.get('buttonText').value,
+                    buttonUrl: this.dataForm.get('buttonUrl').value,
+                  }
+                : undefined,
+              createdBy: user.uid,
+              createdOn: new Date(),
+            });
           });
         }
       })
-      .then((success) => {
-        alert('Evento cadastrado com sucesso =)');
-        window.location.reload();
+      .then(() => {
+        this.successSwal.fire();
+        // Fake delay to let animation finish
+        setTimeout(() => {
+          this.successSwal.close();
+          this.router.navigate(['/menu'], { replaceUrl: true });
+        }, 1500);
       })
       .catch((err) => {
-        alert(`Falha ao salvar evento\n${err}`);
+        this.errorSwal.fire();
+        console.error('Failed to write majorEvent info to Firestore', err);
       });
   }
 
@@ -203,7 +209,10 @@ export class AddMajorEventPage implements OnInit {
   }
 
   requirePaymentDetails(control: AbstractControl): ValidationErrors | null {
-    if (control.get('public').value && control.get('accountChavePix').value === '') {
+    if (
+      control.get('isEventPaidForm').value === true &&
+      (control.get('accountChavePix').value != '' || control.get('accountNumber').value != '')
+    ) {
       control.get('accountBank').addValidators(Validators.required);
       control.get('accountName').addValidators(Validators.required);
       control.get('accountDocument').addValidators(Validators.required);
@@ -304,83 +313,88 @@ export class AddMajorEventPage implements OnInit {
   }
 
   validateCPFOrCNPJ(control: AbstractControl): ValidationErrors | null {
-    if (control.value.length < 11) {
-      return { accountDocument: false };
-    } else {
-      if (control.value.length === 11) {
-        let soma = 0;
-        let peso = 10;
-        let resto = 0;
+    if (control.get('isEventPaidForm').value === true) {
+      if (control.value.length < 11) {
+        return { accountDocument: false };
+      } else {
+        if (control.value.length === 11) {
+          // If CPF is 000.000.000-00, 111.111.111-11, etc, return false
+          if (/^(.)\1*$/.test(control.value)) {
+            return { accountDocument: false };
+          }
+          let soma = 0;
+          let peso = 10;
+          let resto = 0;
 
-        for (let i = 0; i < control.value.length - 2; i++) {
-          soma += Number.parseInt(control.value[i]) * peso;
-          peso--;
+          for (let i = 0; i < control.value.length - 2; i++) {
+            soma += Number.parseInt(control.value[i]) * peso;
+            peso--;
+          }
+          resto = soma % 11;
+
+          let dv1 = 11 - resto;
+          if (dv1 > 9) dv1 = 0;
+
+          soma = 0;
+          peso = 11;
+          for (let i = 0; i < control.value.length - 2; i++) {
+            soma += Number.parseInt(control.value[i]) * peso;
+            peso--;
+          }
+          soma += dv1 * peso;
+
+          resto = soma % 11;
+
+          let dv2 = 11 - resto;
+          if (dv2 > 9) dv2 = 0;
+
+          if (
+            Number.parseInt(control.value[control.value.length - 2]) !== dv1 ||
+            Number.parseInt(control.value[control.value.length - 1]) !== dv2
+          )
+            return { accountDocument: false };
+        } else if (control.value.length === 14) {
+          let soma = 0;
+          let resto = 0;
+          let dv1 = 0;
+          let dv2 = 0;
+          let peso = 0;
+
+          peso = 5;
+          for (let i = 0; i < control.value.length - 2; i++) {
+            soma += Number.parseInt(control.value[i]) * peso;
+            peso--;
+
+            if (peso === 1) peso = 9;
+          }
+
+          resto = soma % 11;
+          dv1 = 11 - resto;
+          if (dv1 > 9) dv1 = 0;
+
+          soma = 0;
+          resto = 0;
+          peso = 6;
+          for (let i = 0; i < control.value.length - 1; i++) {
+            soma += Number.parseInt(control.value[i]) * peso;
+            peso--;
+
+            if (peso === 1) peso = 9;
+          }
+
+          resto = soma % 11;
+          dv2 = 11 - resto;
+
+          if (dv2 > 9) dv2 = 0;
+
+          if (
+            Number.parseInt(control.value[control.value.length - 2]) !== dv1 ||
+            Number.parseInt(control.value[control.value.length - 1]) !== dv2
+          )
+            return { accountDocument: false };
         }
-        resto = soma % 11;
-
-        let dv1 = 11 - resto;
-        if (dv1 > 9) dv1 = 0;
-
-        soma = 0;
-        peso = 11;
-        for (let i = 0; i < control.value.length - 2; i++) {
-          soma += Number.parseInt(control.value[i]) * peso;
-          peso--;
-        }
-        soma += dv1 * peso;
-
-        resto = soma % 11;
-
-        let dv2 = 11 - resto;
-        if (dv2 > 9) dv2 = 0;
-
-        if (
-          Number.parseInt(control.value[control.value.length - 2]) !== dv1 ||
-          Number.parseInt(control.value[control.value.length - 1]) !== dv2
-        )
-          return { accountDocument: false };
-      } else if (control.value.length === 14) {
-        let soma = 0;
-        let resto = 0;
-        let dv1 = 0;
-        let dv2 = 0;
-        let peso = 0;
-
-        peso = 5;
-        for (let i = 0; i < control.value.length - 2; i++) {
-          soma += Number.parseInt(control.value[i]) * peso;
-          peso--;
-
-          if (peso === 1) peso = 9;
-        }
-
-        resto = soma % 11;
-        dv1 = 11 - resto;
-        if (dv1 > 9) dv1 = 0;
-
-        soma = 0;
-        resto = 0;
-        peso = 6;
-        for (let i = 0; i < control.value.length - 1; i++) {
-          soma += Number.parseInt(control.value[i]) * peso;
-          peso--;
-
-          if (peso === 1) peso = 9;
-        }
-
-        resto = soma % 11;
-        dv2 = 11 - resto;
-
-        if (dv2 > 9) dv2 = 0;
-
-        if (
-          Number.parseInt(control.value[control.value.length - 2]) !== dv1 ||
-          Number.parseInt(control.value[control.value.length - 1]) !== dv2
-        )
-          return { accountDocument: false };
       }
     }
-
     return null;
   }
 

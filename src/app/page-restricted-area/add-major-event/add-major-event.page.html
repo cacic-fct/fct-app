@@ -73,13 +73,21 @@
       </ion-item>
 
       <ion-item>
-        <ion-label class="ion-text-wrap">Limite de minicursos para inscrição (opcional)</ion-label>
-        <ion-input formControlName="maxCourses" inputmode="numeric" (keypress)="inputNumbersOnly($event)"></ion-input>
+        <ion-label class="ion-text-wrap" position="floating">Limite de minicursos para inscrição (opcional)</ion-label>
+        <ion-input
+          formControlName="maxCourses"
+          inputmode="numeric"
+          (keypress)="inputNumbersOnly($event)"
+          placeholder="Somente números"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-label class="ion-text-wrap">Limite de palestras para inscrição (opcional)</ion-label>
-        <ion-input formControlName="maxLectures" inputmode="numeric" (keypress)="inputNumbersOnly($event)"></ion-input>
+        <ion-label class="ion-text-wrap" position="floating">Limite de palestras para inscrição (opcional)</ion-label>
+        <ion-input
+          formControlName="maxLectures"
+          inputmode="numeric"
+          (keypress)="inputNumbersOnly($event)"
+          placeholder="Somente números"></ion-input>
       </ion-item>
     </ng-container>
 
@@ -274,3 +282,22 @@
     </ion-datetime>
   </ng-template>
 </ion-modal>
+
+<swal
+  #successSwal
+  title="Evento criado com sucesso"
+  icon="success"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
+
+<swal
+  #errorSwal
+  title="Ocorreu um erro ao criar o evento"
+  text="Verifique a sua conexão à internet e tente novamente"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="true"></swal>
