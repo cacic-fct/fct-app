@@ -57,11 +57,11 @@
       <ion-select interface="popover" formControlName="inMajorEvent">
         <ion-select-option slot="start" value="none">Nenhum</ion-select-option>
         <ng-container *ngIf="majorEventsData$ | async; let items; else: loadingMajorEventsList">
-          <ng-container *ngFor="let majorEvent of items">
-            <ion-select-option slot="start" [value]="majorEvent.id"> {{ majorEvent.name }} </ion-select-option>
+          <ng-container *ngFor="let mEvent of items">
+            <ion-select-option slot="start" [value]="mEvent.id"> {{ mEvent.name }} </ion-select-option>
           </ng-container>
           <ion-select-option *ngIf="items.length === 0" slot="start" value="none" disabled>
-            Nenhum evento encontrado - TODO: Me remova
+            Nenhum evento encontrado - TODO: Me remova, apenas para debugging
           </ion-select-option>
         </ng-container>
       </ion-select>
