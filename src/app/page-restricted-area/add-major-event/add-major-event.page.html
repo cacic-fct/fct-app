@@ -104,10 +104,11 @@
             <ion-input
               formControlName="priceStudents"
               inputmode="numeric"
-              placeholder="Somente números"
-              (keypress)="inputNumbersOnly($event)"></ion-input>
+              placeholder="Utilize ponto como separador decimal"
+              (input)="validMoney($event, 'priceStudents')"
+              (keypress)="inputCurrency($event)"></ion-input>
             <ion-text slot="end" color="medium"
-              ><p>{{ dataForm.value.priceStudents / 100 | currency: 'BRL'}}</p></ion-text
+              ><p>{{ dataForm.value.priceStudents * 1.0 | currency: 'BRL'}}</p></ion-text
             >
           </ion-item>
           <ion-item>
@@ -115,10 +116,11 @@
             <ion-input
               formControlName="priceOtherStudents"
               inputmode="numeric"
-              placeholder="Somente números"
-              (keypress)="inputNumbersOnly($event)"></ion-input>
+              placeholder="Utilize ponto como separador decimal"
+              (input)="validMoney($event, 'priceOtherStudents')"
+              (keypress)="inputCurrency($event)"></ion-input>
             <ion-text slot="end" color="medium"
-              ><p>{{ dataForm.value.priceOtherStudents / 100 | currency: 'BRL'}}</p></ion-text
+              ><p>{{ dataForm.value.priceOtherStudents * 1.0 | currency: 'BRL'}}</p></ion-text
             >
           </ion-item>
           <ion-item>
@@ -126,10 +128,11 @@
             <ion-input
               formControlName="priceProfessors"
               inputmode="numeric"
-              placeholder="Somente números"
-              (keypress)="inputNumbersOnly($event)"></ion-input>
+              placeholder="Utilize ponto como separador decimal"
+              (input)="validMoney($event, 'priceProfessors')"
+              (keypress)="inputCurrency($event)"></ion-input>
             <ion-text slot="end" color="medium"
-              ><p>{{ dataForm.value.priceProfessors / 100 | currency: 'BRL'}}</p></ion-text
+              ><p>{{ dataForm.value.priceProfessors * 1.0 | currency: 'BRL'}}</p></ion-text
             >
           </ion-item>
         </ng-container>
@@ -139,9 +142,10 @@
             <ion-input
               formControlName="price"
               inputmode="numeric"
-              placeholder="Somente números"
-              (keypress)="inputNumbersOnly($event)"></ion-input>
-            <ion-text slot="end" color="medium"><p>{{ dataForm.value.price / 100 | currency: 'BRL'}}</p></ion-text>
+              placeholder="Utilize ponto como separador decimal"
+              (input)="validMoney($event, 'price')"
+              (keypress)="inputCurrency($event)"></ion-input>
+            <ion-text slot="end" color="medium"><p>{{ dataForm.value.price * 1.0 | currency: 'BRL'}}</p></ion-text>
           </ion-item>
         </ng-template>
         <ion-card-header>
@@ -157,6 +161,7 @@
             formControlName="accountDocument"
             placeholder="Somente números"
             inputmode="numeric"
+            maxlength="14"
             (keypress)="inputNumbersOnly($event)"></ion-input>
         </ion-item>
         <ion-item>
@@ -168,12 +173,13 @@
           <ion-input
             formControlName="accountAgency"
             placeholder="XXXX"
+            maxLength="4"
             inputmode="numeric"
             (keypress)="inputNumbersOnly($event)"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Conta - Com dígito verificador</ion-label>
-          <ion-input formControlName="accountNumber" placeholder="XXXX-X"></ion-input>
+          <ion-input maxLength="12" formControlName="accountNumber" placeholder="XXXX-X"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Chave Pix</ion-label>
@@ -210,40 +216,50 @@
       <ion-input value="{{ userData.displayName }}" color="medium" readonly> </ion-input>
     </ion-item>
 
-    <ion-button class="ion-padding" id="check-modal" type="submit" [disabled]="!dataForm.valid"
-      >Criar evento</ion-button
-    >
+    <ion-button class="ion-padding" id="check-modal" type="submit">Criar evento</ion-button>
     <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, seu nome será gravado junto ao evento.</p>
   </form>
 </ion-content>
 
 <ion-modal [keepContentsMounted]="true">
-  <ng-template>
-    <ion-datetime id="eventStartDate" presentation="date-time" showDefaultButtons="true">
+  <ng-template [formGroup]="dataForm">
+    <ion-datetime
+      id="eventStartDate"
+      formControlName="eventStartDate"
+      presentation="date-time"
+      showDefaultButtons="true">
       <span slot="title">Selecione a data do início do evento</span>
     </ion-datetime>
   </ng-template>
 </ion-modal>
 
 <ion-modal [keepContentsMounted]="true">
-  <ng-template>
-    <ion-datetime id="eventEndDate" presentation="date-time" showDefaultButtons="true">
+  <ng-template [formGroup]="dataForm">
+    <ion-datetime id="eventEndDate" formControlName="eventEndDate" presentation="date-time" showDefaultButtons="true">
       <span slot="title">Selecione a data do fim do evento</span>
     </ion-datetime>
   </ng-template>
 </ion-modal>
 
 <ion-modal [keepContentsMounted]="true">
-  <ng-template>
-    <ion-datetime id="subscriptionStartDate" presentation="date-time" showDefaultButtons="true">
+  <ng-template [formGroup]="dataForm">
+    <ion-datetime
+      formControlName="subscriptionStartDate"
+      id="subscriptionStartDate"
+      presentation="date-time"
+      showDefaultButtons="true">
       <span slot="title">Selecione a data do início das inscrições</span>
     </ion-datetime>
   </ng-template>
 </ion-modal>
 
 <ion-modal [keepContentsMounted]="true">
-  <ng-template>
-    <ion-datetime id="subscriptionEndDate" presentation="date-time" showDefaultButtons="true">
+  <ng-template [formGroup]="dataForm">
+    <ion-datetime
+      formControlName="subscriptionEndDate"
+      id="subscriptionEndDate"
+      presentation="date-time"
+      showDefaultButtons="true">
       <span slot="title">Selecione a data do fim das inscrições</span>
     </ion-datetime>
   </ng-template>
