@@ -8,7 +8,7 @@ import { MajorEventItem, MajorEventsService } from 'src/app/shared/services/majo
 import { format, parseISO } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { Observable, take } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-add-event',
@@ -56,7 +56,7 @@ export class AddEventPage implements OnInit {
     this.dataForm = this.formBuilder.group(
       {
         course: ['', Validators.required],
-        icon: ['', Validators.required, Validators.pattern(/^\p{Emoji}$/u)],
+        icon: ['', [Validators.required, Validators.pattern(/^\p{Emoji}$/u)]],
         name: ['', Validators.required],
         shortDescription: ['', Validators.maxLength(80)],
         description: '',

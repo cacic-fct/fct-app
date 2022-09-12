@@ -53,13 +53,21 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Pertence ao Grande Evento</ion-label>
-      <ion-select interface="popover" formControlName="course">
-        <ng-container *ngFor="let mEvent of majorEventsData$ | async keyvalue">
-          <ion-select-option slot="start" class="mEvent" [value]="mEvent.id"> {{ mEvent.value }} </ion-select-option>
+      <ion-label position="floating">Pertence ao grande evento</ion-label>
+      <ion-select interface="popover" formControlName="inMajorEvent">
+        <ion-select-option slot="start" value="none">Nenhum</ion-select-option>
+        <ng-container *ngIf="majorEventsData$ | async; let items; else: loading">
+          <ng-container *ngFor="let majorEvent of items">
+            <ion-select-option slot="start" [value]="majorEvent.id"> {{ majorEvent.name }} </ion-select-option>
+          </ng-container>
+          <ion-select-option *ngIf="items.length === 0" slot="start" value="none"
+            >Nenhum evento encontrado - TODO: Me remova</ion-select-option
+          >
         </ng-container>
       </ion-select>
     </ion-item>
+
+    <ng-template #loading><p>Carregando</p></ng-template>
 
     <ion-card-header>
       <ion-card-title>Localização (opcional)</ion-card-title>
@@ -118,20 +126,6 @@
       <ion-label>Evento aberto ao público</ion-label>
       <ion-toggle slot="end" formControlName="public" checked="off"></ion-toggle>
     </ion-item>
-
-    <ion-item>
-      <ion-label position="floating">Pertence ao grande evento</ion-label>
-      <ion-select interface="popover" formControlName="inMajorEvent">
-        <ion-select-option slot="start" value="none">Nenhum</ion-select-option>
-        <ng-container *ngIf="majorEvents.getFutureMajorEvents() | async; let items; else: loading">
-          <ng-container *ngFor="let majorEvent of items">
-            <ion-select-option slot="start" [value]="majorEvent.id"> {{ majorEvent.name }} </ion-select-option>
-          </ng-container>
-        </ng-container>
-      </ion-select>
-    </ion-item>
-
-    <ng-template #loading></ng-template>
 
     <ion-item>
       <ion-label position="stacked">Criador do evento</ion-label>
