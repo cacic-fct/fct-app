@@ -4,10 +4,11 @@ import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { MajorEventsService } from 'src/app/shared/services/majorEvents.service';
+import { MajorEventItem, MajorEventsService } from 'src/app/shared/services/majorEvents.service';
 import { format, parseISO } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import { Observable, take } from 'rxjs';
 
 @Component({
   selector: 'app-add-event',
@@ -19,6 +20,7 @@ export class AddEventPage implements OnInit {
 
   courses = CoursesService.courses;
   places = PlacesService.places;
+  majorEventsData$: Observable<MajorEventItem[]>;
   enableDateEnd = false;
 
   dataForm: FormGroup = new FormGroup({
@@ -84,6 +86,7 @@ export class AddEventPage implements OnInit {
       }
     );
     this.userData.displayName.replace(/%20/g, ' ');
+    this.majorEventsData$ = this.majorEvents.getFutureMajorEvents();
   }
 
   formatDate(value: string) {

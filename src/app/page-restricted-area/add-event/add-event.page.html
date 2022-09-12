@@ -52,6 +52,15 @@
       <ion-datetime-button [disabled]="!enableDateEnd" datetime="eventDateEnd"></ion-datetime-button>
     </ion-item>
 
+    <ion-item>
+      <ion-label position="floating">Pertence ao Grande Evento</ion-label>
+      <ion-select interface="popover" formControlName="course">
+        <ng-container *ngFor="let mEvent of majorEventsData$ | async keyvalue">
+          <ion-select-option slot="start" class="mEvent" [value]="mEvent.id"> {{ mEvent.value }} </ion-select-option>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+
     <ion-card-header>
       <ion-card-title>Localização (opcional)</ion-card-title>
     </ion-card-header>
