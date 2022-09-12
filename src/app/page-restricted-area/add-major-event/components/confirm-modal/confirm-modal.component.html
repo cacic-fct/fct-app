@@ -16,18 +16,18 @@
     <ion-item lines="none">
       Data do evento
       <span slot="end">
-        {{ getDateFromISO(dataForm.value.dateStart) | date: 'dd/MM' }}
+        {{ getDateFromISO(dataForm.value.eventStartDate) | date: 'dd/MM' }}
         <ng-container *ngIf="dateRange">
-          {{ ' - ' + (getDateFromISO(dataForm.value.dateEnd) | date: 'dd/MM') }}
+          {{ ' - ' + (getDateFromISO(dataForm.value.eventEndDate) | date: 'dd/MM') }}
         </ng-container>
       </span>
     </ion-item>
 
-    <ion-item lines="none" *ngIf="dataForm.value.subscriptionDateStart && dataForm.value.subscriptionDateEnd">
+    <ion-item lines="none" *ngIf="dataForm.value.subscriptionStartDate && dataForm.value.subscriptionEndDate">
       Inscrição
       <span slot="end">
-        {{ getDateFromISO(dataForm.value.subscriptionDateStart) | date: 'dd/MM' }}
-        {{ ' - ' + (getDateFromISO(dataForm.value.subscriptionDateEnd) | date: 'dd/MM') }}
+        {{ getDateFromISO(dataForm.value.subscriptionStartDate) | date: 'dd/MM' }}
+        {{ ' - ' + (getDateFromISO(dataForm.value.subscriptionEndDate) | date: 'dd/MM') }}
       </span>
     </ion-item>
   </div>
@@ -51,24 +51,24 @@
     <ng-template #singlePrice>
       <ion-item lines="none">
         Preço único
-        <span slot="end">{{ dataForm.value.priceSingle / 100 | currency: 'BRL' }}</span>
+        <span slot="end">{{ dataForm.value.priceSingle * 1.0 | currency: 'BRL' }}</span>
       </ion-item>
     </ng-template>
 
     <ng-template #multiPrice>
       <ion-item lines="none" *ngIf="dataForm.value.priceStudents">
         Alunos da Unesp
-        <span slot="end">{{ dataForm.value.priceStudents / 100 | currency: 'BRL' }}</span>
+        <span slot="end">{{ dataForm.value.priceStudents * 1.0 | currency: 'BRL' }}</span>
       </ion-item>
 
       <ion-item lines="none" *ngIf="dataForm.value.priceOtherStudents">
         Alunos
-        <span slot="end">{{ dataForm.value.priceOtherStudents / 100 | currency: 'BRL' }}</span>
+        <span slot="end">{{ dataForm.value.priceOtherStudents * 1.0 | currency: 'BRL' }}</span>
       </ion-item>
 
       <ion-item lines="none" *ngIf="dataForm.value.priceOtherStudents">
         Professores
-        <span slot="end">{{ dataForm.value.priceProfessors / 100 | currency: 'BRL' }}</span>
+        <span slot="end">{{ dataForm.value.priceProfessors * 1.0 | currency: 'BRL' }}</span>
       </ion-item>
     </ng-template>
   </div>

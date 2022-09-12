@@ -1,19 +1,25 @@
 import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { format, parseISO } from 'date-fns';
 
 import { parse as parseDate } from 'date-fns';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
-import { BehaviorSubject, first, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MajorEventItem } from 'src/app/shared/services/major-event';
 
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { trace } from '@angular/fire/compat/performance';
 
 @Component({
   selector: 'app-add-major-event',
@@ -27,22 +33,22 @@ export class AddMajorEventPage implements OnInit {
   dateRange: boolean = true;
   _dateRangeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   dateRange$: Observable<boolean> = this._dateRangeSubject.asObservable();
-  priceDifferentiate: boolean = true;
-  _priceDifferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  priceDifferentiate: boolean = false;
+  _priceDifferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   priceDifferentiate$: Observable<boolean> = this._priceDifferentiateSubject.asObservable();
   isEventPaid: boolean = true;
   _isEventPaidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   isEventPaid$: Observable<boolean> = this._isEventPaidSubject.asObservable();
 
   dataForm: FormGroup = new FormGroup({
-    course: new FormControl(''),
-    name: new FormControl(''),
+    course: new FormControl('', [Validators.required]),
+    icon: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required]),
     description: new FormControl(''),
-    // TODO: Validar se data de início é menor que data de fim
-    dateStart: new FormControl(''),
-    dateEnd: new FormControl(''),
-    subscriptionDateStart: new FormControl(''),
-    subscriptionDateEnd: new FormControl(''),
+    eventStartDate: new FormControl(new Date().toISOString(), [Validators.required]),
+    eventEndDate: new FormControl(new Date().toISOString()),
+    subscriptionStartDate: new FormControl(new Date().toISOString()),
+    subscriptionEndDate: new FormControl(new Date().toISOString()),
     maxCourses: new FormControl(''),
     maxLectures: new FormControl(''),
     isEventPaidForm: new FormControl(''), // TODO: arrumar isso
@@ -53,11 +59,11 @@ export class AddMajorEventPage implements OnInit {
     accountChavePix: new FormControl(''),
     accountBank: new FormControl(''),
     accountName: new FormControl(''),
-    accountDocument: new FormControl(''),
+    accountDocument: new FormControl('', [this.validateCPFOrCNPJ]),
     accountAgency: new FormControl(''),
     accountNumber: new FormControl(''),
     additionalPaymentInformation: new FormControl(''),
-    public: new FormControl(''),
+    public: new FormControl(true),
     buttonText: new FormControl(''),
     buttonUrl: new FormControl(''),
   });
@@ -67,8 +73,7 @@ export class AddMajorEventPage implements OnInit {
     public formBuilder: FormBuilder,
     private modalController: ModalController,
     private sanitizer: DomSanitizer,
-    private afs: AngularFirestore,
-    private auth: AngularFireAuth
+    private afs: AngularFirestore
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
   }
@@ -80,25 +85,26 @@ export class AddMajorEventPage implements OnInit {
         course: ['', Validators.required],
         name: ['', Validators.required],
         description: '',
-        dateStart: [dateISO, Validators.required],
-        dateEnd: dateISO,
-        subscriptionDateStart: [dateISO, Validators.required],
-        subscriptionDateEnd: [dateISO, Validators.required],
+        eventStartDate: [new Date().toISOString(), Validators.required],
+        eventEndDate: [new Date().toISOString()],
+        subscriptionStartDate: [new Date().toISOString(), Validators.required],
+        subscriptionEndDate: [new Date().toISOString(), Validators.required],
         maxCourses: '',
         maxLectures: '',
         isEventPaidForm: '',
         priceSingle: '',
-        priceStudents: '',
-        priceOtherStudents: '',
-        priceProfessors: '',
+        price: '0',
+        priceStudents: '0',
+        priceOtherStudents: '0',
+        priceProfessors: '0',
         accountChavePix: '',
         accountBank: '',
         accountName: '',
-        accountDocument: '',
+        accountDocument: ['', this.validateCPFOrCNPJ],
         accountAgency: '',
         accountNumber: '',
         additionalPaymentInformation: '',
-        public: '',
+        public: true,
         buttonText: '',
         buttonUrl: '',
       },
@@ -118,45 +124,45 @@ export class AddMajorEventPage implements OnInit {
       return false;
     }
 
-    this.openConfirmModal().then((response) => {
-      if (response) {
-        let price: MajorEventItem['price'];
+    this.openConfirmModal()
+      .then((response) => {
+        if (response) {
+          let price: MajorEventItem['price'];
 
-        if (this.isEventPaid) {
-          if (this.priceDifferentiate) {
-            price = {
-              priceStudents: this.dataForm.get('priceStudents').value,
-              priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
-              priceProfessors: this.dataForm.get('priceProfessors').value,
-            };
+          if (this.isEventPaid) {
+            if (this.priceDifferentiate) {
+              price = {
+                priceStudents: this.dataForm.get('priceStudents').value,
+                priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
+                priceProfessors: this.dataForm.get('priceProfessors').value,
+              };
+            } else {
+              price = {
+                priceSingle: this.dataForm.get('priceSingle').value,
+              };
+            }
           } else {
-            price = {
-              priceSingle: this.dataForm.get('priceSingle').value,
-            };
+            price.isFree = true;
           }
-        } else {
-          price.isFree = true;
-        }
 
-        let buttonUrl = this.dataForm.get('buttonUrl').value;
+          let buttonUrl = this.dataForm.get('buttonUrl').value;
 
-        if (buttonUrl) {
-          if (!buttonUrl.test('^https?://(.*)')) {
-            this.dataForm.setValue({ ...this.dataForm.value, buttonUrl: 'https://' + buttonUrl });
+          if (buttonUrl) {
+            if (!buttonUrl.test('^https?://(.*)')) {
+              this.dataForm.setValue({ ...this.dataForm.value, buttonUrl: 'https://' + buttonUrl });
+            }
           }
-        }
 
-        this.auth.user.pipe(first(), trace('auth')).subscribe((user) => {
           this.afs.collection('majorEvents').add({
             course: this.dataForm.get('course').value,
             name: this.dataForm.get('name').value,
             description: this.dataForm.get('description').value,
-            dateStart: this.dataForm.get('dateStart').value,
-            dateEnd: this.dateRange ? this.dataForm.get('dateEnd').value : undefined,
-            subscriptionDateStart: this.dataForm.get('subscriptionDateStart').value,
-            subscriptionDateEnd: this.dataForm.get('subscriptionDateEnd').value,
+            eventStartDate: this.dataForm.get('eventStartDate').value,
+            eventEndDate: this.dateRange ? this.dataForm.get('eventEndDate').value : undefined,
             maxCourses: this.dataForm.get('maxCourses').value,
             maxLectures: this.dataForm.get('maxLectures').value,
+            subscriptionStartDate: this.dataForm.get('subscriptionStartDate').value,
+            subscriptionEndDate: this.dataForm.get('subscriptionEndDate').value,
             price: price,
             accountChavePix: this.dataForm.get('accountChavePix').value,
             accountBank: this.dataForm.get('accountBank').value,
@@ -172,12 +178,18 @@ export class AddMajorEventPage implements OnInit {
                   buttonUrl: this.dataForm.get('buttonUrl').value,
                 }
               : undefined,
-            createdBy: user.uid,
+            createdBy: this.userData.displayName,
             createdOn: new Date(),
           });
-        });
-      }
-    });
+        }
+      })
+      .then((success) => {
+        alert('Evento cadastrado com sucesso =)');
+        window.location.reload();
+      })
+      .catch((err) => {
+        alert(`Falha ao salvar evento\n${err}`);
+      });
   }
 
   validatorButton(control: AbstractControl): ValidationErrors | null {
@@ -191,10 +203,7 @@ export class AddMajorEventPage implements OnInit {
   }
 
   requirePaymentDetails(control: AbstractControl): ValidationErrors | null {
-    if (
-      control.get('isEventPaidForm').value === 'on' &&
-      (control.get('accountChavePix').value != '' || control.get('accountNumber').value != '')
-    ) {
+    if (control.get('public').value && control.get('accountChavePix').value === '') {
       control.get('accountBank').addValidators(Validators.required);
       control.get('accountName').addValidators(Validators.required);
       control.get('accountDocument').addValidators(Validators.required);
@@ -203,9 +212,9 @@ export class AddMajorEventPage implements OnInit {
     } else {
       control.get('accountBank').removeValidators(Validators.required);
       control.get('accountName').removeValidators(Validators.required);
-      control.get('accountDocument').addValidators(Validators.required);
-      control.get('accountAgency').addValidators(Validators.required);
-      control.get('accountNumber').addValidators(Validators.required);
+      control.get('accountDocument').removeValidators(Validators.required);
+      control.get('accountAgency').removeValidators(Validators.required);
+      control.get('accountNumber').removeValidators(Validators.required);
     }
 
     return null;
@@ -278,5 +287,112 @@ export class AddMajorEventPage implements OnInit {
         resolve(false);
       });
     });
+  }
+
+  inputCurrency(event) {
+    if (event.getModifierState('Meta') || event.getModifierState('Control') || event.getModifierState('Alt')) {
+      return;
+    }
+
+    if (event.key.length !== 1 || event.key === '\x00') {
+      return;
+    }
+
+    if ((event.key < '0' || event.key > '9') && event.key !== '.') {
+      event.preventDefault();
+    }
+  }
+
+  validateCPFOrCNPJ(control: AbstractControl): ValidationErrors | null {
+    if (control.value.length < 11) {
+      return { accountDocument: false };
+    } else {
+      if (control.value.length === 11) {
+        let soma = 0;
+        let peso = 10;
+        let resto = 0;
+
+        for (let i = 0; i < control.value.length - 2; i++) {
+          soma += Number.parseInt(control.value[i]) * peso;
+          peso--;
+        }
+        resto = soma % 11;
+
+        let dv1 = 11 - resto;
+        if (dv1 > 9) dv1 = 0;
+
+        soma = 0;
+        peso = 11;
+        for (let i = 0; i < control.value.length - 2; i++) {
+          soma += Number.parseInt(control.value[i]) * peso;
+          peso--;
+        }
+        soma += dv1 * peso;
+
+        resto = soma % 11;
+
+        let dv2 = 11 - resto;
+        if (dv2 > 9) dv2 = 0;
+
+        if (
+          Number.parseInt(control.value[control.value.length - 2]) !== dv1 ||
+          Number.parseInt(control.value[control.value.length - 1]) !== dv2
+        )
+          return { accountDocument: false };
+      } else if (control.value.length === 14) {
+        let soma = 0;
+        let resto = 0;
+        let dv1 = 0;
+        let dv2 = 0;
+        let peso = 0;
+
+        peso = 5;
+        for (let i = 0; i < control.value.length - 2; i++) {
+          soma += Number.parseInt(control.value[i]) * peso;
+          peso--;
+
+          if (peso === 1) peso = 9;
+        }
+
+        resto = soma % 11;
+        dv1 = 11 - resto;
+        if (dv1 > 9) dv1 = 0;
+
+        soma = 0;
+        resto = 0;
+        peso = 6;
+        for (let i = 0; i < control.value.length - 1; i++) {
+          soma += Number.parseInt(control.value[i]) * peso;
+          peso--;
+
+          if (peso === 1) peso = 9;
+        }
+
+        resto = soma % 11;
+        dv2 = 11 - resto;
+
+        if (dv2 > 9) dv2 = 0;
+
+        if (
+          Number.parseInt(control.value[control.value.length - 2]) !== dv1 ||
+          Number.parseInt(control.value[control.value.length - 1]) !== dv2
+        )
+          return { accountDocument: false };
+      }
+    }
+
+    return null;
+  }
+
+  validMoney(event, key) {
+    const cleanMoney = event.target.value
+      // Remove anything that isn't valid in a number
+      .replace(/[^\d-.]/g, '')
+      // Remove all dashes unless it is the first character
+      .replace(/(?!^)-/g, '')
+      // Remove all periods unless it is the last one
+      .replace(/\.(?=.*\.)/g, '');
+
+    this.dataForm.get(key).setValue(cleanMoney);
   }
 }
