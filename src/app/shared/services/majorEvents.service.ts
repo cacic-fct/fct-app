@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 import { Observable } from 'rxjs';
+import { startOfDay } from 'date-fns';
 
 // TODO como utilizar Observables para retornar os grandes eventos futuros?
 
@@ -14,7 +15,7 @@ export class MajorEventsService {
     return this.afs
       .collection<MajorEventItem>('majorEvents', (ref) => {
         let query: any = ref;
-        query = query.where('dateStart', '>=', date);
+        query = query.where('dateStart', '>=', startOfDay(date));
         return query.orderBy('dateStart', 'asc');
       })
       .valueChanges({ idField: 'id' });

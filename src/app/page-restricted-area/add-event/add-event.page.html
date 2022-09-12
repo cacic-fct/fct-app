@@ -56,18 +56,20 @@
       <ion-label position="floating">Pertence ao grande evento</ion-label>
       <ion-select interface="popover" formControlName="inMajorEvent">
         <ion-select-option slot="start" value="none">Nenhum</ion-select-option>
-        <ng-container *ngIf="majorEventsData$ | async; let items; else: loading">
+        <ng-container *ngIf="majorEventsData$ | async; let items; else: loadingMajorEventsList">
           <ng-container *ngFor="let majorEvent of items">
             <ion-select-option slot="start" [value]="majorEvent.id"> {{ majorEvent.name }} </ion-select-option>
           </ng-container>
-          <ion-select-option *ngIf="items.length === 0" slot="start" value="none"
-            >Nenhum evento encontrado - TODO: Me remova</ion-select-option
-          >
+          <ion-select-option *ngIf="items.length === 0" slot="start" value="none" disabled>
+            Nenhum evento encontrado - TODO: Me remova
+          </ion-select-option>
         </ng-container>
       </ion-select>
     </ion-item>
 
-    <ng-template #loading><p>Carregando</p></ng-template>
+    <ng-template #loadingMajorEventsList>
+      <ion-select-option slot="start" value="none" disabled>Carregando eventos...</ion-select-option>
+    </ng-template>
 
     <ion-card-header>
       <ion-card-title>Localização (opcional)</ion-card-title>
@@ -77,9 +79,7 @@
       <ion-label position="floating">Predefinição</ion-label>
       <ion-select (ionChange)="placeChange($event)" interface="popover" placeholder="Personalizado" #selectPlace>
         <ng-container *ngFor="let places of places | keyvalue">
-          <ion-select-option slot="start" class="course" [value]="places.key">
-            {{ places.value.name }}
-          </ion-select-option>
+          <ion-select-option slot="start" [value]="places.key"> {{ places.value.name }} </ion-select-option>
         </ng-container>
       </ion-select>
     </ion-item>
