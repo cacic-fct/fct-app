@@ -1,6 +1,6 @@
 import { Timestamp } from '@firebase/firestore-types';
 
-export interface EventItem {
+export interface MajorEventItem {
   name: string;
   icon: string;
   course: string;
@@ -8,13 +8,13 @@ export interface EventItem {
   dateEnd?: Timestamp;
   subscriptionDateStart?: Timestamp;
   subscriptionDateEnd?: Timestamp;
-  price?:
-    | string
-    | {
-        priceStudents?: string;
-        priceOtherStudents?: string;
-        priceProfessors?: string;
-      };
+  price: {
+    priceStudents?: number;
+    priceOtherStudents?: number;
+    priceProfessors?: number;
+    priceSingle?: number;
+    isFree?: boolean;
+  };
   accountChavePix?: string;
   accountBank?: string;
   accountName?: string;
