@@ -5,7 +5,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventItem, MajorEventsService } from 'src/app/shared/services/majorEvents.service';
-import { format, parseISO } from 'date-fns';
+import { addHours, format, parseISO } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,7 +21,6 @@ export class AddEventPage implements OnInit {
   courses = CoursesService.courses;
   places = PlacesService.places;
   majorEventsData$: Observable<MajorEventItem[]>;
-  enableDateEnd = false;
 
   dataForm: FormGroup = new FormGroup({
     course: new FormControl(''),
@@ -39,6 +38,10 @@ export class AddEventPage implements OnInit {
     buttonText: new FormControl(''),
     buttonUrl: new FormControl(''),
     inMajorEvent: new FormControl(''),
+
+    hasDateEnd: new FormControl(false), // Atributo de controle para validador
+    // de intervalo de horários, ignorado
+    // ao enviar.
   });
 
   userData: any;
@@ -61,7 +64,7 @@ export class AddEventPage implements OnInit {
         shortDescription: ['', Validators.maxLength(80)],
         description: '',
         date: [new Date().toISOString(), Validators.required],
-        dateEnd: '',
+        dateEnd: addHours(new Date(), 1), // Uma hora após o início, por padrão
         locationDescription: '',
         locationLat: [
           '',
@@ -80,9 +83,11 @@ export class AddEventPage implements OnInit {
         buttonText: '',
         buttonUrl: '', // TODO: Verificar se URL inicia-se com http:// ou https://. Caso não, adicionar "https://"
         inMajorEvent: '',
+
+        hasDateEnd: false,
       },
       {
-        validators: [this.validatorLatLong, this.validatorButton],
+        validators: [this.validatorLatLong, this.validatorButton, this.validatorDateEnd],
       }
     );
     this.userData.displayName.replace(/%20/g, ' ');
@@ -105,8 +110,11 @@ export class AddEventPage implements OnInit {
           if (data[key] == '') delete data[key];
         });
         data.date = parseISO(data.date);
-        if (this.enableDateEnd) data.dateEnd = parseISO(data.dateEnd);
+        if (data.hasDateEnd) data.dateEnd = parseISO(data.dateEnd);
         else delete data.dateEnd;
+
+        delete data.hasDateEnd; // Deletando atributo de controle
+
         this.afs
           .collection('events')
           .add(data)
@@ -154,14 +162,14 @@ export class AddEventPage implements OnInit {
     return null;
   }
 
-  validatorDateEnd(): ValidationErrors | null {
-    // TODO como fazer a verificação data de término >= data de início
-    if (this.enableDateEnd) {
-      let dateStart = parseISO(this.dataForm.value.date);
-      let dateEnd = parseISO(this.dataForm.value.dateEnd);
-      if (dateEnd >= dateStart) return null;
-      else return { message: 'Data de término deve ser posterior a data de início.' };
+  validatorDateEnd(control: AbstractControl): { [key: string]: boolean } | null {
+    if (control.get('hasDateEnd').value) {
+      let dateStart = parseISO(control.get('date').value);
+      let dateEnd = parseISO(control.get('dateEnd').value);
+      if (dateEnd < dateStart) return { dateRange: true };
     }
+
+    return null;
   }
 
   validatorButton(control: AbstractControl): ValidationErrors | null {

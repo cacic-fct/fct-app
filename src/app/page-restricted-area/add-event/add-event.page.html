@@ -48,8 +48,8 @@
 
     <ion-item>
       <ion-label class="ion-text-wrap">Fim do evento</ion-label>
-      <ion-toggle (ionChange)="enableDateEnd = !enableDateEnd"></ion-toggle>
-      <ion-datetime-button [disabled]="!enableDateEnd" datetime="eventDateEnd"></ion-datetime-button>
+      <ion-toggle formControlName="hasDateEnd"></ion-toggle>
+      <ion-datetime-button [disabled]="!this.dataForm.value.hasDateEnd" datetime="eventDateEnd"></ion-datetime-button>
     </ion-item>
 
     <ion-item>
