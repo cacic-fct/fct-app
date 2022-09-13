@@ -263,6 +263,7 @@ export class AddMajorEventPage implements OnInit {
   isEventPaidChange() {
     this.isEventPaid = !this.isEventPaid;
     this._isEventPaidSubject.next(this.isEventPaid);
+    this.dataForm.controls['accountDocument'].updateValueAndValidity();
   }
 
   inputNumbersOnly(event) {
@@ -312,21 +313,23 @@ export class AddMajorEventPage implements OnInit {
     }
   }
 
-  validateCPFOrCNPJ(control: AbstractControl): ValidationErrors | null {
-    if (control.get('isEventPaidForm').value === true) {
-      if (control.value.length < 11) {
+  validateCPFOrCNPJ = (control: AbstractControl): ValidationErrors | null => {
+    if (this.isEventPaid === true) {
+      let cpfOrCnpj = control.value;
+
+      if (cpfOrCnpj.length < 11) {
         return { accountDocument: false };
       } else {
-        if (control.value.length === 11) {
+        if (cpfOrCnpj.length === 11) {
           // If CPF is 000.000.000-00, 111.111.111-11, etc, return false
-          if (/^(.)\1*$/.test(control.value)) {
+          if (/^(.)\1*$/.test(cpfOrCnpj)) {
             return { accountDocument: false };
           }
           let soma = 0;
           let peso = 10;
           let resto = 0;
 
-          for (let i = 0; i < control.value.length - 2; i++) {
+          for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
             soma += Number.parseInt(control.value[i]) * peso;
             peso--;
           }
@@ -337,8 +340,8 @@ export class AddMajorEventPage implements OnInit {
 
           soma = 0;
           peso = 11;
-          for (let i = 0; i < control.value.length - 2; i++) {
-            soma += Number.parseInt(control.value[i]) * peso;
+          for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
+            soma += Number.parseInt(cpfOrCnpj[i]) * peso;
             peso--;
           }
           soma += dv1 * peso;
@@ -349,11 +352,11 @@ export class AddMajorEventPage implements OnInit {
           if (dv2 > 9) dv2 = 0;
 
           if (
-            Number.parseInt(control.value[control.value.length - 2]) !== dv1 ||
-            Number.parseInt(control.value[control.value.length - 1]) !== dv2
+            Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 2]) !== dv1 ||
+            Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 1]) !== dv2
           )
             return { accountDocument: false };
-        } else if (control.value.length === 14) {
+        } else if (cpfOrCnpj.length === 14) {
           let soma = 0;
           let resto = 0;
           let dv1 = 0;
@@ -361,8 +364,8 @@ export class AddMajorEventPage implements OnInit {
           let peso = 0;
 
           peso = 5;
-          for (let i = 0; i < control.value.length - 2; i++) {
-            soma += Number.parseInt(control.value[i]) * peso;
+          for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
+            soma += Number.parseInt(cpfOrCnpj[i]) * peso;
             peso--;
 
             if (peso === 1) peso = 9;
@@ -375,8 +378,8 @@ export class AddMajorEventPage implements OnInit {
           soma = 0;
           resto = 0;
           peso = 6;
-          for (let i = 0; i < control.value.length - 1; i++) {
-            soma += Number.parseInt(control.value[i]) * peso;
+          for (let i = 0; i < cpfOrCnpj.length - 1; i++) {
+            soma += Number.parseInt(cpfOrCnpj[i]) * peso;
             peso--;
 
             if (peso === 1) peso = 9;
@@ -388,15 +391,15 @@ export class AddMajorEventPage implements OnInit {
           if (dv2 > 9) dv2 = 0;
 
           if (
-            Number.parseInt(control.value[control.value.length - 2]) !== dv1 ||
-            Number.parseInt(control.value[control.value.length - 1]) !== dv2
+            Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 2]) !== dv1 ||
+            Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 1]) !== dv2
           )
             return { accountDocument: false };
         }
       }
     }
     return null;
-  }
+  };
 
   validMoney(event, key) {
     const cleanMoney = event.target.value
