@@ -13,23 +13,25 @@
       Datas
     </div>
 
-    <ion-item lines="none">
-      Data do evento
-      <span slot="end">
-        {{ getDateFromISO(dataForm.value.eventStartDate) | date: 'dd/MM' }}
-        <ng-container *ngIf="dateRange">
-          {{ ' - ' + (getDateFromISO(dataForm.value.eventEndDate) | date: 'dd/MM') }}
-        </ng-container>
-      </span>
-    </ion-item>
+    <div class="ion-margin-bottom">
+      <p class="ion-no-margin card-content-title">Data do evento</p>
 
-    <ion-item lines="none" *ngIf="dataForm.value.subscriptionStartDate && dataForm.value.subscriptionEndDate">
-      Inscrição
-      <span slot="end">
-        {{ getDateFromISO(dataForm.value.subscriptionStartDate) | date: 'dd/MM' }}
-        {{ ' - ' + (getDateFromISO(dataForm.value.subscriptionEndDate) | date: 'dd/MM') }}
-      </span>
-    </ion-item>
+      <p class="ion-no-margin">
+        {{ getDateFromISO(dataForm.value.eventStartDate) | date: 'dd/MM/YY HH:mm' }}
+        <ng-container *ngIf="dateRange">
+          {{ ' - ' + (getDateFromISO(dataForm.value.eventEndDate) | date: 'dd/MM/YY HH:mm') }}
+        </ng-container>
+      </p>
+    </div>
+
+    <div>
+      <p class="ion-no-margin card-content-title">Inscrição</p>
+
+      <p class="ion-no-margin">
+        {{ getDateFromISO(dataForm.value.subscriptionStartDate) | date: 'dd/MM/YY HH:mm' }}
+        {{ ' - ' + (getDateFromISO(dataForm.value.subscriptionEndDate) | date: 'dd/MM/YY HH:mm') }}
+      </p>
+    </div>
   </div>
 
   <div class="card-section ion-padding-horizontal">

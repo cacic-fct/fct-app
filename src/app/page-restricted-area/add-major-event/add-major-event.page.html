@@ -115,37 +115,31 @@
           <ion-label position="floating">Aluno da Unesp</ion-label>
           <ion-input
             formControlName="priceStudents"
-            inputmode="numeric"
-            placeholder="Utilize ponto como separador decimal"
-            (input)="validMoney($event, 'priceStudents')"
-            (keypress)="inputCurrency($event)"></ion-input>
-          <ion-text slot="end" color="medium"
-            ><p>{{ dataForm.value.priceStudents * 1.0 | currency: 'BRL'}}</p></ion-text
-          >
+            inputmode="decimal"
+            (input)="validatePrice($event, 'priceStudents')"
+            (ionInput)="inputCurrency($event)"
+            replaceCommaWithPeriod></ion-input>
+          <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceStudents | currency: 'BRL'}}</p></ion-text>
         </ion-item>
         <ion-item>
           <ion-label class="ion-text-nowrap" position="floating"> Aluno de outras IES </ion-label>
           <ion-input
             formControlName="priceOtherStudents"
-            inputmode="numeric"
-            placeholder="Utilize ponto como separador decimal"
-            (input)="validMoney($event, 'priceOtherStudents')"
-            (keypress)="inputCurrency($event)"></ion-input>
-          <ion-text slot="end" color="medium"
-            ><p>{{ dataForm.value.priceOtherStudents * 1.0 | currency: 'BRL'}}</p></ion-text
-          >
+            inputmode="decimal"
+            (input)="validatePrice($event, 'priceOtherStudents')"
+            (ionInput)="inputCurrency($event)"
+            replaceCommaWithPeriod></ion-input>
+          <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceOtherStudents | currency: 'BRL'}}</p></ion-text>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Professores e profissionais</ion-label>
           <ion-input
             formControlName="priceProfessors"
-            inputmode="numeric"
-            placeholder="Utilize ponto como separador decimal"
-            (input)="validMoney($event, 'priceProfessors')"
-            (keypress)="inputCurrency($event)"></ion-input>
-          <ion-text slot="end" color="medium"
-            ><p>{{ dataForm.value.priceProfessors * 1.0 | currency: 'BRL'}}</p></ion-text
-          >
+            inputmode="decimal"
+            (input)="validatePrice($event, 'priceProfessors')"
+            (ionInput)="inputCurrency($event)"
+            replaceCommaWithPeriod></ion-input>
+          <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceProfessors | currency: 'BRL'}}</p></ion-text>
         </ion-item>
       </ng-container>
       <ng-template #noPriceDifferentiation>
@@ -153,11 +147,11 @@
           <ion-label position="floating">Preço único</ion-label>
           <ion-input
             formControlName="priceSingle"
-            inputmode="numeric"
-            placeholder="Utilize ponto como separador decimal"
-            (input)="validMoney($event, 'price')"
-            (keypress)="inputCurrency($event)"></ion-input>
-          <ion-text slot="end" color="medium"><p>{{ dataForm.value.price * 1.0 | currency: 'BRL'}}</p></ion-text>
+            inputmode="decimal"
+            (input)="validatePrice($event, 'priceSingle')"
+            (ionInput)="inputCurrency($event)"
+            replaceCommaWithPeriod></ion-input>
+          <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceSingle| currency: 'BRL'}}</p></ion-text>
         </ion-item>
       </ng-template>
       <ion-card-header>
@@ -224,18 +218,19 @@
 
     <ion-item>
       <ion-label>Evento aberto ao público</ion-label>
-      <ion-toggle slot="end" formControlName="public" checked="off"></ion-toggle>
+      <ion-toggle slot="end" formControlName="public" checked="on"></ion-toggle>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Criador do evento</ion-label>
       <ion-input value="{{ userData.displayName }}" color="medium" readonly> </ion-input>
     </ion-item>
-
-    <ion-button class="ion-padding" id="check-modal" type="submit" [disabled]="!dataForm.valid">
-      Criar evento
-    </ion-button>
-    <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, seu nome será gravado junto ao evento.</p>
+    <div class="ion-padding-bottom">
+      <ion-button class="ion-padding" type="submit" [disabled]="!dataForm.valid"> Criar evento </ion-button>
+      <p style="font-size: 0.75em" class="ion-padding-horizontal">
+        Ao continuar, seu nome será gravado junto ao evento.
+      </p>
+    </div>
   </form>
 </ion-content>
 

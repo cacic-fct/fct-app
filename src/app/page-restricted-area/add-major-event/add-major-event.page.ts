@@ -27,13 +27,13 @@ export class AddMajorEventPage implements OnInit {
 
   courses = CoursesService.courses;
   dateRange: boolean = true;
-  _dateRangeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  _dateRangeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.dateRange);
   dateRange$: Observable<boolean> = this._dateRangeSubject.asObservable();
-  priceDifferentiate: boolean = false;
-  _priceDifferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  priceDifferentiate: boolean = true;
+  _priceDifferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.priceDifferentiate);
   priceDifferentiate$: Observable<boolean> = this._priceDifferentiateSubject.asObservable();
   isEventPaid: boolean = true;
-  _isEventPaidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  _isEventPaidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isEventPaid);
   isEventPaid$: Observable<boolean> = this._isEventPaidSubject.asObservable();
 
   // TODO: Verificar se escrever isso duas vezes é necessário ou se estamos reproduzindo código desnecessário em todos os formulários já criados
@@ -92,10 +92,9 @@ export class AddMajorEventPage implements OnInit {
         maxLectures: '',
         isEventPaidForm: this.isEventPaid,
         priceSingle: '',
-        price: '0',
-        priceStudents: '0',
-        priceOtherStudents: '0',
-        priceProfessors: '0',
+        priceStudents: '',
+        priceOtherStudents: '',
+        priceProfessors: '',
         accountChavePix: '',
         accountBank: '',
         accountName: '',
@@ -123,79 +122,81 @@ export class AddMajorEventPage implements OnInit {
       return false;
     }
 
-    this.openConfirmModal()
-      .then((response) => {
-        if (response) {
-          let price: MajorEventItem['price'];
+    this.openConfirmModal().then((response) => {
+      if (!response) {
+        return;
+      }
+      let price: MajorEventItem['price'];
 
-          if (this.isEventPaid) {
-            if (this.priceDifferentiate) {
-              price = {
-                priceStudents: this.dataForm.get('priceStudents').value,
-                priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
-                priceProfessors: this.dataForm.get('priceProfessors').value,
-              };
-            } else {
-              price = {
-                priceSingle: this.dataForm.get('priceSingle').value,
-              };
-            }
-          } else {
-            price.isFree = true;
-          }
-
-          let buttonUrl = this.dataForm.get('buttonUrl').value;
-
-          if (buttonUrl) {
-            if (!buttonUrl.test('^https?://(.*)')) {
-              this.dataForm.setValue({ ...this.dataForm.value, buttonUrl: 'https://' + buttonUrl });
-            }
-          }
-
-          this.auth.user.subscribe((user) => {
-            this.afs.collection('majorEvents').add({
-              course: this.dataForm.get('course').value,
-              name: this.dataForm.get('name').value,
-              description: this.dataForm.get('description').value,
-              eventStartDate: this.dataForm.get('eventStartDate').value,
-              eventEndDate: this.dateRange ? this.dataForm.get('eventEndDate').value : undefined,
-              maxCourses: this.dataForm.get('maxCourses').value,
-              maxLectures: this.dataForm.get('maxLectures').value,
-              subscriptionStartDate: this.dataForm.get('subscriptionStartDate').value,
-              subscriptionEndDate: this.dataForm.get('subscriptionEndDate').value,
-              price: price,
-              accountChavePix: this.dataForm.get('accountChavePix').value,
-              accountBank: this.dataForm.get('accountBank').value,
-              accountName: this.dataForm.get('accountName').value,
-              accountDocument: this.dataForm.get('accountDocument').value,
-              accountAgency: this.dataForm.get('accountAgency').value,
-              accountNumber: this.dataForm.get('accountNumber').value,
-              additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
-              public: this.dataForm.get('public').value,
-              button: this.dataForm.get('buttonUrl').value
-                ? {
-                    buttonText: this.dataForm.get('buttonText').value,
-                    buttonUrl: this.dataForm.get('buttonUrl').value,
-                  }
-                : undefined,
-              createdBy: user.uid,
-              createdOn: new Date(),
-            });
-          });
+      if (this.isEventPaid) {
+        if (this.priceDifferentiate) {
+          price = {
+            priceStudents: this.dataForm.get('priceStudents').value,
+            priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
+            priceProfessors: this.dataForm.get('priceProfessors').value,
+          };
+        } else {
+          price = {
+            priceSingle: this.dataForm.get('priceSingle').value,
+          };
         }
-      })
-      .then(() => {
-        this.successSwal.fire();
-        // Fake delay to let animation finish
-        setTimeout(() => {
-          this.successSwal.close();
-          this.router.navigate(['/menu'], { replaceUrl: true });
-        }, 1500);
-      })
-      .catch((err) => {
-        this.errorSwal.fire();
-        console.error('Failed to write majorEvent info to Firestore', err);
+      } else {
+        price.isFree = true;
+      }
+
+      let buttonUrl = this.dataForm.get('buttonUrl').value;
+
+      if (buttonUrl) {
+        if (!buttonUrl.test('^https?://(.*)')) {
+          this.dataForm.setValue({ ...this.dataForm.value, buttonUrl: 'https://' + buttonUrl });
+        }
+      }
+
+      this.auth.user.subscribe((user) => {
+        this.afs
+          .collection('majorEvents')
+          .add({
+            course: this.dataForm.get('course').value,
+            name: this.dataForm.get('name').value,
+            description: this.dataForm.get('description').value,
+            eventStartDate: this.dataForm.get('eventStartDate').value,
+            eventEndDate: this.dateRange ? this.dataForm.get('eventEndDate').value : undefined,
+            maxCourses: this.dataForm.get('maxCourses').value,
+            maxLectures: this.dataForm.get('maxLectures').value,
+            subscriptionStartDate: this.dataForm.get('subscriptionStartDate').value,
+            subscriptionEndDate: this.dataForm.get('subscriptionEndDate').value,
+            price: price,
+            accountChavePix: this.dataForm.get('accountChavePix').value,
+            accountBank: this.dataForm.get('accountBank').value,
+            accountName: this.dataForm.get('accountName').value,
+            accountDocument: this.dataForm.get('accountDocument').value,
+            accountAgency: this.dataForm.get('accountAgency').value,
+            accountNumber: this.dataForm.get('accountNumber').value,
+            additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
+            public: this.dataForm.get('public').value,
+            button: this.dataForm.get('buttonUrl').value
+              ? {
+                  buttonText: this.dataForm.get('buttonText').value,
+                  buttonUrl: this.dataForm.get('buttonUrl').value,
+                }
+              : undefined,
+            createdBy: user.uid,
+            createdOn: new Date(),
+          })
+          .then(() => {
+            this.successSwal.fire();
+            // Fake delay to let animation finish
+            setTimeout(() => {
+              this.successSwal.close();
+              this.router.navigate(['/area-restrita'], { replaceUrl: true });
+            }, 1500);
+          })
+          .catch((err) => {
+            this.errorSwal.fire();
+            console.error('Failed to write majorEvent to Firestore', err);
+          });
       });
+    });
   }
 
   validatorButton(control: AbstractControl): ValidationErrors | null {
@@ -238,16 +239,6 @@ export class AddMajorEventPage implements OnInit {
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
-  }
-
-  getDateFromTimestamp(timestamp: any): Date {
-    return parseDate(timestamp, 'dd/MM/yyyy HH:mm', new Date());
-  }
-  getCourse(course: string): string {
-    if (this.courses[course]) {
-      return this.courses[course].name;
-    }
-    return '';
   }
 
   dateRangeChange() {
@@ -300,15 +291,7 @@ export class AddMajorEventPage implements OnInit {
   }
 
   inputCurrency(event) {
-    if (event.getModifierState('Meta') || event.getModifierState('Control') || event.getModifierState('Alt')) {
-      return;
-    }
-
-    if (event.key.length !== 1 || event.key === '\x00') {
-      return;
-    }
-
-    if ((event.key < '0' || event.key > '9') && event.key !== '.') {
+    if ((event.key < '0' || event.key > '9') && event.key !== '.' && event.key !== ',') {
       event.preventDefault();
     }
   }
@@ -401,15 +384,14 @@ export class AddMajorEventPage implements OnInit {
     return null;
   };
 
-  validMoney(event, key) {
+  validatePrice(event, key) {
     const cleanMoney = event.target.value
       // Remove anything that isn't valid in a number
-      .replace(/[^\d-.]/g, '')
-      // Remove all dashes unless it is the first character
-      .replace(/(?!^)-/g, '')
+      .replace(/[^\d.,]/g, '')
+      // Replace all commas with periods
+      .replace(/,/g, '.')
       // Remove all periods unless it is the last one
       .replace(/\.(?=.*\.)/g, '');
-
     this.dataForm.get(key).setValue(cleanMoney);
   }
 }
