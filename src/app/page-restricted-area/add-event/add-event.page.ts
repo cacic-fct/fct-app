@@ -69,6 +69,8 @@ export class AddEventPage implements OnInit {
   }
 
   ngOnInit() {
+    const tzoffset = new Date().getTimezoneOffset() * 60000;
+    const dateISO: string = new Date(Date.now() - tzoffset).toISOString().slice(0, -1);
     this.dataForm = this.formBuilder.group(
       {
         course: ['', Validators.required],
@@ -76,8 +78,8 @@ export class AddEventPage implements OnInit {
         name: ['', Validators.required],
         shortDescription: ['', Validators.maxLength(80)],
         description: '',
-        date: [new Date().toISOString(), Validators.required],
-        dateEnd: addHours(new Date(), 1).toISOString(), // Uma hora após o início, por padrão
+        date: [dateISO, Validators.required],
+        dateEnd: dateISO,
         locationDescription: '',
         locationLat: [
           '',
