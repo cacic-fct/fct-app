@@ -48,8 +48,14 @@
 
     <ion-item>
       <ion-label class="ion-text-wrap">Fim do evento</ion-label>
-      <ion-toggle formControlName="hasDateEnd"></ion-toggle>
-      <ion-datetime-button [disabled]="!this.dataForm.value.hasDateEnd" datetime="eventDateEnd"></ion-datetime-button>
+      <ion-toggle
+        formControlName="hasDateEndForm"
+        [checked]="hasDateEnd"
+        (ionChange)="hasDateEndChange()"
+        formControlName="hasDateEndForm"></ion-toggle>
+      <ion-datetime-button
+        [disabled]="!this.dataForm.value.hasDateEndForm"
+        datetime="eventDateEnd"></ion-datetime-button>
     </ion-item>
 
     <ion-item>
@@ -60,10 +66,16 @@
           <ng-container *ngFor="let mEvent of items">
             <ion-select-option slot="start" [value]="mEvent.id"> {{ mEvent.name }} </ion-select-option>
           </ng-container>
-          <ion-select-option *ngIf="items.length === 0" slot="start" value="none" disabled>
-            Nenhum evento encontrado - TODO: Me remova, apenas para debugging
-          </ion-select-option>
         </ng-container>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Tipo de evento</ion-label>
+      <ion-select interface="popover" formControlName="eventType">
+        <ion-select-option slot="start" value="minicurso">Minicurso</ion-select-option>
+        <ion-select-option slot="start" value="palestra">Palestra</ion-select-option>
+        <ion-select-option slot="start" value="nenhum">Nenhum</ion-select-option>
       </ion-select>
     </ion-item>
 
@@ -121,6 +133,27 @@
       <ion-label position="floating">Código do YouTube</ion-label>
       <ion-input formControlName="youtubeCode" placeholder="Código do vídeo no YouTube"></ion-input>
     </ion-item>
+
+    <ion-item>
+      <ion-label>Coletar presença para este evento</ion-label>
+      <ion-toggle
+        slot="end"
+        formControlName="collectPresenceForm"
+        [checked]="collectPresence"
+        (ionChange)="collectPresenceChange()"></ion-toggle>
+    </ion-item>
+
+    <ng-container *ngIf="(collectPresence$ | async);">
+      <ion-item>
+        <ion-label>Emite certificado de participação</ion-label>
+        <ion-toggle slot="end" formControlName="issueCertificate" checked="off"></ion-toggle>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Coleta dupla de presença</ion-label>
+        <ion-toggle slot="end" formControlName="doublePresence" checked="off"></ion-toggle>
+      </ion-item>
+    </ng-container>
 
     <ion-item>
       <ion-label>Evento aberto ao público</ion-label>

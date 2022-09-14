@@ -8,8 +8,9 @@ import { MajorEventItem, MajorEventsService } from 'src/app/shared/services/majo
 import { addHours, format, parseISO } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-
+import { BehaviorSubject, Observable } from 'rxjs';
+import * as firestore from 'firebase/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 @Component({
   selector: 'app-add-event',
   templateUrl: './add-event.page.html',
@@ -21,6 +22,14 @@ export class AddEventPage implements OnInit {
   courses = CoursesService.courses;
   places = PlacesService.places;
   majorEventsData$: Observable<MajorEventItem[]>;
+
+  collectPresence: boolean = false;
+  _collectPresenceSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.collectPresence);
+  collectPresence$: Observable<boolean> = this._collectPresenceSubject.asObservable();
+
+  hasDateEnd: boolean = false;
+  _hasDateEndSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.hasDateEnd);
+  hasDateEnd$: Observable<boolean> = this._hasDateEndSubject.asObservable();
 
   dataForm: FormGroup = new FormGroup({
     course: new FormControl(''),
@@ -38,8 +47,11 @@ export class AddEventPage implements OnInit {
     buttonText: new FormControl(''),
     buttonUrl: new FormControl(''),
     inMajorEvent: new FormControl(''),
-
-    hasDateEnd: new FormControl(false), // Atributo de controle para validador
+    eventType: new FormControl(''),
+    issueCertificate: new FormControl(false),
+    doublePresence: new FormControl(false),
+    collectPresenceForm: new FormControl(false),
+    hasDateEndForm: new FormControl(false), // Atributo de controle para validador
     // de intervalo de horários, ignorado
     // ao enviar.
   });
@@ -50,7 +62,8 @@ export class AddEventPage implements OnInit {
     private modalController: ModalController,
     public majorEvents: MajorEventsService,
     private afs: AngularFirestore,
-    private router: Router
+    private router: Router,
+    private auth: AngularFireAuth
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
   }
@@ -64,7 +77,7 @@ export class AddEventPage implements OnInit {
         shortDescription: ['', Validators.maxLength(80)],
         description: '',
         date: [new Date().toISOString(), Validators.required],
-        dateEnd: addHours(new Date(), 1), // Uma hora após o início, por padrão
+        dateEnd: addHours(new Date(), 1).toISOString(), // Uma hora após o início, por padrão
         locationDescription: '',
         locationLat: [
           '',
@@ -82,9 +95,12 @@ export class AddEventPage implements OnInit {
         public: '',
         buttonText: '',
         buttonUrl: '', // TODO: Verificar se URL inicia-se com http:// ou https://. Caso não, adicionar "https://"
-        inMajorEvent: '',
-
-        hasDateEnd: false,
+        inMajorEvent: ['', Validators.required],
+        eventType: ['', Validators.required],
+        hasDateEndForm: this.hasDateEnd,
+        issueCertificate: false,
+        doublePresence: false,
+        collectPresenceForm: this.collectPresence,
       },
       {
         validators: [this.validatorLatLong, this.validatorButton, this.validatorDateEnd],
@@ -104,23 +120,43 @@ export class AddEventPage implements OnInit {
     }
     this.openConfirmModal().then((response) => {
       if (response) {
-        console.log('response', response);
-        const data = this.dataForm.value;
-        Object.keys(data).forEach((key) => {
-          if (data[key] == '') delete data[key];
-        });
-        data.date = parseISO(data.date);
-        if (data.hasDateEnd) data.dateEnd = parseISO(data.dateEnd);
-        else delete data.dateEnd;
+        this.auth.user.subscribe((user) => {
+          const data = {
+            ...this.dataForm.value,
+            createdBy: user.uid,
+            createdOn: new Date(),
+          };
 
-        delete data.hasDateEnd; // Deletando atributo de controle
-
-        this.afs
-          .collection('events')
-          .add(data)
-          .then((res) => {
-            this.router.navigate(['area-restrita'], { replaceUrl: true });
+          Object.keys(data).forEach((key) => {
+            if (data[key] == '') delete data[key];
           });
+          data.date = parseISO(data.date);
+          if (data.hasDateEnd) data.dateEnd = parseISO(data.dateEnd);
+          else delete data.dateEnd;
+
+          delete data.hasDateEnd;
+
+          const majorEvent = data.inMajorEvent;
+          if (majorEvent === 'none') delete data.inMajorEvent;
+
+          this.afs
+            .collection('events')
+            .add(data)
+            .then((res) => {
+              if (majorEvent !== 'none') {
+                const eventId = res.id;
+                this.afs
+                  .collection('majorEvents')
+                  .doc(majorEvent)
+                  .update({ events: firestore.arrayUnion(eventId) })
+                  .then(() => {
+                    this.router.navigate(['area-restrita'], { replaceUrl: true });
+                  });
+              } else {
+                this.router.navigate(['area-restrita'], { replaceUrl: true });
+              }
+            });
+        });
       }
 
       return;
@@ -163,7 +199,7 @@ export class AddEventPage implements OnInit {
   }
 
   validatorDateEnd(control: AbstractControl): { [key: string]: boolean } | null {
-    if (control.get('hasDateEnd').value) {
+    if (control.get('hasDateEndForm').value) {
       let dateStart = parseISO(control.get('date').value);
       let dateEnd = parseISO(control.get('dateEnd').value);
       if (dateEnd < dateStart) return { dateRange: true };
@@ -189,6 +225,16 @@ export class AddEventPage implements OnInit {
       );
     this.dataForm.get('locationLat').setValue(this.places[ev.detail.value].lat);
     this.dataForm.get('locationLon').setValue(this.places[ev.detail.value].lon);
+  }
+
+  collectPresenceChange() {
+    this.collectPresence = !this.collectPresence;
+    this._collectPresenceSubject.next(this.collectPresence);
+  }
+
+  hasDateEndChange() {
+    this.hasDateEnd = !this.hasDateEnd;
+    this._hasDateEndSubject.next(this.hasDateEnd);
   }
 
   placeInputKeyDown() {
