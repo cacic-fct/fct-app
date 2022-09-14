@@ -21,7 +21,7 @@
 
           <div class="card-section ion-padding-horizontal">
             <div class="card-label">
-              <ion-icon name="calendar-outline"></ion-icon>
+              <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
               Datas
             </div>
 
@@ -44,7 +44,7 @@
 
           <div class="card-section ion-padding-horizontal" *ngIf="event.price">
             <div class="card-label">
-              <ion-icon name="wallet-outline"></ion-icon>
+              <ion-icon name="wallet-outline" aria-hidden="true"></ion-icon>
               Valores
             </div>
 
@@ -61,22 +61,22 @@
             <ng-template #singlePrice>
               <ion-item lines="none">
                 Preço único
-                <span slot="end">{{ (100 / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ (event.price.priceSingle / 100) | currency:'BRL' }}</span>
               </ion-item>
             </ng-template>
 
             <ng-template #multiPrice>
-              <ion-item lines="none" *ngIf="event.price?.priceStudents">
+              <ion-item lines="none" *ngIf="event.price.priceStudents">
                 Alunos da Unesp
                 <span slot="end">{{ (event.price.priceStudents / 100) | currency:'BRL' }}</span>
               </ion-item>
 
-              <ion-item lines="none" *ngIf="event.price?.priceOtherStudents ">
+              <ion-item lines="none" *ngIf="event.price.priceOtherStudents">
                 Alunos
                 <span slot="end">{{ (event.price.priceOtherStudents / 100) | currency:'BRL' }}</span>
               </ion-item>
 
-              <ion-item lines="none" *ngIf="event.price?.priceOtherStudents">
+              <ion-item lines="none" *ngIf="event.price.priceOtherStudents">
                 Professores
                 <span slot="end">{{ (event.price.priceProfessors / 100) | currency:'BRL' }}</span>
               </ion-item>
