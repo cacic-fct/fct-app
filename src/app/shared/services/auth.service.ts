@@ -7,13 +7,13 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
-import { AngularFireRemoteConfig } from '@angular/fire/compat/remote-config';
 import { first, Observable } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { PageVerifyPhonePage } from 'src/app/page-verify-phone/page-verify-phone.page';
 
 import * as firebaseAuth from 'firebase/auth';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { getStringChanges, RemoteConfig } from '@angular/fire/remote-config';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +26,7 @@ export class AuthService {
     public afs: AngularFirestore,
     public ngZone: NgZone,
     public modalController: ModalController,
-    public remoteConfig: AngularFireRemoteConfig,
+    private remoteConfig: RemoteConfig,
     public toastController: ToastController,
     private fns: AngularFireFunctions
   ) {
@@ -35,6 +35,19 @@ export class AuthService {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem('user'));
+
+        getStringChanges(this.remoteConfig, 'professors').subscribe((professors) => {
+          const professorsList: string[] = JSON.parse(professors);
+          if (professorsList.includes(user.email)) {
+            return;
+          }
+          this.auth.idTokenResult.pipe(first()).subscribe((idTokenResult) => {
+            const claims = idTokenResult.claims;
+            if (claims.role < 3000 || !claims.role) {
+            }
+          });
+        });
+
         this.CompareUserdataVersion(this.userData);
       } else {
         localStorage.removeItem('user');
@@ -140,6 +153,7 @@ export class AuthService {
             if (data === undefined) {
               return;
             }
+
             if (!data.dataVersion || data.dataVersion !== this.dataVersion) {
               this.router.navigate(['/register']);
             }
