@@ -1,13 +1,12 @@
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { IonSelect, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { format, parseISO, addHours } from 'date-fns';
 
-import { parse as parseDate } from 'date-fns';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -69,7 +68,6 @@ export class AddMajorEventPage implements OnInit {
   constructor(
     public formBuilder: FormBuilder,
     private modalController: ModalController,
-    private sanitizer: DomSanitizer,
     private afs: AngularFirestore,
     private router: Router,
     private auth: AngularFireAuth
@@ -159,7 +157,7 @@ export class AddMajorEventPage implements OnInit {
 
       this.auth.user.subscribe((user) => {
         this.afs
-          .collection<MajorEventItem>('majorEvents')
+          .collection('majorEvents')
           .add({
             course: this.dataForm.get('course').value,
             name: this.dataForm.get('name').value,
@@ -235,17 +233,6 @@ export class AddMajorEventPage implements OnInit {
     }
 
     return null;
-  }
-
-  closeModal() {
-    this.modalController.dismiss();
-  }
-
-  getEmoji(emoji: string): any {
-    if (emoji === undefined) {
-      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
-    }
-    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 
   dateRangeChange() {
