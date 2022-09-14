@@ -78,7 +78,8 @@ export class AddMajorEventPage implements OnInit {
   }
 
   ngOnInit() {
-    let dateISO: string = new Date().toISOString();
+    const tzoffset = new Date().getTimezoneOffset() * 60000;
+    const dateISO: string = new Date(Date.now() - tzoffset).toISOString().slice(0, -1);
     this.dataForm = this.formBuilder.group(
       {
         course: ['', Validators.required],
