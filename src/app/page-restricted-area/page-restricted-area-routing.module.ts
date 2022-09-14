@@ -21,7 +21,8 @@ const routes: Routes = [
       import('./page-manage-admins/page-manage-admins.module').then((m) => m.PageManageAdminsPageModule),
   },
   {
-    path: 'validate-receipt',
+    path: 'validar-comprovante/:eventId',
+    title: 'Validar comprovante',
     loadChildren: () => import('./validate-receipt/validate-receipt.module').then( m => m.ValidateReceiptPageModule)
   },
 ];

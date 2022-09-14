@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
   selector: 'app-validate-receipt',
@@ -6,10 +7,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./validate-receipt.page.scss'],
 })
 export class ValidateReceiptPage implements OnInit {
+  eventId;
 
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+  ) { }
 
   ngOnInit() {
+    this.eventId = this.route.snapshot.paramMap.get('eventId')
   }
 
 }
