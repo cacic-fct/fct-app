@@ -1,5 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { ActivatedRoute } from '@angular/router';
+import { Timestamp } from '@firebase/firestore-types';
+import { MajorEventItem } from 'src/app/shared/services/major-event';
+
+interface Subscription {
+  time: Timestamp,
+  payment: {
+    status: number,
+    time: Timestamp,
+    error?: string,
+    price?: number,
+    author?: string
+  },
+  subscriptionType: number,
+  subscribedToEvents: Array<string>
+};
 
 @Component({
   selector: 'app-validate-receipt',
@@ -7,14 +23,24 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
   styleUrls: ['./validate-receipt.page.scss'],
 })
 export class ValidateReceiptPage implements OnInit {
-  eventId;
+  public eventId: string;
+  private subscriptions: Array<Subscription>;
 
   constructor(
     private route: ActivatedRoute,
+    private afs: AngularFirestore
   ) { }
 
   ngOnInit() {
-    this.eventId = this.route.snapshot.paramMap.get('eventId')
+    this.eventId = this.route.snapshot.paramMap.get('eventId');
+    this.afs
+      .collection<MajorEventItem>('majorEvents')
+      .doc(this.eventId)
+      .collection<Subscription>('subscriptions', ref => ref.where('payment.status', '==', 1))
+      .valueChanges({ idField: 'id' }).subscribe(data => {
+        debugger;
+        this.subscriptions = data;
+      })
   }
 
 }
