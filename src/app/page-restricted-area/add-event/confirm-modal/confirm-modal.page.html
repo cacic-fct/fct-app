@@ -21,20 +21,20 @@
       <p>{{ dataForm.value.description }}</p>
     </div>
 
-    <div *ngIf="dataForm.value.locationDescription || (dataForm.value.locationLat && dataForm.value.locationLon)">
+    <div *ngIf="dataForm.value.location.description || (dataForm.value.location.lat && dataForm.value.location.lon)">
       <h2>Localização</h2>
 
-      <div *ngIf="dataForm.value.locationDescription ">
+      <div *ngIf="dataForm.value.location.description ">
         <ion-item lines="none">
           <ion-icon name="pin" slot="start"></ion-icon>
-          <ion-label class="ion-text-wrap">{{ dataForm.value.locationDescription }}</ion-label>
+          <ion-label class="ion-text-wrap">{{ dataForm.value.location.description }}</ion-label>
         </ion-item>
       </div>
     </div>
 
-    <div *ngIf="dataForm.value.buttonText || dataForm.value.buttonUrl">
-      <ion-button expand="block" color="primary" [href]="dataForm.value.buttonUrl" target="_blank"
-        >{{dataForm.value.buttonText? dataForm.value.buttonText : 'Acompanhe o evento' }}</ion-button
+    <div *ngIf="dataForm.value.button.text || dataForm.value.button.url">
+      <ion-button expand="block" color="primary" [href]="dataForm.value.button.url" target="_blank"
+        >{{dataForm.value.button.text || 'Acompanhe o evento' }}</ion-button
       >
       <p color="medium">URL: {{ dataForm.value.buttonUrl}}</p>
     </div>

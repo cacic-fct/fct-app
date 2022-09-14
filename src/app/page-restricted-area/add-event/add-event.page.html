@@ -96,34 +96,38 @@
       </ion-select>
     </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Endereço ou descrição</ion-label>
-      <ion-input formControlName="locationDescription" (ionInput)="placeInputKeyDown()"></ion-input>
-    </ion-item>
+    <ng-container formGroupName="location">
+      <ion-item>
+        <ion-label position="floating">Endereço ou descrição</ion-label>
+        <ion-input formControlName="description" (ionInput)="placeInputKeyDown()"></ion-input>
+      </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Latitude</ion-label>
-      <ion-input formControlName="locationLat"></ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Latitude</ion-label>
+        <ion-input formControlName="lat"></ion-input>
+      </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Longitude</ion-label>
-      <ion-input formControlName="locationLon"></ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Longitude</ion-label>
+        <ion-input formControlName="lon"></ion-input>
+      </ion-item>
+    </ng-container>
 
     <ion-card-header>
       <ion-card-title>Botão (opcional)</ion-card-title>
     </ion-card-header>
 
-    <ion-item>
-      <ion-label position="floating">Texto (opcional)</ion-label>
-      <ion-input formControlName="buttonText"></ion-input>
-    </ion-item>
+    <ng-container formGroupName="button">
+      <ion-item>
+        <ion-label position="floating">Texto (opcional)</ion-label>
+        <ion-input formControlName="text"></ion-input>
+      </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Link</ion-label>
-      <ion-input formControlName="buttonUrl"></ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Link</ion-label>
+        <ion-input formControlName="url"></ion-input>
+      </ion-item>
+    </ng-container>
 
     <ion-card-header>
       <ion-card-title>Outras informações (opcional)</ion-card-title>

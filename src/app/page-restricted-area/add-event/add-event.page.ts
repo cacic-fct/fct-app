@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as firestore from 'firebase/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { EventItem } from './../../shared/services/event';
+
 @Component({
   selector: 'app-add-event',
   templateUrl: './add-event.page.html',
@@ -31,30 +33,7 @@ export class AddEventPage implements OnInit {
   _hasDateEndSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.hasDateEnd);
   hasDateEnd$: Observable<boolean> = this._hasDateEndSubject.asObservable();
 
-  dataForm: FormGroup = new FormGroup({
-    course: new FormControl(''),
-    icon: new FormControl(''),
-    name: new FormControl(''),
-    shortDescription: new FormControl(''),
-    description: new FormControl(''),
-    date: new FormControl(''),
-    dateEnd: new FormControl(''),
-    locationDescription: new FormControl(''),
-    locationLat: new FormControl(''),
-    locationLon: new FormControl(''),
-    youtubeCode: new FormControl(''),
-    public: new FormControl(''),
-    buttonText: new FormControl(''),
-    buttonUrl: new FormControl(''),
-    inMajorEvent: new FormControl(''),
-    eventType: new FormControl(''),
-    issueCertificate: new FormControl(false),
-    doublePresence: new FormControl(false),
-    collectPresenceForm: new FormControl(false),
-    hasDateEndForm: new FormControl(false), // Atributo de controle para validador
-    // de intervalo de horários, ignorado
-    // ao enviar.
-  });
+  dataForm: FormGroup;
 
   userData: any;
   constructor(
@@ -83,23 +62,27 @@ export class AddEventPage implements OnInit {
         description: '',
         date: [dateISO, Validators.required],
         dateEnd: dateISOHourOffset,
-        locationDescription: '',
-        locationLat: [
-          '',
-          [
-            //Validators.pattern('^(+|-)?(?:90(?:(?:.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:.[0-9]{1,6})?))$')
+        location: this.formBuilder.group({
+          description: '',
+          lat: [
+            '',
+            [
+              //Validators.pattern('^(+|-)?(?:90(?:(?:.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:.[0-9]{1,6})?))$')
+            ],
           ],
-        ],
-        locationLon: [
-          '',
-          [
-            //Validators.pattern('^(+|-)?(?:180(?:(?:.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:.[0-9]{1,6})?))$')
+          lon: [
+            '',
+            [
+              //Validators.pattern('^(+|-)?(?:180(?:(?:.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:.[0-9]{1,6})?))$')
+            ],
           ],
-        ],
+        }),
         youtubeCode: '',
         public: '',
-        buttonText: '',
-        buttonUrl: '', // TODO: Verificar se URL inicia-se com http:// ou https://. Caso não, adicionar "https://"
+        button: this.formBuilder.group({
+          text: '',
+          url: '', // TODO: Verificar se URL inicia-se com http:// ou https://. Caso não, adicionar "https://"
+        }),
         inMajorEvent: ['', Validators.required],
         eventType: ['', Validators.required],
         hasDateEndForm: this.hasDateEnd,
@@ -191,14 +174,16 @@ export class AddEventPage implements OnInit {
   }
 
   validatorLatLong(control: AbstractControl): ValidationErrors | null {
-    if (control.get('locationLat').value == '' && control.get('locationLon').value == '') {
-      control.get('locationLat').removeValidators(Validators.required);
-      control.get('locationLon').removeValidators(Validators.required);
+    if (control.get('location').get('lat').value == '' && control.get('location').get('lon').value == '') {
+      control.get('location').get('lat').removeValidators(Validators.required);
+      control.get('location').get('lon').removeValidators(Validators.required);
     }
 
-    if (control.get('locationLon').value != '') control.get('locationLat').addValidators(Validators.required);
+    if (control.get('location').get('lon').value != '')
+      control.get('location').get('lat').addValidators(Validators.required);
 
-    if (control.get('locationLat').value != '') control.get('locationLon').addValidators(Validators.required);
+    if (control.get('location').get('lat').value != '')
+      control.get('location').get('lon').addValidators(Validators.required);
 
     return null;
   }
@@ -214,8 +199,9 @@ export class AddEventPage implements OnInit {
   }
 
   validatorButton(control: AbstractControl): ValidationErrors | null {
-    if (control.get('buttonText').value != '') control.get('buttonUrl').addValidators(Validators.required);
-    else control.get('buttonUrl').removeValidators(Validators.required);
+    if (control.get('button').get('text').value != '')
+      control.get('button').get('url').addValidators(Validators.required);
+    else control.get('button').get('url').removeValidators(Validators.required);
 
     return null;
   }
@@ -223,13 +209,14 @@ export class AddEventPage implements OnInit {
   placeChange(ev: any) {
     if (this.places[ev.detail.value] === undefined) return 1;
     this.dataForm
-      .get('locationDescription')
+      .get('location')
+      .get('description')
       .setValue(
         this.places[ev.detail.value].name +
           (this.places[ev.detail.value].description ? ' - ' + this.places[ev.detail.value].description : '')
       );
-    this.dataForm.get('locationLat').setValue(this.places[ev.detail.value].lat);
-    this.dataForm.get('locationLon').setValue(this.places[ev.detail.value].lon);
+    this.dataForm.get('location').get('lat').setValue(this.places[ev.detail.value].lat);
+    this.dataForm.get('location').get('lon').setValue(this.places[ev.detail.value].lon);
   }
 
   collectPresenceChange() {
