@@ -28,16 +28,16 @@
             <ion-item lines="none">
               Evento
               <span slot="end">
-                {{ getDateFromTimestamp(event.dateStart) | date: 'dd/MM' }} {{ event.dateEnd && '- ' +
-                (getDateFromTimestamp(event.dateEnd) | date: 'dd/MM') }}
+                {{ getDateFromTimestamp(event.eventStartDate) | date: 'dd/MM' }} {{ event.eventEndDate && '- ' +
+                (getDateFromTimestamp(event.eventEndDate) | date: 'dd/MM') }}
               </span>
             </ion-item>
 
-            <ion-item lines="none" *ngIf="event.subscriptionDateStart && event.subscriptionDateEnd">
+            <ion-item lines="none" *ngIf="event.subscriptionStartDate && event.subscriptionEndDate">
               Inscrição
               <span slot="end">
-                {{ getDateFromTimestamp(event.subscriptionDateStart) | date: 'dd/MM' }} {{ event.subscriptionDateEnd &&
-                '- ' + (getDateFromTimestamp(event.subscriptionDateEnd) | date: 'dd/MM') }}
+                {{ getDateFromTimestamp(event.subscriptionStartDate) | date: 'dd/MM' }} {{ event.subscriptionEndDate &&
+                '- ' + (getDateFromTimestamp(event.subscriptionEndDate) | date: 'dd/MM') }}
               </span>
             </ion-item>
           </div>
@@ -86,7 +86,7 @@
           <!-- TODO: Fazer botão de inscrição funcionar -->
           <div class="ion-padding">
             <ion-button
-              *ngIf="(event.subscriptionDateStart && event.subscriptionDateEnd) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionDateStart), getDateFromTimestamp(event.subscriptionDateEnd))">
+              *ngIf="(event.subscriptionStartDate && event.subscriptionEndDate) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionStartDate), getDateFromTimestamp(event.subscriptionEndDate))">
               Inscreva-se
             </ion-button>
 

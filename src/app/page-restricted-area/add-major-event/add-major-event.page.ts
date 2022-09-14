@@ -159,7 +159,7 @@ export class AddMajorEventPage implements OnInit {
 
       this.auth.user.subscribe((user) => {
         this.afs
-          .collection('majorEvents')
+          .collection<MajorEventItem>('majorEvents')
           .add({
             course: this.dataForm.get('course').value,
             name: this.dataForm.get('name').value,
@@ -171,18 +171,20 @@ export class AddMajorEventPage implements OnInit {
             subscriptionStartDate: this.dataForm.get('subscriptionStartDate').value,
             subscriptionEndDate: this.dataForm.get('subscriptionEndDate').value,
             price: price,
-            accountChavePix: this.dataForm.get('accountChavePix').value,
-            accountBank: this.dataForm.get('accountBank').value,
-            accountName: this.dataForm.get('accountName').value,
-            accountDocument: this.dataForm.get('accountDocument').value,
-            accountAgency: this.dataForm.get('accountAgency').value,
-            accountNumber: this.dataForm.get('accountNumber').value,
-            additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
+            paymentInfo: {
+              chavePix: this.dataForm.get('accountChavePix').value,
+              bankName: this.dataForm.get('accountBank').value,
+              name: this.dataForm.get('accountName').value,
+              document: this.dataForm.get('accountDocument').value,
+              agency: this.dataForm.get('accountAgency').value,
+              accountNumber: this.dataForm.get('accountNumber').value,
+              additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
+            },
             public: this.dataForm.get('public').value,
             button: this.dataForm.get('buttonUrl').value
               ? {
-                  buttonText: this.dataForm.get('buttonText').value,
-                  buttonUrl: this.dataForm.get('buttonUrl').value,
+                  text: this.dataForm.get('buttonText').value,
+                  url: this.dataForm.get('buttonUrl').value,
                 }
               : undefined,
             createdBy: user.uid,
