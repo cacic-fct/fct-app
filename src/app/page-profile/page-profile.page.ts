@@ -14,7 +14,7 @@ import { trace } from '@angular/fire/compat/performance';
 })
 export class PageProfilePage implements OnInit {
   user: any;
-  uid: Observable<string>;
+  uid$: Observable<string>;
   _academicIDSubject: BehaviorSubject<string> = new BehaviorSubject(undefined);
   academicID$: Observable<string> = this._academicIDSubject.asObservable();
   serviceWorkerActive: boolean = false;
@@ -30,7 +30,7 @@ export class PageProfilePage implements OnInit {
   }
 
   ngOnInit() {
-    this.uid = this.auth.user.pipe(first(), trace('auth')).pipe(map((user) => user.uid));
+    this.uid$ = this.auth.user.pipe(first(), trace('auth')).pipe(map((user) => user.uid));
 
     this.auth.user.pipe(first(), trace('auth')).subscribe((user) => {
       if (user) {
