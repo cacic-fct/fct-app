@@ -1,0 +1,222 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Inscrição</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="majorEvent$ | async; let majorEvent; else loading">
+    <div class="event-container">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{majorEvent.name}}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content *ngIf="majorEvent.description">
+            <p class="ion-text-justify event-description">{{majorEvent.description}}</p>
+          </ion-card-content>
+
+          <div class="card-section ion-padding-horizontal">
+            <div class="card-label">
+              <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
+              Datas
+            </div>
+
+            <ion-item lines="none">
+              Evento
+              <span slot="end">
+                {{ getDateFromTimestamp(majorEvent.dateStart) | date: 'dd/MM' }} {{ majorEvent.dateEnd && '- ' +
+                (getDateFromTimestamp(majorEvent.dateEnd) | date: 'dd/MM') }}
+              </span>
+            </ion-item>
+
+            <ion-item lines="none" *ngIf="majorEvent.subscriptionDateStart && majorEvent.subscriptionDateEnd">
+              Inscrição
+              <span slot="end">
+                {{ getDateFromTimestamp(majorEvent.subscriptionDateStart) | date: 'dd/MM' }} {{ majorEvent.subscriptionDateEnd &&
+                '- ' + (getDateFromTimestamp(majorEvent.subscriptionDateEnd) | date: 'dd/MM') }}
+              </span>
+            </ion-item>
+          </div>
+
+          <div class="card-section ion-padding-horizontal" *ngIf="majorEvent.price">
+            <div class="card-label">
+              <ion-icon name="wallet-outline" aria-hidden="true"></ion-icon>
+              Valores
+            </div>
+
+            <ng-container *ngIf="majorEvent.price.isFree; else notFree">
+              <ion-item lines="none">
+                <ion-label>Gratuito</ion-label>
+              </ion-item>
+            </ng-container>
+
+            <ng-template #notFree>
+              <ng-container *ngIf="majorEvent.price.priceSingle; then singlePrice else multiPrice"> </ng-container>
+            </ng-template>
+
+            <ng-template #singlePrice>
+              <ion-item lines="none">
+                Preço único
+                <span slot="end">{{ (majorEvent.price.priceSingle) | currency:'BRL' }}</span>
+              </ion-item>
+            </ng-template>
+
+            <ng-template #multiPrice>
+              <ion-item lines="none" *ngIf="majorEvent.price.priceStudents">
+                Alunos da Unesp
+                <span slot="end">{{ (majorEvent.price.priceStudents) | currency:'BRL' }}</span>
+              </ion-item>
+
+              <ion-item lines="none" *ngIf="majorEvent.price.priceOtherStudents">
+                Alunos
+                <span slot="end">{{ (majorEvent.price.priceOtherStudents) | currency:'BRL' }}</span>
+              </ion-item>
+
+              <ion-item lines="none" *ngIf="majorEvent.price.priceProfessors">
+                Professores
+                <span slot="end">{{ (majorEvent.price.priceProfessors) | currency:'BRL' }}</span>
+              </ion-item>
+            </ng-template>
+            <ion-item-divider> </ion-item-divider>
+          </div>
+
+          <div class="card-section ion-padding-horizontal">
+            <ion-item>
+              <ion-label>Tipo de inscrição</ion-label>
+              <ion-select [interfaceOptions]="customPopoverOptions" interface="popover" placeholder="selecione">
+                <ion-select-option value="0">Aluno da Unesp</ion-select-option>
+                <ion-select-option value="1">Aluno de outras IES</ion-select-option>
+                <ion-select-option value="2">Professores e profissionais</ion-select-option>
+              </ion-select>
+            </ion-item>
+
+            <p>01 de 05 minicursos selecionados</p>
+            <p>00 de 05 palestras selecionados</p>
+          </div>
+
+          <ion-list>
+            // TODO: AJUSTAR O DATE CORRETAMENTE
+            <ion-item-divider mode="ios" sticky="true">
+              <ion-label>{{ formatDate(getDateFromTimestamp(majorEvent.dateStart)) }}</ion-label>
+            </ion-item-divider>
+
+            // TODO: EXIBIR EVENTOS DINAMICAMENTE
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 1</h3>
+                <h4>16:00 às 18:00</h4>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 2</h3>
+                <h4>16:30 às 17:00</h4>
+                <p>Conflito de horário com "item 2"</p>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+          </ion-list>
+
+          <ion-list>
+            <ion-item-divider mode="ios" sticky="true">
+              <ion-label>Terça-feira, 18 de outubro de 2022</ion-label>
+            </ion-item-divider>
+
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 3</h3>
+                <h4>16:00 às 18:00</h4>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 3</h3>
+                <h4>16:00 às 18:00</h4>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 3</h3>
+                <h4>16:00 às 18:00</h4>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 3</h3>
+                <h4>16:00 às 18:00</h4>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 3</h3>
+                <h4>16:00 às 18:00</h4>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 3</h3>
+                <h4>16:00 às 18:00</h4>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+              <ion-avatar slot="start">
+                <img src="assets/events/icon.png" />
+              </ion-avatar>
+              <ion-label>
+                <h3>Item 3</h3>
+                <h4>16:00 às 18:00</h4>
+              </ion-label>
+              <ion-checkbox slot="end"></ion-checkbox>
+            </ion-item>
+          </ion-list>
+        </ion-card>
+
+        // TODO: REDIRECIONAR PARA A PÁGINA CORRETA
+        <div class="fixed">
+          <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+            <ion-fab-button href="/eventos">
+              <ion-icon name="checkmark"></ion-icon>
+            </ion-fab-button>
+          </ion-fab>
+        </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+</ion-content>

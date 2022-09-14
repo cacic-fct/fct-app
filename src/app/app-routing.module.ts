@@ -73,6 +73,11 @@ const routes: Routes = [
     title: 'Entidades estudantis',
     loadChildren: () => import('./page-contact-cas/page-contact-cas.module').then((m) => m.PageContactCasPageModule),
   },
+  {
+    path: 'eventos/inscrever/:id',
+    title: 'Inscrição',
+    loadChildren: () => import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
+  },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadingStrategyService })],
