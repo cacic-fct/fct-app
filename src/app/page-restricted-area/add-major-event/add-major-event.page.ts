@@ -25,9 +25,6 @@ export class AddMajorEventPage implements OnInit {
   @ViewChild('errorSwal') private errorSwal: SwalComponent;
 
   courses = CoursesService.courses;
-  dateRange: boolean = true;
-  _dateRangeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.dateRange);
-  dateRange$: Observable<boolean> = this._dateRangeSubject.asObservable();
   priceDifferentiate: boolean = true;
   _priceDifferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.priceDifferentiate);
   priceDifferentiate$: Observable<boolean> = this._priceDifferentiateSubject.asObservable();
@@ -35,34 +32,7 @@ export class AddMajorEventPage implements OnInit {
   _isEventPaidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isEventPaid);
   isEventPaid$: Observable<boolean> = this._isEventPaidSubject.asObservable();
 
-  // TODO: Verificar se escrever isso duas vezes é necessário ou se estamos reproduzindo código desnecessário em todos os formulários já criados
-  dataForm: FormGroup = new FormGroup({
-    course: new FormControl(''),
-    icon: new FormControl(''),
-    name: new FormControl(''),
-    description: new FormControl(''),
-    eventStartDate: new FormControl(''),
-    eventEndDate: new FormControl(''),
-    subscriptionStartDate: new FormControl(''),
-    subscriptionEndDate: new FormControl(''),
-    maxCourses: new FormControl(''),
-    maxLectures: new FormControl(''),
-    isEventPaidForm: new FormControl(''),
-    priceSingle: new FormControl(''),
-    priceStudents: new FormControl(''),
-    priceOtherStudents: new FormControl(''),
-    priceProfessors: new FormControl(''),
-    accountChavePix: new FormControl(''),
-    accountBank: new FormControl(''),
-    accountName: new FormControl(''),
-    accountDocument: new FormControl(''),
-    accountAgency: new FormControl(''),
-    accountNumber: new FormControl(''),
-    additionalPaymentInformation: new FormControl(''),
-    public: new FormControl(''),
-    buttonText: new FormControl(''),
-    buttonUrl: new FormControl(''),
-  });
+  dataForm: FormGroup;
 
   userData: any;
   constructor(
@@ -163,7 +133,7 @@ export class AddMajorEventPage implements OnInit {
             name: this.dataForm.get('name').value,
             description: this.dataForm.get('description').value,
             eventStartDate: this.dataForm.get('eventStartDate').value,
-            eventEndDate: this.dateRange ? this.dataForm.get('eventEndDate').value : undefined,
+            eventEndDate: this.dataForm.get('eventEndDate').value,
             maxCourses: this.dataForm.get('maxCourses').value,
             maxLectures: this.dataForm.get('maxLectures').value,
             subscriptionStartDate: this.dataForm.get('subscriptionStartDate').value,
@@ -235,11 +205,6 @@ export class AddMajorEventPage implements OnInit {
     return null;
   }
 
-  dateRangeChange() {
-    this.dateRange = !this.dateRange;
-    this._dateRangeSubject.next(this.dateRange);
-  }
-
   priceDifferentiateChange() {
     this.priceDifferentiate = !this.priceDifferentiate;
     this._priceDifferentiateSubject.next(this.priceDifferentiate);
@@ -265,7 +230,6 @@ export class AddMajorEventPage implements OnInit {
       component: ConfirmModalComponent,
       componentProps: {
         dataForm: this.dataForm,
-        dateRange: this.dateRange,
         isEventPaid: this.isEventPaid,
       },
       showBackdrop: true,

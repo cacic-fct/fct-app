@@ -11,7 +11,6 @@ import { ModalController } from '@ionic/angular';
 })
 export class ConfirmModalComponent implements OnInit {
   @Input() dataForm: FormGroup<any>;
-  @Input() dateRange: boolean;
   @Input() isEventPaid: boolean;
   constructor(private modalController: ModalController) {}
 

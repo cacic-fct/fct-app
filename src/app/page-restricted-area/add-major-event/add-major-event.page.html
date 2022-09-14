@@ -42,16 +42,11 @@
       </ion-card-header>
 
       <ion-item>
-        <ion-label>Evento dura mais que um dia</ion-label>
-        <ion-toggle slot="end" [checked]="dateRange" (ionChange)="dateRangeChange()"></ion-toggle>
-      </ion-item>
-
-      <ion-item>
-        <ion-label class="ion-text-wrap">Data {{(dateRange$ | async) ? 'do início' : ''}} do evento</ion-label>
+        <ion-label class="ion-text-wrap">Data do início do evento</ion-label>
         <ion-datetime-button datetime="eventStartDate"></ion-datetime-button>
       </ion-item>
 
-      <ion-item *ngIf="dateRange$ | async">
+      <ion-item>
         <ion-label class="ion-text-wrap">Data do fim do evento</ion-label>
         <ion-datetime-button datetime="eventEndDate"></ion-datetime-button>
       </ion-item>

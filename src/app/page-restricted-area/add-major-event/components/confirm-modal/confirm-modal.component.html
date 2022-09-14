@@ -18,7 +18,7 @@
 
       <p class="ion-no-margin">
         {{ getDateFromISO(dataForm.value.eventStartDate) | date: 'dd/MM/YY HH:mm' }}
-        <ng-container *ngIf="dateRange">
+        <ng-container>
           {{ ' - ' + (getDateFromISO(dataForm.value.eventEndDate) | date: 'dd/MM/YY HH:mm') }}
         </ng-container>
       </p>
