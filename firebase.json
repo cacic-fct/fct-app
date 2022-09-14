@@ -16,6 +16,9 @@
   "firestore": {
     "rules": "firestore.rules"
   },
+  "storage": {
+    "rules": "storage.rules"
+  },
   "emulators": {
     "firestore": {
       "port": "8081"
@@ -31,6 +34,9 @@
     },
     "functions": {
       "port": 5001
+    },
+    "storage": {
+      "port": "8082"
     }
   },
   "functions": {
