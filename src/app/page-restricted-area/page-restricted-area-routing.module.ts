@@ -20,6 +20,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./page-manage-admins/page-manage-admins.module').then((m) => m.PageManageAdminsPageModule),
   },
+  {
+    path: 'validate-receipt',
+    loadChildren: () => import('./validate-receipt/validate-receipt.module').then( m => m.ValidateReceiptPageModule)
+  },
 ];
 
 @NgModule({
