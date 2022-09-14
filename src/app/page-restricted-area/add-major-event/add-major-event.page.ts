@@ -5,7 +5,7 @@ import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, addHours } from 'date-fns';
 
 import { parse as parseDate } from 'date-fns';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -78,17 +78,21 @@ export class AddMajorEventPage implements OnInit {
   }
 
   ngOnInit() {
-    const tzoffset = new Date().getTimezoneOffset() * 60000;
+    const tzoffset: number = new Date().getTimezoneOffset() * 60000;
     const dateISO: string = new Date(Date.now() - tzoffset).toISOString().slice(0, -1);
+    const dateISOHourOffset: string = addHours(new Date(Date.now() - tzoffset), 1)
+      .toISOString()
+      .slice(0, -1);
+
     this.dataForm = this.formBuilder.group(
       {
         course: ['', Validators.required],
         name: ['', Validators.required],
         description: '',
         eventStartDate: [dateISO, Validators.required],
-        eventEndDate: [dateISO],
+        eventEndDate: [dateISOHourOffset],
         subscriptionStartDate: [dateISO, Validators.required],
-        subscriptionEndDate: [dateISO, Validators.required],
+        subscriptionEndDate: [dateISOHourOffset, Validators.required],
         maxCourses: '',
         maxLectures: '',
         isEventPaidForm: this.isEventPaid,
