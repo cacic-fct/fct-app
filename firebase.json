@@ -36,7 +36,7 @@
       "port": 5001
     },
     "storage": {
-      "port": "8082"
+      "port": "9199"
     }
   },
   "functions": {
