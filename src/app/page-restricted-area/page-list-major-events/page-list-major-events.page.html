@@ -12,49 +12,56 @@
     <ion-datetime-button datetime="dateSelector" class="margin-horizontal-auto"></ion-datetime-button>
   </ion-item>
 
-  <ion-list>
-    <!-- <ion-item [style.--background]="courses[item.course] ? courses[item.course].color + '25' : undefined"> -->
-    <ion-item>
-      <ion-label>
-        <ng-container *ngFor="let item of eventsArray">
-          <h1 class="ion-text-wrap">{{item.name}}</h1>
-          <h4 style="font-weight: 400">Inscrições: 05/09 - 10/09</h4>
-          <h4 style="font-weight: 400">Data do evento: {{item.date}}</h4>
-          <p class="ion-text-wrap">{{item.course}}</p>
-          <br>
+  <ng-container *ngIf="majorEvents$ | async; let majorEventsList; else loading">
+    <ion-list>
+      <h1 *ngIf="majorEventsList.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
 
-        </ng-container>
+      <div *ngIf="majorEventsList.length > 0" class="event-container">
+        <ion-item *ngFor="let item of majorEventsList">
+          <ion-label>
+            <h1 class="ion-text-wrap">{{item.name}}</h1>
+            <h4 style="font-weight: 400">Inscrições: 05/09 - 10/09</h4>
+            <h4 style="font-weight: 400">Data do evento: {{ getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM' }}
+            </h4>
+            <p class="ion-text-wrap">{{item.course}}</p>
+            <br>
 
-        <ion-grid>
-          <ion-col>
-            <!-- <ion-row>
+            <ion-grid>
+              <ion-col>
+                <!-- <ion-row>
               <ion-button fill="clear">
                 <ion-icon name="pencil-outline" slot="start"></ion-icon>
                 <p slot="end">Gerenciar evento</p>
               </ion-button>
             </ion-row> -->
-            <ion-row>
-              <ion-button fill="clear">
-                <ion-icon name="people-outline" slot="start"></ion-icon>
-                <p slot="end">Gerenciar inscritos</p>
-              </ion-button>
-            </ion-row>
-            <ion-row>
-              <ion-button fill="clear">
-                <ion-icon name="wallet-outline" slot="start"></ion-icon>
-                <p slot="end" class="ion-text-wrap">Validar comprovantes</p>
-              </ion-button>
-            </ion-row>
-          </ion-col>
-        </ion-grid>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+                <ion-row>
+                  <ion-button fill="clear">
+                    <ion-icon name="people-outline" slot="start"></ion-icon>
+                    <p slot="end">Gerenciar inscritos</p>
+                  </ion-button>
+                </ion-row>
+                <ion-row>
+                  <ion-button fill="clear">
+                    <ion-icon name="wallet-outline" slot="start"></ion-icon>
+                    <p slot="end" class="ion-text-wrap">Validar comprovantes</p>
+                  </ion-button>
+                </ion-row>
+              </ion-col>
+            </ion-grid>
+          </ion-label>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ng-container>
+  <ng-template #loading>
+    <ion-spinner></ion-spinner>
+  </ng-template>
 </ion-content>
 
 <ion-modal [keepContentsMounted]="true">
   <ng-template>
-    <ion-datetime id="dateSelector" presentation="month-year" showDefaultButtons="true" min="2022-03-01T00:00:00">
+    <ion-datetime [(ngModel)]="currentDay" id="dateSelector" presentation="month-year" showDefaultButtons="true"
+      min="2022-03-01T00:00:00">
     </ion-datetime>
   </ng-template>
 </ion-modal>
