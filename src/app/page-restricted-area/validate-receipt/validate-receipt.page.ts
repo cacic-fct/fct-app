@@ -24,7 +24,8 @@ interface Subscription {
 })
 export class ValidateReceiptPage implements OnInit {
   public eventId: string;
-  private subscriptions: Array<Subscription>;
+  public eventName: string;
+  public subscriptions: Array<Subscription>;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,14 +34,19 @@ export class ValidateReceiptPage implements OnInit {
 
   ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get('eventId');
-    this.afs
+
+    let eventRef = this.afs
       .collection<MajorEventItem>('majorEvents')
-      .doc(this.eventId)
+      .doc(this.eventId);
+
+    eventRef.valueChanges().subscribe(data => {
+      this.eventName = data.name
+    });
+    
+    eventRef
       .collection<Subscription>('subscriptions', ref => ref.where('payment.status', '==', 1))
       .valueChanges({ idField: 'id' }).subscribe(data => {
-        debugger;
         this.subscriptions = data;
-      })
+      });
   }
-
 }
