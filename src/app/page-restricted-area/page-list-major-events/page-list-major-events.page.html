@@ -59,11 +59,13 @@
 <ion-modal [keepContentsMounted]="true">
   <ng-template>
     <ion-datetime
-      [(ngModel)]="currentDay"
+      [(ngModel)]="currentMonth"
       id="dateSelector"
       presentation="month-year"
       showDefaultButtons="true"
-      min="2022-03-01T00:00:00">
+      min="2022-03-01T00:00:00"
+      [max]="getLimitDate()"
+      (ionChange)="onMonthChange()">
     </ion-datetime>
   </ng-template>
 </ion-modal>
