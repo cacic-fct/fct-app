@@ -18,7 +18,6 @@ import OSM from 'ol/source/OSM';
 import Feature from 'ol/Feature';
 import { Icon, Style } from 'ol/style';
 import { fromLonLat, useGeographic } from 'ol/proj';
-import { Control, defaults as defaultControls } from 'ol/control';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 
@@ -29,6 +28,7 @@ import { first, Observable } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 
 import { Timestamp } from '@firebase/firestore-types';
+import { WeatherInfo, WeatherService } from 'src/app/shared/services/weather.service';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -40,13 +40,16 @@ export class PageCalendarEventPage implements OnInit {
   item: EventItem;
   item$: Observable<EventItem>;
   map: Map;
+  weather: Observable<WeatherInfo>;
+  weatherFailed: boolean = false;
 
   constructor(
     private toastController: ToastController,
     private clipboardService: ClipboardService,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private weatherService: WeatherService
   ) {
     const id = this.router.url.split('/')[3];
     this.item$ = this.afs.doc<EventItem>(`events/${id}`).valueChanges({ idField: 'id' }).pipe(trace('firestore'));
@@ -58,51 +61,54 @@ export class PageCalendarEventPage implements OnInit {
     // first() unsubscribes after the first value is emitted
     // This is necessary because the map would be created multiple times otherwise
     this.item$.pipe(first()).subscribe((item) => {
-      this.item = item;
-      if (!item.location) {
-        return;
+      if (item.location?.lat && item.location?.lon) {
+        useGeographic();
+        const iconStyle = new Style({
+          image: new Icon({
+            anchor: [0.5, 1],
+            scale: 0.5,
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-blue.png',
+          }),
+        });
+
+        this.weather = this.weatherService.getWeather(
+          this.getDateFromTimestamp(item.date),
+          item.location.lat,
+          item.location.lon
+        );
+
+        let iconFeature = new Feature({
+          geometry: new Point([item.location.lon, item.location.lat]),
+          name: item.name,
+        });
+
+        iconFeature.setStyle(iconStyle);
+
+        const vectorSource = new VectorSource({
+          features: [iconFeature],
+        });
+
+        const vectorLayer = new VectorLayer({
+          source: vectorSource,
+        });
+
+        const rasterLayer = new TileLayer({
+          source: new OSM(),
+        });
+
+        this.map = new Map({
+          view: new View({
+            center: [item.location.lon, item.location.lat],
+            zoom: 18,
+            maxZoom: 19,
+            projection: 'EPSG:3857',
+          }),
+          layers: [rasterLayer, vectorLayer],
+          target: 'ol-map',
+        });
       }
-
-      useGeographic();
-      const iconStyle = new Style({
-        image: new Icon({
-          anchor: [0.5, 1],
-          scale: 0.5,
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'fraction',
-          src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-blue.png',
-        }),
-      });
-
-      let iconFeature = new Feature({
-        geometry: new Point([this.item?.location.lon, this.item.location?.lat]),
-        name: this.item?.name,
-      });
-
-      iconFeature.setStyle(iconStyle);
-
-      const vectorSource = new VectorSource({
-        features: [iconFeature],
-      });
-
-      const vectorLayer = new VectorLayer({
-        source: vectorSource,
-      });
-
-      const rasterLayer = new TileLayer({
-        source: new OSM(),
-      });
-
-      this.map = new Map({
-        view: new View({
-          center: [this.item.location?.lon, this.item.location?.lat],
-          zoom: 18,
-          maxZoom: 19,
-          projection: 'EPSG:3857',
-        }),
-        layers: [rasterLayer, vectorLayer],
-        target: 'ol-map',
-      });
     });
   }
 
@@ -174,7 +180,7 @@ export class PageCalendarEventPage implements OnInit {
   }
 
   getEmoji(emoji: string): any {
-    if (emoji === undefined) {
+    if (emoji === undefined || !/^\p{Emoji}$/u.test('emoji')) {
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
