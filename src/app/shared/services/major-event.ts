@@ -10,10 +10,10 @@ export interface MajorEventItem {
   maxCourses: number;
   maxLectures: number;
   price: {
-    priceStudents?: number;
-    priceOtherStudents?: number;
-    priceProfessors?: number;
-    priceSingle?: number;
+    students?: number;
+    otherStudents?: number;
+    professors?: number;
+    single?: number;
     isFree?: boolean;
   };
   paymentInfo?: {
