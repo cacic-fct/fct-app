@@ -16,10 +16,15 @@
     <!-- <ion-item [style.--background]="courses[item.course] ? courses[item.course].color + '25' : undefined"> -->
     <ion-item>
       <ion-label>
-        <h2 class="ion-text-wrap">SECOMPP22</h2>
-        <h4 style="font-weight: 400">Inscrições: 05/09 - 10/09</h4>
-        <h4 style="font-weight: 400">Data do evento: 05/09 - 10/09</h4>
-        <p class="ion-text-wrap">Ciência da Computação</p>
+        <ng-container *ngFor="let item of eventsArray">
+          <h1 class="ion-text-wrap">{{item.name}}</h1>
+          <h4 style="font-weight: 400">Inscrições: 05/09 - 10/09</h4>
+          <h4 style="font-weight: 400">Data do evento: {{item.date}}</h4>
+          <p class="ion-text-wrap">{{item.course}}</p>
+          <br>
+
+        </ng-container>
+
         <ion-grid>
           <ion-col>
             <!-- <ion-row>
@@ -49,10 +54,7 @@
 
 <ion-modal [keepContentsMounted]="true">
   <ng-template>
-    <ion-datetime
-      id="dateSelector"
-      presentation="month-year"
-      showDefaultButtons="true"
-      min="2022-03-01T00:00:00"></ion-datetime>
+    <ion-datetime id="dateSelector" presentation="month-year" showDefaultButtons="true" min="2022-03-01T00:00:00">
+    </ion-datetime>
   </ng-template>
 </ion-modal>
