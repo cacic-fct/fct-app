@@ -1,9 +1,40 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Comprovantes de: {{ eventName }}</ion-title>
+    <ion-title>Comprovantes de: {{ eventName$ | async }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ng-container *ngIf="subscriptions$ | async; let subscriptions; else: loading">
+    <h4 *ngIf="subscriptions.length == 0">Não há nenhuma aprovação pendente.</h4>
+    <ng-container *ngIf="subscriptions.length > 0">
+      <ion-card *ngFor="let subscription of subscriptions">
+        <ion-card-header>
+          <ion-card-title>{{ userNameByID(subscription.id) | async }}</ion-card-title>
+          <ion-card-subtitle>{{ getDateFromTimestamp(subscription.time) | date:'dd/MM/yy - HH:mm' }}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <img [src]="imgURL(subscription.id) | getDownloadURL" />
+          <br />
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+  </ng-container>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button>
+        <ion-icon name="close"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button>
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>
+
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>
