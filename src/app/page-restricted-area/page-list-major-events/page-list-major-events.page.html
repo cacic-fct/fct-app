@@ -23,17 +23,11 @@
             <h4 style="font-weight: 400">Inscrições: 05/09 - 10/09</h4>
             <h4 style="font-weight: 400">Data do evento: {{ getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM' }}
             </h4>
-            <p class="ion-text-wrap">{{item.course}}</p>
+            <p class="ion-text-wrap">{{courses.getCourse(item.course)}}</p>
             <br>
 
             <ion-grid>
               <ion-col>
-                <!-- <ion-row>
-              <ion-button fill="clear">
-                <ion-icon name="pencil-outline" slot="start"></ion-icon>
-                <p slot="end">Gerenciar evento</p>
-              </ion-button>
-            </ion-row> -->
                 <ion-row>
                   <ion-button fill="clear">
                     <ion-icon name="people-outline" slot="start"></ion-icon>
@@ -61,7 +55,7 @@
 <ion-modal [keepContentsMounted]="true">
   <ng-template>
     <ion-datetime [(ngModel)]="currentDay" id="dateSelector" presentation="month-year" showDefaultButtons="true"
-      min="2022-03-01T00:00:00">
+      min="2022-03-01T00:00:00" [max]="getLimitDate()">
     </ion-datetime>
   </ng-template>
 </ion-modal>

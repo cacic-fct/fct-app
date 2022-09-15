@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event';
 import { Timestamp } from '@firebase/firestore-types';
 import { trace } from '@angular/fire/compat/performance';
+import { CoursesService } from 'src/app/shared/services/courses.service';
 
 @Component({
   selector: 'app-page-list-major-events',
@@ -15,12 +16,9 @@ export class PageListMajorEventsPage implements OnInit {
   itemsCollection: AngularFirestoreCollection<MajorEventItem>;
   item: MajorEventItem;
   currentDay: string = new Date().toISOString();
-  limitDate: string = format(addDays(new Date(), 365), 'dd/MM/yyyy');
-  eventsArray: MajorEventItem[] = [];
-  eventsDates: string[] = [];
   majorEvents$: Observable<MajorEventItem[]>;
 
-  constructor(private afs: AngularFirestore) {
+  constructor(private afs: AngularFirestore, public courses: CoursesService) {
     
     this.majorEvents$ = this.afs
       .collection<MajorEventItem>('majorEvents', (ref) => {
@@ -41,6 +39,9 @@ export class PageListMajorEventsPage implements OnInit {
     return fromUnixTime(timestamp.seconds);
   }
 
+  getLimitDate(): string {
+    return addDays(new Date(), 365).toISOString();
+  }
 }
 
 // firebase emulators:start --project fct-pp --import=./emulator-data --export-on-exit
