@@ -90,3 +90,6 @@ storage.rules
 emulator-data/
 
 .eslintcache
+
+# ASDF
+.tool-versions
