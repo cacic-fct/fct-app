@@ -20,11 +20,15 @@
         <ion-item *ngFor="let item of majorEventsList">
           <ion-label>
             <h1 class="ion-text-wrap">{{item.name}}</h1>
-            <h4 style="font-weight: 400">Inscrições: 05/09 - 10/09</h4>
-            <h4 style="font-weight: 400">Data do evento: {{ getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM' }}
+            <h4 class="date-item" *ngIf="item.subscriptionStartDate && item.subscriptionEndDate">
+              Inscrições: {{getDateFromTimestamp(item.subscriptionStartDate) | date: 'dd/MM'}} -
+              {{getDateFromTimestamp(item.subscriptionEndDate) | date: 'dd/MM'}}
             </h4>
-            <p class="ion-text-wrap">{{courses.getCourse(item.course)}}</p>
-            <br>
+            <h4 class="date-item" *ngIf="item.eventStartDate && item.eventEndDate">
+              Data do evento: {{ getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM' }} - {{
+              getDateFromTimestamp(item.eventEndDate) | date: 'dd/MM' }}
+            </h4>
+            <p class="ion-text-wrap" *ngIf="item.course">{{courses.getCourse(item.course)}}</p>
 
             <ion-grid>
               <ion-col>
@@ -54,8 +58,12 @@
 
 <ion-modal [keepContentsMounted]="true">
   <ng-template>
-    <ion-datetime [(ngModel)]="currentDay" id="dateSelector" presentation="month-year" showDefaultButtons="true"
-      min="2022-03-01T00:00:00" [max]="getLimitDate()">
+    <ion-datetime
+      [(ngModel)]="currentDay"
+      id="dateSelector"
+      presentation="month-year"
+      showDefaultButtons="true"
+      min="2022-03-01T00:00:00">
     </ion-datetime>
   </ng-template>
 </ion-modal>

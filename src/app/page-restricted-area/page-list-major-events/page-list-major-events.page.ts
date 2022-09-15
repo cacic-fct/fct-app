@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { startOfMonth, endOfMonth, addDays, format, parseISO, fromUnixTime } from 'date-fns'
+import { startOfMonth, endOfMonth, addDays, format, parseISO, fromUnixTime } from 'date-fns';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event';
@@ -19,15 +19,14 @@ export class PageListMajorEventsPage implements OnInit {
   majorEvents$: Observable<MajorEventItem[]>;
 
   constructor(private afs: AngularFirestore, public courses: CoursesService) {
-    
     this.majorEvents$ = this.afs
       .collection<MajorEventItem>('majorEvents', (ref) => {
         let query: any = ref;
-        query = query.where('eventStartDate', '<=', endOfMonth(parseISO(this.currentDay)))
-        .where('eventStartDate', '>=', startOfMonth(parseISO(this.currentDay)));
+        query = query
+          .where('eventStartDate', '<=', endOfMonth(parseISO(this.currentDay)))
+          .where('eventStartDate', '>=', startOfMonth(parseISO(this.currentDay)));
         console.log(parseISO(this.currentDay));
         return query;
-
       })
       .valueChanges({ idField: 'id' })
       .pipe(trace('firestore'));
