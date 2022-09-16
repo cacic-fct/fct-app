@@ -5,13 +5,15 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="subscriptions$ | async; let subscriptions; else: loading">
+  <ng-container *ngIf="(subscriptions$ | async) as subscriptions; else: loading">
     <h4 *ngIf="subscriptions.length == 0">Não há nenhuma aprovação pendente.</h4>
-    <ng-container *ngIf="subscriptions.length > 0">
-      <ion-card *ngFor="let subscription of subscriptions">
+    <ng-container *ngFor="let subscription of subscriptions">
+      <ion-card>
         <ion-card-header>
-          <ion-card-title>{{ userNameByID(subscription.id) | async }}</ion-card-title>
-          <ion-card-subtitle>{{ getDateFromTimestamp(subscription.time) | date:'dd/MM/yy - HH:mm' }}</ion-card-subtitle>
+          <ion-card-title>{{ subscription.userDisplayName | async}}</ion-card-title>
+          <ion-card-subtitle
+            >{{ getDateFromTimestamp(subscription.payment.time) | date:'dd/MM/yy - HH:mm' }}</ion-card-subtitle
+          >
         </ion-card-header>
         <ion-card-content>
           <img [src]="imgURL(subscription.id) | getDownloadURL" />
