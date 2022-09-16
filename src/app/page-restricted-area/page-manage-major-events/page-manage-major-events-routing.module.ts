@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PageListMajorEventsPage } from './page-list-major-events.page';
+import { PageManageMajorEventsPage } from './page-manage-major-events.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: PageListMajorEventsPage
-  }
+    component: PageManageMajorEventsPage,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PageListMajorEventsPageRoutingModule {}
+export class PageManageMajorEventsPageRoutingModule {}

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { startOfMonth, endOfMonth, format, parseISO, fromUnixTime, addYears } from 'date-fns';
+import { startOfMonth, endOfMonth, parseISO, fromUnixTime, addYears } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, combineLatest, Observable, switchMap } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event';
@@ -8,11 +8,11 @@ import { trace } from '@angular/fire/compat/performance';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
 @Component({
-  selector: 'app-page-list-major-events',
-  templateUrl: './page-list-major-events.page.html',
-  styleUrls: ['./page-list-major-events.page.scss'],
+  selector: 'app-page-manage-major-events',
+  templateUrl: './page-manage-major-events.page.html',
+  styleUrls: ['./page-manage-major-events.page.scss'],
 })
-export class PageListMajorEventsPage {
+export class PageManageMajorEventsPage {
   today: Date = new Date();
   currentMonth: string = this.today.toISOString();
   currentMonth$: BehaviorSubject<string | null> = new BehaviorSubject(this.currentMonth);

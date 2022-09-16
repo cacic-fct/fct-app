@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PageListMajorEventsPage } from './page-list-major-events.page';
+import { PageManageMajorEventsPage } from './page-manage-major-events.page';
 
 describe('PageListMajorEventsPage', () => {
-  let component: PageListMajorEventsPage;
-  let fixture: ComponentFixture<PageListMajorEventsPage>;
+  let component: PageManageMajorEventsPage;
+  let fixture: ComponentFixture<PageManageMajorEventsPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageListMajorEventsPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [PageManageMajorEventsPage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageListMajorEventsPage);
+    fixture = TestBed.createComponent(PageManageMajorEventsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
