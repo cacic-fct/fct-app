@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { startOfMonth, endOfMonth, format, parseISO, fromUnixTime, addYears } from 'date-fns';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, combineLatest, Observable, switchMap } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event';
 import { Timestamp } from '@firebase/firestore-types';
