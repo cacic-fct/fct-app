@@ -71,7 +71,7 @@ export class AddMajorEventPage implements OnInit {
         accountChavePix: '',
         accountBank: '',
         accountName: '',
-        accountDocument: '',
+        accountDocument: ['', this.validateCPFOrCNPJ],
         accountAgency: '',
         accountNumber: '',
         additionalPaymentInformation: '',
@@ -80,7 +80,7 @@ export class AddMajorEventPage implements OnInit {
         buttonUrl: '',
       },
       {
-        validators: [this.validatorButton, this.requirePaymentDetails, this.validateCPFOrCNPJ],
+        validators: [this.validatorButton, this.requirePaymentDetails],
       }
     );
     this.userData.displayName.replace(/%20/g, ' ');
@@ -256,87 +256,87 @@ export class AddMajorEventPage implements OnInit {
 
   validateCPFOrCNPJ = (control: AbstractControl): ValidationErrors | null => {
     if (this.isEventPaid === true) {
-      let cpfOrCnpj = control.value;
+      let cpfOrCnpj: string = control.value;
 
       if (cpfOrCnpj.length < 11) {
         return { accountDocument: false };
-      } else {
-        if (cpfOrCnpj.length === 11) {
-          // If CPF is 000.000.000-00, 111.111.111-11, etc, return false
-          if (/^(.)\1*$/.test(cpfOrCnpj)) {
-            return { accountDocument: false };
-          }
-          let soma = 0;
-          let peso = 10;
-          let resto = 0;
+      }
 
-          for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
-            soma += Number.parseInt(control.value[i]) * peso;
-            peso--;
-          }
-          resto = soma % 11;
-
-          let dv1 = 11 - resto;
-          if (dv1 > 9) dv1 = 0;
-
-          soma = 0;
-          peso = 11;
-          for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
-            soma += Number.parseInt(cpfOrCnpj[i]) * peso;
-            peso--;
-          }
-          soma += dv1 * peso;
-
-          resto = soma % 11;
-
-          let dv2 = 11 - resto;
-          if (dv2 > 9) dv2 = 0;
-
-          if (
-            Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 2]) !== dv1 ||
-            Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 1]) !== dv2
-          )
-            return { accountDocument: false };
-        } else if (cpfOrCnpj.length === 14) {
-          let soma = 0;
-          let resto = 0;
-          let dv1 = 0;
-          let dv2 = 0;
-          let peso = 0;
-
-          peso = 5;
-          for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
-            soma += Number.parseInt(cpfOrCnpj[i]) * peso;
-            peso--;
-
-            if (peso === 1) peso = 9;
-          }
-
-          resto = soma % 11;
-          dv1 = 11 - resto;
-          if (dv1 > 9) dv1 = 0;
-
-          soma = 0;
-          resto = 0;
-          peso = 6;
-          for (let i = 0; i < cpfOrCnpj.length - 1; i++) {
-            soma += Number.parseInt(cpfOrCnpj[i]) * peso;
-            peso--;
-
-            if (peso === 1) peso = 9;
-          }
-
-          resto = soma % 11;
-          dv2 = 11 - resto;
-
-          if (dv2 > 9) dv2 = 0;
-
-          if (
-            Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 2]) !== dv1 ||
-            Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 1]) !== dv2
-          )
-            return { accountDocument: false };
+      if (cpfOrCnpj.length === 11) {
+        // If CPF is 000.000.000-00, 111.111.111-11, etc, return false
+        if (/^(.)\1*$/.test(cpfOrCnpj)) {
+          return { accountDocument: false };
         }
+        let soma = 0;
+        let peso = 10;
+        let resto = 0;
+
+        for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
+          soma += Number.parseInt(control.value[i]) * peso;
+          peso--;
+        }
+        resto = soma % 11;
+
+        let dv1 = 11 - resto;
+        if (dv1 > 9) dv1 = 0;
+
+        soma = 0;
+        peso = 11;
+        for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
+          soma += Number.parseInt(cpfOrCnpj[i]) * peso;
+          peso--;
+        }
+        soma += dv1 * peso;
+
+        resto = soma % 11;
+
+        let dv2 = 11 - resto;
+        if (dv2 > 9) dv2 = 0;
+
+        if (
+          Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 2]) !== dv1 ||
+          Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 1]) !== dv2
+        )
+          return { accountDocument: false };
+      } else if (cpfOrCnpj.length === 14) {
+        let soma = 0;
+        let resto = 0;
+        let dv1 = 0;
+        let dv2 = 0;
+        let peso = 0;
+
+        peso = 5;
+        for (let i = 0; i < cpfOrCnpj.length - 2; i++) {
+          soma += Number.parseInt(cpfOrCnpj[i]) * peso;
+          peso--;
+
+          if (peso === 1) peso = 9;
+        }
+
+        resto = soma % 11;
+        dv1 = 11 - resto;
+        if (dv1 > 9) dv1 = 0;
+
+        soma = 0;
+        resto = 0;
+        peso = 6;
+        for (let i = 0; i < cpfOrCnpj.length - 1; i++) {
+          soma += Number.parseInt(cpfOrCnpj[i]) * peso;
+          peso--;
+
+          if (peso === 1) peso = 9;
+        }
+
+        resto = soma % 11;
+        dv2 = 11 - resto;
+
+        if (dv2 > 9) dv2 = 0;
+
+        if (
+          Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 2]) !== dv1 ||
+          Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 1]) !== dv2
+        )
+          return { accountDocument: false };
       }
     }
     return null;
