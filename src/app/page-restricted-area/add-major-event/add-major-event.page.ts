@@ -104,13 +104,13 @@ export class AddMajorEventPage implements OnInit {
       if (this.isEventPaid) {
         if (this.priceDifferentiate) {
           price = {
-            priceStudents: this.dataForm.get('priceStudents').value,
-            priceOtherStudents: this.dataForm.get('priceOtherStudents').value,
-            priceProfessors: this.dataForm.get('priceProfessors').value,
+            students: this.dataForm.get('priceStudents').value,
+            otherStudents: this.dataForm.get('priceOtherStudents').value,
+            professors: this.dataForm.get('priceProfessors').value,
           };
         } else {
           price = {
-            priceSingle: this.dataForm.get('priceSingle').value,
+            single: this.dataForm.get('priceSingle').value,
           };
         }
       } else {
