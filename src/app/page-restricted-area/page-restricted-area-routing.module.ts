@@ -24,6 +24,14 @@ const routes: Routes = [
     path: 'adicionar-grande-evento',
     loadChildren: () => import('./add-major-event/add-major-event.module').then((m) => m.AddMajorEventPageModule),
   },
+  {
+    path: 'gerenciar-grandes-eventos',
+    title: 'Gerenciar grandes eventos',
+    loadChildren: () =>
+      import('./page-manage-major-events/page-manage-major-events.module').then(
+        (m) => m.PageManageMajorEventsPageModule
+      ),
+  },
 ];
 
 @NgModule({
