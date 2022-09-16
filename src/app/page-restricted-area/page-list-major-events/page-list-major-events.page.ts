@@ -16,7 +16,6 @@ export class PageListMajorEventsPage {
   today: Date = new Date();
   currentMonth: string = this.today.toISOString();
   currentMonth$: BehaviorSubject<string | null> = new BehaviorSubject(this.currentMonth);
-  limitDate: string = format(addYears(this.today, 1), 'dd/MM/yyyy');
   majorEvents$: Observable<MajorEventItem[]>;
 
   constructor(private afs: AngularFirestore, public courses: CoursesService) {
