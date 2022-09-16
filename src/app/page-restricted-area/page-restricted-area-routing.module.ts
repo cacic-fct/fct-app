@@ -23,7 +23,15 @@ const routes: Routes = [
   {
     path: 'validar-comprovante/:eventId',
     title: 'Validar comprovante',
-    loadChildren: () => import('./validate-receipt/validate-receipt.module').then( m => m.ValidateReceiptPageModule)
+    loadChildren: () => import('./validate-receipt/validate-receipt.module').then((m) => m.ValidateReceiptPageModule),
+  },
+  {
+    path: 'grandes-eventos',
+    title: 'Gerenciar grandes eventos',
+    loadChildren: () =>
+      import('./page-manage-major-events/page-manage-major-events.module').then(
+        (m) => m.PageManageMajorEventsPageModule
+      ),
   },
 ];
 
