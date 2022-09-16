@@ -22,6 +22,7 @@ const routes: Routes = [
   },
   {
     path: 'grandes-eventos',
+    title: 'Gerenciar grandes eventos',
     loadChildren: () =>
       import('./page-list-major-events/page-list-major-events.module').then((m) => m.PageListMajorEventsPageModule),
   },
