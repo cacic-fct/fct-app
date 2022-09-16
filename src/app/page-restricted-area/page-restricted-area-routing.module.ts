@@ -22,9 +22,15 @@ const routes: Routes = [
   },
   {
     path: 'adicionar-evento',
+    loadChildren: () => import('./add-event/add-event.module').then((m) => m.AddEventPageModule),
+  },
+  {
+    path: 'gerenciar-grandes-eventos',
+    title: 'Gerenciar grandes eventos',
     loadChildren: () =>
-      import('./add-event/add-event.module').then((m) => m.
-      AddEventPageModule),
+      import('./page-manage-major-events/page-manage-major-events.module').then(
+        (m) => m.PageManageMajorEventsPageModule
+      ),
   },
 ];
 
