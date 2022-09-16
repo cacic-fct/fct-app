@@ -16,7 +16,7 @@
     <ion-list>
       <h1 *ngIf="majorEventsList.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
 
-      <div *ngIf="majorEventsList.length > 0" class="event-container">
+      <div class="event-container">
         <ion-item *ngFor="let item of majorEventsList">
           <ion-grid>
             <ion-row>
