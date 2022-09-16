@@ -26,7 +26,7 @@ const routes: Routes = [
     loadChildren: () => import('./validate-receipt/validate-receipt.module').then((m) => m.ValidateReceiptPageModule),
   },
   {
-    path: 'grandes-eventos',
+    path: 'gerenciar-grandes-eventos',
     title: 'Gerenciar grandes eventos',
     loadChildren: () =>
       import('./page-manage-major-events/page-manage-major-events.module').then(
