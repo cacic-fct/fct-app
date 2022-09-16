@@ -18,20 +18,29 @@
 
       <div *ngIf="majorEventsList.length > 0" class="event-container">
         <ion-item *ngFor="let item of majorEventsList">
-          <ion-label>
-            <h1 class="ion-text-wrap">{{item.name}}</h1>
-            <h4 class="date-item" *ngIf="item.subscriptionStartDate && item.subscriptionEndDate">
-              Inscrições: {{getDateFromTimestamp(item.subscriptionStartDate) | date: 'dd/MM'}} -
-              {{getDateFromTimestamp(item.subscriptionEndDate) | date: 'dd/MM'}}
-            </h4>
-            <h4 class="date-item" *ngIf="item.eventStartDate && item.eventEndDate">
-              Data do evento: {{ getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM' }} - {{
-              getDateFromTimestamp(item.eventEndDate) | date: 'dd/MM' }}
-            </h4>
-            <p class="ion-text-wrap" *ngIf="item.course">{{courses.getCourse(item.course)}}</p>
-
-            <ion-grid>
+          <ion-grid>
+            <ion-row>
               <ion-col>
+                <ion-label>
+                  <h1 class="ion-text-wrap">{{item.name}}</h1>
+                  <h4 class="date-item" *ngIf="item.subscriptionStartDate && item.subscriptionEndDate">
+                    Inscrições: {{getDateFromTimestamp(item.subscriptionStartDate) | date: 'dd/MM'}} -
+                    {{getDateFromTimestamp(item.subscriptionEndDate) | date: 'dd/MM'}}
+                  </h4>
+                  <h4 class="date-item" *ngIf="item.eventStartDate && item.eventEndDate">
+                    Data do evento: {{ getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM' }} - {{
+                    getDateFromTimestamp(item.eventEndDate) | date: 'dd/MM' }}
+                  </h4>
+                  <p class="ion-text-wrap" *ngIf="item.course">{{courses.getCourse(item.course)}}</p>
+                </ion-label>
+              </ion-col>
+              <ion-col>
+                <!-- <ion-row>
+                  <ion-button fill="clear">
+                    <ion-icon name="pencil-outline" slot="start"></ion-icon>
+                    <p slot="end">Editar evento</p>
+                  </ion-button>
+                </ion-row> -->
                 <ion-row>
                   <ion-button fill="clear">
                     <ion-icon name="people-outline" slot="start"></ion-icon>
@@ -45,8 +54,8 @@
                   </ion-button>
                 </ion-row>
               </ion-col>
-            </ion-grid>
-          </ion-label>
+            </ion-row>
+          </ion-grid>
         </ion-item>
       </div>
     </ion-list>
