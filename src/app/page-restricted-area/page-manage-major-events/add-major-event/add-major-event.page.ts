@@ -184,6 +184,7 @@ export class AddMajorEventPage implements OnInit {
     return null;
   }
 
+  // TODO: Arrumar isso. Não está funcionando
   requirePaymentDetails(control: AbstractControl): ValidationErrors | null {
     if (
       control.get('isEventPaidForm').value === true &&
