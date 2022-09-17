@@ -21,10 +21,6 @@ const routes: Routes = [
       import('./page-manage-admins/page-manage-admins.module').then((m) => m.PageManageAdminsPageModule),
   },
   {
-    path: 'adicionar-grande-evento',
-    loadChildren: () => import('./add-major-event/add-major-event.module').then((m) => m.AddMajorEventPageModule),
-  },
-  {
     path: 'gerenciar-grandes-eventos',
     title: 'Gerenciar grandes eventos',
     loadChildren: () =>
