@@ -111,7 +111,7 @@
           <ion-input
             formControlName="priceStudents"
             inputmode="decimal"
-            (input)="validatePrice($event, 'priceStudents')"
+            (ionInput)="validatePrice($event, 'priceStudents')"
             (ionInput)="inputCurrency($event)"
             replaceCommaWithPeriod></ion-input>
           <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceStudents | currency: 'BRL'}}</p></ion-text>
@@ -121,7 +121,7 @@
           <ion-input
             formControlName="priceOtherStudents"
             inputmode="decimal"
-            (input)="validatePrice($event, 'priceOtherStudents')"
+            (ionInput)="validatePrice($event, 'priceOtherStudents')"
             (ionInput)="inputCurrency($event)"
             replaceCommaWithPeriod></ion-input>
           <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceOtherStudents | currency: 'BRL'}}</p></ion-text>
@@ -143,7 +143,7 @@
           <ion-input
             formControlName="priceSingle"
             inputmode="decimal"
-            (input)="validatePrice($event, 'priceSingle')"
+            (ionInput)="validatePrice($event, 'priceSingle')"
             (ionInput)="inputCurrency($event)"
             replaceCommaWithPeriod></ion-input>
           <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceSingle| currency: 'BRL'}}</p></ion-text>
@@ -180,7 +180,10 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Conta - Com dígito verificador</ion-label>
-        <ion-input formControlName="accountNumber" placeholder="XXXX-X"></ion-input>
+        <ion-input
+          formControlName="accountNumber"
+          placeholder="XXXX-X"
+          (keypress)="inputNumbersAndDashOnly($event)"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Chave Pix</ion-label>

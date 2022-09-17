@@ -225,6 +225,15 @@ export class AddMajorEventPage implements OnInit {
     }
   }
 
+  inputNumbersAndDashOnly(event) {
+    const pattern = /\d|-/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // Not a number or dash, prevent input
+      event.preventDefault();
+    }
+  }
+
   async openConfirmModal(): Promise<boolean> {
     const modal = await this.modalController.create({
       component: ConfirmModalComponent,
