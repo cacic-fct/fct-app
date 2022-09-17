@@ -174,6 +174,7 @@ export class AddMajorEventPage implements OnInit {
     });
   }
 
+  // TODO: Arrumar isso. Não está funcionando
   validatorButton(control: AbstractControl): ValidationErrors | null {
     if (control.get('buttonText').value != '') {
       control.get('buttonUrl').addValidators([Validators.required]);
