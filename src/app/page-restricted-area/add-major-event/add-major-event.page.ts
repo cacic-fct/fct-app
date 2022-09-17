@@ -68,11 +68,11 @@ export class AddMajorEventPage implements OnInit {
         priceStudents: '',
         priceOtherStudents: '',
         priceProfessors: '',
-        accountChavePix: '',
-        accountBank: '',
+        chavePix: '',
+        bankName: '',
         accountName: '',
-        accountDocument: ['', this.validateCPFOrCNPJ],
-        accountAgency: '',
+        document: ['', this.validateCPFOrCNPJ],
+        agency: '',
         accountNumber: '',
         additionalPaymentInformation: '',
         public: true,
@@ -140,11 +140,11 @@ export class AddMajorEventPage implements OnInit {
             subscriptionEndDate: this.dataForm.get('subscriptionEndDate').value,
             price: price,
             paymentInfo: {
-              chavePix: this.dataForm.get('accountChavePix').value,
-              bankName: this.dataForm.get('accountBank').value,
+              chavePix: this.dataForm.get('chavePix').value,
+              bankName: this.dataForm.get('bankName').value,
               name: this.dataForm.get('accountName').value,
-              document: this.dataForm.get('accountDocument').value,
-              agency: this.dataForm.get('accountAgency').value,
+              document: this.dataForm.get('document').value,
+              agency: this.dataForm.get('agency').value,
               accountNumber: this.dataForm.get('accountNumber').value,
               additionalPaymentInformation: this.dataForm.get('additionalPaymentInformation').value,
             },
@@ -187,18 +187,18 @@ export class AddMajorEventPage implements OnInit {
   requirePaymentDetails(control: AbstractControl): ValidationErrors | null {
     if (
       control.get('isEventPaidForm').value === true &&
-      (control.get('accountChavePix').value != '' || control.get('accountNumber').value != '')
+      (control.get('chavePix').value != '' || control.get('accountNumber').value != '')
     ) {
-      control.get('accountBank').addValidators(Validators.required);
+      control.get('bankName').addValidators(Validators.required);
       control.get('accountName').addValidators(Validators.required);
-      control.get('accountDocument').addValidators(Validators.required);
-      control.get('accountAgency').addValidators(Validators.required);
+      control.get('document').addValidators(Validators.required);
+      control.get('agency').addValidators(Validators.required);
       control.get('accountNumber').addValidators(Validators.required);
     } else {
-      control.get('accountBank').removeValidators(Validators.required);
+      control.get('bankName').removeValidators(Validators.required);
       control.get('accountName').removeValidators(Validators.required);
-      control.get('accountDocument').removeValidators(Validators.required);
-      control.get('accountAgency').removeValidators(Validators.required);
+      control.get('document').removeValidators(Validators.required);
+      control.get('agency').removeValidators(Validators.required);
       control.get('accountNumber').removeValidators(Validators.required);
     }
 
@@ -213,7 +213,7 @@ export class AddMajorEventPage implements OnInit {
   isEventPaidChange() {
     this.isEventPaid = !this.isEventPaid;
     this._isEventPaidSubject.next(this.isEventPaid);
-    this.dataForm.controls['accountDocument'].updateValueAndValidity();
+    this.dataForm.controls['document'].updateValueAndValidity();
   }
 
   inputNumbersOnly(event) {
@@ -259,13 +259,13 @@ export class AddMajorEventPage implements OnInit {
       let cpfOrCnpj: string = control.value;
 
       if (cpfOrCnpj.length < 11) {
-        return { accountDocument: false };
+        return { document: false };
       }
 
       if (cpfOrCnpj.length === 11) {
         // If CPF is 000.000.000-00, 111.111.111-11, etc, return false
         if (/^(.)\1*$/.test(cpfOrCnpj)) {
-          return { accountDocument: false };
+          return { document: false };
         }
         let soma = 0;
         let peso = 10;
@@ -297,7 +297,7 @@ export class AddMajorEventPage implements OnInit {
           Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 2]) !== dv1 ||
           Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 1]) !== dv2
         )
-          return { accountDocument: false };
+          return { document: false };
       } else if (cpfOrCnpj.length === 14) {
         let soma = 0;
         let resto = 0;
@@ -336,7 +336,7 @@ export class AddMajorEventPage implements OnInit {
           Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 2]) !== dv1 ||
           Number.parseInt(cpfOrCnpj[cpfOrCnpj.length - 1]) !== dv2
         )
-          return { accountDocument: false };
+          return { document: false };
       }
     }
     return null;

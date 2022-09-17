@@ -81,14 +81,14 @@
       Informações de pagamento
     </div>
 
-    <ion-item lines="none" *ngIf="dataForm.value.accountChavePix">
+    <ion-item lines="none" *ngIf="dataForm.value.chavePix">
       <ion-label>Chave pix</ion-label>
-      <span slot="end">{{ dataForm.value.accountChavePix }}</span>
+      <span slot="end">{{ dataForm.value.chavePix }}</span>
     </ion-item>
 
-    <ion-item lines="none" *ngIf="dataForm.value.accountBank">
+    <ion-item lines="none" *ngIf="dataForm.value.bankName">
       <ion-label>Banco</ion-label>
-      <span slot="end">{{ dataForm.value.accountBank }}</span>
+      <span slot="end">{{ dataForm.value.bankName }}</span>
     </ion-item>
 
     <ion-item lines="none" *ngIf="dataForm.value.accountName">
@@ -96,14 +96,14 @@
       <span slot="end">{{ dataForm.value.accountName }}</span>
     </ion-item>
 
-    <ion-item lines="none" *ngIf="dataForm.value.accountDocument">
+    <ion-item lines="none" *ngIf="dataForm.value.document">
       <ion-label>CPF ou CNPJ</ion-label>
-      <span slot="end">{{ dataForm.value.accountDocument }}</span>
+      <span slot="end">{{ dataForm.value.document }}</span>
     </ion-item>
 
-    <ion-item lines="none" *ngIf="dataForm.value.accountAgency">
+    <ion-item lines="none" *ngIf="dataForm.value.agency">
       <ion-label>Agência</ion-label>
-      <span slot="end">{{ dataForm.value.accountAgency }}</span>
+      <span slot="end">{{ dataForm.value.agency }}</span>
     </ion-item>
 
     <ion-item lines="none" *ngIf="dataForm.value.accountNumber">

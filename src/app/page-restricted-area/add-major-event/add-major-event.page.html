@@ -159,7 +159,7 @@
       <ion-item>
         <ion-label position="floating">CPF ou CNPJ</ion-label>
         <ion-input
-          formControlName="accountDocument"
+          formControlName="document"
           placeholder="Somente números"
           inputmode="numeric"
           maxlength="14"
@@ -167,12 +167,12 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Instituição bancária</ion-label>
-        <ion-input formControlName="accountBank" placeholder="Inclua o número e nome extenso do banco"></ion-input>
+        <ion-input formControlName="bankName" placeholder="Inclua o número e nome extenso do banco"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Agência - Sem dígito verificador</ion-label>
         <ion-input
-          formControlName="accountAgency"
+          formControlName="agency"
           placeholder="XXXX"
           maxLength="4"
           inputmode="numeric"
@@ -184,7 +184,7 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Chave Pix</ion-label>
-        <ion-input formControlName="accountChavePix"></ion-input>
+        <ion-input formControlName="chavePix"></ion-input>
       </ion-item>
 
       <ion-item>
