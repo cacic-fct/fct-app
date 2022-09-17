@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'adicionar',
-    loadChildren: () => import('../add-major-event/add-major-event.module').then((m) => m.AddMajorEventPageModule),
+    loadChildren: () => import('./add-major-event/add-major-event.module').then((m) => m.AddMajorEventPageModule),
   },
 ];
 
