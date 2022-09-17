@@ -1,7 +1,6 @@
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { KeyValue, formatDate } from '@angular/common';
-import { Observable } from 'rxjs';
 
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
@@ -64,17 +63,17 @@ export class TabCalendarPage {
     public remoteConfig: RemoteConfig,
     public toastController: ToastController
   ) {
-    getBooleanChanges(remoteConfig, 'calendarItemViewDefault')
+    getBooleanChanges(this.remoteConfig, 'calendarItemViewDefault')
       .pipe(untilDestroyed(this), trace('remote-config'))
       .subscribe((value) => {
         this.itemView = value;
       });
+  }
 
+  ngOnInit() {
     this.active = format(this.today, 'eeee').toLowerCase();
     this.generateCalendarData();
   }
-
-  ngOnInit() {}
 
   ionViewDidEnter() {
     if (localStorage.getItem('user') === null && sessionStorage.getItem('calendarLoginToast') !== 'true') {
