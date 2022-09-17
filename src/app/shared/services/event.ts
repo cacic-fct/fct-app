@@ -5,6 +5,7 @@ export interface EventItem {
   icon: string;
   course: string;
   date: Timestamp;
+  dateEnd: Timestamp;
   location: {
     lat: number;
     lon: number;
@@ -18,4 +19,6 @@ export interface EventItem {
     text: string;
     url: string;
   };
+  slots: number;
+  slotsAvailable: number;
 }

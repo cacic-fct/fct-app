@@ -10,7 +10,10 @@
     <ng-container *ngFor="let subscription of subscriptions">
       <ion-card>
         <ion-card-header>
-          <ion-card-title>{{ subscription.userDisplayName | async }} - R${{ subscription.payment.price | number: '1.2-2'}}</ion-card-title>
+          <ion-card-title
+            >{{ subscription.userDisplayName$ | async }} - R${{ subscription.payment.price | number:
+            '1.2-2'}}</ion-card-title
+          >
           <ion-card-subtitle>
             {{ getDateFromTimestamp(subscription.payment.time) | date:'dd/MM/yy - HH:mm' }}
           </ion-card-subtitle>
@@ -18,6 +21,13 @@
         <ion-card-content>
           <img [src]="imgURL(subscription.id) | getDownloadURL" />
           <br />
+          <ng-container *ngIf="subscription.subEventsInfo.length != 0">
+            <ng-container *ngFor="let subEventInfo$ of subscription.subEventsInfo">
+              <ng-container *ngIf="subEventInfo$ | async as subEventInfo; else: loading">
+                {{ subEventInfo.name }}: {{ subEventInfo.availableSlots }} vagas disponíveis.
+              </ng-container>
+            </ng-container>
+          </ng-container>
         </ion-card-content>
       </ion-card>
     </ng-container>

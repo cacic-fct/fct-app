@@ -10,6 +10,7 @@ import { User } from 'src/app/shared/services/user';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { trace } from '@angular/fire/compat/performance';
+import { EventItem } from 'src/app/shared/services/event';
 
 @UntilDestroy()
 @Component({
@@ -38,14 +39,13 @@ export class ValidateReceiptPage implements OnInit {
       .pipe(
         untilDestroyed(this),
         trace('firestore'),
-        map((subscription) => {
-          return subscription.map((sub) => {
-            return {
-              ...sub,
-              userDisplayName: this.userNameByID(sub.id),
-            };
-          });
-        })
+        map((subscription) =>
+          subscription.map((sub) => ({
+            ...sub,
+            subEventsInfo: sub.subscribedToEvents.map((subEventID) => this.eventNameAndAvailableSlotsByID(subEventID)),
+            userDisplayName$: this.userNameByID(sub.id),
+          }))
+        )
       );
 
     this.imgBaseHref = [this.eventId, 'payment-receipts'].join('/');
@@ -55,7 +55,7 @@ export class ValidateReceiptPage implements OnInit {
     return [this.imgBaseHref, receiptId].join('/');
   }
 
-  userNameByID(userId: string): Observable<string> {
+  private userNameByID(userId: string): Observable<string> {
     return this.afs
       .collection('users')
       .doc<User>(userId)
@@ -66,6 +66,20 @@ export class ValidateReceiptPage implements OnInit {
       );
   }
 
+  private eventNameAndAvailableSlotsByID(eventId: string): Observable<{ name: string; availableSlots: number }> {
+    return this.afs
+      .collection('events')
+      .doc<EventItem>(eventId)
+      .valueChanges()
+      .pipe(
+        first(),
+        map((event) => ({
+          name: event.name,
+          availableSlots: event.slotsAvailable,
+        }))
+      );
+  }
+
   getDateFromTimestamp(timestamp: Timestamp): Date {
     return fromUnixTime(timestamp.seconds);
   }
@@ -73,7 +87,7 @@ export class ValidateReceiptPage implements OnInit {
 
 interface Subscription {
   id: string;
-  userDisplayName: Observable<string>;
+  userDisplayName$: Observable<string>;
   time: Timestamp;
   payment: {
     status: number;
@@ -84,4 +98,5 @@ interface Subscription {
   };
   subscriptionType: number;
   subscribedToEvents: Array<string>;
+  subEventsInfo: Array<Observable<{ name: string; availableSlots: number }>>;
 }
