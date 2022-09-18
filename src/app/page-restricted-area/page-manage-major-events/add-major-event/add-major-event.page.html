@@ -183,7 +183,8 @@
         <ion-input
           formControlName="accountNumber"
           placeholder="XXXX-X"
-          (keypress)="inputNumbersAndDashOnly($event)"></ion-input>
+          (keypress)="inputNumbersAndDashOnly($event)"
+          (ionInput)="validateAccountNumber($event)"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Chave Pix</ion-label>

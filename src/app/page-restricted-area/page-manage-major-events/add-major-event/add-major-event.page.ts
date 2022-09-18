@@ -362,4 +362,13 @@ export class AddMajorEventPage implements OnInit {
       .replace(/\.(?=.*\.)/g, '');
     this.dataForm.get(key).setValue(cleanMoney);
   }
+
+  validateAccountNumber(event) {
+    const cleanAccount = event.target.value
+      // Remove anything that isn't valid in a number or dash
+      .replace(/[^\d-]/g, '')
+      // Remove all dashes unless it is the last one
+      .replace(/-(?=.*-)/g, '');
+    this.dataForm.get('accountNumber').setValue(cleanAccount);
+  }
 }
