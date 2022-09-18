@@ -146,7 +146,7 @@
             (ionInput)="validatePrice($event, 'priceSingle')"
             (ionInput)="inputCurrency($event)"
             replaceCommaWithPeriod></ion-input>
-          <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceSingle| currency: 'BRL'}}</p></ion-text>
+          <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceSingle | currency: 'BRL'}}</p></ion-text>
         </ion-item>
       </ng-template>
       <ion-card-header>
