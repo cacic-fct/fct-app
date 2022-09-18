@@ -39,13 +39,15 @@ export class ItemListComponent implements OnInit, OnChanges {
           .collection<EventItem>('events', (ref) => {
             let query: any = ref;
             if (date) {
-              query = query.where('date', '>=', startOfDay(date)).where('date', '<=', endOfDay(date));
+              query = query
+                .where('eventStartDate', '>=', startOfDay(date))
+                .where('eventStartDate', '<=', endOfDay(date));
             }
             if (filter.length > 0) {
               query = query.where('course', 'in', filter);
             }
 
-            return query.orderBy('date', 'asc');
+            return query.orderBy('eventStartDate', 'asc');
           })
           .valueChanges({ idField: 'id' })
           .pipe(trace('firestore'));
