@@ -11,8 +11,8 @@
       <ion-card>
         <ion-card-header>
           <ion-card-title
-            >{{ subscription.userDisplayName$ | async }} - R${{ subscription.payment.price | number:
-            '1.2-2'}}</ion-card-title
+            >{{ subscription.userDisplayName$ | async }} - {{ subscription.payment.price |
+            currency:'BRL':'symbol':'1.2-2' }}</ion-card-title
           >
           <ion-card-subtitle>
             {{ getDateFromTimestamp(subscription.payment.time) | date:'dd/MM/yy - HH:mm' }}
