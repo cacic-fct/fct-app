@@ -172,35 +172,36 @@ export class AddMajorEventPage implements OnInit {
     });
   }
 
-  // TODO: Arrumar isso. Não está funcionando
   validatorButton(control: AbstractControl): ValidationErrors | null {
     if (control.get('buttonText').value != '') {
-      control.get('buttonUrl').addValidators([Validators.required]);
+      control.get('buttonUrl').addValidators(Validators.required);
     } else {
-      control.get('buttonUrl').removeValidators([Validators.required]);
+      control.get('buttonUrl').removeValidators(Validators.required);
     }
+    control.get('buttonUrl').updateValueAndValidity({ onlySelf: true });
 
     return null;
   }
 
-  // TODO: Arrumar isso. Não está funcionando
   requirePaymentDetails(control: AbstractControl): ValidationErrors | null {
+    // Entradas que se tornam obrigatórias caso o evento seja pago
+    const affectedForms = [
+      control.get('bankName'),
+      control.get('accountName'),
+      control.get('document'),
+      control.get('agency'),
+      control.get('accountNumber'),
+    ];
+
     if (
       control.get('isEventPaidForm').value === true &&
       (control.get('chavePix').value != '' || control.get('accountNumber').value != '')
     ) {
-      control.get('bankName').addValidators(Validators.required);
-      control.get('accountName').addValidators(Validators.required);
-      control.get('document').addValidators(Validators.required);
-      control.get('agency').addValidators(Validators.required);
-      control.get('accountNumber').addValidators(Validators.required);
+      affectedForms.forEach((form) => form.addValidators(Validators.required));
     } else {
-      control.get('bankName').removeValidators(Validators.required);
-      control.get('accountName').removeValidators(Validators.required);
-      control.get('document').removeValidators(Validators.required);
-      control.get('agency').removeValidators(Validators.required);
-      control.get('accountNumber').removeValidators(Validators.required);
+      affectedForms.forEach((form) => form.removeValidators(Validators.required));
     }
+    affectedForms.forEach((form) => form.updateValueAndValidity({ onlySelf: true }));
 
     return null;
   }
