@@ -131,7 +131,7 @@
           <ion-input
             formControlName="priceProfessors"
             inputmode="decimal"
-            (input)="validatePrice($event, 'priceProfessors')"
+            (ionInput)="validatePrice($event, 'priceProfessors')"
             (ionInput)="inputCurrency($event)"
             replaceCommaWithPeriod></ion-input>
           <ion-text slot="end" color="medium"><p>{{ dataForm.value.priceProfessors | currency: 'BRL'}}</p></ion-text>
