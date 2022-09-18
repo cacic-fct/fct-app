@@ -78,7 +78,7 @@ export class AddMajorEventPage implements OnInit {
         buttonUrl: '',
       },
       {
-        validators: [this.validatorButton, this.requirePaymentDetails],
+        validators: [this.validatorButton, this.requirePaymentDetails, this.validatorDateEnd],
       }
     );
     this.userData.displayName.replace(/%20/g, ' ');
@@ -219,7 +219,7 @@ export class AddMajorEventPage implements OnInit {
 
   inputNumbersOnly(event) {
     const pattern = /\d/;
-    let inputChar = String.fromCharCode(event.charCode);
+    const inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       // Not a number, prevent input
       event.preventDefault();
@@ -228,7 +228,7 @@ export class AddMajorEventPage implements OnInit {
 
   inputNumbersAndDashOnly(event) {
     const pattern = /\d|-/;
-    let inputChar = String.fromCharCode(event.charCode);
+    const inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       // Not a number or dash, prevent input
       event.preventDefault();
@@ -266,7 +266,7 @@ export class AddMajorEventPage implements OnInit {
 
   validateCPFOrCNPJ = (control: AbstractControl): ValidationErrors | null => {
     if (this.isEventPaid === true) {
-      let cpfOrCnpj: string = control.value;
+      const cpfOrCnpj: string = control.value;
 
       if (cpfOrCnpj.length < 11) {
         return { document: false };
@@ -370,5 +370,17 @@ export class AddMajorEventPage implements OnInit {
       // Remove all dashes unless it is the last one
       .replace(/-(?=.*-)/g, '');
     this.dataForm.get('accountNumber').setValue(cleanAccount);
+  }
+
+  validatorDateEnd(control: AbstractControl): ValidationErrors | null {
+    const eventStartDate = parseISO(control.get('eventStartDate').value);
+    const eventEndDate = parseISO(control.get('eventEndDate').value);
+    const subscriptionStartDate = parseISO(control.get('subscriptionStartDate').value);
+    const subscriptionEndDate = parseISO(control.get('subscriptionEndDate').value);
+    if (eventStartDate > eventEndDate || subscriptionStartDate > subscriptionEndDate) {
+      return { dateRange: true };
+    }
+
+    return null;
   }
 }
