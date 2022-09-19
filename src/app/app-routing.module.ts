@@ -74,8 +74,10 @@ const routes: Routes = [
     loadChildren: () => import('./page-contact-cas/page-contact-cas.module').then((m) => m.PageContactCasPageModule),
   },
   {
-    path: 'pagamentos',
-    loadChildren: () => import('./page-payment/page-payment.module').then((m) => m.PagePaymentPageModule),
+    path: 'inscricoes',
+    title: 'Minhas inscrições',
+    loadChildren: () =>
+      import('./page-subscriptions/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
   },
 ];
 @NgModule({

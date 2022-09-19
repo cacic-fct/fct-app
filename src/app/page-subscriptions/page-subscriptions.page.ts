@@ -9,11 +9,11 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { fromUnixTime } from 'date-fns';
 @UntilDestroy()
 @Component({
-  selector: 'app-page-payment',
-  templateUrl: './page-payment.page.html',
-  styleUrls: ['./page-payment.page.scss'],
+  selector: 'app-page-subscriptions',
+  templateUrl: './page-subscriptions.page.html',
+  styleUrls: ['./page-subscriptions.page.scss'],
 })
-export class PagePaymentPage implements OnInit {
+export class PageSubscriptionsPage implements OnInit {
   paymentsList: any[];
 
   constructor(public auth: AngularFireAuth, public firestore: AngularFirestore) {
