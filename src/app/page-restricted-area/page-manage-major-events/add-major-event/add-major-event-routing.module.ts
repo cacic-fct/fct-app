@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { FilterModalPage } from './filter-modal.page';
+import { AddMajorEventPage } from './add-major-event.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: FilterModalPage
+    component: AddMajorEventPage
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class FilterModalPageRoutingModule {}
+export class AddMajorEventPageRoutingModule {}

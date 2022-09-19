@@ -7,7 +7,7 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { startOfWeek, endOfWeek, addDays, subDays, isSameDay, getDate, format, isSameWeek } from 'date-fns';
 import { ModalController } from '@ionic/angular';
 import { FilterModalPage } from './components/filter-modal/filter-modal.page';
-import { AngularFireRemoteConfig } from '@angular/fire/compat/remote-config';
+import { getBooleanChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { ToastController } from '@ionic/angular';
 import { trace } from '@angular/fire/compat/performance';
 
@@ -60,20 +60,20 @@ export class TabCalendarPage {
   constructor(
     private modalController: ModalController,
     public router: Router,
-    public remoteConfig: AngularFireRemoteConfig,
+    public remoteConfig: RemoteConfig,
     public toastController: ToastController
   ) {
-    this.remoteConfig.booleans.calendarItemViewDefault
-      .pipe(untilDestroyed(this), trace('remoteconfig'))
+    getBooleanChanges(this.remoteConfig, 'calendarItemViewDefault')
+      .pipe(untilDestroyed(this), trace('remote-config'))
       .subscribe((value) => {
         this.itemView = value;
       });
+  }
 
+  ngOnInit() {
     this.active = format(this.today, 'eeee').toLowerCase();
     this.generateCalendarData();
   }
-
-  ngOnInit() {}
 
   ionViewDidEnter() {
     if (localStorage.getItem('user') === null && sessionStorage.getItem('calendarLoginToast') !== 'true') {

@@ -1,10 +1,9 @@
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
 import { startOfDay, endOfDay, fromUnixTime } from 'date-fns';
 
-import { NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -20,34 +19,35 @@ import { Timestamp } from '@firebase/firestore-types';
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.scss'],
 })
-export class ItemListComponent implements OnChanges {
+export class ItemListComponent implements OnInit, OnChanges {
   courses = CoursesService.courses;
 
   @Input() date: Date;
   @Input() filter: Array<string>;
 
-  dateFilter$: BehaviorSubject<Date | null>;
-  courseFilter$: BehaviorSubject<Array<string> | null>;
+  dateFilter$: BehaviorSubject<Date | null> = new BehaviorSubject(null);
+  courseFilter$: BehaviorSubject<Array<string> | null> = new BehaviorSubject(null);
 
   items$: Observable<EventItem[]>;
 
-  constructor(firestore: AngularFirestore, private navCtrl: NavController, private sanitizer: DomSanitizer) {
-    this.dateFilter$ = new BehaviorSubject(null);
-    this.courseFilter$ = new BehaviorSubject(null);
+  constructor(private afs: AngularFirestore, private sanitizer: DomSanitizer) {}
 
+  ngOnInit() {
     this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
       switchMap(([date, filter]) => {
-        return firestore
+        return this.afs
           .collection<EventItem>('events', (ref) => {
             let query: any = ref;
             if (date) {
-              query = query.where('date', '>=', startOfDay(date)).where('date', '<=', endOfDay(date));
+              query = query
+                .where('eventStartDate', '>=', startOfDay(date))
+                .where('eventStartDate', '<=', endOfDay(date));
             }
             if (filter.length > 0) {
               query = query.where('course', 'in', filter);
             }
 
-            return query.orderBy('date', 'asc');
+            return query.orderBy('eventStartDate', 'asc');
           })
           .valueChanges({ idField: 'id' })
           .pipe(trace('firestore'));
@@ -65,7 +65,7 @@ export class ItemListComponent implements OnChanges {
   }
 
   getEmoji(emoji: string): any {
-    if (emoji === undefined) {
+    if (emoji === undefined || !/^\p{Emoji}$/u.test('emoji')) {
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);

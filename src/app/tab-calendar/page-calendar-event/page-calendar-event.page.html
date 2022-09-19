@@ -26,9 +26,18 @@
         <h5 style="margin: 0; margin-bottom: 5px; font-weight: 500">{{ getCourse(items.course) }}</h5>
         <h4 style="margin: 0; font-weight: 400">
           <!-- prettier-ignore -->
-          {{ toUppercase(getDateFromTimestamp(items?.date) | date: "EEEE, dd 'de' MMMM 'de' y") }}
+          {{ toUppercase(getDateFromTimestamp(items?.eventStartDate) | date: "EEEE, dd 'de' MMMM 'de' y") }}
         </h4>
-        <h3 style="margin: 0; font-weight: 400">{{ getDateFromTimestamp(items?.date) | date: 'HH:mm' }}</h3>
+        <h3 style="margin: 0; font-weight: 400">{{ getDateFromTimestamp(items?.eventStartDate) | date: 'HH:mm' }}</h3>
+
+        <div class="weather-container">
+          <ng-container *ngIf="(weather | async) as weatherInfo;">
+            <ng-container *ngIf="!weatherInfo.error">
+              <ion-icon class="weather-icon" [name]="weatherInfo.icon"></ion-icon>
+              <span class="weather-text">{{ weatherInfo.temperature }}°C – {{ weatherInfo.text }}</span>
+            </ng-container>
+          </ng-container>
+        </div>
       </div>
 
       <div *ngIf="items?.description">
@@ -51,7 +60,7 @@
 
       <div *ngIf="items?.button" class="ion-padding-vertical">
         <ion-button expand="block" color="primary" [href]="items?.button.url" target="_blank"
-          >{{ items.button.text ? items.button.text : 'Acompanhe o evento' }}</ion-button
+          >{{ items.button.text || 'Acompanhe o evento' }}</ion-button
         >
       </div>
 
@@ -66,6 +75,12 @@
           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
           allowfullscreen></iframe>
       </div>
+    </div>
+
+    <div class="ion-text-center weather-attribution" *ngIf="weather | async">
+      <ion-text color="medium">
+        <a href="https://open-meteo.com/" target="_blank">Weather data by Open-Meteo.com</a>
+      </ion-text>
     </div>
   </ng-container>
   <ng-template #loading>
