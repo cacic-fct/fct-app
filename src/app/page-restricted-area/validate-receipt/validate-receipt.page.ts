@@ -34,7 +34,7 @@ export class ValidateReceiptPage implements OnInit {
     this.eventName$ = eventRef.valueChanges().pipe(map((event) => event.name));
 
     this.subscriptions$ = eventRef
-      .collection<Subscription>('subscriptions', (ref) => ref.where('payment.status', '==', 1))
+      .collection<Subscription>('subscriptions', (ref) => ref.where('payment.status', '==', 1).orderBy('time').limit(1))
       .valueChanges({ idField: 'id' })
       .pipe(
         untilDestroyed(this),
