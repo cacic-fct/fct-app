@@ -22,7 +22,7 @@ export class TabEventsPage {
   ngOnInit() {
     this.majorEvents$ = this.afs
       .collection<MajorEventItem>('majorEvents', (ref) => {
-        return ref.orderBy('dateStart', 'asc');
+        return ref.orderBy('eventStartDate', 'asc');
       })
       .valueChanges({ idField: 'id' })
       .pipe(trace('firestore'));
