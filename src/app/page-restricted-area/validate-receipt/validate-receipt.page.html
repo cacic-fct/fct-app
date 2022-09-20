@@ -19,15 +19,16 @@
           </ion-card-subtitle>
         </ion-card-header>
         <ion-card-content>
-          <img [src]="imgURL(subscription.id) | getDownloadURL" />
-          <br />
           <ng-container *ngIf="subscription.subEventsInfo.length != 0">
             <ng-container *ngFor="let subEventInfo$ of subscription.subEventsInfo">
               <ng-container *ngIf="subEventInfo$ | async as subEventInfo; else: loading">
-                {{ subEventInfo.name }}: {{ subEventInfo.availableSlots }} vagas disponíveis.
+                <p>{{ subEventInfo.name }}: {{ subEventInfo.availableSlots }} vagas disponíveis.</p>
               </ng-container>
             </ng-container>
           </ng-container>
+          <div class="img-container">
+            <img [src]="imgURL(subscription.id) | getDownloadURL" />
+          </div>
         </ion-card-content>
       </ion-card>
     </ng-container>
