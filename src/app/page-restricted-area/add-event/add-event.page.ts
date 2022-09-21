@@ -157,6 +157,7 @@ export class AddEventPage implements OnInit {
                 lon: this.dataForm.get('location.lon').value,
               },
               youtubeCode: this.dataForm.get('youtubeCode').value,
+              // TODO: Verificar se public está funcionando
               public: this.dataForm.get('public').value,
               button: this.dataForm.get('button').get('url').value
                 ? {
