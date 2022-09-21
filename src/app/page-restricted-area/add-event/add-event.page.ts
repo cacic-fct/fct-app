@@ -87,7 +87,7 @@ export class AddEventPage implements OnInit {
         eventType: ['', Validators.required],
         hasDateEndForm: this.hasDateEnd,
         issueCertificate: false,
-        doublePresence: false,
+        // doublePresence: false,
         collectPresenceForm: this.collectPresence,
       },
       {
