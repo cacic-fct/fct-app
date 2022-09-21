@@ -173,7 +173,9 @@
     </ion-item>
 
     <div class="ion-padding-bottom">
-      <ion-button class="ion-padding" type="submit" [disabled]="!dataForm.valid"> Criar evento </ion-button>
+      <ion-button class="ion-padding" type="submit" (click)="onSubmit()" [disabled]="!dataForm.valid">
+        Criar evento
+      </ion-button>
       <p style="font-size: 0.75em" class="ion-padding-horizontal">
         Ao continuar, seu nome será gravado junto ao evento.
       </p>
