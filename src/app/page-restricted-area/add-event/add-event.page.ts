@@ -179,10 +179,18 @@ export class AddEventPage implements OnInit {
                   .update({ events: firestore.arrayUnion(eventId) })
                   .then(() => {
                     this.addEventSuccess();
+                  })
+                  .catch((err) => {
+                    this.errorSwal.fire();
+                    console.error('Failed to add event ID in majorEvent array', err);
                   });
               } else {
                 this.addEventSuccess();
               }
+            })
+            .catch((err) => {
+              this.errorSwal.fire();
+              console.error('Failed to write event to Firestore', err);
             });
         });
       }
