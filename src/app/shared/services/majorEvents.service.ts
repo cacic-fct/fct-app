@@ -15,8 +15,8 @@ export class MajorEventsService {
     return this.afs
       .collection<MajorEventItem>('majorEvents', (ref) => {
         let query: any = ref;
-        query = query.where('dateStart', '>=', startOfDay(date));
-        return query.orderBy('dateStart', 'asc');
+        query = query.where('eventStartDate', '>=', startOfDay(date));
+        return query.orderBy('eventStartDate', 'asc');
       })
       .valueChanges({ idField: 'id' });
   }
