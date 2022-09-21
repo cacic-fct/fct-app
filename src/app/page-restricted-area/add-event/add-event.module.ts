@@ -7,6 +7,7 @@ import { AddEventPageRoutingModule } from './add-event-routing.module';
 import { AddEventPage } from './add-event.page';
 import { SafeModule } from '../../shared/pipes/safe.module';
 import { MajorEventsService } from 'src/app/shared/services/majorEvents.service';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { MajorEventsService } from 'src/app/shared/services/majorEvents.service'
     AddEventPageRoutingModule,
     SafeModule,
     ConfirmModalPageModule,
+    SweetAlert2Module,
   ],
   declarations: [AddEventPage],
   providers: [MajorEventsService],

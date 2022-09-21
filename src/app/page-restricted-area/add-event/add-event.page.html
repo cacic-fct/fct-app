@@ -169,12 +169,18 @@
       <ion-input value="{{ userData.displayName }}" color="medium" readonly> </ion-input>
     </ion-item>
 
-    <ion-button class="ion-padding-horizontal" id="check-modal" (click)="onSubmit()">Criar evento</ion-button>
+    <ion-button class="ion-padding-horizontal" id="check-modal" (click)="onSubmit()" [disabled]="this.dataForm.invalid"
+      >Criar evento</ion-button
+    >
     <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, seu nome será gravado junto ao evento.</p>
 
     <ion-modal [keepContentsMounted]="true">
       <ng-template>
-        <ion-datetime id="eventDate" presentation="date-time" showDefaultButtons="true" formControlName="date">
+        <ion-datetime
+          id="eventDate"
+          presentation="date-time"
+          showDefaultButtons="true"
+          formControlName="eventStartDate">
           <span slot="title">Selecione a data do evento</span>
         </ion-datetime>
       </ng-template>
@@ -182,10 +188,33 @@
 
     <ion-modal [keepContentsMounted]="true">
       <ng-template>
-        <ion-datetime id="eventDateEnd" presentation="date-time" showDefaultButtons="true" formControlName="dateEnd">
+        <ion-datetime
+          id="eventDateEnd"
+          presentation="date-time"
+          showDefaultButtons="true"
+          formControlName="eventEndDate">
           <span slot="title">Selecione a data de término do evento</span>
         </ion-datetime>
       </ng-template>
     </ion-modal>
   </form>
 </ion-content>
+
+<swal
+  #successSwal
+  title="Evento criado com sucesso"
+  icon="success"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
+
+<swal
+  #errorSwal
+  title="Ocorreu um erro ao criar o evento"
+  text="Verifique a sua conexão à internet e tente novamente"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="true"></swal>

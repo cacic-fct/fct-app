@@ -11,9 +11,11 @@
       <h5 style="margin: 0; margin-bottom: 5px; font-weight: 500">{{ getCourse(dataForm.value.course) }}</h5>
       <h4 style="margin: 0; font-weight: 400">
         <!-- prettier-ignore -->
-        {{ toUppercase(getDateFromTimestamp(dataForm.value.date) | date: "EEEE, dd 'de' MMMM 'de' y") }}
+        {{ toUppercase(getDateFromTimestamp(dataForm.value.eventStartDate) | date: "EEEE, dd 'de' MMMM 'de' y") }}
       </h4>
-      <h3 style="margin: 0; font-weight: 400">{{ getDateFromTimestamp(dataForm.value.date) | date: 'HH:mm' }}</h3>
+      <h3 style="margin: 0; font-weight: 400">
+        {{ getDateFromTimestamp(dataForm.value.eventStartDate) | date: 'HH:mm' }}
+      </h3>
     </div>
 
     <div *ngIf="dataForm.value.description">
@@ -33,10 +35,10 @@
     </div>
 
     <div *ngIf="dataForm.value.button.text || dataForm.value.button.url">
-      <ion-button expand="block" color="primary" [href]="dataForm.value.button.url" target="_blank"
+      <ion-button expand="block" color="primary" disabled="true"
         >{{dataForm.value.button.text || 'Acompanhe o evento' }}</ion-button
       >
-      <p color="medium">URL: {{ dataForm.value.buttonUrl}}</p>
+      <p color="medium">URL: {{ dataForm.value.button.url}}</p>
     </div>
 
     <div *ngIf="dataForm.value.youtubeCode">

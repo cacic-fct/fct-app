@@ -1,17 +1,20 @@
-import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
-import { PlacesService } from './../../shared/services/places.service';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventItem, MajorEventsService } from 'src/app/shared/services/majorEvents.service';
 import { addHours, format, parseISO } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, first, Observable } from 'rxjs';
 import * as firestore from 'firebase/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { EventItem } from './../../shared/services/event';
+import { Timestamp } from '@firebase/firestore-types';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+
+import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
+import { PlacesService } from './../../shared/services/places.service';
 
 @Component({
   selector: 'app-add-event',
@@ -19,6 +22,8 @@ import { EventItem } from './../../shared/services/event';
   styleUrls: ['./add-event.page.scss'],
 })
 export class AddEventPage implements OnInit {
+  @ViewChild('successSwal') private successSwal: SwalComponent;
+  @ViewChild('errorSwal') private errorSwal: SwalComponent;
   @ViewChild('selectPlace', { static: false }) selectPlace: IonSelect;
 
   courses = CoursesService.courses;
@@ -60,8 +65,8 @@ export class AddEventPage implements OnInit {
         name: ['', Validators.required],
         shortDescription: ['', Validators.maxLength(80)],
         description: '',
-        date: [dateISO, Validators.required],
-        dateEnd: dateISOHourOffset,
+        eventStartDate: [dateISO, Validators.required],
+        eventEndDate: dateISOHourOffset,
         location: this.formBuilder.group({
           description: '',
           lat: [
@@ -108,40 +113,75 @@ export class AddEventPage implements OnInit {
     }
     this.openConfirmModal().then((response) => {
       if (response) {
-        this.auth.user.subscribe((user) => {
-          const data = {
-            ...this.dataForm.value,
-            createdBy: user.uid,
-            createdOn: new Date(),
-          };
+        this.auth.user.pipe(first()).subscribe((user) => {
+          let majorEvent = this.dataForm.get('inMajorEvent').value;
+          if (majorEvent === 'none') {
+            majorEvent = null;
+          }
 
-          Object.keys(data).forEach((key) => {
-            if (data[key] == '') delete data[key];
-          });
-          data.date = parseISO(data.date);
-          if (data.hasDateEnd) data.dateEnd = parseISO(data.dateEnd);
-          else delete data.dateEnd;
+          let dateEnd: Timestamp | null;
 
-          delete data.hasDateEnd;
+          if (this.hasDateEnd) {
+            dateEnd = firestore.Timestamp.fromDate(new Date(this.dataForm.get('eventEndDate').value));
+          } else {
+            dateEnd = null;
+          }
 
-          const majorEvent = data.inMajorEvent;
-          if (majorEvent === 'none') delete data.inMajorEvent;
+          let buttonUrl: string = this.dataForm.get('button').get('url').value;
+
+          if (buttonUrl) {
+            const pattern = /^((http|https):\/\/)/;
+            if (!pattern.test(buttonUrl)) {
+              this.dataForm
+                .get('button')
+                .get('url')
+                .setValue('https://' + buttonUrl);
+            }
+          }
 
           this.afs
-            .collection('events')
-            .add(data)
+            .collection<EventItem>('events')
+            .add({
+              course: this.dataForm.get('course').value,
+              icon: this.dataForm.get('icon').value,
+              name: this.dataForm.get('name').value,
+              shortDescription: this.dataForm.get('shortDescription').value,
+              description: this.dataForm.get('description').value,
+              eventStartDate: firestore.Timestamp.fromDate(new Date(this.dataForm.get('eventStartDate').value)),
+              eventEndDate: dateEnd,
+              location: {
+                description: this.dataForm.get('location.description').value,
+                lat: this.dataForm.get('location.lat').value,
+                lon: this.dataForm.get('location.lon').value,
+              },
+              youtubeCode: this.dataForm.get('youtubeCode').value,
+              public: this.dataForm.get('public').value,
+              button: this.dataForm.get('button').get('url').value
+                ? {
+                    text: this.dataForm.get('button').get('text').value,
+                    url: this.dataForm.get('button').get('url').value,
+                  }
+                : null,
+              inMajorEvent: majorEvent,
+              eventType: this.dataForm.get('eventType').value,
+              issueCertificate: this.dataForm.get('issueCertificate').value,
+              // doublePresence: this.dataForm.get('doublePresence').value,
+              collectPresence: this.dataForm.get('collectPresenceForm').value,
+              createdBy: user.uid,
+              createdOn: firestore.Timestamp.fromDate(new Date()),
+            })
             .then((res) => {
-              if (majorEvent !== 'none') {
+              if (majorEvent) {
                 const eventId = res.id;
                 this.afs
                   .collection('majorEvents')
                   .doc(majorEvent)
                   .update({ events: firestore.arrayUnion(eventId) })
                   .then(() => {
-                    this.router.navigate(['area-restrita'], { replaceUrl: true });
+                    this.addEventSuccess();
                   });
               } else {
-                this.router.navigate(['area-restrita'], { replaceUrl: true });
+                this.addEventSuccess();
               }
             });
         });
@@ -149,6 +189,15 @@ export class AddEventPage implements OnInit {
 
       return;
     });
+  }
+
+  addEventSuccess(): void {
+    this.successSwal.fire();
+    // Fake delay to let animation finish
+    setTimeout(() => {
+      this.successSwal.close();
+      this.router.navigate(['/area-restrita'], { replaceUrl: true });
+    }, 1500);
   }
 
   async openConfirmModal(): Promise<boolean> {
@@ -190,8 +239,8 @@ export class AddEventPage implements OnInit {
 
   validatorDateEnd(control: AbstractControl): { [key: string]: boolean } | null {
     if (control.get('hasDateEndForm').value) {
-      let dateStart = parseISO(control.get('date').value);
-      let dateEnd = parseISO(control.get('dateEnd').value);
+      let dateStart = parseISO(control.get('eventStartDate').value);
+      let dateEnd = parseISO(control.get('eventEndDate').value);
       if (dateEnd < dateStart) return { dateRange: true };
     }
 

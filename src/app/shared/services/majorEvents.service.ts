@@ -48,6 +48,7 @@ export interface MajorEventItem {
     url: string;
   };
   public: boolean;
+  events: string[];
   createdBy: string;
   createdOn: Timestamp;
   id: string;

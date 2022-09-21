@@ -6,22 +6,25 @@ export interface EventItem {
   course: string;
   eventStartDate: Timestamp;
   eventEndDate: Timestamp;
-  location: {
-    lat: number;
-    lon: number;
-    description: string;
+  location?: {
+    lat?: number;
+    lon?: number;
+    description?: string;
   };
-  description: string;
-  shortDescription: string;
-  youtubeCode: string;
-  id: string;
-  button: {
-    text: string;
+  description?: string;
+  shortDescription?: string;
+  youtubeCode?: string;
+  id?: string;
+  button?: {
+    text?: string;
     url: string;
   };
-  inMajorEvent: string;
-  eventType: string;
-  issueCertificate: boolean;
-  doublePresence: boolean;
-  collectPresenceForm: boolean;
+  inMajorEvent?: string;
+  eventType?: string;
+  public?: boolean;
+  issueCertificate?: boolean;
+  doublePresence?: boolean;
+  collectPresence?: boolean;
+  createdBy: string;
+  createdOn: Timestamp;
 }
