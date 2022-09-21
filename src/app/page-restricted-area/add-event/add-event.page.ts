@@ -233,18 +233,24 @@ export class AddEventPage implements OnInit {
     });
   }
 
-  // TODO: Arrumar validadores
+  // TODO: Revisar e talvez arrumar validadores
   validatorLatLong(control: AbstractControl): ValidationErrors | null {
     if (control.get('location').get('lat').value == '' && control.get('location').get('lon').value == '') {
       control.get('location').get('lat').removeValidators(Validators.required);
       control.get('location').get('lon').removeValidators(Validators.required);
+      control.get('location').get('lat').updateValueAndValidity({ onlySelf: true });
+      control.get('location').get('lon').updateValueAndValidity({ onlySelf: true });
     }
 
-    if (control.get('location').get('lon').value != '')
+    if (control.get('location').get('lon').value != '') {
       control.get('location').get('lat').addValidators(Validators.required);
+      control.get('location').get('lat').updateValueAndValidity({ onlySelf: true });
+    }
 
-    if (control.get('location').get('lat').value != '')
+    if (control.get('location').get('lat').value != '') {
       control.get('location').get('lon').addValidators(Validators.required);
+      control.get('location').get('lon').updateValueAndValidity({ onlySelf: true });
+    }
 
     return null;
   }
@@ -264,6 +270,7 @@ export class AddEventPage implements OnInit {
       control.get('button').get('url').addValidators(Validators.required);
     else control.get('button').get('url').removeValidators(Validators.required);
 
+    control.get('button').get('url').updateValueAndValidity({ onlySelf: true });
     return null;
   }
 
