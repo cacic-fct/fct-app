@@ -90,8 +90,8 @@ export class AddEventPage implements OnInit {
           text: '',
           url: '', // TODO: Verificar se URL inicia-se com http:// ou https://. Caso não, adicionar "https://"
         }),
-        inMajorEvent: ['', Validators.required],
-        eventType: ['', Validators.required],
+        inMajorEvent: ['none', Validators.required],
+        eventType: ['none', Validators.required],
         hasDateEndForm: this.hasDateEnd,
         issueCertificate: false,
         // doublePresence: false,
