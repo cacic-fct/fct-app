@@ -13,6 +13,7 @@ import { ModalController } from '@ionic/angular';
 })
 export class ConfirmModalPage implements OnInit {
   @Input() dataForm: FormGroup<any>;
+  @Input() hasDateEnd: boolean;
 
   courses = CoursesService.courses;
   constructor(private sanitizer: DomSanitizer, public modalController: ModalController) {}

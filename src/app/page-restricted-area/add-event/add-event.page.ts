@@ -214,6 +214,7 @@ export class AddEventPage implements OnInit {
       component: ConfirmModalPage,
       componentProps: {
         dataForm: this.dataForm,
+        hasDateEnd: this.hasDateEnd,
       },
       showBackdrop: true,
     });
