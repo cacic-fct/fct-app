@@ -172,10 +172,12 @@
       <ion-input value="{{ userData.displayName }}" color="medium" readonly> </ion-input>
     </ion-item>
 
-    <ion-button class="ion-padding-horizontal" id="check-modal" (click)="onSubmit()" [disabled]="this.dataForm.invalid"
-      >Criar evento</ion-button
-    >
-    <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, seu nome será gravado junto ao evento.</p>
+    <div class="ion-padding-bottom">
+      <ion-button class="ion-padding" type="submit" [disabled]="!dataForm.valid"> Criar evento </ion-button>
+      <p style="font-size: 0.75em" class="ion-padding-horizontal">
+        Ao continuar, seu nome será gravado junto ao evento.
+      </p>
+    </div>
 
     <ion-modal [keepContentsMounted]="true">
       <ng-template>
