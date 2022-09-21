@@ -4,8 +4,8 @@ export interface EventItem {
   name: string;
   icon: string;
   course: string;
-  date: Timestamp;
-  dateEnd: Timestamp;
+  eventStartDate: Timestamp;
+  eventEndDate: Timestamp;
   location: {
     lat: number;
     lon: number;
