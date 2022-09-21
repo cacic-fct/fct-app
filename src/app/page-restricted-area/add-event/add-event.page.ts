@@ -233,6 +233,7 @@ export class AddEventPage implements OnInit {
     });
   }
 
+  // TODO: Arrumar validadores
   validatorLatLong(control: AbstractControl): ValidationErrors | null {
     if (control.get('location').get('lat').value == '' && control.get('location').get('lon').value == '') {
       control.get('location').get('lat').removeValidators(Validators.required);
