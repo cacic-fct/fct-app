@@ -195,12 +195,8 @@
 
     <ion-modal [keepContentsMounted]="true">
       <ng-template>
-        <ion-datetime
-          id="eventDateEnd"
-          presentation="date-time"
-          showDefaultButtons="true"
-          formControlName="eventEndDate">
-          <span slot="title">Selecione a data de término do evento</span>
+        <ion-datetime id="eventDateEnd" presentation="time" showDefaultButtons="true" formControlName="eventEndDate">
+          <span slot="title">Selecione a hora de término do evento</span>
         </ion-datetime>
       </ng-template>
     </ion-modal>
