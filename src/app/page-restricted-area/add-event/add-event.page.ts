@@ -24,6 +24,7 @@ import { PlacesService } from './../../shared/services/places.service';
 export class AddEventPage implements OnInit {
   @ViewChild('successSwal') private successSwal: SwalComponent;
   @ViewChild('errorSwal') private errorSwal: SwalComponent;
+  @ViewChild('errorMajorEventSwal') private errorMajorEventSwal: SwalComponent;
   @ViewChild('selectPlace', { static: false }) selectPlace: IonSelect;
 
   courses = CoursesService.courses;
@@ -181,7 +182,7 @@ export class AddEventPage implements OnInit {
                     this.addEventSuccess();
                   })
                   .catch((err) => {
-                    this.errorSwal.fire();
+                    this.errorMajorEventSwal.fire();
                     console.error('Failed to add event ID in majorEvent array', err);
                   });
               } else {
