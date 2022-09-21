@@ -16,10 +16,16 @@ import { fromUnixTime } from 'date-fns';
 export class PageSubscriptionsPage implements OnInit {
   paymentsList: any[];
 
-  constructor(public auth: AngularFireAuth, public firestore: AngularFirestore) {
+  constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {}
+
+  ngOnInit() {
+    this.loadDataFromFirestore();
+  }
+
+  loadDataFromFirestore() {
     this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
       if (user) {
-        this.firestore
+        this.afs
           .collection(`users/${user.uid}/majorEventEnrollments`)
           .valueChanges({ idField: 'id' })
           .pipe(untilDestroyed(this), trace('firestore'))
@@ -27,7 +33,7 @@ export class PageSubscriptionsPage implements OnInit {
             this.paymentsList = items.map((item) => {
               return {
                 ...item,
-                majorEvent: this.firestore
+                majorEvent: this.afs
                   .collection('majorEvents')
                   .doc<any>(item.id)
                   .valueChanges()
@@ -38,8 +44,6 @@ export class PageSubscriptionsPage implements OnInit {
       }
     });
   }
-
-  ngOnInit() {}
 
   getDateFromTimestamp(timestamp: any): Date {
     return fromUnixTime(timestamp.seconds);
