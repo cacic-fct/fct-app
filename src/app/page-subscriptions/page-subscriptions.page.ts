@@ -1,6 +1,7 @@
+import { MajorEventItem, MajorEventSubscription } from './../shared/services/major-event';
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, switchMap } from 'rxjs';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { BehaviorSubject, combineLatest, map, Observable, switchMap } from 'rxjs';
+import { AngularFirestore, DocumentReference, DocumentSnapshot } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { trace } from '@angular/fire/compat/performance';
@@ -14,33 +15,45 @@ import { fromUnixTime } from 'date-fns';
   styleUrls: ['./page-subscriptions.page.scss'],
 })
 export class PageSubscriptionsPage implements OnInit {
-  paymentsList: any[];
+  subscriptions$: Observable<Subscription[]>;
 
   constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {}
 
   ngOnInit() {
-    this.loadDataFromFirestore();
-  }
-
-  loadDataFromFirestore() {
     this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
       if (user) {
-        this.afs
-          .collection(`users/${user.uid}/majorEventEnrollments`)
+        this.subscriptions$ = this.afs
+          .collection<Subscription>(`users/${user.uid}/subscriptions`)
           .valueChanges({ idField: 'id' })
-          .pipe(untilDestroyed(this), trace('firestore'))
-          .subscribe((items: any[]) => {
-            this.paymentsList = items.map((item) => {
-              return {
-                ...item,
-                majorEvent: this.afs
-                  .collection('majorEvents')
-                  .doc<any>(item.id)
-                  .valueChanges()
-                  .pipe(trace('firestore')),
-              };
-            });
+          .pipe(
+            untilDestroyed(this),
+            trace('firestore'),
+            map((subscriptions) => {
+              return subscriptions.map((subscription) => {
+                return {
+                  id: subscription.id,
+                  userData: subscription.reference.get().then((doc) => {
+                    return doc.data();
+                  }),
+                  majorEvent: this.afs
+                    .doc<MajorEventItem>(`majorEvents/${subscription.id}`)
+                    .valueChanges({ idField: 'id' }),
+                };
+              });
+            })
+          );
+
+        // TODO: Me remova
+        this.subscriptions$.subscribe((subscriptions) => {
+          console.log('Array da coleção', subscriptions);
+
+          subscriptions[0].reference.get().then((doc) => {
+            console.log('Reference', doc.data());
           });
+
+          subscriptions[0].majorEvent.subscribe((majorEvent) => console.log('MajorEvent', majorEvent));
+        });
+        ////////
       }
     });
   }
@@ -48,4 +61,11 @@ export class PageSubscriptionsPage implements OnInit {
   getDateFromTimestamp(timestamp: any): Date {
     return fromUnixTime(timestamp.seconds);
   }
+}
+
+interface Subscription {
+  id?: string;
+  reference?: DocumentReference<any>;
+  userData?: Promise<MajorEventSubscription>;
+  majorEvent?: Observable<MajorEventItem>;
 }

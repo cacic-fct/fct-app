@@ -8,6 +8,23 @@
 </ion-header>
 
 <ion-content>
+  <ng-container *ngIf="subscriptions$ | async as subscriptions">
+    <ng-container *ngIf="subscriptions.length === 0">
+      <ion-text>Não há inscrições</ion-text>
+    </ng-container>
+
+    <ion-list>
+      <ion-card *ngFor="let subscription of subscriptions">
+        <ng-container *ngIf="subscription.majorEvent | async as majorEventData">
+          <h1>Nome do MajorEvent: {{ majorEventData.name }}</h1>
+        </ng-container>
+
+        <ng-container *ngIf="subscription.userData | async as referenceData">
+          <h1>Status do pagamento: {{ referenceData.payment.status }}</h1>
+        </ng-container>
+      </ion-card>
+    </ion-list>
+  </ng-container>
   <!--  <ng-container *ngIf="paymentsList as items; else: loading">
     <ng-container *ngIf="items.length === 0">
       <ion-text>Não há pagamentos</ion-text>
