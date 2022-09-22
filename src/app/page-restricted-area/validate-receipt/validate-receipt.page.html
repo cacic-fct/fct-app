@@ -16,8 +16,9 @@
           >
           <ion-card-subtitle>
             Se inscreveu em: {{ getDateFromTimestamp(subscription.time) | date:'dd/MM/yy - HH:mm' }}
-            <br>
-            Última alteração na inscrição: {{ getDateFromTimestamp(subscription.payment.time) | date:'dd/MM/yy - HH:mm' }}
+            <br />
+            Última alteração na inscrição: {{ getDateFromTimestamp(subscription.payment.time) | date:'dd/MM/yy - HH:mm'
+            }}
           </ion-card-subtitle>
         </ion-card-header>
         <ion-card-content>
@@ -39,16 +40,60 @@
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
       <ion-fab-list side="top">
-        <ion-fab-button color="success">
+        <ion-fab-button color="success" id="modal-confirm">
           <ion-icon name="checkmark"></ion-icon>
         </ion-fab-button>
       </ion-fab-list>
       <ion-fab-list side="start">
-        <ion-fab-button color="danger">
+        <ion-fab-button color="danger" id="modal-refuse">
           <ion-icon name="close"></ion-icon>
         </ion-fab-button>
       </ion-fab-list>
     </ion-fab>
+
+    <!-- modal de confirmação -->
+    <ion-modal trigger="modal-confirm" #confirmModal>
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-button (click)="confirmModal.dismiss()">Cancelar</ion-button>
+            </ion-buttons>
+            <ion-title>Confirmar comprovante de pagamento</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="confirmModal.dismiss()" [strong]="true">Confirmar</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          Você tem certeza que deseja aprovar esse comprovante? Essa ação não poderá ser revertida posteriormente.
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+
+    <!-- modal de recusa -->
+    <ion-modal trigger="modal-refuse" #refuseModal>
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-button (click)="refuseModal.dismiss()">Cancelar</ion-button>
+            </ion-buttons>
+            <ion-title>Recusar comprovante de pagamento</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="refuseModal.dismiss()" [strong]="true">Confirmar</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          Descreva o motivo do comprovante não ser aceito:
+          <ion-item>
+            <ion-label position="floating">Justificativa</ion-label>
+            <ion-textarea></ion-textarea>
+          </ion-item>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
   </ng-container>
 </ion-content>
 
