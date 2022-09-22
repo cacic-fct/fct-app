@@ -45,7 +45,7 @@ export interface MajorEventSubscription {
     error?: string;
     author?: string;
   };
-  subscribedToEvents: string[];
+  subscribedToEvents?: string[];
   subscriptionType?: number;
   time: Timestamp;
 }
