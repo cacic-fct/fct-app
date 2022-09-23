@@ -78,8 +78,9 @@ export class PagePayPage implements OnInit {
         }
       });
 
-    this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
+    this.auth.user.pipe(first()).subscribe((user) => {
       if (user) {
+        this.uid = user.uid;
         this.afs
           .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.eventID}`)
           .valueChanges({ idField: 'id' })
