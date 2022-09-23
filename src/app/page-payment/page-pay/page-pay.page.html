@@ -94,8 +94,17 @@
 </ng-template>
 
 <swal
-  #notFound
+  #eventNotFound
   title="Evento inexistente"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
+
+<swal
+  #eventNotFound
+  title="Inscrição não encontrada"
   icon="error"
   [heightAuto]="false"
   [showCancelButton]="false"

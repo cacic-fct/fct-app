@@ -25,11 +25,14 @@ import { EnrollmentTypesService } from './../../shared/services/enrollment-types
   styleUrls: ['./page-pay.page.scss'],
 })
 export class PagePayPage implements OnInit {
-  @ViewChild('notFound')
-  private notFound: SwalComponent;
+  @ViewChild('eventNotFound')
+  private eventNotFound: SwalComponent;
 
   @ViewChild('expired')
   private expired: SwalComponent;
+
+  @ViewChild('subscriptionNotFound')
+  private subscriptionNotFound: SwalComponent;
 
   uploadPercent: Observable<number>;
   downloadURL: Observable<string>;
@@ -51,7 +54,7 @@ export class PagePayPage implements OnInit {
     public toastController: ToastController,
     private router: Router,
     private route: ActivatedRoute,
-    public afs: AngularFirestore
+    public afs: AngularFirestore,
     public enrollmentTypes: EnrollmentTypesService
   ) {}
 
@@ -68,9 +71,9 @@ export class PagePayPage implements OnInit {
         if (!document.exists) {
           // TODO: Redirecionar para página de minhas inscrições
           this.router.navigate(['menu']);
-          this.notFound.fire();
+          this.eventNotFound.fire();
           setTimeout(() => {
-            this.notFound.close();
+            this.eventNotFound.close();
           }, 1000);
         }
       });
@@ -83,7 +86,16 @@ export class PagePayPage implements OnInit {
           .pipe(untilDestroyed(this), trace('firestore'))
           .subscribe((subscription) => {
             this.userSubscription$ = subscription.reference.get().then((doc) => {
-              return doc.data();
+              if (doc.exists) {
+                return doc.data();
+              } else {
+                // TODO: Redirecionar para página de minhas inscrições
+                this.router.navigate(['menu']);
+                this.subscriptionNotFound.fire();
+                setTimeout(() => {
+                  this.subscriptionNotFound.close();
+                }, 1000);
+              }
             });
           });
       }
