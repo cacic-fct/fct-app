@@ -16,7 +16,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { Timestamp } from 'firebase/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
-import { EnrollmentTypesService } from './../../shared/services/enrollment-types.service';
+import { EnrollmentTypesService } from '../shared/services/enrollment-types.service';
 
 @UntilDestroy()
 @Component({
@@ -210,7 +210,7 @@ export class PagePayPage implements OnInit {
 
   updateUser() {
     this.afs
-      .doc<any>(`/users/${this.uid}/majorEventEnrollments/${this.eventID}`)
+      .doc<any>(`/users/${this.uid}/majorEventSubscriptions/${this.eventID}`)
       .update({ receiptUploaded: true, receiptLink: this.downloadURL })
       .then(() => {
         this.toastSuccess();
