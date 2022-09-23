@@ -64,12 +64,7 @@
       <ion-progress-bar [value]="countValue / 10"></ion-progress-bar>
     </ng-container>
 
-    <input
-      type="file"
-      class="file-input"
-      (change)="handleFileInput($event.target.files)"
-      accept="image/png, image/jpeg, image/webp"
-      #fileUpload />
+    <input type="file" class="file-input" accept="image/png, image/jpeg, image/webp" #fileUpload />
 
     <div class="file-upload">
       <p class="ion-padding-horizontal" *ngIf="!downloadURL">
