@@ -5,9 +5,17 @@ import { IonicModule } from '@ionic/angular';
 import { ValidateReceiptPageRoutingModule } from './validate-receipt-routing.module';
 import { ValidateReceiptPage } from './validate-receipt.page';
 import { GetDownloadURLPipeModule } from '@angular/fire/compat/storage';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ValidateReceiptPageRoutingModule, GetDownloadURLPipeModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    ValidateReceiptPageRoutingModule,
+    GetDownloadURLPipeModule,
+    SweetAlert2Module,
+  ],
   declarations: [ValidateReceiptPage],
 })
 export class ValidateReceiptPageModule {}
