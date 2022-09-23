@@ -9,7 +9,7 @@ const routes: Routes = [
     component: PagePaymentPage,
   },
   {
-    path: 'pagar/:id',
+    path: 'pagar/:eventID',
     loadChildren: () => import('./page-pay/page-pay.module').then((m) => m.PagePayPageModule),
   },
 ];

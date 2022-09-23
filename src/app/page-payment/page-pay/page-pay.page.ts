@@ -6,7 +6,7 @@ import { finalize } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
 import { ToastController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { format, parseISO, addHours } from 'date-fns';
@@ -33,12 +33,12 @@ export class PagePayPage implements OnInit {
     private imageCompress: NgxImageCompressService,
     public toastController: ToastController,
     private router: Router,
+    private route: ActivatedRoute,
     public firestore: AngularFirestore
-  ) {
-    this.eventID = this.router.url.split('/')[3];
-  }
+  ) {}
 
   ngOnInit() {
+    this.eventID = this.route.snapshot.params.eventID;
     this.auth.user.pipe(first()).subscribe((user) => {
       if (user) {
         this.uid = user.uid;
