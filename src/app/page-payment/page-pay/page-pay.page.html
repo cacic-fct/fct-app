@@ -9,22 +9,39 @@
 
 <ion-content>
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>SECOMPP 2022</ion-card-title>
-      <ion-card-subtitle>R$ 10,00</ion-card-subtitle>
+    <ion-card-header *ngIf="majorEvent; else: loading">
+      <ion-card-title>{{majorEvent.name}}</ion-card-title>
+      <ion-card-subtitle
+        >{{ [].constructor.isArray(majorEvent.price) ? majorEvent.price[enrollment.enrollmentType] : majorEvent.price *
+        1.0 | currency:'BRL' }}</ion-card-subtitle
+      >
       <ion-card-content>
-        Método de pagamento: Pix
+        Beneficiário: {{majorEvent.accountName}}
         <br />
-        Data limite para o pagamento: 01/01/2020
+        CPF/CNPJ: {{majorEvent.accountDocument}}
         <br />
-        Chave Pix: aaaaa
+        Instituição bancária: {{majorEvent.accountBank}}
+        <br />
+        Agência: {{majorEvent.accountAgency}}
+        <br />
+        Conta: {{majorEvent.accountNumber}}
+        <br />
+        Data limite para o pagamento: {{majorEvent.subscriptionEndDate ? majorEvent.subscriptionEndDate :
+        majorEvent.subscriptionStartDate}}
+        <br />
+        Chave Pix: {{majorEvent.accountChavePix}}
+        <br />
+        <div *ngIf="majorEvent.additionalPaymentInformation">
+          Informações adicionais:<br />
+          {{majorEvent.additionalPaymentInformation}}
+        </div>
       </ion-card-content>
     </ion-card-header>
 
-    <ion-grid>
+    <ion-grid *ngIf="majorEvent && majorEvent.accountChavePix">
       <ion-row>
         <ion-col>
-          <ion-button>
+          <ion-button (click)="copyToClipboard()">
             <ion-icon slot="start" name="copy"></ion-icon>
             Copiar chave Pix
           </ion-button>
@@ -50,18 +67,20 @@
     <input
       type="file"
       class="file-input"
-      accept="image/png, image/jpeg, image/webp, image/heic, image/heif"
+      (change)="handleFileInput($event.target.files)"
+      accept="image/png, image/jpeg, image/webp"
       #fileUpload />
 
     <div class="file-upload">
-      <p class="ion-padding-horizontal">
-        {{ fileName ? (fileName + ": " + ( uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
+      <p class="ion-padding-horizontal" *ngIf="!downloadURL">
+        {{ rawFile ? ("Enviando " + ( uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
       </p>
+      <img *ngIf="downloadURL" class="ion-padding-horizontal ion-padding-vertical" src="{{rawFile}}" />
 
-      <ion-grid>
+      <ion-grid *ngIf="!downloadURL">
         <ion-row>
           <ion-col>
-            <ion-button (click)="compressFile()">
+            <ion-button (click)="compressFile(this)">
               <ion-icon slot="start" name="cloud-upload"></ion-icon>
               Enviar comprovante
             </ion-button>
