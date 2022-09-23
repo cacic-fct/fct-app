@@ -88,12 +88,10 @@ export class ValidateReceiptPage implements OnInit {
       this.subscriptionsQuery.get().subscribe((col) => {
         const docId = col.docs[0].id;
         this.subscriptionsQuery.doc(docId).update({
-          payment: {
-            // Atualizando informações do pagamento
-            status: 2, // Novo status: pagamento aprovado
-            time: firestore.Timestamp.fromDate(new Date()), // Momento da mudança
-            author: user.uid, // Autor da mudança
-          },
+          // @ts-ignore
+          'payment.status': 2, // Novo status: pagamento aprovado
+          'payment.time': firestore.Timestamp.fromDate(new Date()), // Momento da mudança
+          'payment.author': user.uid, // Autor da mudança
         });
         this.swalConfirm.fire();
         setTimeout(() => {
