@@ -12,7 +12,10 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>{{majorEvent.name}}</ion-card-title>
-        <ion-card-subtitle>{{ (userSubscription$ | async)?.payment.price | currency: 'BRL' }}</ion-card-subtitle>
+        <!--prettier-ignore -->
+        <ion-card-subtitle *ngIf="userSubscription$ | async as userInfo">
+          {{ enrollmentTypes.getEnrollmentType(userInfo.subscriptionType) }} - {{ userInfo.payment.price | currency: 'BRL' }}
+        </ion-card-subtitle>
         <!-- prettier-ignore -->
         <ion-card-subtitle>
           Efetue o pagamento até {{ getDateFromTimestamp(majorEvent.subscriptionEndDate) | date: 'dd \'de\' MMMM \'de\' yyyy - HH:mm' }} 

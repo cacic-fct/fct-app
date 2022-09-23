@@ -16,6 +16,8 @@ import { ClipboardService } from 'ngx-clipboard';
 import { Timestamp } from 'firebase/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
+import { EnrollmentTypesService } from './../../shared/services/enrollment-types.service';
+
 @UntilDestroy()
 @Component({
   selector: 'app-page-pay',
@@ -50,6 +52,7 @@ export class PagePayPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public afs: AngularFirestore
+    public enrollmentTypes: EnrollmentTypesService
   ) {}
 
   ngOnInit() {
