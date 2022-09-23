@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { Observable, first, Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { finalize, first } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
-import { format, parseISO, addHours } from 'date-fns';
+import { fromUnixTime } from 'date-fns';
+
+import { MajorEventItem } from 'src/app/shared/services/major-event';
+import { ClipboardService } from 'ngx-clipboard';
+import { Timestamp } from 'firebase/firestore';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
 @UntilDestroy()
 @Component({
@@ -18,59 +23,117 @@ import { format, parseISO, addHours } from 'date-fns';
   styleUrls: ['./page-pay.page.scss'],
 })
 export class PagePayPage implements OnInit {
+  @ViewChild('notFound')
+  private notFound: SwalComponent;
+
+  @ViewChild('expired')
+  private expired: SwalComponent;
+
   uploadPercent: Observable<number>;
   downloadURL: Observable<string>;
-  uid: string;
-  fileName: string;
-  majorEvent: any;
-  enrollment: any;
+  majorEvent$: Observable<MajorEventItem>;
   eventID: string;
+  fileName: string;
+  uid: string;
+
   rawFile: any;
+  userSubscription$: Promise<MajorEventSubscription>;
+  today: Date = new Date();
+  outOfDate: boolean = false;
 
   constructor(
     private storage: AngularFireStorage,
+    private clipboardService: ClipboardService,
     public auth: AngularFireAuth,
     private imageCompress: NgxImageCompressService,
     public toastController: ToastController,
     private router: Router,
     private route: ActivatedRoute,
-    public firestore: AngularFirestore
+    public afs: AngularFirestore
   ) {}
 
   ngOnInit() {
     this.eventID = this.route.snapshot.params.eventID;
-    this.auth.user.pipe(first()).subscribe((user) => {
+
+    // If eventID is not valid, redirect
+    this.afs
+      .collection('majorEvents')
+      .doc(this.eventID)
+      .get()
+      .pipe(untilDestroyed(this), trace('firestore'))
+      .subscribe((document) => {
+        if (!document.exists) {
+          // TODO: Redirecionar para página de minhas inscrições
+          this.router.navigate(['menu']);
+          this.notFound.fire();
+          setTimeout(() => {
+            this.notFound.close();
+          }, 1000);
+        }
+      });
+
+    this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
       if (user) {
-        this.uid = user.uid;
-        this.firestore
-          .collection(`/users/${user.uid}/majorEventEnrollments`)
-          .doc<any>(this.eventID)
-          .valueChanges()
-          .subscribe((value) => {
-            return (this.enrollment = value);
+        this.afs
+          .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.eventID}`)
+          .valueChanges({ idField: 'id' })
+          .pipe(untilDestroyed(this), trace('firestore'))
+          .subscribe((subscription) => {
+            this.userSubscription$ = subscription.reference.get().then((doc) => {
+              return doc.data();
+            });
           });
       }
     });
 
-    this.firestore
+    this.majorEvent$ = this.afs
       .collection('majorEvents')
-      .doc<any>(this.eventID)
+      .doc<MajorEventItem>(this.eventID)
       .valueChanges()
-      .subscribe((value) => {
-        return (this.majorEvent = {
-          ...value,
-          subscriptionStartDate: format(parseISO(value.subscriptionStartDate), 'dd/MM/yyyy HH:mm'),
-          subscriptionEndDate: format(parseISO(value.subscriptionEndDate), 'dd/MM/yyyy HH:mm'),
-        });
-      });
+      .pipe(untilDestroyed(this), trace('firestore'));
+
+    this.majorEvent$.pipe(untilDestroyed(this)).subscribe((event) => {
+      if (this.getDateFromTimestamp(event.subscriptionEndDate) < this.today) {
+        this.outOfDate = true;
+        // TODO: Redirecionar para página de minhas inscrições
+        this.router.navigate(['menu']);
+        this.expired.fire();
+        setTimeout(() => {
+          this.expired.close();
+        }, 1000);
+      }
+    });
   }
 
-  copyToClipboard() {
-    navigator.clipboard.writeText(this.majorEvent.accountChavePix);
-    alert('Chave copiada para área de transferência');
+  copyPixToClipboard(chavePix: string) {
+    this.clipboardService.copy(chavePix);
+    this.presentToastCopied();
+  }
+
+  async presentToastCopied() {
+    const toast = await this.toastController.create({
+      header: 'Realizar pagamento',
+      message: 'Chave pix copiada para a área de transferência.',
+      icon: 'copy',
+      position: 'bottom',
+      duration: 2000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    toast.present();
   }
 
   compressFile() {
+    if (this.outOfDate) {
+      return;
+    }
+
     const MAX_MEGABYTE = 8;
     this.imageCompress.uploadAndGetImageWithMaxSize(MAX_MEGABYTE).then(
       (result: string) => {
@@ -130,7 +193,7 @@ export class PagePayPage implements OnInit {
   }
 
   updateUser() {
-    this.firestore
+    this.afs
       .doc<any>(`/users/${this.uid}/majorEventEnrollments/${this.eventID}`)
       .update({ receiptUploaded: true, receiptLink: this.downloadURL })
       .then(() => {
@@ -201,4 +264,27 @@ export class PagePayPage implements OnInit {
     });
     toast.present();
   }
+
+  getDateFromTimestamp(timestamp: any): Date {
+    return fromUnixTime(timestamp.seconds);
+  }
+}
+
+interface Subscription {
+  id?: string;
+  reference?: DocumentReference<any>;
+}
+
+interface MajorEventSubscription {
+  id?: string;
+  payment?: {
+    status?: number;
+    price?: number;
+    time?: Timestamp;
+    error?: string;
+    author?: string;
+  };
+  subscribedToEvents: string[];
+  subscriptionType?: number;
+  time: Timestamp;
 }

@@ -8,49 +8,48 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-header *ngIf="majorEvent; else: loading">
-      <ion-card-title>{{majorEvent.name}}</ion-card-title>
-      <ion-card-subtitle
-        >{{ [].constructor.isArray(majorEvent.price) ? majorEvent.price[enrollment.enrollmentType] : majorEvent.price *
-        1.0 | currency:'BRL' }}</ion-card-subtitle
-      >
-      <ion-card-content>
-        Beneficiário: {{majorEvent.accountName}}
-        <br />
-        CPF/CNPJ: {{majorEvent.accountDocument}}
-        <br />
-        Instituição bancária: {{majorEvent.accountBank}}
-        <br />
-        Agência: {{majorEvent.accountAgency}}
-        <br />
-        Conta: {{majorEvent.accountNumber}}
-        <br />
-        Data limite para o pagamento: {{majorEvent.subscriptionEndDate ? majorEvent.subscriptionEndDate :
-        majorEvent.subscriptionStartDate}}
-        <br />
-        Chave Pix: {{majorEvent.accountChavePix}}
-        <br />
-        <div *ngIf="majorEvent.additionalPaymentInformation">
-          Informações adicionais:<br />
-          {{majorEvent.additionalPaymentInformation}}
-        </div>
-      </ion-card-content>
-    </ion-card-header>
+  <ng-container *ngIf="majorEvent$ | async as majorEvent; else: loading">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{majorEvent.name}}</ion-card-title>
+        <ion-card-subtitle>{{ (userSubscription$ | async)?.payment.price | currency: 'BRL' }}</ion-card-subtitle>
+        <!-- prettier-ignore -->
+        <ion-card-subtitle>
+          Efetue o pagamento até {{ getDateFromTimestamp(majorEvent.subscriptionEndDate) | date: 'dd \'de\' MMMM \'de\' yyyy - HH:mm' }} 
+        </ion-card-subtitle>
+        <ion-card-content>
+          <h2>Dados para o pagamento</h2>
+          <div>
+            <p><b>Beneficiário</b> {{ majorEvent.paymentInfo.name }}</p>
+            <p *ngIf="majorEvent.paymentInfo.chavePix"><b>Chave Pix</b> {{majorEvent.paymentInfo.chavePix}}</p>
+            <p><b>CPF/CNPJ</b> {{ majorEvent.paymentInfo.document }}</p>
+          </div>
+          <br />
+          <div>
+            <p><b>Instituição bancária</b> {{majorEvent.paymentInfo.bankName}}</p>
+            <p><b>Agência</b> {{ majorEvent.paymentInfo.agency }}</p>
+            <p><b>Conta</b> {{ majorEvent.paymentInfo.accountNumber }}</p>
+          </div>
+          <br />
+          <div *ngIf="majorEvent.paymentInfo.additionalPaymentInformation" class="pre-wrap">
+            {{ majorEvent.paymentInfo.additionalPaymentInformation }}
+          </div>
+        </ion-card-content>
+      </ion-card-header>
 
-    <ion-grid *ngIf="majorEvent && majorEvent.accountChavePix">
-      <ion-row>
-        <ion-col>
-          <ion-button (click)="copyToClipboard()">
-            <ion-icon slot="start" name="copy"></ion-icon>
-            Copiar chave Pix
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-card>
-  <ion-card>
-    <!-- <ng-container>
+      <ion-grid *ngIf="majorEvent.paymentInfo.chavePix">
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="copyPixToClipboard(majorEvent.paymentInfo.chavePix)">
+              <ion-icon slot="start" name="copy"></ion-icon>
+              Copiar chave Pix
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+    <ion-card>
+      <!-- <ng-container>
      TODO:
        <p class="ion-padding-horizontal">Você já enviou um comprovante.</p>
       <br />
@@ -60,28 +59,51 @@
       </ion-button>
     </ng-container>-->
 
-    <ng-container *ngIf="uploadPercent | async as countValue">
-      <ion-progress-bar [value]="countValue / 10"></ion-progress-bar>
-    </ng-container>
+      <ng-container *ngIf="uploadPercent | async as countValue">
+        <ion-progress-bar [value]="countValue / 10"></ion-progress-bar>
+      </ng-container>
 
-    <input type="file" class="file-input" accept="image/png, image/jpeg, image/webp" #fileUpload />
+      <input type="file" class="file-input" accept="image/png, image/jpeg, image/webp" #fileUpload />
 
-    <div class="file-upload">
-      <p class="ion-padding-horizontal" *ngIf="!downloadURL">
-        {{ rawFile ? ("Enviando " + (uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
-      </p>
-      <img *ngIf="downloadURL" class="ion-padding-horizontal ion-padding-vertical" src="{{rawFile}}" />
+      <div class="file-upload">
+        <p class="ion-padding-horizontal" *ngIf="!downloadURL">
+          {{ rawFile ? ("Enviando " + (uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
+        </p>
+        <img *ngIf="downloadURL" class="ion-padding-horizontal ion-padding-vertical" src="{{rawFile}}" />
 
-      <ion-grid *ngIf="!downloadURL">
-        <ion-row>
-          <ion-col>
-            <ion-button (click)="compressFile()">
-              <ion-icon slot="start" name="cloud-upload"></ion-icon>
-              Enviar comprovante
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-  </ion-card>
+        <ion-grid *ngIf="!downloadURL">
+          <ion-row>
+            <ion-col>
+              <ion-button (click)="compressFile()">
+                <ion-icon slot="start" name="cloud-upload"></ion-icon>
+                Enviar comprovante
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-card>
+  </ng-container>
 </ion-content>
+
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>
+
+<swal
+  #notFound
+  title="Evento inexistente"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
+
+<swal
+  #expired
+  title="Fora da data de pagamento"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
