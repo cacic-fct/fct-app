@@ -12,6 +12,8 @@ import { EventItem } from 'src/app/shared/services/event';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import * as firestore from 'firebase/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IonModal } from '@ionic/angular';
 
 @UntilDestroy()
 @Component({
@@ -25,9 +27,16 @@ export class ValidateReceiptPage implements OnInit {
   private subscriptionsQuery: AngularFirestoreCollection<Subscription>;
   public subscriptions$: Observable<Subscription[]>;
   public imgBaseHref: string;
+  refuseForm: FormGroup;
   @ViewChild('swalConfirm') private swalConfirm: SwalComponent;
+  @ViewChild('refuseModal') private refuseModal: IonModal;
 
-  constructor(private route: ActivatedRoute, private afs: AngularFirestore, private auth: AngularFireAuth) {}
+  constructor(
+    private route: ActivatedRoute,
+    private afs: AngularFirestore,
+    private auth: AngularFireAuth,
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get('eventId');
@@ -48,6 +57,9 @@ export class ValidateReceiptPage implements OnInit {
       )
     );
     this.imgBaseHref = [this.eventId, 'payment-receipts'].join('/');
+    this.refuseForm = this.formBuilder.group({
+      errorMessage: ['', Validators.required],
+    });
   }
 
   imgURL(receiptId: string): string {
@@ -97,6 +109,26 @@ export class ValidateReceiptPage implements OnInit {
         setTimeout(() => {
           this.swalConfirm.close();
         }, 1000);
+      });
+    });
+  }
+
+  refuse() {
+    if (this.refuseForm.invalid) {
+      return; // Não permite recusa se faltar justificativa
+    }
+    this.auth.user.pipe(first()).subscribe((user) => {
+      this.subscriptionsQuery.get().subscribe((col) => {
+        const docId = col.docs[0].id;
+        this.subscriptionsQuery.doc(docId).update({
+          // @ts-ignore
+          'payment.status': 3, // Novo status: erro personalizado
+          'payment.time': firestore.Timestamp.fromDate(new Date()), // Momento da mudança
+          'payment.author': user.uid, // Autor da mudança
+          'payment.error': this.refuseForm.get('errorMessage').value, // Justificativa
+        });
+        // Fechando modal a partir do método dismiss()
+        this.refuseModal.dismiss();
       });
     });
   }

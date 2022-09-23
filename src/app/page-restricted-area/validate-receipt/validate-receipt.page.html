@@ -45,7 +45,7 @@
         </ion-fab-button>
       </ion-fab-list>
       <ion-fab-list side="start">
-        <ion-fab-button color="danger" id="modal-refuse">
+        <ion-fab-button color="danger" (click)="refuseModal.present()">
           <ion-icon name="close"></ion-icon>
         </ion-fab-button>
       </ion-fab-list>
@@ -58,7 +58,7 @@
 </ng-template>
 
 <!-- Modal de recusa -->
-<ion-modal trigger="modal-refuse" #refuseModal>
+<ion-modal #refuseModal>
   <ng-template>
     <ion-header>
       <ion-toolbar>
@@ -67,16 +67,18 @@
         </ion-buttons>
         <ion-title>Recusar comprovante de pagamento</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="refuseModal.dismiss()" [strong]="true">Confirmar</ion-button>
+          <ion-button (click)="refuse()" [strong]="true">Confirmar</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
       Descreva o motivo do comprovante não ser aceito:
-      <ion-item>
-        <ion-label position="floating">Justificativa</ion-label>
-        <ion-textarea></ion-textarea>
-      </ion-item>
+      <form [formGroup]="refuseForm" (ngSubmit)="refuse()">
+        <ion-item>
+          <ion-label position="floating">Justificativa</ion-label>
+          <ion-input formControlName="errorMessage"></ion-input>
+        </ion-item>
+      </form>
     </ion-content>
   </ng-template>
 </ion-modal>
