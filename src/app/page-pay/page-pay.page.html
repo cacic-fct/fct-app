@@ -68,13 +68,11 @@
 
       <input type="file" class="file-input" accept="image/png, image/jpeg, image/webp" #fileUpload />
 
-      <div class="file-upload">
-        <p class="ion-padding-horizontal" *ngIf="!downloadURL">
+      <div *ngIf="!downloadURL; else uploadSucessful">
+        <p class="ion-padding-horizontal">
           {{ rawFile ? ("Enviando " + (uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
         </p>
-        <img *ngIf="downloadURL" class="ion-padding-horizontal ion-padding-vertical" src="{{rawFile}}" />
-
-        <ion-grid *ngIf="!downloadURL">
+        <ion-grid>
           <ion-row>
             <ion-col>
               <ion-button (click)="compressFile()">
@@ -85,6 +83,10 @@
           </ion-row>
         </ion-grid>
       </div>
+      <ng-template #uploadSucessful>
+        <p>Comprovante enviado com sucesso</p>
+        <img *ngIf="downloadURL" class="ion-padding-horizontal ion-padding-vertical" src="{{rawFile}}" />
+      </ng-template>
     </ion-card>
   </ng-container>
 </ion-content>

@@ -41,7 +41,7 @@ export class PagePayPage implements OnInit {
   fileName: string;
   uid: string;
 
-  rawFile: any;
+  rawFile: string;
   userSubscription$: Promise<MajorEventSubscription>;
   today: Date = new Date();
   outOfDate: boolean = false;
