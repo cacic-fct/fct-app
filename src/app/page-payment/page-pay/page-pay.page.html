@@ -68,7 +68,7 @@
 
     <div class="file-upload">
       <p class="ion-padding-horizontal" *ngIf="!downloadURL">
-        {{ rawFile ? ("Enviando " + ( uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
+        {{ rawFile ? ("Enviando " + (uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
       </p>
       <img *ngIf="downloadURL" class="ion-padding-horizontal ion-padding-vertical" src="{{rawFile}}" />
 
