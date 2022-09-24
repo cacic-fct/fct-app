@@ -67,7 +67,11 @@
         *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'danger'}">
       </ng-container>
       <ion-card-content>
-        <ion-text color="danger"><b>Erro no pagamento: </b>{{subscriptionData.payment.error}}</ion-text>
+        <ion-text color="danger"
+          ><b>Erro no pagamento: </b>
+          <span *ngIf="subscriptionData.payment.error"> {{subscriptionData.payment.error}} </span>
+          <span *ngIf="!subscriptionData.payment.error"> Não foi possível confirmar o pagamento. Tente novamente.</span>
+        </ion-text>
       </ion-card-content>
 
       <ng-container *ngIf="isInTheSubscriptionPeriod(majorEventData.subscriptionEndDate); else outOfDate">
