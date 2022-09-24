@@ -115,6 +115,7 @@ import {
     PerformanceMonitoringService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'pt-BR' },
+    { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true } },
     { provide: USE_DEVICE_LANGUAGE, useValue: true },
     { provide: APP_VERSION, useValue: GlobalConstantsService.appVersion },
     { provide: APP_NAME, useValue: GlobalConstantsService.appName },

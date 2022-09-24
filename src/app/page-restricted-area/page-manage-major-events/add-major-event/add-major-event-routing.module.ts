@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AddEventPage } from './add-event.page';
+import { AddMajorEventPage } from './add-major-event.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: AddEventPage,
-  },
+    component: AddMajorEventPage
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AddEventPageRoutingModule {}
+export class AddMajorEventPageRoutingModule {}
