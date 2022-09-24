@@ -13,7 +13,8 @@ import { PageVerifyPhonePage } from 'src/app/page-verify-phone/page-verify-phone
 
 import * as firebaseAuth from 'firebase/auth';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
-import { getStringChanges, RemoteConfig } from '@angular/fire/remote-config';
+import { getStringChanges, RemoteConfig, getBooleanChanges } from '@angular/fire/remote-config';
+import { createSnapToResolutions } from 'ol/resolutionconstraint';
 
 @Injectable()
 export class AuthService {
@@ -36,19 +37,27 @@ export class AuthService {
         localStorage.setItem('user', JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem('user'));
 
-        getStringChanges(this.remoteConfig, 'professors').subscribe((professors) => {
-          const professorsList: string[] = JSON.parse(professors);
-          if (professorsList.includes(user.email)) {
-            return;
-          }
-          this.auth.idTokenResult.pipe(first()).subscribe((idTokenResult) => {
-            const claims = idTokenResult.claims;
-            if (claims.role < 3000 || !claims.role) {
+        getStringChanges(this.remoteConfig, 'professors')
+          .pipe(first())
+          .subscribe((professors) => {
+            const professorsList: string[] = JSON.parse(professors);
+            if (professorsList.includes(user.email)) {
+              this.auth.idTokenResult.pipe(first()).subscribe((idTokenResult) => {
+                const claims = idTokenResult.claims;
+                if (!claims.role || claims.role < 3000) {
+                  const addProfessor = this.fns.httpsCallable('addProfessorRole');
+                  addProfessor({ email: user.email })
+                    .pipe(first())
+                    .subscribe(() => {
+                      this.professorRoleSuccess();
+                    });
+                }
+              });
+            } else {
+              // Not a professor
+              this.CompareUserdataVersion(this.userData);
             }
           });
-        });
-
-        this.CompareUserdataVersion(this.userData);
       } else {
         localStorage.removeItem('user');
       }
@@ -128,7 +137,24 @@ export class AuthService {
     toast.present();
   }
 
-  SetUserData(user: firebase.User) {
+  private async professorRoleSuccess() {
+    const toast = await this.toastController.create({
+      header: 'Professor adicionado',
+      icon: 'checkmark-circle',
+      position: 'bottom',
+      duration: 3000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    toast.present();
+  }
+
+  private SetUserData(user: firebase.User) {
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
     const userData: User = {
       uid: user.uid,
@@ -142,24 +168,26 @@ export class AuthService {
     });
   }
 
-  CompareUserdataVersion(user: firebase.User) {
-    this.remoteConfig.booleans.registerPrompt.pipe(first(), trace('remoteconfig')).subscribe((registerPrompt) => {
-      if (registerPrompt) {
-        this.afs
-          .doc<User>(`users/${user.uid}`)
-          .valueChanges()
-          .pipe(trace('firestore'))
-          .subscribe((data) => {
-            if (data === undefined) {
-              return;
-            }
+  private CompareUserdataVersion(user: firebase.User) {
+    getBooleanChanges(this.remoteConfig, 'registerPrompt')
+      .pipe(first(), trace('remoteconfig'))
+      .subscribe((registerPrompt) => {
+        if (registerPrompt) {
+          this.afs
+            .doc<User>(`users/${user.uid}`)
+            .valueChanges()
+            .pipe(trace('firestore'))
+            .subscribe((data) => {
+              if (data === undefined) {
+                return;
+              }
 
-            if (!data.dataVersion || data.dataVersion !== this.dataVersion) {
-              this.router.navigate(['/register']);
-            }
-          });
-      }
-    });
+              if (!data.dataVersion || data.dataVersion !== this.dataVersion) {
+                this.router.navigate(['/register']);
+              }
+            });
+        }
+      });
   }
 
   async verifyPhoneModal(phone: string): Promise<boolean> {
