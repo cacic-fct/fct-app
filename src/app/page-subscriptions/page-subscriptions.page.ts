@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { MajorEventItem, MajorEventSubscription } from './../shared/services/major-event';
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable, switchMap } from 'rxjs';
@@ -17,7 +18,7 @@ import { fromUnixTime } from 'date-fns';
 export class PageSubscriptionsPage implements OnInit {
   subscriptions$: Observable<Subscription[]>;
 
-  constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {}
+  constructor(public afs: AngularFirestore, public auth: AngularFireAuth, private router: Router) {}
 
   ngOnInit() {
     this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
@@ -60,6 +61,9 @@ export class PageSubscriptionsPage implements OnInit {
 
   getDateFromTimestamp(timestamp: any): Date {
     return fromUnixTime(timestamp.seconds);
+  }
+  goToPaymentPage(eventId: string) {
+    this.router.navigate(['inscricoes', 'pagar', eventId]);
   }
 }
 

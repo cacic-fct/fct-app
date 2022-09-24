@@ -18,11 +18,11 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-button>
+            <ion-button (click)="goToPaymentPage(majorEventData.id)">
               <ion-icon slot="start" name="cash"></ion-icon>
               Efetuar pagamento
             </ion-button>
-            <ion-button>
+            <ion-button (click)="goToPaymentPage(majorEventData.id)">
               <ion-icon slot="start" name="paper-plane"></ion-icon>
               Enviar comprovante
             </ion-button>
@@ -72,7 +72,7 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-button color="danger">
+            <ion-button color="danger" (click)="goToPaymentPage(majorEventData.id)">
               <ion-icon slot="start" name="paper-plane"></ion-icon>
               Reenviar comprovante
             </ion-button>
@@ -101,7 +101,7 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-button color="danger">
+            <ion-button color="danger" (click)="goToPaymentPage(majorEventData.id)">
               <ion-icon slot="start" name="pencil-outline"></ion-icon>
               Alterar inscrição
             </ion-button>
