@@ -16,6 +16,7 @@ import { User as FirebaseUser } from '@firebase/auth';
 })
 export class PageProfilePage implements OnInit {
   user$: Observable<FirebaseUser>;
+  userFirestore$: Observable<User>;
   academicID$: Observable<string>;
   serviceWorkerActive: boolean = false;
   _isProfessor = new BehaviorSubject<boolean>(false);
@@ -42,16 +43,7 @@ export class PageProfilePage implements OnInit {
       });
 
       if (user) {
-        this.academicID$ = this.afs
-          .doc<User>(`users/${user.uid}`)
-          .valueChanges()
-          .pipe(
-            first(),
-            trace('firestore'),
-            map((user) => {
-              return user.academicID;
-            })
-          );
+        this.userFirestore$ = this.afs.doc<User>(`users/${user.uid}`).valueChanges().pipe(first(), trace('firestore'));
       }
     });
   }

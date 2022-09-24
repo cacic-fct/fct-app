@@ -40,15 +40,13 @@ export class PageRegisterPage implements OnInit {
 
   dataVersion: string = GlobalConstantsService.userDataVersion;
   userData: any;
-  dataForm: FormGroup = new FormGroup({
-    academicID: new FormControl(''),
-    dob: new FormControl(''),
-    phone: new FormControl(''),
-    cpf: new FormControl(''),
-  });
-
-  _isUnespSubject: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  dataForm: FormGroup;
+  isUnesp: boolean = false;
+  _isUnespSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.isUnesp);
   isUnesp$: Observable<boolean> = this._isUnespSubject.asObservable();
+  isUndergraduate: boolean = false;
+  _isUndergraduate: BehaviorSubject<boolean> = new BehaviorSubject(this.isUndergraduate);
+  isUndergraduate$: Observable<boolean> = this._isUndergraduate.asObservable();
 
   constructor(
     public authService: AuthService,
@@ -63,12 +61,11 @@ export class PageRegisterPage implements OnInit {
     this.userData = JSON.parse(localStorage.getItem('user'));
 
     this.dataForm = this.formBuilder.group({
-      // Validator doesn't update when value changes programatically
-      // https://github.com/angular/angular/issues/30616
-      academicID: ['' /*[Validators.required, Validators.pattern('^[0-9]{9}$')]*/],
+      academicID: [''],
       phone: ['', Validators.required],
-      cpf: ['', this.validarCPF.bind(this)],
+      cpf: ['', this.validarCPF],
       fullName: '',
+      associateStatus: [''],
     });
   }
 
@@ -80,22 +77,23 @@ export class PageRegisterPage implements OnInit {
       .pipe(first(), trace('firestore'))
       .subscribe((user) => {
         if (user.email.includes('@unesp.br')) {
+          this.isUnesp = true;
           this._isUnespSubject.next(true);
-          this.dataForm.removeValidators(Validators.required);
+          this.dataForm.controls.associateStatus.addValidators([Validators.required]);
+          this.dataForm.controls.associateStatus.setValue(user.associateStatus);
+          if (user.associateStatus === 'undergraduate') {
+            this.isUndergraduate = true;
+            this._isUndergraduate.next(true);
+
+            this.dataForm.controls.academicID.setValue(user.academicID);
+            this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
+          }
         } else {
-          this.dataForm.addValidators(Validators.required);
+          this.dataForm.controls.fullName.setValue(user.fullName);
         }
-        this.dataForm.controls.academicID.setValue(user.academicID);
         this.dataForm.controls.phone.setValue(user.phone);
         this.dataForm.controls.cpf.setValue(user.cpf);
       });
-
-    this.userData.uid.replace(/%20/g, ' ') +
-      '%0D%0Anome%3A%20' +
-      this.userData.displayName.replace(/%20/g, ' ') +
-      '%0D%0Ae-mail%20institucional%3A%20' +
-      this.userData.email.replace(/%20/g, ' ') +
-      '%0D%0A';
 
     this.windowRef = this.win.windowRef;
     this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
@@ -131,7 +129,9 @@ export class PageRegisterPage implements OnInit {
   submitUserData(user: User) {
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
     const userData = {
-      academicID: this.dataForm.value.academicID,
+      fullName: this.isUnesp ? this.userData.displayName : this.dataForm.value.fullName,
+      associateStatus: this.isUnesp ? this.dataForm.value.associateStatus : 'external',
+      academicID: this.isUnesp && this.isUndergraduate ? this.dataForm.value.academicID : null,
       phone: this.dataForm.value.phone,
       dataVersion: this.dataVersion,
       cpf: this.dataForm.value.cpf,
@@ -167,14 +167,14 @@ export class PageRegisterPage implements OnInit {
     this.dataForm.controls.cpf.setValue(cpf);
   }
 
-  validarCPF(control: AbstractControl): ValidationErrors | null {
+  validarCPF = (control: AbstractControl): ValidationErrors | null => {
     const cpf = control.value;
 
     if (this.validateCPF(cpf)) {
       return null;
     }
     return { error: 'CPF inválido' };
-  }
+  };
 
   validateCPF(cpf: string): boolean {
     if (!cpf) {
@@ -210,5 +210,19 @@ export class PageRegisterPage implements OnInit {
       body: `Olá!\nEu não possuo (ESPECIFIQUE: CPF/celular), vocês poderiam validar o meu cadastro?\n\n=== Não apague os dados abaixo ===\nE-mail: ${this.userData.email}\nuid: ${this.userData.uid}\n`,
     };
     this.mailtoService.open(mailto);
+  }
+
+  selectionChange(event) {
+    if (event.target.value === 'undergraduate') {
+      this.isUndergraduate = true;
+      this._isUndergraduate.next(true);
+      this.dataForm.controls.academicID.setValidators([Validators.required, Validators.pattern('^[0-9]{9}$')]);
+      this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
+    } else {
+      this.isUndergraduate = false;
+      this._isUndergraduate.next(false);
+      this.dataForm.controls.academicID.clearValidators();
+      this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
+    }
   }
 }

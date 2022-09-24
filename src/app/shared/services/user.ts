@@ -9,4 +9,5 @@ export interface User {
   photoURL?: string;
   academicID?: string;
   dataVersion?: string;
+  associateStatus?: string;
 }

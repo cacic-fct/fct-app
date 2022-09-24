@@ -18,6 +18,22 @@
           <ion-input type="text" value="{{userData.email}}" readonly> </ion-input>
         </ion-item>
         <ion-item>
+          <ion-label class="ion-text-wrap">Eu sou</ion-label>
+          <ion-select
+            formControlName="associateStatus"
+            interface="popover"
+            placeholder="Selecione seu vínculo"
+            (ionChange)="selectionChange($event)">
+            <ion-select-option value="undergraduate">Aluno da graduação</ion-select-option>
+            <ion-select-option value="graduate">Aluno da pós-graduação</ion-select-option>
+            <ion-select-option value="professor">Professor</ion-select-option>
+            <ion-select-option value="adjunctprofessor">Professor substituto</ion-select-option>
+            <!-- TODO: servidor técnico-administrativo muito longo, está sendo cortado -->
+            <ion-select-option value="employee">Servidor técnico-administrativo</ion-select-option>
+            <ion-select-option value="other">Outro</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item *ngIf="  isUndergraduate$ | async">
           <ion-label class="ion-text-wrap">Registro acadêmico</ion-label>
           <ion-input
             formControlName="academicID"
@@ -39,7 +55,8 @@
 
         <ion-item>
           <ion-label class="ion-text-wrap">Nome completo</ion-label>
-          <ion-input type="text" value="{{userData.fullName}}" placeholder="Sem abreviações"> </ion-input>
+          <ion-input type="text" value="{{userData.fullName}}" formControlName="fullName" placeholder="Sem abreviações">
+          </ion-input>
         </ion-item>
 
         <ion-item>

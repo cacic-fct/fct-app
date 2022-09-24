@@ -13,35 +13,49 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngIf="user$ | async as user">
-    <div class="ion-text-center ion-padding-horizontal ion-padding-top">
-      <ion-avatar class="margin-horizontal-auto">
-        <img [src]="user.photoURL" />
-      </ion-avatar>
-      <ion-card-title>
-        <h2 class="margin-horizontal-auto">{{ user.displayName }}</h2>
-        <p class="margin-horizontal-auto" style="font-size: 20px">{{ user.email }}</p>
-        <ng-container *ngIf="academicID$ | async as academicID; else notAStudent">
-          <p class="ion-text-wrap" style="margin-bottom: 0">{{ courses.getCourse(academicID) }}</p>
-        </ng-container>
-        <ng-template #notAStudent>
-          <ng-container *ngIf="isProfessor$ | async as isProfessor">
-            <p class="ion-text-wrap" style="margin-bottom: 0" *ngIf="isProfessor">Professor</p>
-            <p class="ion-text-wrap" style="margin-bottom: 0" *ngIf="!isProfessor">Usuário da comunidade</p>
+  <ion-card *ngIf="user$ | async as user; else error">
+    <ng-container *ngIf="userFirestore$ | async as userFirestore; else error">
+      <div class="ion-text-center ion-padding-horizontal ion-padding-top">
+        <ion-avatar class="margin-horizontal-auto">
+          <img [src]="user.photoURL" />
+        </ion-avatar>
+        <ion-card-title>
+          <h2 class="margin-horizontal-auto">{{ (userFirestore$ | async)?.fullName || user.displayName }}</h2>
+          <p class="margin-horizontal-auto no-margin-bottom" style="font-size: 20px">{{ user.email }}</p>
+          <p style="font-size: 20px; margin: auto 0">{{ userFirestore.phone }}</p>
+
+          <ng-container *ngIf="user.email.includes('@unesp.br')">
+            <ng-container *ngIf="academicID$ | async as academicID; else notAStudent">
+              <ng-container *ngIf="academicID">
+                <p class="ion-text-wrap no-margin-bottom">Graduação em {{ courses.getCourse(academicID) }}</p>
+              </ng-container>
+            </ng-container>
+
+            <ng-template #notAStudent>
+              <p class="ion-text-wrap no-margin-bottom">
+                {{ courses.getAssociateStatus(userFirestore.associateStatus) }}
+              </p>
+            </ng-template>
           </ng-container>
-        </ng-template>
-      </ion-card-title>
-    </div>
 
-    <qr-code
-      class="qr-code ion-text-center"
-      [value]="'uid:' + (user.uid)"
-      size="320"
-      errorCorrectionLevel="H"></qr-code>
+          <p class="ion-text-wrap no-margin-bottom" *ngIf="!user.email.includes('@unesp.br')">Comunidade externa</p>
+        </ion-card-title>
+      </div>
 
-    <div class="ion-text-center ion-padding" *ngIf="serviceWorkerActive">
-      <ion-icon name="information-circle-outline" class="info-icon"></ion-icon>
-      <span class="info-text">Esta página está disponível off-line</span>
-    </div>
+      <qr-code
+        class="qr-code ion-text-center"
+        [value]="'uid:' + (user.uid)"
+        size="320"
+        errorCorrectionLevel="H"></qr-code>
+
+      <div class="ion-text-center ion-padding" *ngIf="serviceWorkerActive">
+        <ion-icon name="information-circle-outline" class="info-icon"></ion-icon>
+        <span class="info-text">Esta página está disponível off-line</span>
+      </div>
+    </ng-container>
   </ion-card>
 </ion-content>
+
+<ng-template #error>
+  <h1><ion-text color="danger">Ocorreu um erro ao mostrar as suas informações</ion-text></h1>
+</ng-template>
