@@ -13,9 +13,8 @@
       <ng-container
         *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: ''}">
       </ng-container>
-      <ion-card-content> Aguardando o pagamento e envio do comprovante</ion-card-content>
-
       <ng-container *ngIf="isInTheSubscriptionPeriod(majorEventData.subscriptionEndDate); else outOfDate">
+        <ion-card-content> Aguardando o pagamento e envio do comprovante</ion-card-content>
         <ion-grid>
           <ion-row>
             <ion-col>
