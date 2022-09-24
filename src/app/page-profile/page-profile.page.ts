@@ -3,9 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { CoursesService } from '../shared/services/courses.service';
 
-import { BehaviorSubject, first, Observable, map } from 'rxjs';
+import { first, Observable, map } from 'rxjs';
 import { User } from '../shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
+
+import { User as FirebaseUser } from '@firebase/auth';
 
 @Component({
   selector: 'app-page-profile',
@@ -13,10 +15,8 @@ import { trace } from '@angular/fire/compat/performance';
   styleUrls: ['./page-profile.page.scss'],
 })
 export class PageProfilePage implements OnInit {
-  user: any;
-  uid$: Observable<string>;
-  _academicIDSubject: BehaviorSubject<string> = new BehaviorSubject(undefined);
-  academicID$: Observable<string> = this._academicIDSubject.asObservable();
+  user$: Observable<FirebaseUser>;
+  academicID$: Observable<string>;
   serviceWorkerActive: boolean = false;
 
   constructor(public auth: AngularFireAuth, public courses: CoursesService, private afs: AngularFirestore) {
@@ -30,19 +30,20 @@ export class PageProfilePage implements OnInit {
   }
 
   ngOnInit() {
-    this.uid$ = this.auth.user.pipe(first(), trace('auth')).pipe(map((user) => user.uid));
+    this.user$ = this.auth.user.pipe(first(), trace('auth'));
 
-    this.auth.user.pipe(first(), trace('auth')).subscribe((user) => {
+    this.user$.subscribe((user) => {
       if (user) {
-        this.afs
+        this.academicID$ = this.afs
           .doc<User>(`users/${user.uid}`)
           .valueChanges()
-          .pipe(first(), trace('firestore'))
-          .subscribe((user) => {
-            if (user.academicID) {
-              this._academicIDSubject.next(user.academicID);
-            }
-          });
+          .pipe(
+            first(),
+            trace('firestore'),
+            map((user) => {
+              return user.academicID;
+            })
+          );
       }
     });
   }
