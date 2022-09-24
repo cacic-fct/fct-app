@@ -1,3 +1,4 @@
+import { Timestamp } from '@firebase/firestore-types';
 import { Router } from '@angular/router';
 import { MajorEventItem, MajorEventSubscription } from './../shared/services/major-event';
 import { Component, OnInit } from '@angular/core';
@@ -59,11 +60,19 @@ export class PageSubscriptionsPage implements OnInit {
     });
   }
 
-  getDateFromTimestamp(timestamp: any): Date {
+  getDateFromTimestamp(timestamp: Timestamp): Date {
     return fromUnixTime(timestamp.seconds);
   }
   goToPaymentPage(eventId: string) {
     this.router.navigate(['inscricoes', 'pagar', eventId]);
+  }
+  isInTheSubscriptionPeriod(endDateTimestamp: Timestamp): boolean {
+    if (endDateTimestamp) {
+      const now = new Date(); // Maybe it should get the current date from the server.
+      const endDate = fromUnixTime(endDateTimestamp.seconds);
+      return now < endDate;
+    }
+    return false;
   }
 }
 

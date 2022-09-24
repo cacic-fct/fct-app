@@ -15,20 +15,22 @@
       </ng-container>
       <ion-card-content> Aguardando o pagamento e envio do comprovante</ion-card-content>
 
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-button (click)="goToPaymentPage(majorEventData.id)">
-              <ion-icon slot="start" name="cash"></ion-icon>
-              Efetuar pagamento
-            </ion-button>
-            <ion-button (click)="goToPaymentPage(majorEventData.id)">
-              <ion-icon slot="start" name="paper-plane"></ion-icon>
-              Enviar comprovante
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ng-container *ngIf="isInTheSubscriptionPeriod(majorEventData.subscriptionEndDate); else outOfDate">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button (click)="goToPaymentPage(majorEventData.id)">
+                <ion-icon slot="start" name="cash"></ion-icon>
+                Efetuar pagamento
+              </ion-button>
+              <ion-button (click)="goToPaymentPage(majorEventData.id)">
+                <ion-icon slot="start" name="paper-plane"></ion-icon>
+                Enviar comprovante
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
     </ion-card>
   </ng-template>
 
@@ -69,16 +71,18 @@
         <ion-text color="danger"><b>Erro no pagamento: </b>{{subscriptionData.payment.error}}</ion-text>
       </ion-card-content>
 
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-button color="danger" (click)="goToPaymentPage(majorEventData.id)">
-              <ion-icon slot="start" name="paper-plane"></ion-icon>
-              Reenviar comprovante
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ng-container *ngIf="isInTheSubscriptionPeriod(majorEventData.subscriptionEndDate); else outOfDate">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button color="danger" (click)="goToPaymentPage(majorEventData.id)">
+                <ion-icon slot="start" name="paper-plane"></ion-icon>
+                Reenviar comprovante
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
     </ion-card>
   </ng-template>
 
@@ -195,5 +199,13 @@
         </ng-container>
       </ion-card-subtitle>
     </ion-card-header>
+  </ng-template>
+
+  <ng-template #outOfDate>
+    <ion-card-content color="danger">
+      <ion-text color="danger">
+        <b>Não foi possível concluir a sua inscrição: </b>O prazo para inscrição no evento selecionado já expirou.
+      </ion-text>
+    </ion-card-content>
   </ng-template>
 </ion-content>
