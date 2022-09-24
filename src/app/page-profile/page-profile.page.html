@@ -19,11 +19,17 @@
         <img [src]="user.photoURL" />
       </ion-avatar>
       <ion-card-title>
-        <h2 class="margin-horizontal-auto">{{user.displayName}}</h2>
-        <p class="margin-horizontal-auto" style="font-size: 20px">{{user.email}}</p>
-        <ng-container *ngIf="academicID$ | async as academicID">
+        <h2 class="margin-horizontal-auto">{{ user.displayName }}</h2>
+        <p class="margin-horizontal-auto" style="font-size: 20px">{{ user.email }}</p>
+        <ng-container *ngIf="academicID$ | async as academicID; else notAStudent">
           <p class="ion-text-wrap" style="margin-bottom: 0">{{ courses.getCourse(academicID) }}</p>
         </ng-container>
+        <ng-template #notAStudent>
+          <ng-container *ngIf="isProfessor$ | async as isProfessor">
+            <p class="ion-text-wrap" style="margin-bottom: 0" *ngIf="isProfessor">Professor</p>
+            <p class="ion-text-wrap" style="margin-bottom: 0" *ngIf="!isProfessor">Usuário da comunidade</p>
+          </ng-container>
+        </ng-template>
       </ion-card-title>
     </div>
 
