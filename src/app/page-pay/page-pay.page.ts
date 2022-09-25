@@ -211,7 +211,11 @@ export class PagePayPage implements OnInit {
   updateUser() {
     this.afs
       .doc<any>(`/users/${this.uid}/majorEventSubscriptions/${this.eventID}`)
-      .update({ receiptUploaded: true, receiptLink: this.downloadURL })
+      .update({
+        'payment.status': 1,
+        'payment.time': Timestamp.fromDate(new Date()),
+        'payment.author': this.uid,
+      })
       .then(() => {
         this.toastSuccess();
 
