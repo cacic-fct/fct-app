@@ -1,6 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
+      <!-- TODO: Alterar -->
       <ion-back-button defaultHref="/pagamentos"></ion-back-button>
     </ion-buttons>
     <ion-title>Realizar pagamento</ion-title>
@@ -12,7 +13,7 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>{{majorEvent.name}}</ion-card-title>
-        <!--prettier-ignore -->
+        <!-- prettier-ignore -->
         <ion-card-subtitle *ngIf="userSubscription$ | async as userInfo">
           {{ enrollmentTypes.getEnrollmentType(userInfo.subscriptionType) }} - {{ userInfo.payment.price | currency: 'BRL' }}
         </ion-card-subtitle>
@@ -70,7 +71,7 @@
 
       <div *ngIf="!downloadURL; else uploadSucessful">
         <p class="ion-padding-horizontal">
-          {{ rawFile ? ("Enviando " + (uploadPercent | async) + "%") : "Nenhuma imagem selecionada."}}
+          {{ rawFile ? ("Enviando… (" + (uploadPercent | async) + "%") + ")" : "Nenhuma imagem selecionada."}}
         </p>
         <ion-grid>
           <ion-row>
@@ -84,8 +85,11 @@
         </ion-grid>
       </div>
       <ng-template #uploadSucessful>
-        <p>Comprovante enviado com sucesso</p>
-        <img *ngIf="downloadURL" class="ion-padding-horizontal ion-padding-vertical" src="{{rawFile}}" />
+        <ion-progress-bar value="1"></ion-progress-bar>
+        <h3 class="ion-padding-horizontal">Comprovante enviado</h3>
+        <div class="img-container">
+          <img *ngIf="downloadURL" class="ion-padding" src="{{rawFile}}" />
+        </div>
       </ng-template>
     </ion-card>
   </ng-container>
@@ -117,6 +121,15 @@
   #expired
   title="Fora da data de pagamento"
   icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
+
+<swal
+  #alreadyPaid
+  title="Pagamento já efetuado"
+  icon="warning"
   [heightAuto]="false"
   [showCancelButton]="false"
   [showCloseButton]="false"

@@ -34,6 +34,9 @@ export class PagePayPage implements OnInit {
   @ViewChild('subscriptionNotFound')
   private subscriptionNotFound: SwalComponent;
 
+  @ViewChild('alreadyPaid')
+  private alreadyPaid: SwalComponent;
+
   uploadPercent: Observable<number>;
   downloadURL: Observable<string>;
   majorEvent$: Observable<MajorEventItem>;
@@ -70,9 +73,9 @@ export class PagePayPage implements OnInit {
       .subscribe((document) => {
         if (!document.exists) {
           // TODO: Redirecionar para página de minhas inscrições
-          this.router.navigate(['menu']);
           this.eventNotFound.fire();
           setTimeout(() => {
+            this.router.navigate(['menu']);
             this.eventNotFound.close();
           }, 1000);
         }
@@ -91,10 +94,21 @@ export class PagePayPage implements OnInit {
                 return doc.data();
               } else {
                 // TODO: Redirecionar para página de minhas inscrições
-                this.router.navigate(['menu']);
                 this.subscriptionNotFound.fire();
                 setTimeout(() => {
+                  this.router.navigate(['menu']);
                   this.subscriptionNotFound.close();
+                }, 1000);
+              }
+            });
+
+            this.userSubscription$.then((subscription) => {
+              if (subscription.payment.status !== 0 && subscription.payment.status !== 3) {
+                // TODO: Redirecionar para página de minhas inscrições
+                this.alreadyPaid.fire();
+                setTimeout(() => {
+                  this.router.navigate(['menu']);
+                  this.alreadyPaid.close();
                 }, 1000);
               }
             });
@@ -153,7 +167,8 @@ export class PagePayPage implements OnInit {
     const MAX_MEGABYTE = 8;
     this.imageCompress.uploadAndGetImageWithMaxSize(MAX_MEGABYTE).then(
       (result: string) => {
-        this.uploadFile(result);
+        const format = result.split(';')[0].split('/')[1];
+        this.uploadFile(result, format);
         this.rawFile = result;
       },
       (result: string) => {
@@ -161,14 +176,11 @@ export class PagePayPage implements OnInit {
           this.toastSize();
           return;
         }
-
-        this.rawFile = result;
-        this.uploadFile(result);
       }
     );
   }
 
-  uploadFile(result: string) {
+  uploadFile(result: string, format: string) {
     // Attribution: Harsh Mittal
     // https://stackoverflow.com/questions/68324916/resize-compress-selected-image-before-uploading-to-firebase-in-angular
     const split = result.split(',');
@@ -185,14 +197,14 @@ export class PagePayPage implements OnInit {
 
     const fileBlob = new Blob([arrayBuffer], { type }); // upload this to firebase.
 
-    const filePath = `${this.eventID}/payment-receipts/${this.uid}`;
+    const filePath = `${this.eventID}/payment-receipts/${this.uid}.${format}`;
 
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, fileBlob, { customMetadata: { owner: this.uid } });
 
     this.uploadPercent = task.percentageChanges();
     task.catch((error) => {
-      console.error(error);
+      console.error('Upload task failed', error);
       this.toastError();
     });
 
@@ -210,7 +222,7 @@ export class PagePayPage implements OnInit {
 
   updateUser() {
     this.afs
-      .doc<any>(`/users/${this.uid}/majorEventSubscriptions/${this.eventID}`)
+      .doc<any>(`/majorEvents/${this.eventID}/subscriptions/${this.uid}`)
       .update({
         'payment.status': 1,
         'payment.time': Timestamp.fromDate(new Date()),
@@ -218,7 +230,7 @@ export class PagePayPage implements OnInit {
       })
       .then(() => {
         this.toastSuccess();
-
+        // TODO: Redirecionar para página de minhas inscrições
         setTimeout(() => {
           this.toastController.dismiss();
           this.router.navigate(['/pagamentos'], { replaceUrl: true });

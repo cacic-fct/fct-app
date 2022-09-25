@@ -11,6 +11,16 @@ ion-card-header {
   padding-bottom: 0;
 }
 
-img {
-  max-width: 400px;
+.img-container {
+  overflow: scroll;
+
+  img {
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+
+    @media (max-width: 410px) {
+      max-width: 300px;
+    }
+  }
 }
