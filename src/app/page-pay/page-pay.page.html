@@ -64,14 +64,15 @@
     </ng-container>-->
 
       <ng-container *ngIf="uploadPercent | async as countValue">
-        <ion-progress-bar [value]="countValue / 10"></ion-progress-bar>
+        <ion-progress-bar [value]="countValue / 100"></ion-progress-bar>
       </ng-container>
 
       <input type="file" class="file-input" accept="image/png, image/jpeg, image/webp" #fileUpload />
 
       <div *ngIf="!downloadURL; else uploadSucessful">
+        <!-- prettier-ignore -->
         <p class="ion-padding-horizontal">
-          {{ rawFile ? ("Enviando… (" + (uploadPercent | async) + "%") + ")" : "Nenhuma imagem selecionada."}}
+          {{ rawFile ? ("Enviando… (" + (uploadPercent | async | number: '1.0-0') + "%") + ")" : "Nenhuma imagem selecionada."}}
         </p>
         <ion-grid>
           <ion-row>
