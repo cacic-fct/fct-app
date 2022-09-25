@@ -25,7 +25,7 @@
           <p style="font-size: 20px; margin: auto 0">{{ userFirestore.phone }}</p>
 
           <ng-container *ngIf="user.email.includes('@unesp.br')">
-            <ng-container *ngIf="academicID$ | async as academicID; else notAStudent">
+            <ng-container *ngIf="(userFirestore$ | async)?.academicID as academicID; else notAStudent">
               <ng-container *ngIf="academicID">
                 <p class="ion-text-wrap no-margin-bottom">Graduação em {{ courses.getCourse(academicID) }}</p>
               </ng-container>

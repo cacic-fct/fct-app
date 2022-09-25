@@ -14,7 +14,6 @@ import { PageVerifyPhonePage } from 'src/app/page-verify-phone/page-verify-phone
 import * as firebaseAuth from 'firebase/auth';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { getStringChanges, RemoteConfig, getBooleanChanges } from '@angular/fire/remote-config';
-import { createSnapToResolutions } from 'ol/resolutionconstraint';
 
 @Injectable()
 export class AuthService {
@@ -45,6 +44,14 @@ export class AuthService {
               this.auth.idTokenResult.pipe(first()).subscribe((idTokenResult) => {
                 const claims = idTokenResult.claims;
                 if (!claims.role || claims.role < 3000) {
+                  const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+                  const userData: User = {
+                    associateStatus: 'professor',
+                  };
+                  userRef.set(userData, {
+                    merge: true,
+                  });
+
                   const addProfessor = this.fns.httpsCallable('addProfessorRole');
                   addProfessor({ email: user.email })
                     .pipe(first())
@@ -196,11 +203,15 @@ export class AuthService {
       componentProps: {
         phone: phone,
       },
+      backdropDismiss: false,
+      swipeToClose: false,
+      keyboardClose: false,
     });
 
     await modal.present();
 
-    return modal.onDidDismiss().then((data) => {
+    return modal.onDidDismiss().then((response) => {
+      const data = response.data;
       if (data) {
         return new Promise<boolean>((resolve) => {
           resolve(true);

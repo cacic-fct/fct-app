@@ -9,5 +9,5 @@ export interface User {
   photoURL?: string;
   academicID?: string;
   dataVersion?: string;
-  associateStatus?: string;
+  associateStatus?: 'undergraduate' | 'graduate' | 'professor' | 'adjunctProfessor' | 'employee' | 'external' | 'other';
 }

@@ -115,7 +115,7 @@ export class PageVerifyPhonePage implements OnInit {
             // Error SMS not sent
             console.error(error);
             this.windowRef.lastExecution = null;
-            this.modalController.dismiss(false);
+            this.modalController.dismiss(null);
           });
       }
     });
@@ -156,7 +156,7 @@ export class PageVerifyPhonePage implements OnInit {
           .updatePhoneNumber(phoneCredential)
           .then(() => {
             // User signed in successfully.
-            this.modalController.dismiss(true);
+            this.modalController.dismiss({ data: true });
           })
           .catch((error) => {
             // User couldn't sign in
@@ -175,16 +175,15 @@ export class PageVerifyPhonePage implements OnInit {
         .confirm(this.verificationCode)
         .then(() => {
           // User signed in successfully.
-          this.modalController.dismiss(true);
+          this.modalController.dismiss({ data: true });
         })
         .catch((error) => {
+          console.error(error);
           // User couldn't sign in
           if (error.code === 'auth/invalid-verification-code') {
-            console.error(error);
             this.lastVerificationCode = this.verificationCode;
             this.invalidCode = true;
           } else if (error.code === 'auth/account-exists-with-different-credential') {
-            console.error(error);
             this.phoneAlreadyRegistered = true;
           }
         });
