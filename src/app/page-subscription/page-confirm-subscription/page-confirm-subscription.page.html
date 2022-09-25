@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Inscrição</ion-title>
+    <ion-title>Confirme sua inscrição</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -65,17 +65,17 @@
           </ng-template>
 
           <ng-template #multiPrice>
-            <ion-item lines="none" *ngIf="majorEvent.price.priceStudents">
+            <ion-item lines="none" *ngIf="majorEvent.price.priceStudents && subscriptionTypeSelected$ === '0'">
               Alunos da Unesp
               <span slot="end">{{ (majorEvent.price.priceStudents) | currency:'BRL' }}</span>
             </ion-item>
 
-            <ion-item lines="none" *ngIf="majorEvent.price.priceOtherStudents">
+            <ion-item lines="none" *ngIf="majorEvent.price.priceOtherStudents && subscriptionTypeSelected$ === '1'">
               Alunos
               <span slot="end">{{ (majorEvent.price.priceOtherStudents) | currency:'BRL' }}</span>
             </ion-item>
 
-            <ion-item lines="none" *ngIf="majorEvent.price.priceProfessors">
+            <ion-item lines="none" *ngIf="majorEvent.price.priceProfessors && subscriptionTypeSelected$ === '2'">
               Professores
               <span slot="end">{{ (majorEvent.price.priceProfessors) | currency:'BRL' }}</span>
             </ion-item>
@@ -84,33 +84,16 @@
         </div>
 
         <div class="card-section ion-padding-horizontal">
-          <ion-item>
-            <ion-label>Tipo de inscrição</ion-label>
-            <ion-select 
-              aria-required="required"
-              [interfaceOptions]="customPopoverOptions"
-              interface="popover"
-              placeholder="selecione"
-              [(ngModel)]="opSelected"
-            >
-              <ion-select-option value="0">Aluno da Unesp</ion-select-option>
-              <ion-select-option value="1">Aluno de outras IES</ion-select-option>
-              <ion-select-option value="2">Professores e profissionais</ion-select-option>
-            </ion-select>
-          </ion-item>
-
           <p>{{ qntdMinicursosChecked$ }} de {{ adjustNumber(countMinicursos$) }} minicursos selecionados</p>
           <p>{{ qntdPalestrasChecked$ }} de {{ adjustNumber(countPalestras$) }} palestras selecionados</p>
         </div>
 
-        <!-- {{ console.log(events$) }} -->
         <div *ngFor="let item of events$ | keyvalue;">
           <ion-item-divider mode="ios" sticky="true">
             <ion-label>{{ formatDate(item.key) }}</ion-label>
           </ion-item-divider>
 
           <ion-list *ngFor="let event of item.value;">
-            <!-- {{ console.log(event) }} -->
             <ion-item>
               <ion-avatar slot="start">
                 <img src="assets/events/icon.png" />
@@ -118,27 +101,13 @@
               <ion-label>
                 <h3>{{ event.name }}</h3>
                 <h4>{{ event.time }}</h4>
-                <p>{{ event.slotsAvailable }} vagas restantes</p>
-                <p>Sua posição na fila: {{ event.numberOfSubscriptions + 1 }}</p>
-                <!-- <p>Conflito de horário com "item 2"</p>-->
               </ion-label>
-              <ion-checkbox
-                name="{{event.eventType}}"
-                [disabled]="event.slotsAvailable === 0 ? true : null"
-                slot="end"
-                (ionChange)="countCheckeds($event, event)"></ion-checkbox>
             </ion-item>
           </ion-list>
         </div>
       </ion-card>
 
-      <div class="fixed">
-        <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-          <ion-fab-button (click)="goToConfirmSubscription()">
-            <ion-icon name="checkmark"></ion-icon>
-          </ion-fab-button>
-        </ion-fab>
-      </div>
+      <ion-button (click)="onSubmit()">CONFIRMAR</ion-button>
     </div>
   </ng-container>
 
@@ -146,3 +115,22 @@
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </ng-template>
 </ion-content>
+
+<swal
+  #successSwal
+  title="Inscrição criado com sucesso"
+  icon="success"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
+
+<swal
+  #errorSwal
+  title="Ocorreu um erro ao criar a inscrição"
+  text="Verifique a sua conexão à internet e tente novamente"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="true"></swal>

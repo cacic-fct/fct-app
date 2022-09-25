@@ -78,6 +78,11 @@ const routes: Routes = [
     title: 'Inscrição',
     loadChildren: () => import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
   },
+  {
+    path: 'eventos/confirmar-inscricao',
+    title: 'Confirme sua inscrição',
+    loadChildren: () => import('./page-subscription/page-confirm-subscription/page-confirm-subscription.module').then((m) => m.PageConfirmSubscriptionPageModule),
+  },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadingStrategyService })],

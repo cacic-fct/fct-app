@@ -30,4 +30,5 @@ export interface MajorEventItem {
   createdBy: string;
   createdOn: Timestamp;
   id: string;
+  events: string[];
 }

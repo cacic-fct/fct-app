@@ -5,6 +5,12 @@ export interface EventItem {
   icon: string;
   course: string;
   date: Timestamp;
+  eventStartDate: Timestamp;
+  eventEndDate: Timestamp;
+  eventType: string;
+  time: string;
+  slotsAvailable: number;
+  numberOfSubscriptions: number;
   location: {
     lat: number;
     lon: number;

@@ -61,32 +61,33 @@
             <ng-template #singlePrice>
               <ion-item lines="none">
                 Preço único
-                <span slot="end">{{ (event.price.priceSingle / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ (event.price.priceSingle) | currency:'BRL' }}</span>
               </ion-item>
             </ng-template>
 
             <ng-template #multiPrice>
               <ion-item lines="none" *ngIf="event.price.priceStudents">
                 Alunos da Unesp
-                <span slot="end">{{ (event.price.priceStudents / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ (event.price.priceStudents) | currency:'BRL' }}</span>
               </ion-item>
 
               <ion-item lines="none" *ngIf="event.price.priceOtherStudents">
                 Alunos
-                <span slot="end">{{ (event.price.priceOtherStudents / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ (event.price.priceOtherStudents) | currency:'BRL' }}</span>
               </ion-item>
 
-              <ion-item lines="none" *ngIf="event.price.priceOtherStudents">
+              <ion-item lines="none" *ngIf="event.price.priceProfessors">
                 Professores
-                <span slot="end">{{ (event.price.priceProfessors / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ (event.price.priceProfessors) | currency:'BRL' }}</span>
               </ion-item>
             </ng-template>
           </div>
 
-          <!-- TODO: Fazer botão de inscrição funcionar -->
           <div class="ion-padding">
             <ion-button
-              *ngIf="(event.subscriptionDateStart && event.subscriptionDateEnd) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionDateStart), getDateFromTimestamp(event.subscriptionDateEnd))">
+              *ngIf="(event.subscriptionDateStart && event.subscriptionDateEnd) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionDateStart), getDateFromTimestamp(event.subscriptionDateEnd))"
+              href="/eventos/inscrever/{{event.id}}"
+            >
               Inscreva-se
             </ion-button>
 
