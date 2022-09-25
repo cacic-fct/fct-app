@@ -5,7 +5,7 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Router } from '@angular/router';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
-import { compareAsc, fromUnixTime, format, parseISO } from 'date-fns';
+import { fromUnixTime, format, parseISO } from 'date-fns';
 
 import { MajorEventItem } from '../../shared/services/major-event';
 import { EventItem } from '../../shared/services/event';
@@ -15,14 +15,14 @@ import { EventItem } from '../../shared/services/event';
   templateUrl: 'page-confirm-subscription.page.html',
   styleUrls: ['page-confirm-subscription.page.scss'],
 })
-export class PageConfirmSubscriptionPage implements OnInit {  
+export class PageConfirmSubscriptionPage implements OnInit {
   @ViewChild('successSwal') private successSwal: SwalComponent;
   @ViewChild('errorSwal') private errorSwal: SwalComponent;
-  
+
   console = console;
   today: Date = new Date();
 
-  events$: Object = {};
+  events$: any = {};
   majorEvent$: MajorEventItem;
   countMinicursos$: number;
   countPalestras$: number;
@@ -52,7 +52,7 @@ export class PageConfirmSubscriptionPage implements OnInit {
   ngOnInit() {}
 
   adjustNumber(num: number): string {
-    return ("00" + num).slice(-2);
+    return ('00' + num).slice(-2);
   }
 
   countCheckeds(e: any) {
@@ -61,7 +61,7 @@ export class PageConfirmSubscriptionPage implements OnInit {
     let countPalestras = document.querySelectorAll('[name="palestra"][value="on"]').length;
 
     const current = checked ? 1 : -1;
-    if (name === "palestra") countPalestras += current;
+    if (name === 'palestra') countPalestras += current;
     else countMinicursos += current;
 
     this.qntdMinicursosChecked$ = this.adjustNumber(countMinicursos);
@@ -71,11 +71,11 @@ export class PageConfirmSubscriptionPage implements OnInit {
   formatAndSaveEvent(event: EventItem) {
     event.time = this.getIntervalHours(event.eventStartDate, event.eventEndDate);
     const date = format(event.eventStartDate.toDate(), 'yyyy-MM-dd');
-    
+
     if (this.events$[date]) this.events$[date].push(event);
     else this.events$[date] = [event];
 
-    if (event.eventType === "minicurso") this.countMinicursos$++;
+    if (event.eventType === 'minicurso') this.countMinicursos$++;
     else this.countPalestras$++;
   }
 
@@ -98,30 +98,49 @@ export class PageConfirmSubscriptionPage implements OnInit {
 
   onSubmit() {
     this.auth.user.subscribe((user) => {
-      this.afs
-        .collection(`majorEvents/${this.majorEvent$.id}/subscriptions`)
-        .doc(user.uid)
-        .set({
-          time: new Date(),
-          payment: {
-            status: 0,
-            time: new Date()
-          },
-          subscriptionType: Number(this.subscriptionTypeSelected$),
-          subscribedToEvents: this.subscribedToEvents
-        })
-        .then(() => {
-          this.successSwal.fire();
-          // Fake delay to let animation finish
-          setTimeout(() => {
-            this.successSwal.close();
-            this.router.navigate(['/eventos'], { replaceUrl: true });
-          }, 1500);
-        })
-        .catch((err) => {
-          this.errorSwal.fire();
-          console.error('Failed to write majorEvent to Firestore', err);
+      try {
+        this.afs
+          .collection(`majorEvents/${this.majorEvent$.id}/subscriptions`)
+          .doc(user.uid)
+          .set({
+            time: new Date(),
+            payment: {
+              status: 0,
+              time: new Date(),
+            },
+            subscriptionType: Number(this.subscriptionTypeSelected$),
+            subscribedToEvents: this.subscribedToEvents,
+          });
+
+        this.subscribedToEvents.map((eventId) => {
+          this.afs.collection(`events/${eventId}/subscriptions`).doc(user.uid).set({
+            time: new Date(),
+          });
+          this.afs
+            .collection(`users/${user.uid}/subscriptions`)
+            .doc(eventId)
+            .set({
+              reference: `events/${eventId}/subscriptions/${user.uid}`,
+            });
         });
+
+        this.afs
+          .collection(`users/${user.uid}/subscriptions`)
+          .doc(this.majorEvent$.id)
+          .set({
+            reference: `majorEvents/${this.majorEvent$.id}/subscriptions/${user.uid}`,
+          });
+
+        this.successSwal.fire();
+        // Fake delay to let animation finish
+        setTimeout(() => {
+          this.successSwal.close();
+          this.router.navigate(['/eventos'], { replaceUrl: true });
+        }, 1500);
+      } catch (error) {
+        this.errorSwal.fire();
+        console.error('Failed to write majorEvent to Firestore', error);
+      }
     });
   }
 }
