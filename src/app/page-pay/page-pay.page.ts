@@ -67,7 +67,7 @@ export class PagePayPage implements OnInit {
     // If eventID is not valid, redirect
     this.afs
       .collection('majorEvents')
-      .doc(this.eventID)
+      .doc<MajorEventItem>(this.eventID)
       .get()
       .pipe(untilDestroyed(this), trace('firestore'))
       .subscribe((document) => {
