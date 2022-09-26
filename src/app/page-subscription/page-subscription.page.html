@@ -67,17 +67,17 @@
 
         <ng-template #multiPrice>
           <ion-item lines="none" *ngIf="majorEvent.price.students">
-            Alunos da Unesp
+            {{ enrollmentTypes.getEnrollmentType(0) }}
             <span slot="end">{{ majorEvent.price.students | currency:'BRL' }}</span>
           </ion-item>
 
           <ion-item lines="none" *ngIf="majorEvent.price.otherStudents">
-            Alunos
+            {{ enrollmentTypes.getEnrollmentType(1) }}
             <span slot="end">{{ majorEvent.price.otherStudents | currency:'BRL' }}</span>
           </ion-item>
 
           <ion-item lines="none" *ngIf="majorEvent.price.professors">
-            Professores
+            {{ enrollmentTypes.getEnrollmentType(2) }}
             <span slot="end">{{ majorEvent.price.professors | currency:'BRL' }}</span>
           </ion-item>
         </ng-template>
@@ -86,10 +86,10 @@
       <div class="card-section ion-padding-horizontal">
         <ion-item>
           <ion-label>Tipo de inscrição</ion-label>
-          <ion-select interface="popover" placeholder="Selecionar" [(ngModel)]="opSelected">
-            <ion-select-option value="0">Aluno da Unesp</ion-select-option>
-            <ion-select-option value="1">Aluno de outras IES</ion-select-option>
-            <ion-select-option value="2">Professores e profissionais</ion-select-option>
+          <ion-select placeholder="Selecionar" [(ngModel)]="opSelected">
+            <ion-select-option value="0">{{ enrollmentTypes.getEnrollmentType(0) }}</ion-select-option>
+            <ion-select-option value="1">{{ enrollmentTypes.getEnrollmentType(1) }}</ion-select-option>
+            <ion-select-option value="2">{{ enrollmentTypes.getEnrollmentType(2) }}</ion-select-option>
           </ion-select>
         </ion-item>
 
@@ -121,7 +121,7 @@
                 <h3>{{ event.name }}</h3>
                 <h4>
                   {{ (getDateFromTimestamp(event.eventStartDate) | date: 'HH:mm') }} {{ event.eventEndDate && ' às ' +
-                  (getDateFromTimestamp(event.eventEndDate) | date: 'dd/MM') }}
+                  (getDateFromTimestamp(event.eventEndDate) | date: 'HH:mm') }}
                 </h4>
                 <p>{{ event.slotsAvailable }} vagas restantes</p>
                 <p>Sua posição na fila: {{ event.numberOfSubscriptions + 1 | number: '1.0-0' }}</p>
@@ -148,11 +148,50 @@
     <ion-spinner name="dots" style="margin: 0 auto; display: block"></ion-spinner>
   </ng-template>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="onSubmit()">
+    <ion-fab-button
+      (click)="onSubmit()"
+      [disabled]="eventsSelected['minicurso'].length + eventsSelected['palestra'].length === 0 || opSelected === undefined">
       <ion-icon name="checkmark"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
+
+<swal
+  #successSwal
+  title="Inscrição efetuada com sucesso"
+  icon="success"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
+
+<swal
+  #errorSwal
+  title="Ocorreu um erro ao fazer sua inscrição"
+  text="Verifique a sua conexão com a internet e tente novamente"
+  icon="success"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="true"></swal>
+
+<swal
+  #eventNotFound
+  title="Evento inexistente"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
+
+<swal
+  #alreadySubscribed
+  title="Você já está inscrito neste evento"
+  icon="warning"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false"></swal>
 
 <swal
   #maxChanged
