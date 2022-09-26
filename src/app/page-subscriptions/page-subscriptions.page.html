@@ -67,8 +67,9 @@
         *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'danger'}">
       </ng-container>
       <ion-card-content>
-        <ion-text color="danger"
-          ><b>Erro no pagamento: {{ subscriptionData.payment.error || 'Não foi possível confirmar o pagamento. Tente novamente.' }}</b>
+        <ion-text color="danger">
+          <b>Erro no pagamento:</b>
+          {{ subscriptionData.payment.error || 'Não foi possível confirmar o pagamento. Tente novamente.' }}
         </ion-text>
       </ion-card-content>
 
