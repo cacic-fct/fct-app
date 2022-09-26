@@ -134,8 +134,8 @@ export class AddMajorEventPage implements OnInit {
             description: this.dataForm.get('description').value,
             eventStartDate: firestore.Timestamp.fromDate(new Date(this.dataForm.get('eventStartDate').value)),
             eventEndDate: firestore.Timestamp.fromDate(new Date(this.dataForm.get('eventEndDate').value)),
-            maxCourses: this.dataForm.get('maxCourses').value || null,
-            maxLectures: this.dataForm.get('maxLectures').value || null,
+            maxCourses: Number.parseInt(this.dataForm.get('maxCourses').value) || null,
+            maxLectures: Number.parseInt(this.dataForm.get('maxLectures').value) || null,
             subscriptionStartDate: firestore.Timestamp.fromDate(
               new Date(this.dataForm.get('subscriptionStartDate').value)
             ),
@@ -232,11 +232,11 @@ export class AddMajorEventPage implements OnInit {
     }
   }
 
-  inputNumbersAndDashOnly(event) {
-    const pattern = /\d|-/;
+  inputBankAccountNumber(event) {
+    const pattern = /\d|-|x|X/;
     const inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
-      // Not a number or dash, prevent input
+      // Not a number, dash or x, prevent input
       event.preventDefault();
     }
   }
