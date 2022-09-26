@@ -26,7 +26,7 @@ export class PageSubscriptionPage implements OnInit {
   qntdPalestrasChecked$: string = '00';
 
   majorEvent$: MajorEventItem;
-  events$: any;
+  events$ = {};
   eventsSelected: EventItem[] = [];
 
   opSelected: string;

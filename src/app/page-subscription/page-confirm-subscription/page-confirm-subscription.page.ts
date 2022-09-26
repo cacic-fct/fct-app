@@ -22,7 +22,7 @@ export class PageConfirmSubscriptionPage implements OnInit {
   console = console;
   today: Date = new Date();
 
-  events$: any = {};
+  events$ = {};
   majorEvent$: MajorEventItem;
   countMinicursos$: number;
   countPalestras$: number;
@@ -116,7 +116,7 @@ export class PageConfirmSubscriptionPage implements OnInit {
           this.afs.collection(`events/${eventId}/subscriptions`).doc(user.uid).set({
             time: new Date(),
           });
-          
+
           this.afs
             .collection(`users/${user.uid}/subscriptions`)
             .doc(eventId)
