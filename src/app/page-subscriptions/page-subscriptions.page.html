@@ -68,9 +68,7 @@
       </ng-container>
       <ion-card-content>
         <ion-text color="danger"
-          ><b>Erro no pagamento: </b>
-          <span *ngIf="subscriptionData.payment.error"> {{subscriptionData.payment.error}} </span>
-          <span *ngIf="!subscriptionData.payment.error"> Não foi possível confirmar o pagamento. Tente novamente.</span>
+          ><b>Erro no pagamento: {{ subscriptionData.payment.error || 'Não foi possível confirmar o pagamento. Tente novamente.' }}</b>
         </ion-text>
       </ion-card-content>
 
