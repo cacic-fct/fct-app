@@ -44,18 +44,6 @@ export class PageSubscriptionsPage implements OnInit {
               });
             })
           );
-
-        // TODO: Me remova
-        this.subscriptions$.subscribe((subscriptions) => {
-          console.log('Array da coleção', subscriptions);
-
-          subscriptions[0].reference.get().then((doc) => {
-            console.log('Reference', doc.data());
-          });
-
-          subscriptions[0].majorEvent.subscribe((majorEvent) => console.log('MajorEvent', majorEvent));
-        });
-        ////////
       }
     });
   }

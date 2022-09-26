@@ -153,10 +153,16 @@
     <ion-list *ngFor="let subscription of subscriptions">
       <ng-container *ngIf="subscription.majorEvent | async as majorEventData">
         <ng-container *ngIf="subscription.userData | async as subscriptionData">
-          <ng-container [ngSwitch]="subscriptionData.payment.status">
+          <ng-container [ngSwitch]="getCardType(majorEventData, subscriptionData)">
+            <div *ngSwitchCase="-1">
+              <ng-container
+                *ngTemplateOutlet="pastEvent; context: {majorEventData: majorEventData, subscriptionData: subscriptionData}">
+              </ng-container>
+            </div>
             <div *ngSwitchCase="0">
               <ng-container
-                *ngTemplateOutlet="waitingPayment; context: {majorEventData: majorEventData, subscriptionData: subscriptionData}"></ng-container>
+                *ngTemplateOutlet="waitingPayment; context: {majorEventData: majorEventData, subscriptionData: subscriptionData}">
+              </ng-container>
             </div>
             <div *ngSwitchCase="1">
               <ng-container
@@ -178,12 +184,6 @@
                 *ngTemplateOutlet="eventFull; context: {majorEventData: majorEventData, subscriptionData: subscriptionData}">
               </ng-container>
             </div>
-            <!-- TODO: implement the viewing of the past events -->
-            <!-- <div *ngSwitchDefault>
-              <ng-container
-                *ngTemplateOutlet="pastEvent; context: {majorEventData: majorEventData, subscriptionData: subscriptionData}">
-              </ng-container>
-            </div> -->
           </ng-container>
         </ng-container>
       </ng-container>
