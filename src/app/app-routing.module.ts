@@ -84,6 +84,7 @@ const routes: Routes = [
     title: 'Inscrição',
     loadChildren: () =>
       import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   // TODO: Colocar dentro de minhas-inscricoes
   {
