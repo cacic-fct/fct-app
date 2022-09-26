@@ -83,8 +83,8 @@
         </div>
 
         <div class="card-section ion-padding-horizontal">
-          <p>{{ qntdMinicursosChecked$ }} de {{ adjustNumber(countMinicursos$) }} minicursos selecionados</p>
-          <p>{{ qntdPalestrasChecked$ }} de {{ adjustNumber(countPalestras$) }} palestras selecionados</p>
+          <p>{{ qntdMinicursosChecked$ | number: '2.0-0' }} de {{ countMinicursos$ | number: '2.0-0' }} minicursos selecionados</p>
+          <p>{{ qntdPalestrasChecked$ | number: '2.0-0' }} de {{ countPalestras$ | number: '2.0-0' }} palestras selecionados</p>
         </div>
 
         <div *ngFor="let item of events$ | keyvalue;">
