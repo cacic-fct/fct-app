@@ -161,9 +161,9 @@ export class AddEventPage implements OnInit {
               public: this.dataForm.get('public').value,
               button: this.dataForm.get('button').get('url').value
                 ? {
-                    text: this.dataForm.get('button').get('text').value,
-                    url: this.dataForm.get('button').get('url').value,
-                  }
+                  text: this.dataForm.get('button').get('text').value,
+                  url: this.dataForm.get('button').get('url').value,
+                }
                 : null,
               inMajorEvent: majorEvent,
               eventType: this.dataForm.get('eventType').value,
@@ -172,6 +172,10 @@ export class AddEventPage implements OnInit {
               collectPresence: this.dataForm.get('collectPresenceForm').value,
               createdBy: user.uid,
               createdOn: firestore.Timestamp.fromDate(new Date()),
+              date: firestore.Timestamp.fromDate(new Date()),
+              time: '',
+              slotsAvailable: 0,
+              numberOfSubscriptions: 0
             })
             .then((res) => {
               if (majorEvent) {

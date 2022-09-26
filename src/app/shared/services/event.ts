@@ -5,7 +5,6 @@ export interface EventItem {
   icon: string;
   course: string;
   date: Timestamp;
-  eventType: string;
   time: string;
   slotsAvailable: number;
   numberOfSubscriptions: number;

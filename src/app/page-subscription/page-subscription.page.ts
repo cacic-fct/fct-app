@@ -4,7 +4,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
-import { compareAsc, fromUnixTime, format, parseISO } from 'date-fns';
+import { fromUnixTime, format, parseISO } from 'date-fns';
 import { first } from 'rxjs';
 
 import { MajorEventItem } from '../shared/services/major-event';

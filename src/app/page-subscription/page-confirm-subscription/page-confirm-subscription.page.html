@@ -26,16 +26,16 @@
           <ion-item lines="none">
             Evento
             <span slot="end">
-              {{ getDateFromTimestamp(majorEvent.dateStart) | date: 'dd/MM' }} {{ majorEvent.dateEnd && '- ' +
-              (getDateFromTimestamp(majorEvent.dateEnd) | date: 'dd/MM') }}
+              {{ getDateFromTimestamp(majorEvent.eventStartDate) | date: 'dd/MM' }} {{ majorEvent.eventEndDate && '- ' +
+              (getDateFromTimestamp(majorEvent.eventEndDate) | date: 'dd/MM') }}
             </span>
           </ion-item>
 
-          <ion-item lines="none" *ngIf="majorEvent.subscriptionDateStart && majorEvent.subscriptionDateEnd">
+          <ion-item lines="none" *ngIf="majorEvent.subscriptionStartDate && majorEvent.subscriptionEndDate">
             Inscrição
             <span slot="end">
-              {{ getDateFromTimestamp(majorEvent.subscriptionDateStart) | date: 'dd/MM' }} {{
-              majorEvent.subscriptionDateEnd && '- ' + (getDateFromTimestamp(majorEvent.subscriptionDateEnd) | date:
+              {{ getDateFromTimestamp(majorEvent.subscriptionStartDate) | date: 'dd/MM' }} {{
+              majorEvent.subscriptionEndDate && '- ' + (getDateFromTimestamp(majorEvent.subscriptionEndDate) | date:
               'dd/MM') }}
             </span>
           </ion-item>
@@ -54,33 +54,32 @@
           </ng-container>
 
           <ng-template #notFree>
-            <ng-container *ngIf="majorEvent.price.priceSingle; then singlePrice else multiPrice"> </ng-container>
+            <ng-container *ngIf="majorEvent.price.single; then singlePrice else multiPrice"> </ng-container>
           </ng-template>
 
           <ng-template #singlePrice>
             <ion-item lines="none">
               Preço único
-              <span slot="end">{{ (majorEvent.price.priceSingle) | currency:'BRL' }}</span>
+              <span slot="end">{{ majorEvent.price.single | currency:'BRL' }}</span>
             </ion-item>
           </ng-template>
 
           <ng-template #multiPrice>
-            <ion-item lines="none" *ngIf="majorEvent.price.priceStudents && subscriptionTypeSelected$ === '0'">
+            <ion-item lines="none" *ngIf="majorEvent.price.students">
               Alunos da Unesp
-              <span slot="end">{{ (majorEvent.price.priceStudents) | currency:'BRL' }}</span>
+              <span slot="end">{{ majorEvent.price.students | currency:'BRL' }}</span>
             </ion-item>
 
-            <ion-item lines="none" *ngIf="majorEvent.price.priceOtherStudents && subscriptionTypeSelected$ === '1'">
+            <ion-item lines="none" *ngIf="majorEvent.price.otherStudents">
               Alunos
-              <span slot="end">{{ (majorEvent.price.priceOtherStudents) | currency:'BRL' }}</span>
+              <span slot="end">{{ majorEvent.price.otherStudents | currency:'BRL' }}</span>
             </ion-item>
 
-            <ion-item lines="none" *ngIf="majorEvent.price.priceProfessors && subscriptionTypeSelected$ === '2'">
+            <ion-item lines="none" *ngIf="majorEvent.price.professors">
               Professores
-              <span slot="end">{{ (majorEvent.price.priceProfessors) | currency:'BRL' }}</span>
+              <span slot="end">{{ majorEvent.price.professors | currency:'BRL' }}</span>
             </ion-item>
           </ng-template>
-          <ion-item-divider> </ion-item-divider>
         </div>
 
         <div class="card-section ion-padding-horizontal">
