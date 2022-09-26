@@ -80,7 +80,7 @@ const routes: Routes = [
     loadChildren: () => import('./page-contact-cas/page-contact-cas.module').then((m) => m.PageContactCasPageModule),
   },
   {
-    path: 'eventos/inscrever/:id',
+    path: 'eventos/inscrever/:eventID',
     title: 'Inscrição',
     loadChildren: () => import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
   },

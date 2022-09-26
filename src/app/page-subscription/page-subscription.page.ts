@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { fromUnixTime, format, parseISO } from 'date-fns';
@@ -31,8 +31,13 @@ export class PageSubscriptionPage implements OnInit {
 
   opSelected: string;
 
-  constructor(public afs: AngularFirestore, public auth: AngularFireAuth, private router: Router) {
-    const id = this.router.url.split('/')[3];
+  constructor(
+    public afs: AngularFirestore,
+    public auth: AngularFireAuth,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    const id = this.route.snapshot.params.eventID;
     this.events$ = {};
 
     this.afs

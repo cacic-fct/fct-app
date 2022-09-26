@@ -64,8 +64,6 @@ export class PageConfirmSubscriptionPage implements OnInit {
     if (name === 'palestra') countPalestras += current;
     else countMinicursos += current;
 
-    this.qntdMinicursosChecked$ = this.adjustNumber(countMinicursos);
-    this.qntdPalestrasChecked$ = this.adjustNumber(countPalestras);
   }
 
   formatAndSaveEvent(event: EventItem) {
