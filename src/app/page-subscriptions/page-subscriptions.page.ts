@@ -62,6 +62,40 @@ export class PageSubscriptionsPage implements OnInit {
     }
     return false;
   }
+  isPastEvent(endDateTimestamp: Timestamp): boolean {
+    if (endDateTimestamp) {
+      const now = new Date(); // Maybe it should get the current date from the server.
+      const endDate = fromUnixTime(endDateTimestamp.seconds);
+      return now > endDate;
+    }
+    return false;
+  }
+  openUrl(url: string) {
+    window.open(url, '_blank');
+  }
+  getCardType(majorEvent: MajorEventItem, subscription: MajorEventSubscription): number {
+    const now = new Date();
+    const eventEndDate = fromUnixTime(majorEvent.eventEndDate.seconds);
+    if (now > eventEndDate && subscription.payment.status === 2) return -1;
+    return subscription.payment.status;
+  }
+
+  getSubscriptionSubtitle(subscriptionType: number, price: number): string {
+    const formattedPrice = price.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+    switch (subscriptionType) {
+      case 0:
+        return `Aluno da Unesp - ${formattedPrice}`;
+      case 1:
+        return `Aluno de outra instituição - ${formattedPrice}`;
+      case 2:
+        return `Professor e/ou profissional - ${formattedPrice}`;
+      default:
+        return `Público em geral - ${formattedPrice}`;
+    }
+  }
 }
 
 interface Subscription {
