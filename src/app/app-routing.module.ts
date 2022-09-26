@@ -82,12 +82,8 @@ const routes: Routes = [
   {
     path: 'eventos/inscrever/:eventID',
     title: 'Inscrição',
-    loadChildren: () => import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
-  },
-  {
-    path: 'eventos/confirmar-inscricao',
-    title: 'Confirme sua inscrição',
-    loadChildren: () => import('./page-subscription/page-confirm-subscription/page-confirm-subscription.module').then((m) => m.PageConfirmSubscriptionPageModule),
+    loadChildren: () =>
+      import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
   },
   // TODO: Colocar dentro de minhas-inscricoes
   {

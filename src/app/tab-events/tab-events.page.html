@@ -86,8 +86,7 @@
           <div class="ion-padding">
             <ion-button
               *ngIf="(event.subscriptionStartDate && event.subscriptionEndDate) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionStartDate), getDateFromTimestamp(event.subscriptionEndDate))"
-              href="/eventos/inscrever/{{event.id}}"
-            >
+              [routerLink]="['inscrever',event.id]">
               Inscreva-se
             </ion-button>
 

@@ -5,14 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { PageSubscriptionPage } from './page-subscription.page';
 
 import { PageSubscriptionPageRoutingModule } from './page-subscription-routing.module';
+import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    PageSubscriptionPageRoutingModule,
-  ],
-  declarations: [PageSubscriptionPage],
+  imports: [IonicModule, CommonModule, FormsModule, PageSubscriptionPageRoutingModule, SweetAlert2Module],
+  declarations: [PageSubscriptionPage, ConfirmModalComponent],
 })
 export class PageSubscriptionPageModule {}
