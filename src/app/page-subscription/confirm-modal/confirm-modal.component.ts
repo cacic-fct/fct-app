@@ -11,6 +11,9 @@ import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 
+import { parse } from 'twemoji-parser';
+import { DomSanitizer } from '@angular/platform-browser';
+
 @Component({
   selector: 'app-confirm-modal',
   templateUrl: './confirm-modal.component.html',
@@ -24,6 +27,7 @@ export class ConfirmModalComponent implements OnInit {
   @Input() subscriptionType: string;
 
   constructor(
+    private sanitizer: DomSanitizer,
     public afs: AngularFirestore,
     public auth: AngularFireAuth,
     private modalController: ModalController,
@@ -53,5 +57,12 @@ export class ConfirmModalComponent implements OnInit {
 
   dayCompare(date1: Timestamp, date2: Timestamp): boolean {
     return isSameDay(fromUnixTime(date1.seconds), fromUnixTime(date2.seconds));
+  }
+
+  getEmoji(emoji: string): any {
+    if (emoji === undefined) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
+    }
+    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 }

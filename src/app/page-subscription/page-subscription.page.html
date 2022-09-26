@@ -114,9 +114,8 @@
 
           <ion-list>
             <ion-item>
-              <ion-avatar slot="start">
-                <img src="assets/events/icon.png" />
-              </ion-avatar>
+              <img [src]="getEmoji(event.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
+
               <ion-label>
                 <h3>{{ event.name }}</h3>
                 <h4>

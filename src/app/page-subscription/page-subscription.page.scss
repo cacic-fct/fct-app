@@ -44,8 +44,9 @@
   }
 }
 
-.fixed {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
+.twemoji {
+  width: 64px;
+  height: 64px;
+  display: block;
+  padding: 10px;
 }

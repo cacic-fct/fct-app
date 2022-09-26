@@ -17,6 +17,10 @@ import { ModalController, ToastController } from '@ionic/angular';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { trace } from '@angular/fire/compat/performance';
+
+import { parse } from 'twemoji-parser';
+import { DomSanitizer } from '@angular/platform-browser';
+
 @UntilDestroy()
 @Component({
   selector: 'app-page-subscription',
@@ -53,6 +57,7 @@ export class PageSubscriptionPage implements OnInit {
   majorEventID = this.route.snapshot.params.eventID;
 
   constructor(
+    private sanitizer: DomSanitizer,
     public afs: AngularFirestore,
     public auth: AngularFireAuth,
     private router: Router,
@@ -322,6 +327,13 @@ export class PageSubscriptionPage implements OnInit {
         resolve(false);
       });
     });
+  }
+
+  getEmoji(emoji: string): any {
+    if (emoji === undefined) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
+    }
+    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 }
 
