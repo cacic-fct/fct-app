@@ -31,10 +31,10 @@ export class PageSubscriptionPage implements OnInit {
   maxCourses: number;
   maxLectures: number;
 
-  coursesSelected: number = 0;
-  lecturesSelected: number = 0;
-
-  eventsSelected: string[] = [];
+  eventsSelected = {
+    minicurso: [],
+    palestra: [],
+  };
 
   opSelected: string;
 
@@ -61,20 +61,6 @@ export class PageSubscriptionPage implements OnInit {
       switchMap((events) => combineLatest(events))
     );
 
-    this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
-      this.afs
-        .doc(`majorEvents/${id}/subscriptions/${user.uid}`)
-        .valueChanges()
-        .pipe(untilDestroyed(this))
-        .subscribe((data) => {
-          // For every element on subscribedToEvents array,
-
-          if (data) {
-            this.eventsSelected = data['subscribedToEvents'];
-          }
-        });
-    });
-
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((majorEvent) => {
       if (this.maxCourses && this.maxCourses !== majorEvent.maxCourses) {
         this.maxChanged.fire();
@@ -96,39 +82,32 @@ export class PageSubscriptionPage implements OnInit {
   }
 
   countCheckeds(e: any, event: EventItem) {
-    const eventID: string = event.id;
     const checked: boolean = e.currentTarget.checked;
     const name: string = e.currentTarget.name;
 
-    switch (name) {
-      case 'minicurso':
-        if (checked) {
-          if (this.coursesSelected < this.maxCourses) {
-            this.eventsSelected.push(eventID);
-            this.coursesSelected++;
-          } else {
-            e.currentTarget.checked = false;
-            this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
-          }
-        } else {
-          this.eventsSelected.splice(this.eventsSelected.indexOf(eventID), 1);
-          this.coursesSelected--;
+    if (this.eventsSelected[name]) {
+      if (checked) {
+        switch (name) {
+          case 'minicurso':
+            if (this.eventsSelected[name].length < this.maxCourses) {
+              this.eventsSelected[name].push(event);
+            } else {
+              e.currentTarget.checked = false;
+              this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
+            }
+            break;
+          case 'palestra':
+            if (this.eventsSelected[name].length < this.maxLectures) {
+              this.eventsSelected[name].push(event);
+            } else {
+              e.currentTarget.checked = false;
+              this.presentLimitReachedToast('palestras', this.maxLectures.toString());
+            }
+            break;
         }
-        break;
-      case 'palestra':
-        if (checked) {
-          if (this.lecturesSelected < this.maxLectures) {
-            this.eventsSelected.push(eventID);
-            this.lecturesSelected++;
-          } else {
-            e.currentTarget.checked = false;
-            this.presentLimitReachedToast('palestras', this.maxLectures.toString());
-          }
-          break;
-        } else {
-          this.eventsSelected.splice(this.eventsSelected.indexOf(eventID), 1);
-          this.lecturesSelected--;
-        }
+      } else {
+        this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event), 1);
+      }
     }
   }
 
@@ -247,8 +226,8 @@ export class PageSubscriptionPage implements OnInit {
       componentProps: {
         majorEvent$: this.majorEvent$,
         eventsSelected: eventsSelected,
-        minicursosCount: this.coursesSelected,
-        palestrasCount: this.lecturesSelected,
+        minicursosCount: this.eventsSelected.minicurso.length,
+        palestrasCount: this.eventsSelected.palestra.length,
         subscriptionType: this.opSelected,
       },
       showBackdrop: true,
