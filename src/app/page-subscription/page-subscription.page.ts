@@ -80,12 +80,12 @@ export class PageSubscriptionPage implements OnInit {
       });
 
     // Check if user is already subscribed
-    this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
+    this.auth.user.pipe(first()).subscribe((user) => {
       if (user) {
         this.afs
           .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`)
           .valueChanges({ idField: 'id' })
-          .pipe(untilDestroyed(this), trace('firestore'))
+          .pipe(first(), trace('firestore'))
           .subscribe((subscription) => {
             if (subscription.reference) {
               this.alreadySubscribed.fire();
@@ -218,57 +218,76 @@ export class PageSubscriptionPage implements OnInit {
     ) {
       return;
     }
+
     this.openConfirmModal().then((response) => {
       if (!response) {
         return;
       }
 
-      // Merge eventsSelected arrays
-      const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
+      this.auth.user.pipe(first()).subscribe((user) => {
+        if (user) {
+          this.afs
+            .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`)
+            .valueChanges({ idField: 'id' })
+            .pipe(first(), trace('firestore'))
+            .subscribe((subscription) => {
+              console.log(subscription.reference);
+              if (!subscription.reference) {
+                // Merge eventsSelected arrays
+                const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
 
-      // Create array with event IDs from eventsSelected
-      const eventsSelectedID = eventsSelected.map((event) => event.id);
+                // Create array with event IDs from eventsSelected
+                const eventsSelectedID = eventsSelected.map((event) => event.id);
 
-      const now: Timestamp = firestore.Timestamp.fromDate(new Date());
+                const now: Timestamp = firestore.Timestamp.fromDate(new Date());
 
-      this.auth.user.subscribe((user) => {
-        this.afs
-          .collection(`majorEvents/${this.majorEventID}/subscriptions`)
-          .doc(user.uid)
-          .set({
-            subscriptionType: Number.parseInt(this.opSelected),
-            subscribedToEvents: eventsSelectedID,
-            time: now,
-            payment: {
-              status: 0,
-              time: now,
-              author: user.uid,
-            },
-          })
-          .then(() => {
-            this.afs
-              .collection(`users/${user.uid}/majorEventSubscriptions`)
-              .doc(this.majorEventID)
-              .set({
-                reference: `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
-              })
-              .then(() => {
-                this.successSwal.fire();
+                this.afs
+                  .collection(`majorEvents/${this.majorEventID}/subscriptions`)
+                  .doc(user.uid)
+                  .set({
+                    subscriptionType: Number.parseInt(this.opSelected),
+                    subscribedToEvents: eventsSelectedID,
+                    time: now,
+                    payment: {
+                      status: 0,
+                      time: now,
+                      author: user.uid,
+                    },
+                  })
+                  .then(() => {
+                    this.afs
+                      .collection(`users/${user.uid}/majorEventSubscriptions`)
+                      .doc(this.majorEventID)
+                      .set({
+                        reference: `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
+                      })
+                      .then(() => {
+                        this.successSwal.fire();
+                        setTimeout(() => {
+                          this.successSwal.close();
+                          this.router.navigate(['/eventos'], { replaceUrl: true });
+                        }, 2000);
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                    this.errorSwal.fire();
+                  });
+
                 setTimeout(() => {
                   this.successSwal.close();
                   this.router.navigate(['/eventos'], { replaceUrl: true });
-                }, 2000);
-              });
-          })
-          .catch((error) => {
-            console.error(error);
-            this.errorSwal.fire();
-          });
+                }, 1500);
+              } else {
+                this.alreadySubscribed.fire();
+                this.router.navigate(['/eventos'], { replaceUrl: true });
 
-        setTimeout(() => {
-          this.successSwal.close();
-          this.router.navigate(['/eventos'], { replaceUrl: true });
-        }, 1500);
+                setTimeout(() => {
+                  this.alreadySubscribed.close();
+                }, 1000);
+              }
+            });
+        }
       });
     });
   }
