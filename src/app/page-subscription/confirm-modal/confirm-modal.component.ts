@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
 })
 export class ConfirmModalComponent implements OnInit {
   @Input() majorEvent$: Observable<MajorEventItem>;
-  @Input() eventsSelected: EventItem[];
+  @Input() eventsSelected: string[];
   @Input() minicursosCount: number;
   @Input() palestrasCount: number;
   @Input() subscriptionType: string;

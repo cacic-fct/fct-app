@@ -94,6 +94,8 @@
       </div>
     </ng-container>
 
+    {{ eventsSelected }}
+
     <div *ngFor="let item of events$ | keyvalue">
       <ion-item-divider mode="ios" sticky="true">
         <ion-label>{{ formatDate(item.key) }}</ion-label>
