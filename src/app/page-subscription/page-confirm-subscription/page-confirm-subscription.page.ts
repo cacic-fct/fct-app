@@ -116,6 +116,7 @@ export class PageConfirmSubscriptionPage implements OnInit {
           this.afs.collection(`events/${eventId}/subscriptions`).doc(user.uid).set({
             time: new Date(),
           });
+          
           this.afs
             .collection(`users/${user.uid}/subscriptions`)
             .doc(eventId)
@@ -132,7 +133,7 @@ export class PageConfirmSubscriptionPage implements OnInit {
           });
 
         this.successSwal.fire();
-        // Fake delay to let animation finish
+
         setTimeout(() => {
           this.successSwal.close();
           this.router.navigate(['/eventos'], { replaceUrl: true });

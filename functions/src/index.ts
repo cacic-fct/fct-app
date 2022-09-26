@@ -187,3 +187,11 @@ exports.getUserUid = functions.https.onCall((data, context) => {
       return { message: `${error}` };
     });
 });
+
+exports.createSubscription = functions.firestore.document(`events/{eventId}/subscriptions/{userId}`).onCreate(async (snap, context) => {
+  const eventId: string = context.params.eventId;
+  const eventSnap = await admin.firestore().collection('events').doc(eventId).get();
+  let numberOfSubscriptions: number =  eventSnap.data()?.numberOfSubscriptions;
+  numberOfSubscriptions = numberOfSubscriptions ? numberOfSubscriptions + 1 : 1;
+  await eventSnap.ref.update({ numberOfSubscriptions });
+});
