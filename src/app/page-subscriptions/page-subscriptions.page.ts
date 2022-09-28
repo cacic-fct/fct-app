@@ -10,6 +10,7 @@ import { trace } from '@angular/fire/compat/performance';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { fromUnixTime } from 'date-fns';
+import { EnrollmentTypesService } from '../shared/services/enrollment-types.service';
 @UntilDestroy()
 @Component({
   selector: 'app-page-subscriptions',
@@ -19,7 +20,11 @@ import { fromUnixTime } from 'date-fns';
 export class PageSubscriptionsPage implements OnInit {
   subscriptions$: Observable<Subscription[]>;
 
-  constructor(public afs: AngularFirestore, public auth: AngularFireAuth, private router: Router) {}
+  constructor(
+    public afs: AngularFirestore,
+    public auth: AngularFireAuth,
+    public enrollmentTypes: EnrollmentTypesService
+  ) {}
 
   ngOnInit() {
     this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
