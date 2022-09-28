@@ -85,11 +85,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./page-subscriptions/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
   },
-  // TODO: Colocar dentro de minhas-inscricoes
-  {
-    path: 'pagar/:eventID',
-    loadChildren: () => import('./page-pay/page-pay.module').then((m) => m.PagePayPageModule),
-  },
   {
     path: 'page-debug',
     loadChildren: () => import('./page-debug/page-debug.module').then((m) => m.PageDebugPageModule),

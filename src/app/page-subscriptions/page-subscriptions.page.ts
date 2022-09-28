@@ -25,7 +25,7 @@ export class PageSubscriptionsPage implements OnInit {
     this.auth.user.pipe(untilDestroyed(this)).subscribe((user) => {
       if (user) {
         this.subscriptions$ = this.afs
-          .collection<Subscription>(`users/${user.uid}/subscriptions`)
+          .collection<Subscription>(`users/${user.uid}/majorEventSubscriptions`)
           .valueChanges({ idField: 'id' })
           .pipe(
             untilDestroyed(this),
@@ -51,9 +51,6 @@ export class PageSubscriptionsPage implements OnInit {
   getDateFromTimestamp(timestamp: Timestamp): Date {
     return fromUnixTime(timestamp.seconds);
   }
-  goToPaymentPage(eventId: string) {
-    this.router.navigate(['inscricoes', 'pagar', eventId]);
-  }
   isInTheSubscriptionPeriod(endDateTimestamp: Timestamp): boolean {
     if (endDateTimestamp) {
       const now = new Date(); // Maybe it should get the current date from the server.
@@ -70,9 +67,7 @@ export class PageSubscriptionsPage implements OnInit {
     }
     return false;
   }
-  openUrl(url: string) {
-    window.open(url, '_blank');
-  }
+
   getCardType(majorEvent: MajorEventItem, subscription: MajorEventSubscription): number {
     const now = new Date();
     const eventEndDate = fromUnixTime(majorEvent.eventEndDate.seconds);
@@ -100,7 +95,7 @@ export class PageSubscriptionsPage implements OnInit {
 
 interface Subscription {
   id?: string;
-  reference?: DocumentReference<any>;
+  reference?: DocumentReference<MajorEventSubscription>;
   userData?: Promise<MajorEventSubscription>;
   majorEvent?: Observable<MajorEventItem>;
 }
