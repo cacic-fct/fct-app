@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
-import { canActivate, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
+import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { RouterModule, Routes } from '@angular/router';
 import { PreloadingStrategyService } from './shared/services/preloading-strategy.service';
 
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['menu']);
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+const redirectLoggedInToMenu = () => redirectLoggedInTo(['menu']);
 
 const routes: Routes = [
   {
@@ -56,6 +57,11 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
+    path: 'login',
+    loadChildren: () => import('./page-login/page-login.module').then((m) => m.PageLoginPageModule),
+    ...canActivate(redirectLoggedInToMenu),
+  },
+  {
     path: 'register',
     title: 'Registro',
     loadChildren: () => import('./page-register/page-register.module').then((m) => m.PageRegisterPageModule),
@@ -78,6 +84,15 @@ const routes: Routes = [
     title: 'Minhas inscrições',
     loadChildren: () =>
       import('./page-subscriptions/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
+  },
+  // TODO: Colocar dentro de minhas-inscricoes
+  {
+    path: 'pagar/:eventID',
+    loadChildren: () => import('./page-pay/page-pay.module').then((m) => m.PagePayPageModule),
+  },
+  {
+    path: 'page-debug',
+    loadChildren: () => import('./page-debug/page-debug.module').then((m) => m.PageDebugPageModule),
   },
 ];
 @NgModule({
