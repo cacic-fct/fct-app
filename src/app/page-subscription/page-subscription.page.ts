@@ -20,6 +20,7 @@ import { trace } from '@angular/fire/compat/performance';
 
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @UntilDestroy()
 @Component({
@@ -47,6 +48,8 @@ export class PageSubscriptionPage implements OnInit {
   maxCourses: number;
   maxLectures: number;
 
+  dataForm: FormGroup;
+
   eventsSelected = {
     minicurso: [],
     palestra: [],
@@ -64,7 +67,8 @@ export class PageSubscriptionPage implements OnInit {
     private route: ActivatedRoute,
     private modalController: ModalController,
     private toastController: ToastController,
-    public enrollmentTypes: EnrollmentTypesService
+    public enrollmentTypes: EnrollmentTypesService,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -104,6 +108,8 @@ export class PageSubscriptionPage implements OnInit {
       }
     });
 
+    this.dataForm = this.formBuilder.group({});
+
     this.majorEvent$ = this.afs
       .doc<MajorEventItem>(`majorEvents/${this.majorEventID}`)
       .valueChanges({ idField: 'id' })
@@ -112,6 +118,8 @@ export class PageSubscriptionPage implements OnInit {
     this.events$ = this.majorEvent$.pipe(
       map((majorEvent) => {
         return majorEvent.events.map((event) => {
+          // Include in dataForm
+          this.dataForm.addControl(event, this.formBuilder.control(null));
           return this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' });
         });
       }),
