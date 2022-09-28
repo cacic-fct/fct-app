@@ -84,6 +84,7 @@ const routes: Routes = [
     title: 'Minhas inscrições',
     loadChildren: () =>
       import('./page-subscriptions/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'page-debug',
