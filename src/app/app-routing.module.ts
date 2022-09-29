@@ -80,10 +80,10 @@ const routes: Routes = [
     loadChildren: () => import('./page-contact-cas/page-contact-cas.module').then((m) => m.PageContactCasPageModule),
   },
   {
-    path: 'inscricoes',
-    title: 'Minhas inscrições',
+    path: 'eventos/inscrever/:eventID',
+    title: 'Inscrição',
     loadChildren: () =>
-      import('./page-subscriptions/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
+      import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {

@@ -21,35 +21,53 @@ export class MajorEventsService {
       .valueChanges({ idField: 'id' });
   }
 }
+
 export interface MajorEventItem {
   name: string;
-  icon: string;
   course: string;
-  dateStart: Timestamp;
-  dateEnd?: Timestamp;
-  subscriptionDateStart?: Timestamp;
-  subscriptionDateEnd?: Timestamp;
+  eventStartDate: Timestamp;
+  eventEndDate?: Timestamp;
+  subscriptionStartDate?: Timestamp;
+  subscriptionEndDate?: Timestamp;
+  maxCourses: number;
+  maxLectures: number;
   price: {
-    priceStudents?: number;
-    priceOtherStudents?: number;
-    priceProfessors?: number;
-    priceSingle?: number;
+    students?: number;
+    otherStudents?: number;
+    professors?: number;
+    single?: number;
     isFree?: boolean;
   };
-  accountChavePix?: string;
-  accountBank?: string;
-  accountName?: string;
-  accountDocument?: string;
-  accountAgency?: string;
-  accountNumber?: string;
+  paymentInfo?: {
+    chavePix?: string;
+    bankName?: string;
+    name?: string;
+    document?: string;
+    agency?: string;
+    accountNumber?: string;
+    additionalPaymentInformation?: string;
+  };
   description?: string;
   button?: {
     text?: string;
     url: string;
   };
   public: boolean;
-  events: string[];
   createdBy: string;
-  createdOn: Timestamp;
-  id: string;
+  events: string[];
+  createdOn: Timestamp | Date;
+  id?: string;
+}
+
+export interface MajorEventSubscription {
+  time: Timestamp;
+  payment: {
+    status: number;
+    time: Timestamp;
+    error?: string;
+    price: number;
+    author: string;
+  };
+  subscriptionType: number;
+  subscribedToEvents: string[];
 }
