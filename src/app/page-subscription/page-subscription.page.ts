@@ -55,6 +55,8 @@ export class PageSubscriptionPage implements OnInit {
     palestra: [],
   };
 
+  sisterEventsCount: number = 0;
+
   opSelected: string;
 
   majorEventID = this.route.snapshot.params.eventID;
@@ -154,15 +156,46 @@ export class PageSubscriptionPage implements OnInit {
       if (checked) {
         switch (name) {
           case 'minicurso':
-            if (this.eventsSelected[name].length < this.maxCourses) {
+            console.log('1', this.eventsSelected[name]);
+            // If already in the list, remove from list
+            if (this.eventsSelected[name].includes(event.id)) {
+              this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event.id), 1);
+            }
+            console.log('2', this.eventsSelected[name]);
+
+            if (this.eventsSelected[name].length - this.sisterEventsCount < this.maxCourses) {
               this.eventsSelected[name].push(event);
+
+              if (event.sisterEvents) {
+                event.sisterEvents.forEach((sisterEvent) => {
+                  console.log('sisterEvent', sisterEvent);
+                  console.log('includes', this.eventsSelected[name].includes(sisterEvent));
+                  console.log(
+                    'some',
+                    this.eventsSelected[name].some((event) => event.id === sisterEvent)
+                  );
+
+                  // If sister event already included, skip
+                  if (this.eventsSelected[name].includes(sisterEvent)) {
+                    return;
+                  }
+
+                  if (this.eventsSelected[name].some((event) => event.id === sisterEvent)) {
+                    return;
+                  }
+
+                  this.dataForm.get(sisterEvent).setValue(true);
+                  console.log('Set ' + sisterEvent + ' to true');
+                  this.sisterEventsCount++;
+                });
+              }
             } else {
               e.currentTarget.checked = false;
               this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
             }
             break;
           case 'palestra':
-            if (this.eventsSelected[name].length < this.maxLectures) {
+            if (this.eventsSelected[name].length - this.sisterEventsCount < this.maxLectures) {
               this.eventsSelected[name].push(event);
             } else {
               e.currentTarget.checked = false;
@@ -172,6 +205,19 @@ export class PageSubscriptionPage implements OnInit {
         }
       } else {
         this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event), 1);
+
+        if (event.sisterEvents) {
+          event.sisterEvents.forEach((sisterEvent) => {
+            // If sister event already included, skip
+
+            if (!this.eventsSelected[name].some((event) => event.id === sisterEvent)) {
+              return;
+            }
+
+            this.dataForm.get(sisterEvent).setValue(false);
+            this.sisterEventsCount--;
+          });
+        }
       }
     }
   }
@@ -317,8 +363,8 @@ export class PageSubscriptionPage implements OnInit {
       componentProps: {
         majorEvent$: this.majorEvent$,
         eventsSelected: eventsSelected,
-        minicursosCount: this.eventsSelected.minicurso.length,
-        palestrasCount: this.eventsSelected.palestra.length,
+        minicursosCount: this.eventsSelected.minicurso.length - this.sisterEventsCount,
+        palestrasCount: this.eventsSelected.palestra.length - this.sisterEventsCount,
         subscriptionType: this.opSelected,
       },
       showBackdrop: true,
