@@ -87,6 +87,13 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
+    path: 'inscricoes',
+    title: 'Minhas inscrições',
+    loadChildren: () =>
+      import('./page-subscriptions/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
     path: 'page-debug',
     loadChildren: () => import('./page-debug/page-debug.module').then((m) => m.PageDebugPageModule),
   },
