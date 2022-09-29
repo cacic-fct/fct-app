@@ -1,6 +1,6 @@
 import { Timestamp } from '@firebase/firestore-types';
 import { Router } from '@angular/router';
-import { MajorEventItem, MajorEventSubscription } from './../shared/services/major-event';
+import { MajorEventItem, MajorEventSubscription } from './../shared/services/major-event.service';
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable, switchMap } from 'rxjs';
 import { AngularFirestore, DocumentReference, DocumentSnapshot } from '@angular/fire/compat/firestore';
