@@ -59,6 +59,7 @@ export class PageSubscriptionPage implements OnInit {
   eventGroupMinicursoCount: number = 0;
 
   opSelected: string;
+  disableEnrollmentTypeSelection: boolean = false;
 
   majorEventID = this.route.snapshot.params.eventID;
 
@@ -107,6 +108,9 @@ export class PageSubscriptionPage implements OnInit {
                 setTimeout(() => {
                   this.alreadySubscribed.close();
                 }, 1000);
+              } else {
+                this.disableEnrollmentTypeSelection = true;
+                this.opSelected = subscription.subscriptionType.toString();
               }
             }
           });
