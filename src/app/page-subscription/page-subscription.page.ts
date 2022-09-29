@@ -55,7 +55,7 @@ export class PageSubscriptionPage implements OnInit {
     palestra: [],
   };
 
-  sisterEventsCount: number = 0;
+  eventGroupMinicursoCount: number = 0;
 
   opSelected: string;
 
@@ -156,37 +156,30 @@ export class PageSubscriptionPage implements OnInit {
       if (checked) {
         switch (name) {
           case 'minicurso':
-            console.log('1', this.eventsSelected[name]);
             // If already in the list, remove from list
             if (this.eventsSelected[name].includes(event.id)) {
               this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event.id), 1);
             }
-            console.log('2', this.eventsSelected[name]);
 
-            if (this.eventsSelected[name].length - this.sisterEventsCount < this.maxCourses) {
+            if (this.eventsSelected[name].length - this.eventGroupMinicursoCount < this.maxCourses) {
               this.eventsSelected[name].push(event);
 
-              if (event.sisterEvents) {
-                event.sisterEvents.forEach((sisterEvent) => {
-                  console.log('sisterEvent', sisterEvent);
-                  console.log('includes', this.eventsSelected[name].includes(sisterEvent));
-                  console.log(
-                    'some',
-                    this.eventsSelected[name].some((event) => event.id === sisterEvent)
-                  );
+              if (event.eventGroup) {
+                event.eventGroup.forEach((eventFromGroup) => {
+                  if (eventFromGroup === event.id) {
+                    return;
+                  }
 
                   // If sister event already included, skip
-                  if (this.eventsSelected[name].includes(sisterEvent)) {
+                  if (
+                    this.eventsSelected[name].includes(eventFromGroup) ||
+                    this.eventsSelected[name].some((event) => event.id === eventFromGroup)
+                  ) {
                     return;
                   }
 
-                  if (this.eventsSelected[name].some((event) => event.id === sisterEvent)) {
-                    return;
-                  }
-
-                  this.dataForm.get(sisterEvent).setValue(true);
-                  console.log('Set ' + sisterEvent + ' to true');
-                  this.sisterEventsCount++;
+                  this.dataForm.get(eventFromGroup).setValue(true);
+                  this.eventGroupMinicursoCount++;
                 });
               }
             } else {
@@ -195,7 +188,7 @@ export class PageSubscriptionPage implements OnInit {
             }
             break;
           case 'palestra':
-            if (this.eventsSelected[name].length - this.sisterEventsCount < this.maxLectures) {
+            if (this.eventsSelected[name].length < this.maxLectures) {
               this.eventsSelected[name].push(event);
             } else {
               e.currentTarget.checked = false;
@@ -206,16 +199,19 @@ export class PageSubscriptionPage implements OnInit {
       } else {
         this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event), 1);
 
-        if (event.sisterEvents) {
-          event.sisterEvents.forEach((sisterEvent) => {
-            // If sister event already included, skip
-
-            if (!this.eventsSelected[name].some((event) => event.id === sisterEvent)) {
+        if (event.eventGroup) {
+          event.eventGroup.forEach((eventFromGroup) => {
+            if (eventFromGroup === event.id) {
               return;
             }
 
-            this.dataForm.get(sisterEvent).setValue(false);
-            this.sisterEventsCount--;
+            // If event is not in the list, skip
+            if (!this.eventsSelected[name].some((event) => event.id === eventFromGroup)) {
+              return;
+            }
+
+            this.dataForm.get(eventFromGroup).setValue(false);
+            this.eventGroupMinicursoCount--;
           });
         }
       }
@@ -290,7 +286,6 @@ export class PageSubscriptionPage implements OnInit {
             .valueChanges({ idField: 'id' })
             .pipe(first(), trace('firestore'))
             .subscribe((subscription) => {
-              console.log(subscription.reference);
               if (!subscription.reference) {
                 // Merge eventsSelected arrays
                 const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
@@ -363,8 +358,8 @@ export class PageSubscriptionPage implements OnInit {
       componentProps: {
         majorEvent$: this.majorEvent$,
         eventsSelected: eventsSelected,
-        minicursosCount: this.eventsSelected.minicurso.length - this.sisterEventsCount,
-        palestrasCount: this.eventsSelected.palestra.length - this.sisterEventsCount,
+        minicursosCount: this.eventsSelected.minicurso.length - this.eventGroupMinicursoCount,
+        palestrasCount: this.eventsSelected.palestra.length,
         subscriptionType: this.opSelected,
       },
       showBackdrop: true,
