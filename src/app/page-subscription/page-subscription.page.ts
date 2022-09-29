@@ -20,6 +20,7 @@ import { trace } from '@angular/fire/compat/performance';
 
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @UntilDestroy()
 @Component({
@@ -47,10 +48,14 @@ export class PageSubscriptionPage implements OnInit {
   maxCourses: number;
   maxLectures: number;
 
+  dataForm: FormGroup;
+
   eventsSelected = {
     minicurso: [],
     palestra: [],
   };
+
+  eventGroupMinicursoCount: number = 0;
 
   opSelected: string;
 
@@ -64,7 +69,8 @@ export class PageSubscriptionPage implements OnInit {
     private route: ActivatedRoute,
     private modalController: ModalController,
     private toastController: ToastController,
-    public enrollmentTypes: EnrollmentTypesService
+    public enrollmentTypes: EnrollmentTypesService,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -104,6 +110,8 @@ export class PageSubscriptionPage implements OnInit {
       }
     });
 
+    this.dataForm = this.formBuilder.group({});
+
     this.majorEvent$ = this.afs
       .doc<MajorEventItem>(`majorEvents/${this.majorEventID}`)
       .valueChanges({ idField: 'id' })
@@ -112,6 +120,8 @@ export class PageSubscriptionPage implements OnInit {
     this.events$ = this.majorEvent$.pipe(
       map((majorEvent) => {
         return majorEvent.events.map((event) => {
+          // Include in dataForm
+          this.dataForm.addControl(event, this.formBuilder.control(null));
           return this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' });
         });
       }),
@@ -146,8 +156,32 @@ export class PageSubscriptionPage implements OnInit {
       if (checked) {
         switch (name) {
           case 'minicurso':
-            if (this.eventsSelected[name].length < this.maxCourses) {
+            // If already in the list, remove from list
+            if (this.eventsSelected[name].includes(event.id)) {
+              this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event.id), 1);
+            }
+
+            if (this.eventsSelected[name].length - this.eventGroupMinicursoCount < this.maxCourses) {
               this.eventsSelected[name].push(event);
+
+              if (event.eventGroup) {
+                event.eventGroup.forEach((eventFromGroup) => {
+                  if (eventFromGroup === event.id) {
+                    return;
+                  }
+
+                  // If sister event already included, skip
+                  if (
+                    this.eventsSelected[name].includes(eventFromGroup) ||
+                    this.eventsSelected[name].some((event) => event.id === eventFromGroup)
+                  ) {
+                    return;
+                  }
+
+                  this.dataForm.get(eventFromGroup).setValue(true);
+                  this.eventGroupMinicursoCount++;
+                });
+              }
             } else {
               e.currentTarget.checked = false;
               this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
@@ -164,6 +198,22 @@ export class PageSubscriptionPage implements OnInit {
         }
       } else {
         this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event), 1);
+
+        if (event.eventGroup) {
+          event.eventGroup.forEach((eventFromGroup) => {
+            if (eventFromGroup === event.id) {
+              return;
+            }
+
+            // If event is not in the list, skip
+            if (!this.eventsSelected[name].some((event) => event.id === eventFromGroup)) {
+              return;
+            }
+
+            this.dataForm.get(eventFromGroup).setValue(false);
+            this.eventGroupMinicursoCount--;
+          });
+        }
       }
     }
   }
@@ -236,7 +286,6 @@ export class PageSubscriptionPage implements OnInit {
             .valueChanges({ idField: 'id' })
             .pipe(first(), trace('firestore'))
             .subscribe((subscription) => {
-              console.log(subscription.reference);
               if (!subscription.reference) {
                 // Merge eventsSelected arrays
                 const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
@@ -309,7 +358,7 @@ export class PageSubscriptionPage implements OnInit {
       componentProps: {
         majorEvent$: this.majorEvent$,
         eventsSelected: eventsSelected,
-        minicursosCount: this.eventsSelected.minicurso.length,
+        minicursosCount: this.eventsSelected.minicurso.length - this.eventGroupMinicursoCount,
         palestrasCount: this.eventsSelected.palestra.length,
         subscriptionType: this.opSelected,
       },

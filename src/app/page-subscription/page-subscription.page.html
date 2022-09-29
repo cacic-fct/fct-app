@@ -94,8 +94,8 @@
         </ion-item>
 
         <p *ngIf="majorEvent.maxCourses && majorEvent.maxCourses > 0">
-          {{ eventsSelected['minicurso'].length | number: '2.0-0' }} de {{ majorEvent.maxCourses | number: '2.0-0' }}
-          minicursos selecionados
+          {{ eventsSelected['minicurso'].length - this.eventGroupMinicursoCount| number: '2.0-0' }} de {{
+          majorEvent.maxCourses | number: '2.0-0' }} minicursos selecionados
         </p>
         <p *ngIf="majorEvent.maxLectures && majorEvent.maxLectures > 0">
           {{ eventsSelected['palestra'].length | number: '2.0-0' }} de {{ majorEvent.maxLectures | number: '2.0-0' }}
@@ -103,38 +103,40 @@
         </p>
       </div>
 
-      <ng-container *ngIf="events$ | async as eventsArray; else loadingSpinner">
-        <ng-container *ngFor="let event of eventsArray; index as i">
-          <ion-item-divider
-            mode="ios"
-            sticky="true"
-            *ngIf="i == 0 || !dayCompare(eventsArray[i - 1].eventStartDate, event.eventStartDate)">
-            <ion-label> {{ formatDate(getDateFromTimestamp(event.eventStartDate)) }} </ion-label>
-          </ion-item-divider>
+      <form [formGroup]="dataForm">
+        <ng-container *ngIf="events$ | async as eventsArray; else loadingSpinner">
+          <ng-container *ngFor="let event of eventsArray; index as i">
+            <ion-item-divider
+              mode="ios"
+              sticky="true"
+              *ngIf="i == 0 || !dayCompare(eventsArray[i - 1].eventStartDate, event.eventStartDate)">
+              <ion-label> {{ formatDate(getDateFromTimestamp(event.eventStartDate)) }} </ion-label>
+            </ion-item-divider>
 
-          <ion-list>
-            <ion-item>
-              <img [src]="getEmoji(event.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
-              <ion-label>
-                <h3>{{ event.name }}</h3>
-                <h4>
-                  {{ (getDateFromTimestamp(event.eventStartDate) | date: 'HH:mm') }} {{ event.eventEndDate && ' às ' +
-                  (getDateFromTimestamp(event.eventEndDate) | date: 'HH:mm') }}
-                </h4>
-                <p>{{ event.slotsAvailable }} vagas restantes</p>
-                <p>Sua posição na fila: {{ event.numberOfSubscriptions + 1 | number: '1.0-0' }}</p>
-                <!-- <p>Conflito de horário com "item 2"</p>-->
-              </ion-label>
-              <ion-checkbox
-                name="{{event.eventType}}"
-                [disabled]="event.slotsAvailable === 0 ? true : null"
-                [id]="event.id"
-                slot="end"
-                (ionChange)="countCheckeds($event, event)"></ion-checkbox>
-            </ion-item>
-          </ion-list>
+            <ion-list>
+              <ion-item>
+                <img [src]="getEmoji(event.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
+                <ion-label>
+                  <h3>{{ event.name }}</h3>
+                  <h4>
+                    {{ (getDateFromTimestamp(event.eventStartDate) | date: 'HH:mm') }} {{ event.eventEndDate && ' às ' +
+                    (getDateFromTimestamp(event.eventEndDate) | date: 'HH:mm') }}
+                  </h4>
+                  <p>{{ event.slotsAvailable }} vagas restantes</p>
+                  <p>Sua posição na fila: {{ event.numberOfSubscriptions + 1 | number: '1.0-0' }}</p>
+                  <!-- <p>Conflito de horário com "item 2"</p>-->
+                </ion-label>
+                <ion-checkbox
+                  name="{{event.eventType}}"
+                  [disabled]="event.slotsAvailable === 0 ? true : null"
+                  [formControlName]="event.id"
+                  slot="end"
+                  (ionChange)="countCheckeds($event, event)"></ion-checkbox>
+              </ion-item>
+            </ion-list>
+          </ng-container>
         </ng-container>
-      </ng-container>
+      </form>
     </div>
   </ng-container>
 
