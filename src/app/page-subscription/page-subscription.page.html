@@ -93,9 +93,9 @@
           </ion-select>
         </ion-item>
 
+        <!-- prettier-ignore -->
         <p *ngIf="majorEvent.maxCourses && majorEvent.maxCourses > 0">
-          {{ eventsSelected['minicurso'].length - this.eventGroupMinicursoCount| number: '2.0-0' }} de {{
-          majorEvent.maxCourses | number: '2.0-0' }} minicursos selecionados
+          {{ eventsSelected['minicurso'].length - this.eventGroupMinicursoCount| number: '2.0-0' }} de {{ majorEvent.maxCourses | number: '2.0-0' }} minicursos selecionados
         </p>
         <p *ngIf="majorEvent.maxLectures && majorEvent.maxLectures > 0">
           {{ eventsSelected['palestra'].length | number: '2.0-0' }} de {{ majorEvent.maxLectures | number: '2.0-0' }}
@@ -128,7 +128,6 @@
                 </ion-label>
                 <ion-checkbox
                   name="{{event.eventType}}"
-                  [disabled]="event.slotsAvailable === 0 ? true : null"
                   [formControlName]="event.id"
                   slot="end"
                   (ionChange)="countCheckeds($event, event)"></ion-checkbox>

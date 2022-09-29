@@ -36,3 +36,16 @@ export interface MajorEventItem {
   createdOn: Timestamp | Date;
   id?: string;
 }
+
+export interface MajorEventSubscription {
+  time: Timestamp;
+  payment: {
+    status: number;
+    time: Timestamp;
+    error?: string;
+    price: number;
+    author: string;
+  };
+  subscriptionType: number;
+  subscribedToEvents: string[];
+}

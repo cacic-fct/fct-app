@@ -1,3 +1,4 @@
+import { MajorEventSubscription } from './../shared/services/major-event';
 import { EnrollmentTypesService } from './../shared/services/enrollment-types.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -94,17 +95,19 @@ export class PageSubscriptionPage implements OnInit {
     this.auth.user.pipe(first()).subscribe((user) => {
       if (user) {
         this.afs
-          .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`)
+          .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
           .valueChanges({ idField: 'id' })
           .pipe(first(), trace('firestore'))
           .subscribe((subscription) => {
-            if (subscription.reference) {
-              this.alreadySubscribed.fire();
-              this.router.navigate(['/eventos'], { replaceUrl: true });
+            if (subscription) {
+              if (subscription.payment.status !== 4) {
+                this.alreadySubscribed.fire();
+                this.router.navigate(['/eventos'], { replaceUrl: true });
 
-              setTimeout(() => {
-                this.alreadySubscribed.close();
-              }, 1000);
+                setTimeout(() => {
+                  this.alreadySubscribed.close();
+                }, 1000);
+              }
             }
           });
       }
@@ -120,8 +123,38 @@ export class PageSubscriptionPage implements OnInit {
     this.events$ = this.majorEvent$.pipe(
       map((majorEvent) => {
         return majorEvent.events.map((event) => {
-          // Include in dataForm
-          this.dataForm.addControl(event, this.formBuilder.control(null));
+          // Get EventItem from event (id) on Firestore
+          this.afs
+            .doc<EventItem>(`events/${event}`)
+            .valueChanges({ idField: 'id' })
+            .pipe(first(), trace('firestore'))
+            .subscribe((eventItem) => {
+              // If slots not available, disable
+              if (eventItem.slotsAvailable <= 0) {
+                this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
+              } else {
+                this.dataForm.addControl(event, this.formBuilder.control(null));
+              }
+
+              // If user is already subscribed, select
+              this.auth.user.pipe(first(), trace('auth')).subscribe((user) => {
+                if (user) {
+                  this.afs
+                    .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
+                    .get()
+                    .subscribe((document) => {
+                      if (document.exists) {
+                        // Select based on user subscription
+                        const subscription = document.data() as MajorEventSubscription;
+                        if (subscription.subscribedToEvents.includes(eventItem.id)) {
+                          this.dataForm.get(eventItem.id).setValue(true);
+                        }
+                      }
+                    });
+                }
+              });
+            });
+
           return this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' });
         });
       }),
