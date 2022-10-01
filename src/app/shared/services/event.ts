@@ -30,4 +30,5 @@ export interface EventItem {
   eventGroup?: string[];
   createdBy: string;
   createdOn: Timestamp;
+  belongsToMajorEvent?: string;
 }
