@@ -32,6 +32,12 @@ const routes: Routes = [
         (m) => m.PageManageMajorEventsPageModule
       ),
   },
+  {
+    path: 'gerenciar-eventos',
+    title: 'Gerenciar eventos',
+    loadChildren: () =>
+      import('./page-manage-events/page-manage-events.module').then((m) => m.PageManageEventsPageModule),
+  },
 ];
 
 @NgModule({
