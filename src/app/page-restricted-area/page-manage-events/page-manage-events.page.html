@@ -17,7 +17,7 @@
     <ion-datetime-button datetime="dateSelector" class="margin-horizontal-auto"></ion-datetime-button>
   </ion-item>
 
-  <ng-container *ngIf="events$ | async; let eventList; else loading">
+  <ng-container *ngIf="events$ | async as eventList; else loading">
     <ion-list>
       <h1 *ngIf="eventList.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
 
@@ -33,7 +33,9 @@
                     getDateFromTimestamp(item.eventEndDate) | date: 'dd/MM HH:mm' }}
                   </h4>
                   <p class="ion-text-wrap" *ngIf="item.course">{{courses.getCourse(item.course)}}</p>
-                  <p class="ion-text-wrap" *ngIf="item.belongsToMajorEvent">Faz parte de um grande evento: {{ getMajorEventName$(item.belongsToMajorEvent) | async }}</p>
+                  <p class="ion-text-wrap" *ngIf="item.inMajorEventName">
+                    Faz parte de um grande evento: {{ item.inMajorEventName | async }}
+                  </p>
                 </ion-label>
               </ion-col>
               <ion-col>

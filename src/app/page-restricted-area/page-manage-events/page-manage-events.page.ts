@@ -17,7 +17,7 @@ export class PageManageEvents implements OnInit {
   today: Date = new Date();
   currentMonth: string = this.today.toISOString();
   currentMonth$: BehaviorSubject<string | null> = new BehaviorSubject(this.currentMonth);
-  events$: Observable<EventItem[]>;
+  events$: Observable<any[]>; // TODO Alterar any
   constructor(private afs: AngularFirestore, public courses: CoursesService) {}
 
   ngOnInit() {
@@ -32,7 +32,26 @@ export class PageManageEvents implements OnInit {
             return query;
           })
           .valueChanges({ idField: 'id' })
-          .pipe(trace('firestore'));
+          .pipe(
+            trace('firestore'),
+            map((events) => {
+              return events.map((event) => {
+                return {
+                  ...event,
+                  inMajorEventName: this.afs
+                    .collection<MajorEventItem>('majorEvents')
+                    .doc(event.inMajorEvent)
+                    .get()
+                    .pipe(
+                      first(),
+                      map((doc) => {
+                        return doc.data().name;
+                      })
+                    ),
+                };
+              });
+            })
+          );
       })
     );
   }
@@ -47,16 +66,5 @@ export class PageManageEvents implements OnInit {
 
   onMonthChange() {
     this.currentMonth$.next(this.currentMonth);
-  }
-
-  public getMajorEventName$(majorEventId: string): Observable<string> {
-    return this.afs
-      .collection<MajorEventItem>('majorEvents')
-      .doc(majorEventId)
-      .valueChanges()
-      .pipe(
-        first(),
-        map(majorEvent => majorEvent.name)
-      );
   }
 }
