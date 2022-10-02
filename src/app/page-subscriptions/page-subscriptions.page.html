@@ -9,13 +9,7 @@
 
 <ion-content>
   <ng-container *ngIf="subscriptions$ | async as subscriptions; else loading">
-    <ng-container *ngIf="subscriptions.length === 0">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Nenhuma inscrição encontrada</ion-card-title>
-        </ion-card-header>
-      </ion-card>
-    </ng-container>
+    <h1 *ngIf="subscriptions.length === 0" class="ion-text-center">Nenhuma inscrição encontrada</h1>
 
     <ion-list *ngFor="let subscription of subscriptions">
       <ng-container *ngIf="subscription.majorEvent | async as majorEventData">
