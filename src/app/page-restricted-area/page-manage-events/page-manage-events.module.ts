@@ -6,12 +6,7 @@ import { PageManageEvents } from './page-manage-events.page';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    FormsModule,
-    PageManageEventsRoutingModule,
-  ],
+  imports: [CommonModule, IonicModule, FormsModule, PageManageEventsRoutingModule],
   declarations: [PageManageEvents],
 })
-export class PageManageEventsPageModule { }
+export class PageManageEventsPageModule {}

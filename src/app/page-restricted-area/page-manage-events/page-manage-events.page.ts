@@ -8,6 +8,10 @@ import { Timestamp } from '@firebase/firestore-types';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 
+interface EventItemQuery extends EventItem {
+  inMajorEventName?: Observable<string>;
+}
+
 @Component({
   selector: 'app-page-manage-events',
   templateUrl: './page-manage-events.page.html',
@@ -17,7 +21,7 @@ export class PageManageEvents implements OnInit {
   today: Date = new Date();
   currentMonth: string = this.today.toISOString();
   currentMonth$: BehaviorSubject<string | null> = new BehaviorSubject(this.currentMonth);
-  events$: Observable<any[]>; // TODO Alterar any
+  events$: Observable<EventItemQuery[]>;
   constructor(private afs: AngularFirestore, public courses: CoursesService) {}
 
   ngOnInit() {
@@ -34,26 +38,28 @@ export class PageManageEvents implements OnInit {
           .valueChanges({ idField: 'id' })
           .pipe(
             trace('firestore'),
-            map((events) => {
-              return events.map((event) => {
-                return {
-                  ...event,
-                  inMajorEventName: this.afs
-                    .collection<MajorEventItem>('majorEvents')
-                    .doc(event.inMajorEvent)
-                    .get()
-                    .pipe(
-                      first(),
-                      map((doc) => {
-                        return doc.data().name;
-                      })
-                    ),
-                };
-              });
-            })
+            map((events) =>
+              events.map((event) => {
+                let eventObject: EventItemQuery = event;
+                if (eventObject.inMajorEvent)
+                  eventObject.inMajorEventName = this.getMajorEventName$(event.inMajorEvent);
+                return eventObject;
+              })
+            )
           );
       })
     );
+  }
+
+  getMajorEventName$(eventID: string): Observable<string> {
+    return this.afs
+      .collection<MajorEventItem>('majorEvents')
+      .doc(eventID)
+      .get()
+      .pipe(
+        first(),
+        map((doc) => doc.data().name)
+      );
   }
 
   getDateFromTimestamp(timestamp: Timestamp): Date {

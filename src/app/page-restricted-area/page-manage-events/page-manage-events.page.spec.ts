@@ -9,8 +9,8 @@ describe('PageManageEventsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageManageEvents ],
-      imports: [IonicModule.forRoot()]
+      declarations: [PageManageEvents],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PageManageEvents);
