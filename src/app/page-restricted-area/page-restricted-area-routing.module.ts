@@ -9,12 +9,6 @@ const routes: Routes = [
     component: PageRestrictedAreaPage,
   },
   {
-    path: 'coletar-presenca',
-    title: 'Coletar presença',
-    loadChildren: () =>
-      import('./attendance/page-attendance/page-attendance.module').then((m) => m.PageAttendanceCollectPageModule),
-  },
-  {
     path: 'gerenciar-admins',
     title: 'Gerenciar admins',
     loadChildren: () =>

@@ -52,9 +52,15 @@
                   </ion-button>
                 </ion-row>
                 <ion-row>
-                  <ion-button fill="clear">
-                    <ion-icon name="wallet-outline" slot="start"></ion-icon>
-                    <p slot="end" class="ion-text-wrap">Validar comprovantes</p>
+                  <ion-button [routerLink]="['./coletar-presencas', item.id]" fill="clear">
+                    <ion-icon name="qr-code-outline" slot="start" aria-hidden="true"></ion-icon>
+                    <p slot="end">Coleta de presenças</p>
+                  </ion-button>
+                </ion-row>
+                <ion-row>
+                  <ion-button [routerLink]="['./listar-presencas', item.id]" fill="clear">
+                    <ion-icon name="list-outline" slot="start" aria-hidden="true"></ion-icon>
+                    <p slot="end">Listagem de presenças</p>
                   </ion-button>
                 </ion-row>
               </ion-col>
