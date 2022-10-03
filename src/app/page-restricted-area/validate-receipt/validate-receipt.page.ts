@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Timestamp } from '@firebase/firestore-types';
 import { fromUnixTime } from 'date-fns';
 import { Observable, map, first } from 'rxjs';
-import { MajorEventItem } from 'src/app/shared/services/major-event';
+import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { User } from 'src/app/shared/services/user';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { trace } from '@angular/fire/compat/performance';
