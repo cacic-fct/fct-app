@@ -104,8 +104,18 @@
       <ion-card-content>
         Comprovante enviado em {{getDateFromTimestamp(subscriptionData.payment.time) | date: 'dd/MM/yyyy — HH:mm'}}
         <br />
-        Aguardando confirmação do pagamento pelos organizadores do evento
+        Aguardando a confirmação do pagamento pelos organizadores do evento
       </ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button disabled="">
+              <ion-icon slot="start" name="time"></ion-icon>
+              Aguardando confirmação
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-card>
   </ng-template>
 
@@ -119,6 +129,17 @@
         Inscrição realizada
         <br />
         Pagamento confirmado em {{getDateFromTimestamp(subscriptionData.payment.time) | date: 'dd/MM/yyyy — HH:mm'}}
+
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button disabled="">
+                <ion-icon slot="start" name="checkmark"></ion-icon>
+                Inscrito
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-card-content>
     </ion-card>
   </ng-template>
@@ -169,8 +190,7 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <!-- TODO: redirect to a page to change the subscription -->
-            <ion-button color="danger">
+            <ion-button color="danger" [routerLink]="['/eventos/inscrever', majorEventData.id]">
               <ion-icon slot="start" name="pencil-outline"></ion-icon>
               Alterar inscrição
             </ion-button>
