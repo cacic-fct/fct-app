@@ -86,10 +86,10 @@ baseline.json
 *-debug.log
 .runtimeconfig.json
 firestore.rules
+emulator-data
+firebase-export-*
 storage.rules
-emulator-data/
-
-.eslintcache
 
 # ASDF
 .tool-versions
+.eslintcache

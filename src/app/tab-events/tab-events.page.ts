@@ -4,9 +4,9 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { Timestamp } from '@firebase/firestore-types';
 import { compareAsc, fromUnixTime } from 'date-fns';
-import { Observable } from 'rxjs';
+import { take, map, Observable } from 'rxjs';
 
-import { MajorEventItem } from '../shared/services/major-event';
+import { MajorEventItem } from '../shared/services/major-event.service';
 
 @Component({
   selector: 'app-tab-events',
@@ -14,18 +14,43 @@ import { MajorEventItem } from '../shared/services/major-event';
   styleUrls: ['tab-events.page.scss'],
 })
 export class TabEventsPage {
-  majorEvents$: Observable<MajorEventItem[]>;
+  majorEvents$: Observable<
+    (MajorEventItem & {
+      isSubscribed: Observable<boolean>;
+    })[]
+  >;
   today: Date = new Date();
 
   constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {}
 
   ngOnInit() {
-    this.majorEvents$ = this.afs
-      .collection<MajorEventItem>('majorEvents', (ref) => {
-        return ref.orderBy('dateStart', 'asc');
-      })
-      .valueChanges({ idField: 'id' })
-      .pipe(trace('firestore'));
+    this.auth.user.pipe(take(1)).subscribe((user) => {
+      this.majorEvents$ = this.afs
+        .collection<MajorEventItem>('majorEvents', (ref) => {
+          return ref.orderBy('eventStartDate', 'asc');
+        })
+        .valueChanges({ idField: 'id' })
+        .pipe(
+          trace('firestore'),
+          map((event) => {
+            return event.map((event) => {
+              return {
+                ...event,
+                isSubscribed: user
+                  ? this.afs
+                      .doc(`users/${user.uid}/majorEventSubscriptions/${event.id}`)
+                      .get()
+                      .pipe(
+                        map((doc) => {
+                          return doc.exists;
+                        })
+                      )
+                  : null,
+              };
+            });
+          })
+        );
+    });
   }
 
   getDateFromTimestamp(timestamp: Timestamp): Date {

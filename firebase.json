@@ -23,6 +23,9 @@
     "firestore": {
       "port": "8081"
     },
+    "storage": {
+      "port": "9199"
+    },
     "hosting": {
       "port": "5002"
     },

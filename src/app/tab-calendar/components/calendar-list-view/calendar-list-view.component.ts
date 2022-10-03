@@ -52,13 +52,13 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
           .collection<EventItem>('events', (ref) => {
             let query: any = ref;
             if (date) {
-              query = query.where('date', '>=', this.baseDate);
+              query = query.where('eventStartDate', '>=', this.baseDate);
             }
             if (filter.length > 0) {
               query = query.where('course', 'in', filter);
             }
 
-            return query.orderBy('date', 'asc');
+            return query.orderBy('eventStartDate', 'asc');
           })
           .valueChanges({ idField: 'id' })
           .pipe(trace('firestore'));
@@ -81,7 +81,8 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
   }
 
   getEmoji(emoji: string): any {
-    if (emoji === undefined || !/^\p{Emoji}$/u.test('emoji')) {
+    if (emoji === undefined || !/^\p{Emoji}|\p{Emoji_Modifier}|$/u.test('emoji')) {
+      // TODO: validar apenas 1 emoji
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);

@@ -1,3 +1,4 @@
+import { EnrollmentTypesService } from './shared/services/enrollment-types.service';
 import { isDevMode, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -14,7 +15,11 @@ import {
   APP_NAME,
   APP_VERSION,
 } from '@angular/fire/compat/analytics';
-import { AngularFirestoreModule, USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
+import {
+  AngularFirestoreModule,
+  USE_EMULATOR as USE_FIRESTORE_EMULATOR,
+  SETTINGS as FIRESTORE_SETTINGS,
+} from '@angular/fire/compat/firestore';
 import { AngularFirePerformanceModule, PerformanceMonitoringService } from '@angular/fire/compat/performance';
 
 import { getRemoteConfig, provideRemoteConfig } from '@angular/fire/remote-config';
@@ -65,6 +70,7 @@ import {
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAnalyticsModule,
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
+    AngularFireStorageModule,
     AngularFirePerformanceModule,
     AngularFireFunctionsModule,
     AngularFireStorageModule,
@@ -113,6 +119,7 @@ import {
     PerformanceMonitoringService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'pt-BR' },
+    { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true, merge: true } },
     { provide: USE_DEVICE_LANGUAGE, useValue: true },
     { provide: APP_VERSION, useValue: GlobalConstantsService.appVersion },
     { provide: APP_NAME, useValue: GlobalConstantsService.appName },
@@ -128,6 +135,7 @@ import {
     RemoteConfigService,
     CoursesService,
     WeatherService,
+    EnrollmentTypesService,
   ],
   bootstrap: [AppComponent],
 })

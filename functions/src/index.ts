@@ -83,44 +83,51 @@ exports.removeAdminRole = functions.https.onCall((data, context) => {
     throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
   }
 
-  const whitelist = ['renan.yudi@unesp.br', 'willian.murayama@unesp.br', 'gc.tomiasi@unesp.br'];
+  const remoteConfig = admin.remoteConfig();
 
-  if (whitelist.includes(data.email)) {
-    throw new functions.https.HttpsError('failed-precondition', 'You cannot remove this user.');
-  }
+  // Get whitelist array as string from remote config
+  return remoteConfig.getTemplate().then((template) => {
+    // @ts-ignore
+    const whitelist: string = template.parameters.adminWhitelist.defaultValue?.value;
 
-  return getAuth()
-    .getUserByEmail(data.email)
-    .then((user) => {
-      return getAuth().setCustomUserClaims(user.uid, {
-        role: undefined,
+    // Check if email is included in whitelist array
+    if (whitelist.includes(data.email)) {
+      throw new functions.https.HttpsError('failed-precondition', 'You cannot remove this user.');
+    }
+
+    return getAuth()
+      .getUserByEmail(data.email)
+      .then((user) => {
+        return getAuth().setCustomUserClaims(user.uid, {
+          role: undefined,
+        });
+      })
+      .then(() => {
+        const firestore = admin.firestore();
+        const document = firestore.doc('claims/admin');
+
+        // Get admin array from document
+        document.get().then((doc) => {
+          const admins = doc.data()?.admins;
+          if (admins === undefined) {
+            return;
+          }
+          // Remove admin from array
+          admins.splice(admins.indexOf(data.email), 1);
+          // Update document with new array
+          return document.update({ admins });
+        });
+
+        return {
+          message: `Success! ${data.email} has been demoted from admin`,
+        };
+      })
+      .catch((error) => {
+        return {
+          message: `An error has occured: ${error}`,
+        };
       });
-    })
-    .then(() => {
-      const firestore = admin.firestore();
-      const document = firestore.doc('claims/admin');
-
-      // Get admin array from document
-      document.get().then((doc) => {
-        const admins = doc.data()?.admins;
-        if (admins === undefined) {
-          return;
-        }
-        // Remove admin from array
-        admins.splice(admins.indexOf(data.email), 1);
-        // Update document with new array
-        return document.update({ admins });
-      });
-
-      return {
-        message: `Success! ${data.email} has been demoted from admin`,
-      };
-    })
-    .catch((error) => {
-      return {
-        message: `An error has occured: ${error}`,
-      };
-    });
+  });
 });
 
 exports.getUserUid = functions.https.onCall((data, context) => {
@@ -185,5 +192,90 @@ exports.getUserUid = functions.https.onCall((data, context) => {
     })
     .catch((error) => {
       return { message: `${error}` };
+    });
+});
+
+
+exports.createSubscription = functions.firestore.document(`events/{eventId}/subscriptions/{userId}`).onCreate(async (snap, context) => {
+  const eventId: string = context.params.eventId;
+  const eventSnap = await admin.firestore().collection('events').doc(eventId).get();
+  let numberOfSubscriptions: number =  eventSnap.data()?.numberOfSubscriptions;
+  numberOfSubscriptions = numberOfSubscriptions ? numberOfSubscriptions + 1 : 1;
+  await eventSnap.ref.update({ numberOfSubscriptions });
+});
+
+exports.addProfessorRole = functions.https.onCall((data, context) => {
+  if (context.app == undefined) {
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'The function must be called from an App Check verified app.'
+    );
+  }
+
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+  }
+
+  if (context.auth.token.role >= 3000) {
+    throw new functions.https.HttpsError('failed-precondition', 'User is already a professor or has a greater role.');
+  }
+
+  const remoteConfig = admin.remoteConfig();
+
+  // Get professors array as string from remote config
+  return remoteConfig
+    .getTemplate()
+    .then((template) => {
+      // @ts-ignore
+      const professors: string = template.parameters.professors.defaultValue?.value;
+
+      // Check if email is included in professors array
+      if (!professors.includes(data.email)) {
+        return {
+          message: `${data.email} is not a professor`,
+        };
+      }
+
+      return getAuth()
+        .getUserByEmail(data.email)
+        .then((user) => {
+          return getAuth().setCustomUserClaims(user.uid, {
+            role: 3000,
+          });
+        })
+        .then(() => {
+          const firestore = admin.firestore();
+          const document = firestore.doc('claims/professor');
+
+          // Get professor3000 array from document
+          document.get().then((doc) => {
+            if (doc.exists && doc.data()?.professor3000) {
+              // Add user email to array
+              const professor3000Array = doc.data()?.professor3000;
+              professor3000Array.push(data.email);
+              document.set({
+                professor3000: professor3000Array,
+              });
+            } else {
+              // If document or array don't exist, create them
+              document.set({
+                professor3000: [data.email],
+              });
+            }
+          });
+          return {
+            message: `${data.email} has been made a professor`,
+          };
+        })
+        .catch((error) => {
+          return {
+            message: `${error}`,
+          };
+        });
+    })
+    .catch((error) => {
+      return {
+        message: `${error}`,
+      };
     });
 });

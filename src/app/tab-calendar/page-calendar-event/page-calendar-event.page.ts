@@ -24,7 +24,7 @@ import VectorSource from 'ol/source/Vector';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { EventItem } from '../../shared/services/event';
-import { first, Observable } from 'rxjs';
+import { take, Observable } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 
 import { Timestamp } from '@firebase/firestore-types';
@@ -59,9 +59,9 @@ export class PageCalendarEventPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // first() unsubscribes after the first value is emitted
+    // take(1) unsubscribes after the first value is emitted
     // This is necessary because the map would be created multiple times otherwise
-    this.item$.pipe(first()).subscribe((item) => {
+    this.item$.pipe(take(1)).subscribe((item) => {
       if (item.location?.lat && item.location?.lon) {
         useGeographic();
         const iconStyle = new Style({
@@ -75,7 +75,7 @@ export class PageCalendarEventPage implements OnInit {
         });
 
         this.weather = this.weatherService.getWeather(
-          this.getDateFromTimestamp(item.date),
+          this.getDateFromTimestamp(item.eventStartDate),
           item.location.lat,
           item.location.lon
         );
@@ -181,7 +181,8 @@ export class PageCalendarEventPage implements OnInit {
   }
 
   getEmoji(emoji: string): any {
-    if (emoji === undefined || !/^\p{Emoji}$/u.test('emoji')) {
+    if (emoji === undefined || !/^\p{Emoji}|\p{Emoji_Modifier}|$/u.test('emoji')) {
+      // TODO: validar apenas 1 emoji
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);

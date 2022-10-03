@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="majorEvents$ | async; let majorEventsList; else loading">
+  <ng-container *ngIf="majorEvents$ | async as majorEventsList; else loading">
     <h1 *ngIf="majorEventsList.length === 0" class="ion-text-center">Nenhum evento encontrado</h1>
 
     <div *ngIf="majorEventsList.length > 0" class="event-container">
@@ -61,35 +61,38 @@
             <ng-template #singlePrice>
               <ion-item lines="none">
                 Preço único
-                <span slot="end">{{ (event.price.single / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ event.price.single | currency:'BRL' }}</span>
               </ion-item>
             </ng-template>
 
             <ng-template #multiPrice>
               <ion-item lines="none" *ngIf="event.price.students">
                 Alunos da Unesp
-                <span slot="end">{{ (event.price.students / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ event.price.students | currency:'BRL' }}</span>
               </ion-item>
 
               <ion-item lines="none" *ngIf="event.price.otherStudents">
                 Alunos
-                <span slot="end">{{ (event.price.otherStudents / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ event.price.otherStudents | currency:'BRL' }}</span>
               </ion-item>
 
-              <ion-item lines="none" *ngIf="event.price.otherStudents">
+              <ion-item lines="none" *ngIf="event.price.professors">
                 Professores
-                <span slot="end">{{ (event.price.professors / 100) | currency:'BRL' }}</span>
+                <span slot="end">{{ event.price.professors | currency:'BRL' }}</span>
               </ion-item>
             </ng-template>
           </div>
 
-          <!-- TODO: Fazer botão de inscrição funcionar -->
           <div class="ion-padding">
-            <ion-button
+            <ng-container
               *ngIf="(event.subscriptionStartDate && event.subscriptionEndDate) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionStartDate), getDateFromTimestamp(event.subscriptionEndDate))">
-              Inscreva-se
-            </ion-button>
-
+              <ng-container *ngIf="event.isSubscribed | async as isSubscribed; else notSubscribed">
+                <ion-button *ngIf="isSubscribed" disabled=""> Inscrito </ion-button>
+              </ng-container>
+              <ng-template #notSubscribed>
+                <ion-button [routerLink]="['inscrever', event.id]"> Inscreva-se </ion-button>
+              </ng-template>
+            </ng-container>
             <ion-button *ngIf="event.button?.url" [href]="event.button.url" fill="clear" target="_blank">
               {{ event.button.text || 'Saiba mais' }}
             </ion-button>
