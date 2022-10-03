@@ -9,7 +9,7 @@ import * as firestore from '@firebase/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { fromUnixTime, isSameDay, compareAsc } from 'date-fns';
-import { combineLatest, first, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, take, map, Observable, switchMap } from 'rxjs';
 
 import { MajorEventItem } from '../shared/services/major-event.service';
 import { EventItem } from '../shared/services/event';
@@ -93,12 +93,12 @@ export class PageSubscriptionPage implements OnInit {
       });
 
     // Check if user is already subscribed
-    this.auth.user.pipe(first(), trace('auth')).subscribe((user) => {
+    this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
       if (user) {
         this.afs
           .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
           .valueChanges({ idField: 'id' })
-          .pipe(first(), trace('firestore'))
+          .pipe(take(1), trace('firestore'))
           .subscribe((subscription) => {
             if (subscription) {
               if (subscription.payment.status !== 4) {
@@ -131,7 +131,7 @@ export class PageSubscriptionPage implements OnInit {
           this.afs
             .doc<EventItem>(`events/${event}`)
             .valueChanges({ idField: 'id' })
-            .pipe(first(), trace('firestore'))
+            .pipe(take(1), trace('firestore'))
             .subscribe((eventItem) => {
               // If slots not available, disable
               if (eventItem.slotsAvailable <= 0) {
@@ -141,7 +141,7 @@ export class PageSubscriptionPage implements OnInit {
               }
 
               // If user is already subscribed, select
-              this.auth.user.pipe(first(), trace('auth')).subscribe((user) => {
+              this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
                 if (user) {
                   this.afs
                     .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
@@ -316,69 +316,85 @@ export class PageSubscriptionPage implements OnInit {
         return;
       }
 
-      this.auth.user.pipe(first()).subscribe((user) => {
-        if (user) {
-          this.afs
-            .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`)
-            .valueChanges({ idField: 'id' })
-            .pipe(first(), trace('firestore'))
-            .subscribe((subscription) => {
-              if (!subscription.reference) {
-                // Merge eventsSelected arrays
-                const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
-
-                // Create array with event IDs from eventsSelected
-                const eventsSelectedID = eventsSelected.map((event) => event.id);
-
-                const now: Timestamp = firestore.Timestamp.fromDate(new Date());
-
-                this.afs
-                  .collection(`majorEvents/${this.majorEventID}/subscriptions`)
-                  .doc<MajorEventSubscription>(user.uid)
-                  .set({
-                    subscriptionType: Number.parseInt(this.opSelected),
-                    subscribedToEvents: eventsSelectedID,
-                    time: now,
-                    payment: {
-                      status: 0,
-                      time: now,
-                      author: user.uid,
-                    },
-                  })
-                  .then(() => {
-                    this.afs
-                      .collection(`users/${user.uid}/majorEventSubscriptions`)
-                      .doc(this.majorEventID)
-                      .set({
-                        reference: this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`).ref,
-                      })
-                      .then(() => {
-                        this.successSwal.fire();
-                        setTimeout(() => {
-                          this.successSwal.close();
-                          this.router.navigate(['/eventos'], { replaceUrl: true });
-                        }, 2000);
-                      });
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                    this.errorSwal.fire();
-                  });
-
-                setTimeout(() => {
-                  this.successSwal.close();
-                  this.router.navigate(['/eventos'], { replaceUrl: true });
-                }, 1500);
-              } else {
-                this.alreadySubscribed.fire();
-                this.router.navigate(['/eventos'], { replaceUrl: true });
-
-                setTimeout(() => {
-                  this.alreadySubscribed.close();
-                }, 1000);
-              }
-            });
+      this.majorEvent$.pipe(take(1)).subscribe((majorEvent) => {
+        let price;
+        switch (this.opSelected) {
+          case '0':
+            price = majorEvent.price.students;
+            break;
+          case '1':
+            price = majorEvent.price.otherStudents;
+            break;
+          case '2':
+            price = majorEvent.price.professors;
+            break;
         }
+
+        this.auth.user.pipe(take(1)).subscribe((user) => {
+          if (user) {
+            this.afs
+              .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`)
+              .valueChanges({ idField: 'id' })
+              .pipe(take(1), trace('firestore'))
+              .subscribe((subscription) => {
+                if (!subscription.reference) {
+                  // Merge eventsSelected arrays
+                  const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
+
+                  // Create array with event IDs from eventsSelected
+                  const eventsSelectedID = eventsSelected.map((event) => event.id);
+
+                  const now: Timestamp = firestore.Timestamp.fromDate(new Date());
+
+                  this.afs
+                    .collection(`majorEvents/${this.majorEventID}/subscriptions`)
+                    .doc<MajorEventSubscription>(user.uid)
+                    .set({
+                      subscriptionType: Number.parseInt(this.opSelected),
+                      subscribedToEvents: eventsSelectedID,
+                      time: now,
+                      payment: {
+                        price: price,
+                        status: 0,
+                        time: now,
+                        author: user.uid,
+                      },
+                    })
+                    .then(() => {
+                      this.afs
+                        .collection(`users/${user.uid}/majorEventSubscriptions`)
+                        .doc(this.majorEventID)
+                        .set({
+                          reference: this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`).ref,
+                        })
+                        .then(() => {
+                          this.successSwal.fire();
+                          setTimeout(() => {
+                            this.successSwal.close();
+                            this.router.navigate(['/eventos'], { replaceUrl: true });
+                          }, 2000);
+                        });
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      this.errorSwal.fire();
+                    });
+
+                  setTimeout(() => {
+                    this.successSwal.close();
+                    this.router.navigate(['/eventos'], { replaceUrl: true });
+                  }, 1500);
+                } else {
+                  this.alreadySubscribed.fire();
+                  this.router.navigate(['/eventos'], { replaceUrl: true });
+
+                  setTimeout(() => {
+                    this.alreadySubscribed.close();
+                  }, 1000);
+                }
+              });
+          }
+        });
       });
     });
   }
