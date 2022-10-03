@@ -51,12 +51,33 @@
     </ion-list>
   </ng-container>
 
-  <ng-template #ionCardHeader let-title="title" let-subType="subType" let-price="price" let-color="color">
+  <ng-template
+    #ionCardHeader
+    let-title="title"
+    let-subType="subType"
+    let-price="price"
+    let-color="color"
+    let-majorEventData="majorEventData">
     <ion-card-header>
-      <ion-card-title [color]="color">{{title.toUpperCase()}} </ion-card-title>
+      <ion-card-title [color]="color">{{majorEventData.name.toUpperCase()}} </ion-card-title>
 
       <ion-card-subtitle [color]="color">
-        {{ enrollmentTypes.getEnrollmentType(subType) }} - {{ price | currency: 'BRL' }}
+        <p>{{ enrollmentTypes.getEnrollmentType(subType) }} - {{ price | currency: 'BRL' }}</p>
+        <!-- prettier-ignore -->
+        <p>
+          Data do evento: {{ getDateFromTimestamp(majorEventData.eventStartDate) | date: 'dd/MM/yyyy' }} – {{ getDateFromTimestamp(majorEventData.eventEndDate) | date: 'dd/MM/yyyy' }}
+        </p>
+        <!-- prettier-ignore -->
+        <p>
+          Período de inscrições: {{ getDateFromTimestamp(majorEventData.subscriptionStartDate) | date: 'dd/MM/yyyy - HH:mm' }} – {{ getDateFromTimestamp(majorEventData.subscriptionEndDate) | date: 'dd/MM/yyyy - HH:mm' }}
+        </p>
+      </ion-card-subtitle>
+
+      <ion-card-subtitle [color]="color"> </ion-card-subtitle>
+
+      <!-- prettier-ignore -->
+      <ion-card-subtitle [color]="color"> 
+
       </ion-card-subtitle>
     </ion-card-header>
   </ng-template>
@@ -68,7 +89,7 @@
   <ng-template #waitingPayment let-majorEventData="majorEventData" let-subscriptionData="subscriptionData">
     <ion-card>
       <ng-container
-        *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: ''}">
+        *ngTemplateOutlet="ionCardHeader; context: {majorEventData: majorEventData, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: ''}">
       </ng-container>
       <ng-container *ngIf="isInSubscriptionPeriod(majorEventData.subscriptionEndDate); else outOfDate">
         <!-- prettier-ignore -->
@@ -98,7 +119,7 @@
   <ng-template #waitingConfirmation let-majorEventData="majorEventData" let-subscriptionData="subscriptionData">
     <ion-card>
       <ng-container
-        *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: ''}">
+        *ngTemplateOutlet="ionCardHeader; context: {majorEventData: majorEventData, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: ''}">
       </ng-container>
 
       <ion-card-content>
@@ -122,7 +143,7 @@
   <ng-template #paymentConfirmed let-majorEventData="majorEventData" let-subscriptionData="subscriptionData">
     <ion-card>
       <ng-container
-        *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: ''}">
+        *ngTemplateOutlet="ionCardHeader; context: {majorEventData: majorEventData, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: ''}">
       </ng-container>
 
       <ion-card-content>
@@ -147,7 +168,7 @@
   <ng-template #paymentError let-majorEventData="majorEventData" let-subscriptionData="subscriptionData">
     <ion-card>
       <ng-container
-        *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'danger'}">
+        *ngTemplateOutlet="ionCardHeader; context: {majorEventData: majorEventData, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'danger'}">
       </ng-container>
       <ion-card-content>
         <ion-text color="danger">
@@ -174,7 +195,7 @@
   <ng-template #eventFull let-majorEventData="majorEventData" let-subscriptionData="subscriptionData">
     <ion-card>
       <ng-container
-        *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'danger'}">
+        *ngTemplateOutlet="ionCardHeader; context: {majorEventData: majorEventData, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'danger'}">
       </ng-container>
 
       <ion-card-content>
@@ -203,7 +224,7 @@
   <ng-template #pastEvent let-majorEventData="majorEventData" let-subscriptionData="subscriptionData">
     <ion-card>
       <ng-container
-        *ngTemplateOutlet="ionCardHeader; context: {title: majorEventData.name, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'medium'}">
+        *ngTemplateOutlet="ionCardHeader; context: {majorEventData: majorEventData, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'medium'}">
       </ng-container>
 
       <ion-grid>
