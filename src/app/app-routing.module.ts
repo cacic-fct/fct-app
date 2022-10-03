@@ -90,7 +90,7 @@ const routes: Routes = [
     path: 'inscricoes',
     title: 'Minhas inscrições',
     loadChildren: () =>
-      import('./page-subscriptions/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
+      import('./page-subscriptions-payments/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
