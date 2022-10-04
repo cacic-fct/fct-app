@@ -9,12 +9,11 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, first, Observable } from 'rxjs';
 import * as firestore from 'firebase/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { EventItem } from './../../shared/services/event';
+import { EventItem } from 'src/app/shared/services/event';
 import { Timestamp } from '@firebase/firestore-types';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-
 import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
-import { PlacesService } from './../../shared/services/places.service';
+import { PlacesService } from 'src/app/shared/services/places.service';
 
 @Component({
   selector: 'app-add-event',

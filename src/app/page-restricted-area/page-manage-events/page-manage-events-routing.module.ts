@@ -17,6 +17,11 @@ const routes: Routes = [
     title: 'Coletar presenças',
     loadChildren: () => import('./page-scanner-attendance/scanner.module').then((m) => m.ScannerPageModule),
   },
+  {
+    path: 'adicionar',
+    title: 'Adicionar evento',
+    loadChildren: () => import('./add-event/add-event.module').then((m) => m.AddEventPageModule),
+  },
 ];
 
 @NgModule({
