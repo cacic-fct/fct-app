@@ -130,20 +130,20 @@ export class PageSubscriptionPage implements OnInit {
       map((majorEvent: MajorEventItem) => {
         return this.afs
           .collection<EventItem>('events', (ref) => {
-            return ref.where(documentId(), '==', majorEvent.events).orderBy('date', 'asc');
+            return ref.where(documentId(), 'in', majorEvent.events).orderBy('eventStartDate', 'asc');
           })
           .valueChanges({ idField: 'id' })
           .pipe(
             map((events: EventItem[]) => {
               return events.map((eventItem) => {
-                // If slots not available, disabled
+                // If there are no slots available, add event to form with disabled selection
                 if (eventItem.slotsAvailable <= 0) {
                   this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
                 } else {
                   this.dataForm.addControl(eventItem.id, this.formBuilder.control(null));
                 }
 
-                // If user is already subscribed, select
+                // If user is already subscribed, auto select event
                 this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
                   if (user) {
                     this.afs
@@ -151,7 +151,6 @@ export class PageSubscriptionPage implements OnInit {
                       .get()
                       .subscribe((document) => {
                         if (document.exists) {
-                          // Select based on user subscription
                           const subscription = document.data() as MajorEventSubscription;
                           if (subscription.subscribedToEvents.includes(eventItem.id)) {
                             this.dataForm.get(eventItem.id).setValue(true);
