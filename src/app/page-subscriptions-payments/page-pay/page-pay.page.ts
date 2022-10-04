@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Observable } from 'rxjs';
-import { finalize, first } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
 import { ToastController } from '@ionic/angular';
@@ -13,10 +13,10 @@ import { fromUnixTime } from 'date-fns';
 
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { ClipboardService } from 'ngx-clipboard';
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from '@firebase/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
-import { EnrollmentTypesService } from '../shared/services/enrollment-types.service';
+import { EnrollmentTypesService } from '../../shared/services/enrollment-types.service';
 
 @UntilDestroy()
 @Component({
@@ -72,16 +72,15 @@ export class PagePayPage implements OnInit {
       .pipe(untilDestroyed(this), trace('firestore'))
       .subscribe((document) => {
         if (!document.exists) {
-          // TODO: Redirecionar para página de minhas inscrições
           this.eventNotFound.fire();
           setTimeout(() => {
-            this.router.navigate(['menu']);
+            this.router.navigate(['inscricoes']);
             this.eventNotFound.close();
           }, 1000);
         }
       });
 
-    this.auth.user.pipe(first()).subscribe((user) => {
+    this.auth.user.pipe(take(1)).subscribe((user) => {
       if (user) {
         this.uid = user.uid;
         this.afs
@@ -93,10 +92,9 @@ export class PagePayPage implements OnInit {
               if (doc.exists) {
                 return doc.data();
               } else {
-                // TODO: Redirecionar para página de minhas inscrições
                 this.subscriptionNotFound.fire();
                 setTimeout(() => {
-                  this.router.navigate(['menu']);
+                  this.router.navigate(['inscricoes']);
                   this.subscriptionNotFound.close();
                 }, 1000);
               }
@@ -104,10 +102,9 @@ export class PagePayPage implements OnInit {
 
             this.userSubscription$.then((subscription) => {
               if (subscription.payment.status !== 0 && subscription.payment.status !== 3) {
-                // TODO: Redirecionar para página de minhas inscrições
                 this.alreadyPaid.fire();
                 setTimeout(() => {
-                  this.router.navigate(['menu']);
+                  this.router.navigate(['inscricoes']);
                   this.alreadyPaid.close();
                 }, 1000);
               }
@@ -125,8 +122,7 @@ export class PagePayPage implements OnInit {
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((event) => {
       if (this.getDateFromTimestamp(event.subscriptionEndDate) < this.today) {
         this.outOfDate = true;
-        // TODO: Redirecionar para página de minhas inscrições
-        this.router.navigate(['menu']);
+        this.router.navigate(['inscricoes']);
         this.expired.fire();
         setTimeout(() => {
           this.expired.close();
@@ -230,10 +226,9 @@ export class PagePayPage implements OnInit {
       })
       .then(() => {
         this.toastSuccess();
-        // TODO: Redirecionar para página de minhas inscrições
         setTimeout(() => {
           this.toastController.dismiss();
-          this.router.navigate(['/pagamentos'], { replaceUrl: true });
+          this.router.navigate(['/inscricoes'], { replaceUrl: true });
         }, 1500);
       })
       .catch((err) => {

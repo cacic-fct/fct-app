@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { BarcodeFormat } from '@zxing/library';
-import { BehaviorSubject, first, isObservable, map, Observable } from 'rxjs';
+import { BehaviorSubject, take, isObservable, map, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
@@ -11,7 +11,9 @@ import { trace } from '@angular/fire/compat/performance';
 import { EventItem } from 'src/app/shared/services/event';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Timestamp } from '@firebase/firestore-types';
+
+import { Timestamp } from '@firebase/firestore';
+import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { AuthService, GetUserUIDResponse } from 'src/app/shared/services/auth.service';
 
 interface Attendance {
@@ -97,7 +99,7 @@ export class ScannerPage implements OnInit {
           return attendance.map((item) => {
             return {
               ...item,
-              user: this.afs.collection('users').doc<User>(item.id).valueChanges().pipe(trace('firestore'), first()),
+              user: this.afs.collection('users').doc<User>(item.id).valueChanges().pipe(trace('firestore'), take(1)),
             };
           });
         })
@@ -130,7 +132,7 @@ export class ScannerPage implements OnInit {
         .collection<Attendance>(`events/${this.eventID}/attendance`)
         .doc(resultString)
         .get()
-        .pipe(first(), trace('firestore'))
+        .pipe(take(1), trace('firestore'))
         .subscribe((document) => {
           // If document with user uid already exists
           if (document.exists) {
@@ -143,12 +145,15 @@ export class ScannerPage implements OnInit {
               .collection('users')
               .doc(resultString)
               .get()
-              .pipe(first(), trace('firestore'))
+              .pipe(take(1), trace('firestore'))
               .subscribe((user) => {
                 if (user.exists) {
-                  this.afs.collection(`events/${this.eventID}/attendance`).doc(resultString).set({
-                    time: new Date(),
-                  });
+                  this.afs
+                    .collection(`events/${this.eventID}/attendance`)
+                    .doc(resultString)
+                    .set({
+                      time: Timestamp.fromDate(new Date()),
+                    });
                   this.audioSuccess.play();
                   this.toastSucess();
                   this.backdropColor('success');
@@ -181,7 +186,7 @@ export class ScannerPage implements OnInit {
     this.hasPermission = has;
   }
 
-  getDateFromTimestamp(timestamp: Timestamp): Date {
+  getDateFromTimestamp(timestamp: TimestampType): Date {
     return fromUnixTime(timestamp.seconds);
   }
 
@@ -198,7 +203,7 @@ export class ScannerPage implements OnInit {
     }
 
     if (isObservable(response)) {
-      response.pipe(first()).subscribe((response: GetUserUIDResponse) => {
+      response.pipe(take(1)).subscribe((response: GetUserUIDResponse) => {
         // If cloud function returns a message, it's an error
         if (response.message) {
           this.backdropColor('invalid');
@@ -211,7 +216,7 @@ export class ScannerPage implements OnInit {
             .collection<Attendance>(`events/${this.eventID}/attendance`)
             .doc(uid)
             .get()
-            .pipe(first(), trace('firestore'))
+            .pipe(take(1), trace('firestore'))
             .subscribe((document) => {
               // If document with user uid already exists in attendance list
               if (document.exists) {
@@ -224,13 +229,16 @@ export class ScannerPage implements OnInit {
                 .collection('users')
                 .doc(uid)
                 .get()
-                .pipe(first(), trace('firestore'))
+                .pipe(take(1), trace('firestore'))
                 .subscribe((user) => {
                   // If user uid exists, register attendance
                   if (user.exists) {
-                    this.afs.collection(`events/${this.eventID}/attendance`).doc(uid).set({
-                      time: new Date(),
-                    });
+                    this.afs
+                      .collection(`events/${this.eventID}/attendance`)
+                      .doc(uid)
+                      .set({
+                        time: Timestamp.fromDate(new Date()),
+                      });
                     this.audioSuccess.play();
                     this.toastSucess();
                     this.backdropColor('success');

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { AlertController } from '@ionic/angular';
 
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
@@ -19,15 +19,12 @@ import { Mailto, NgxMailtoService } from 'ngx-mailto';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-import { first, Observable, BehaviorSubject } from 'rxjs';
+import { take, Observable, BehaviorSubject } from 'rxjs';
 
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { UserTrackingService } from '@angular/fire/compat/analytics';
 import { WindowService } from '../shared/services/window.service';
 
 import firebase from 'firebase/compat/app';
 
-@UntilDestroy()
 @Component({
   selector: 'app-page-register',
   templateUrl: './page-register.page.html',
@@ -74,7 +71,7 @@ export class PageRegisterPage implements OnInit {
       .collection('users')
       .doc<User>(this.userData.uid)
       .valueChanges()
-      .pipe(first(), trace('firestore'))
+      .pipe(take(1), trace('firestore'))
       .subscribe((user) => {
         if (user.email.includes('@unesp.br')) {
           this.isUnesp = true;
@@ -92,7 +89,10 @@ export class PageRegisterPage implements OnInit {
           this.dataForm.controls.fullName.setValue(user.fullName);
         }
         this.dataForm.controls.phone.setValue(user.phone);
-        this.dataForm.controls.cpf.setValue(user.cpf);
+        if (user.cpf) {
+          this.dataForm.controls.cpf.setValue(user.cpf);
+          this.dataForm.controls.cpf.disable();
+        }
       });
 
     this.windowRef = this.win.windowRef;
@@ -110,7 +110,7 @@ export class PageRegisterPage implements OnInit {
       .collection('users')
       .doc<User>(this.userData.uid)
       .valueChanges()
-      .pipe(first())
+      .pipe(take(1))
       .subscribe(async (user) => {
         if (user.phone && user.phone === this.dataForm.value.phone) {
           this.submitUserData(user);
@@ -128,7 +128,7 @@ export class PageRegisterPage implements OnInit {
 
   submitUserData(user: User) {
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-    const userData = {
+    const userData: User = {
       fullName: this.isUnesp ? this.userData.displayName : this.dataForm.value.fullName,
       associateStatus: this.isUnesp ? this.dataForm.value.associateStatus : 'external',
       academicID: this.isUnesp && this.isUndergraduate ? this.dataForm.value.academicID : null,
