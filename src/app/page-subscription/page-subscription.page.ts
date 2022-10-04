@@ -9,7 +9,7 @@ import * as firestore from '@firebase/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { fromUnixTime, isSameDay, compareAsc } from 'date-fns';
-import { combineLatest, take, map, Observable, switchMap, exhaustMap, forkJoin } from 'rxjs';
+import { take, map, Observable, switchMap } from 'rxjs';
 
 import { documentId } from '@firebase/firestore';
 
@@ -53,7 +53,9 @@ export class PageSubscriptionPage implements OnInit {
 
   dataForm: FormGroup;
 
-  eventsSelected = {
+  groupInSelection: boolean = false;
+
+  eventsSelected: { [key: string]: EventItem[] } = {
     minicurso: [],
     palestra: [],
   };
@@ -195,74 +197,58 @@ export class PageSubscriptionPage implements OnInit {
     if (this.eventsSelected[name]) {
       if (checked) {
         switch (name) {
-          // TODO: Refactor me
           case 'minicurso':
-            // If already in the list, remove from list
-            const index = this.eventsSelected[name].findIndex((eventArray: EventItem) => eventArray.id === event.id);
-
-            if (index !== -1) {
-              this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event.id), 1);
+            if (this.eventsSelected['minicurso'].length - this.eventGroupMinicursoCount < this.maxCourses) {
+              this.eventsSelected['minicurso'].push(event);
             }
 
-            if (this.eventsSelected[name].length - this.eventGroupMinicursoCount < this.maxCourses) {
-              this.eventsSelected[name].push(event);
+            if (!this.groupInSelection && event.eventGroup) {
+              this.groupInSelection = true;
+              event.eventGroup.forEach((eventFromGroup) => {
+                if (eventFromGroup === event.id) {
+                  return;
+                }
 
-              if (event.eventGroup) {
-                event.eventGroup.forEach((eventFromGroup) => {
-                  if (eventFromGroup === event.id) {
-                    return;
-                  }
-
-                  // If sister event already included, skip
-                  if (
-                    this.eventsSelected[name].includes(eventFromGroup) ||
-                    this.eventsSelected[name].some((event) => event.id === eventFromGroup)
-                  ) {
-                    return;
-                  }
-
-                  this.dataForm.get(eventFromGroup).setValue(true);
-                  this.eventGroupMinicursoCount++;
-                });
-              }
-            } else {
-              this.dataForm.get(event.id).setValue(false);
-              this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
-              return;
+                this.eventGroupMinicursoCount++;
+                this.dataForm.get(eventFromGroup).setValue(true);
+              });
+              this.groupInSelection = false;
             }
+
             return;
-          case 'palestra':
+          default:
+            if (!(name in this.eventsSelected)) {
+              this.eventsSelected[name] = [];
+            }
+
             if (this.eventsSelected[name].length < this.maxLectures) {
               this.eventsSelected[name].push(event);
-            } else {
-              this.dataForm.get(event.id).setValue(false);
-              this.presentLimitReachedToast('palestras', this.maxLectures.toString());
-              return;
             }
+
             return;
         }
       } else {
-        const index = this.eventsSelected[name].findIndex((eventArray: EventItem) => eventArray.id === event.id);
+        switch (name) {
+          case 'minicurso':
+            this.eventsSelected['minicurso'] = this.eventsSelected['minicurso'].filter((e) => e.id !== event.id);
 
-        if (index >= 0) {
-          this.eventsSelected[name].splice(index, 1);
+            if (!this.groupInSelection && event.eventGroup) {
+              this.groupInSelection = true;
+              event.eventGroup.forEach((eventFromGroup) => {
+                if (eventFromGroup === event.id) {
+                  return;
+                }
 
-          if (event.eventGroup) {
-            event.eventGroup.forEach((eventFromGroup) => {
-              debugger;
-              if (eventFromGroup === event.id) {
-                return;
-              }
+                this.eventGroupMinicursoCount--;
+                this.dataForm.get(eventFromGroup).setValue(false);
+              });
+              this.groupInSelection = false;
+            }
+            return;
 
-              // If event is not in the list, skip
-              if (!this.eventsSelected[name].some((event) => event.id === eventFromGroup)) {
-                return;
-              }
-
-              this.eventGroupMinicursoCount--;
-              this.dataForm.get(eventFromGroup).setValue(false);
-            });
-          }
+          default:
+            this.eventsSelected[name] = this.eventsSelected[name].filter((e) => e.id !== event.id);
+            return;
         }
       }
     }
