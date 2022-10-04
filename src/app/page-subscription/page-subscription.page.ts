@@ -9,7 +9,9 @@ import * as firestore from '@firebase/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { fromUnixTime, isSameDay, compareAsc } from 'date-fns';
-import { combineLatest, take, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, take, map, Observable, switchMap, exhaustMap, forkJoin } from 'rxjs';
+
+import { documentId } from '@firebase/firestore';
 
 import { MajorEventItem } from '../shared/services/major-event.service';
 import { EventItem } from '../shared/services/event';
@@ -100,7 +102,7 @@ export class PageSubscriptionPage implements OnInit {
           .valueChanges({ idField: 'id' })
           .pipe(take(1), trace('firestore'))
           .subscribe((subscription) => {
-            if (subscription) {
+            if (subscription?.payment) {
               if (subscription.payment.status !== 4) {
                 this.alreadySubscribed.fire();
                 this.router.navigate(['/eventos'], { replaceUrl: true });
@@ -125,44 +127,46 @@ export class PageSubscriptionPage implements OnInit {
       .pipe(trace('firestore'));
 
     this.events$ = this.majorEvent$.pipe(
-      map((majorEvent) => {
-        return majorEvent.events.map((event) => {
-          // Get EventItem from event (id) on Firestore
-          this.afs
-            .doc<EventItem>(`events/${event}`)
-            .valueChanges({ idField: 'id' })
-            .pipe(take(1), trace('firestore'))
-            .subscribe((eventItem) => {
-              // If slots not available, disable
-              if (eventItem.slotsAvailable <= 0) {
-                this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
-              } else {
-                this.dataForm.addControl(event, this.formBuilder.control(null));
-              }
-
-              // If user is already subscribed, select
-              this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
-                if (user) {
-                  this.afs
-                    .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
-                    .get()
-                    .subscribe((document) => {
-                      if (document.exists) {
-                        // Select based on user subscription
-                        const subscription = document.data() as MajorEventSubscription;
-                        if (subscription.subscribedToEvents.includes(eventItem.id)) {
-                          this.dataForm.get(eventItem.id).setValue(true);
-                        }
-                      }
-                    });
+      map((majorEvent: MajorEventItem) => {
+        return this.afs
+          .collection<EventItem>('events', (ref) => {
+            return ref.where(documentId(), '==', majorEvent.events).orderBy('date', 'asc');
+          })
+          .valueChanges({ idField: 'id' })
+          .pipe(
+            map((events: EventItem[]) => {
+              return events.map((eventItem) => {
+                // If slots not available, disabled
+                if (eventItem.slotsAvailable <= 0) {
+                  this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
+                } else {
+                  this.dataForm.addControl(eventItem.id, this.formBuilder.control(null));
                 }
-              });
-            });
 
-          return this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' });
-        });
+                // If user is already subscribed, select
+                this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
+                  if (user) {
+                    this.afs
+                      .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
+                      .get()
+                      .subscribe((document) => {
+                        if (document.exists) {
+                          // Select based on user subscription
+                          const subscription = document.data() as MajorEventSubscription;
+                          if (subscription.subscribedToEvents.includes(eventItem.id)) {
+                            this.dataForm.get(eventItem.id).setValue(true);
+                          }
+                        }
+                      });
+                  }
+                });
+
+                return eventItem;
+              });
+            })
+          );
       }),
-      switchMap((events) => combineLatest(events))
+      switchMap((events) => events)
     );
 
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((majorEvent) => {
@@ -192,9 +196,12 @@ export class PageSubscriptionPage implements OnInit {
     if (this.eventsSelected[name]) {
       if (checked) {
         switch (name) {
+          // TODO: Refactor me
           case 'minicurso':
             // If already in the list, remove from list
-            if (this.eventsSelected[name].includes(event.id)) {
+            const index = this.eventsSelected[name].findIndex((eventArray: EventItem) => eventArray.id === event.id);
+
+            if (index !== -1) {
               this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event.id), 1);
             }
 
@@ -220,36 +227,43 @@ export class PageSubscriptionPage implements OnInit {
                 });
               }
             } else {
-              e.currentTarget.checked = false;
+              this.dataForm.get(event.id).setValue(false);
               this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
+              return;
             }
-            break;
+            return;
           case 'palestra':
             if (this.eventsSelected[name].length < this.maxLectures) {
               this.eventsSelected[name].push(event);
             } else {
-              e.currentTarget.checked = false;
+              this.dataForm.get(event.id).setValue(false);
               this.presentLimitReachedToast('palestras', this.maxLectures.toString());
+              return;
             }
-            break;
+            return;
         }
       } else {
-        this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event), 1);
+        const index = this.eventsSelected[name].findIndex((eventArray: EventItem) => eventArray.id === event.id);
 
-        if (event.eventGroup) {
-          event.eventGroup.forEach((eventFromGroup) => {
-            if (eventFromGroup === event.id) {
-              return;
-            }
+        if (index >= 0) {
+          this.eventsSelected[name].splice(index, 1);
 
-            // If event is not in the list, skip
-            if (!this.eventsSelected[name].some((event) => event.id === eventFromGroup)) {
-              return;
-            }
+          if (event.eventGroup) {
+            event.eventGroup.forEach((eventFromGroup) => {
+              debugger;
+              if (eventFromGroup === event.id) {
+                return;
+              }
 
-            this.dataForm.get(eventFromGroup).setValue(false);
-            this.eventGroupMinicursoCount--;
-          });
+              // If event is not in the list, skip
+              if (!this.eventsSelected[name].some((event) => event.id === eventFromGroup)) {
+                return;
+              }
+
+              this.eventGroupMinicursoCount--;
+              this.dataForm.get(eventFromGroup).setValue(false);
+            });
+          }
         }
       }
     }
