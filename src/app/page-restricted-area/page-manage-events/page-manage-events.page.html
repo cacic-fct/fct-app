@@ -39,16 +39,10 @@
                 </ion-label>
               </ion-col>
               <ion-col>
-                <!-- <ion-row>
-                  <ion-button fill="clear">
-                    <ion-icon name="pencil-outline" slot="start"></ion-icon>
-                    <p slot="end">Editar evento</p>
-                  </ion-button>
-                </ion-row> -->
                 <ion-row>
-                  <ion-button fill="clear">
-                    <ion-icon name="people-outline" slot="start"></ion-icon>
-                    <p slot="end">Gerenciar inscritos</p>
+                  <ion-button [routerLink]="['./listar-inscritos', item.id]" fill="clear">
+                    <ion-icon name="list-outline" slot="start"></ion-icon>
+                    <p slot="end">Listar inscritos</p>
                   </ion-button>
                 </ion-row>
                 <ion-row>

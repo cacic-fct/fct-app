@@ -8,6 +8,12 @@ const routes: Routes = [
     component: PageManageEvents,
   },
   {
+    path: 'listar-inscritos/:eventID',
+    title: 'Listar inscritos',
+    loadChildren: () =>
+      import('./page-list-subscriptions/page-list-subscriptions.module').then((m) => m.PageListSubscriptionsModule),
+  },
+  {
     path: 'listar-presencas/:eventID',
     title: 'Listar presenças',
     loadChildren: () => import('./page-list-attendance/list.module').then((m) => m.ListPageModule),
