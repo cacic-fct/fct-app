@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
@@ -8,6 +8,7 @@ import { map, Observable, take } from 'rxjs';
 import { EventItem } from '../shared/services/event';
 import { Timestamp } from '@firebase/firestore-types';
 import { fromUnixTime } from 'date-fns';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
 interface EventInfo {
   name: string;
@@ -25,6 +26,7 @@ export class PageConfirmAttendance implements OnInit {
   dataForm: FormGroup;
   eventInfo$: Observable<EventInfo>;
   private attendanceCode: string;
+  @ViewChild('swalConfirm') private swalConfirm: SwalComponent;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -54,10 +56,15 @@ export class PageConfirmAttendance implements OnInit {
     eventValueChanges$.pipe(take(1)).subscribe((event) => {
       this.attendanceCode = event.attendanceCode;
     });
+    // When the code is valid, automatically submit.
+    this.dataForm.get('code').valueChanges.subscribe((value) => {
+      if (value == this.attendanceCode) {
+        this.onSubmit();
+      }
+    });
   }
 
   codeValidator = (formControl: AbstractControl): { [key: string]: boolean } | null => {
-    debugger;
     if (!this.attendanceCode) {
       return { codeLoading: true };
     }
@@ -72,5 +79,11 @@ export class PageConfirmAttendance implements OnInit {
     return fromUnixTime(timestamp.seconds);
   }
 
-  onSubmit() {}
+  onSubmit() {
+    this.swalConfirm.fire();
+    setTimeout(() => {
+      this.swalConfirm.close();
+      this.router.navigate(['/menu'], { replaceUrl: true });
+    }, 1500);
+  }
 }

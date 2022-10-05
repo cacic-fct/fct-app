@@ -30,3 +30,14 @@
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </ng-template>
 </ion-content>
+
+<!-- Confirmação da presença gera um alert de confirmação -->
+<swal
+  #swalConfirm
+  title="Presença confirmada!"
+  icon="success"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false">
+</swal>
