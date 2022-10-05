@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Comprovantes de: {{ eventName$ | async }}</ion-title>
+    <ion-title>Comprovantes de {{ eventName$ | async }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -25,7 +25,9 @@
           <ng-container *ngIf="subscription.subEventsInfo.length != 0">
             <ng-container *ngFor="let subEventInfo$ of subscription.subEventsInfo">
               <ng-container *ngIf="subEventInfo$ | async as subEventInfo; else: loading">
-                <p>{{ subEventInfo.name }}: {{ subEventInfo.availableSlots }} vagas disponíveis.</p>
+                <ion-text [color]="subEventInfo.availableSlots? '' : 'danger'">
+                  <p>{{ subEventInfo.name }}: {{ subEventInfo.availableSlots }} vagas disponíveis.</p>
+                </ion-text>
               </ng-container>
             </ng-container>
           </ng-container>
@@ -67,17 +69,29 @@
         </ion-buttons>
         <ion-title>Recusar comprovante de pagamento</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="refuse()" [strong]="true">Confirmar</ion-button>
+          <ion-button (click)="refuse()" [strong]="true" [disabled]="this.refuseForm.invalid">Confirmar</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
-      Descreva o motivo da recusa:
       <form [formGroup]="refuseForm" (ngSubmit)="refuse()">
-        <ion-item>
-          <ion-label position="floating">Justificativa</ion-label>
-          <ion-input formControlName="errorMessage"></ion-input>
-        </ion-item>
+        <ion-radio-group formControlName="radioGroup">
+          <ion-item>
+            <ion-label>Erro no comprovante</ion-label>
+            <ion-radio slot="start" value="invalidReceipt"></ion-radio>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Não há mais vagas</ion-label>
+            <ion-radio slot="start" value="noSlots"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+        <ng-container *ngIf="refuseForm.get('radioGroup').value == 'invalidReceipt'">
+          <ion-item>
+            <ion-label position="floating">Motivo da recusa</ion-label>
+            <ion-input formControlName="errorMessage"></ion-input>
+          </ion-item>
+        </ng-container>
       </form>
     </ion-content>
   </ng-template>
