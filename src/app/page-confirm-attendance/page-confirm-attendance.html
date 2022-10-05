@@ -8,18 +8,25 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Nome do evento</ion-card-title>
-      <ion-card-subtitle>Você pode registrar presença até x</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <form [formGroup]="dataForm" (ngSubmit)="onSubmit()">
-        <ion-item>
-          <ion-label position="floating">Insira o código informado<ion-text color="danger">*</ion-text></ion-label>
-          <ion-input formControlName="code" type="text"></ion-input>
-        </ion-item>
-      </form>
-    </ion-card-content>
-  </ion-card>
+  <ng-container *ngIf="eventInfo$ | async as eventInfo; else loading">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ eventInfo.name }}</ion-card-title>
+        <ion-card-subtitle>
+          Você pode registrar presença até {{ getDateFromTimestamp(eventInfo.attendanceCollectionEnd) | date: 'dd/MMHH:mm' }}
+        </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="dataForm" (ngSubmit)="onSubmit()">
+          <ion-item>
+            <ion-label position="floating">Insira o código informado<ion-text color="danger">*</ion-text></ion-label>
+            <ion-input formControlName="code" type="text"></ion-input>
+          </ion-item>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+  <ng-template #loading>
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
 </ion-content>
