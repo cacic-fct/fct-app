@@ -193,7 +193,7 @@ export class PagePayPage implements OnInit {
 
     const fileBlob = new Blob([arrayBuffer], { type }); // upload this to firebase.
 
-    const filePath = `${this.eventID}/payment-receipts/${this.uid}.${format}`;
+    const filePath = `${this.eventID}/payment-receipts/${this.uid}`;
 
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, fileBlob, { customMetadata: { owner: this.uid } });
@@ -228,7 +228,6 @@ export class PagePayPage implements OnInit {
         this.toastSuccess();
         setTimeout(() => {
           this.toastController.dismiss();
-          this.router.navigate(['/inscricoes'], { replaceUrl: true });
         }, 1500);
       })
       .catch((err) => {
