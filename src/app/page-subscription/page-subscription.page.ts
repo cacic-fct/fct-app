@@ -9,7 +9,9 @@ import * as firestore from '@firebase/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { fromUnixTime, isSameDay, compareAsc } from 'date-fns';
-import { combineLatest, take, map, Observable, switchMap } from 'rxjs';
+import { take, map, Observable, switchMap } from 'rxjs';
+
+import { documentId } from '@firebase/firestore';
 
 import { MajorEventItem } from '../shared/services/major-event.service';
 import { EventItem } from '../shared/services/event';
@@ -51,7 +53,9 @@ export class PageSubscriptionPage implements OnInit {
 
   dataForm: FormGroup;
 
-  eventsSelected = {
+  groupInSelection: boolean = false;
+
+  eventsSelected: { [key: string]: EventItem[] } = {
     minicurso: [],
     palestra: [],
   };
@@ -100,7 +104,7 @@ export class PageSubscriptionPage implements OnInit {
           .valueChanges({ idField: 'id' })
           .pipe(take(1), trace('firestore'))
           .subscribe((subscription) => {
-            if (subscription) {
+            if (subscription?.payment) {
               if (subscription.payment.status !== 4) {
                 this.alreadySubscribed.fire();
                 this.router.navigate(['/eventos'], { replaceUrl: true });
@@ -125,44 +129,47 @@ export class PageSubscriptionPage implements OnInit {
       .pipe(trace('firestore'));
 
     this.events$ = this.majorEvent$.pipe(
-      map((majorEvent) => {
-        return majorEvent.events.map((event) => {
-          // Get EventItem from event (id) on Firestore
-          this.afs
-            .doc<EventItem>(`events/${event}`)
-            .valueChanges({ idField: 'id' })
-            .pipe(take(1), trace('firestore'))
-            .subscribe((eventItem) => {
-              // If slots not available, disable
-              if (eventItem.slotsAvailable <= 0) {
-                this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
-              } else {
-                this.dataForm.addControl(event, this.formBuilder.control(null));
-              }
-
-              // If user is already subscribed, select
-              this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
-                if (user) {
-                  this.afs
-                    .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
-                    .get()
-                    .subscribe((document) => {
-                      if (document.exists) {
-                        // Select based on user subscription
-                        const subscription = document.data() as MajorEventSubscription;
-                        if (subscription.subscribedToEvents.includes(eventItem.id)) {
-                          this.dataForm.get(eventItem.id).setValue(true);
-                        }
-                      }
-                    });
+      map((majorEvent: MajorEventItem) => {
+        return this.afs
+          .collection<EventItem>('events', (ref) => {
+            return ref.where(documentId(), 'in', majorEvent.events).orderBy('eventStartDate', 'asc');
+          })
+          .valueChanges({ idField: 'id' })
+          .pipe(
+            map((events: EventItem[]) => {
+              return events.map((eventItem) => {
+                // If there are no slots available, add event to form with disabled selection
+                if (eventItem.slotsAvailable <= 0) {
+                  this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
+                } else {
+                  this.dataForm.addControl(eventItem.id, this.formBuilder.control(null));
                 }
-              });
-            });
 
-          return this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' });
-        });
+                // If user is already subscribed, auto select event
+                this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
+                  if (user) {
+                    this.afs
+                      .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
+                      .get()
+                      .subscribe((document) => {
+                        if (document.exists) {
+                          const subscription = document.data() as MajorEventSubscription;
+                          if (subscription.subscribedToEvents.includes(eventItem.id) && eventItem.slotsAvailable > 0) {
+                            this.dataForm.get(eventItem.id).setValue(true);
+                          } else {
+                            this.dataForm.get(eventItem.id).setValue(false);
+                          }
+                        }
+                      });
+                  }
+                });
+
+                return eventItem;
+              });
+            })
+          );
       }),
-      switchMap((events) => combineLatest(events))
+      switchMap((events) => events)
     );
 
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((majorEvent) => {
@@ -189,67 +196,78 @@ export class PageSubscriptionPage implements OnInit {
     const checked: boolean = e.currentTarget.checked;
     const name: string = e.currentTarget.name;
 
-    if (this.eventsSelected[name]) {
-      if (checked) {
+    if (checked) {
+      if (event.slotsAvailable <= 0) {
+        this.dataForm.get(event.id).setValue(false);
+        this.dataForm.get(event.id).disable();
+        return;
+      }
+
+      switch (name) {
+        case 'minicurso':
+          if (this.eventsSelected['minicurso'].length - this.eventGroupMinicursoCount < this.maxCourses) {
+            this.eventsSelected['minicurso'].push(event);
+          } else {
+            this.dataForm.get(event.id).setValue(false);
+            this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
+            return;
+          }
+
+          if (!this.groupInSelection && event.eventGroup) {
+            this.groupInSelection = true;
+            event.eventGroup.forEach((eventFromGroup) => {
+              if (eventFromGroup === event.id) {
+                return;
+              }
+
+              this.eventGroupMinicursoCount++;
+              this.dataForm.get(eventFromGroup).setValue(true);
+            });
+            this.groupInSelection = false;
+          }
+
+          return;
+
+        case 'palestra':
+          if (this.eventsSelected['palestra'].length < this.maxLectures) {
+            this.eventsSelected['palestra'].push(event);
+          } else {
+            this.dataForm.get(event.id).setValue(false);
+            this.presentLimitReachedToast('palestras', this.maxLectures.toString());
+          }
+          return;
+
+        default:
+          if (!(name in this.eventsSelected)) {
+            this.eventsSelected[name] = [];
+          }
+
+          this.eventsSelected[name].push(event);
+          return;
+      }
+    } else {
+      if (this.eventsSelected[name].some((e) => e.id === event.id)) {
         switch (name) {
           case 'minicurso':
-            // If already in the list, remove from list
-            if (this.eventsSelected[name].includes(event.id)) {
-              this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event.id), 1);
+            this.eventsSelected['minicurso'] = this.eventsSelected['minicurso'].filter((e) => e.id !== event.id);
+
+            if (!this.groupInSelection && event.eventGroup) {
+              this.groupInSelection = true;
+              event.eventGroup.forEach((eventFromGroup) => {
+                if (eventFromGroup === event.id) {
+                  return;
+                }
+
+                this.eventGroupMinicursoCount--;
+                this.dataForm.get(eventFromGroup).setValue(false);
+              });
+              this.groupInSelection = false;
             }
+            return;
 
-            if (this.eventsSelected[name].length - this.eventGroupMinicursoCount < this.maxCourses) {
-              this.eventsSelected[name].push(event);
-
-              if (event.eventGroup) {
-                event.eventGroup.forEach((eventFromGroup) => {
-                  if (eventFromGroup === event.id) {
-                    return;
-                  }
-
-                  // If sister event already included, skip
-                  if (
-                    this.eventsSelected[name].includes(eventFromGroup) ||
-                    this.eventsSelected[name].some((event) => event.id === eventFromGroup)
-                  ) {
-                    return;
-                  }
-
-                  this.dataForm.get(eventFromGroup).setValue(true);
-                  this.eventGroupMinicursoCount++;
-                });
-              }
-            } else {
-              e.currentTarget.checked = false;
-              this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
-            }
-            break;
-          case 'palestra':
-            if (this.eventsSelected[name].length < this.maxLectures) {
-              this.eventsSelected[name].push(event);
-            } else {
-              e.currentTarget.checked = false;
-              this.presentLimitReachedToast('palestras', this.maxLectures.toString());
-            }
-            break;
-        }
-      } else {
-        this.eventsSelected[name].splice(this.eventsSelected[name].indexOf(event), 1);
-
-        if (event.eventGroup) {
-          event.eventGroup.forEach((eventFromGroup) => {
-            if (eventFromGroup === event.id) {
-              return;
-            }
-
-            // If event is not in the list, skip
-            if (!this.eventsSelected[name].some((event) => event.id === eventFromGroup)) {
-              return;
-            }
-
-            this.dataForm.get(eventFromGroup).setValue(false);
-            this.eventGroupMinicursoCount--;
-          });
+          default:
+            this.eventsSelected[name] = this.eventsSelected[name].filter((e) => e.id !== event.id);
+            return;
         }
       }
     }
@@ -371,7 +389,7 @@ export class PageSubscriptionPage implements OnInit {
                           this.successSwal.fire();
                           setTimeout(() => {
                             this.successSwal.close();
-                            this.router.navigate(['/eventos'], { replaceUrl: true });
+                            this.router.navigate(['/inscricoes/pagar', this.majorEventID], { replaceUrl: true });
                           }, 2000);
                         });
                     })
