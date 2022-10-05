@@ -13,7 +13,7 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import * as firestore from 'firebase/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonModal } from '@ionic/angular';
+import { AlertController, IonModal } from '@ionic/angular';
 
 @UntilDestroy()
 @Component({
@@ -35,7 +35,8 @@ export class ValidateReceiptPage implements OnInit {
     private route: ActivatedRoute,
     private afs: AngularFirestore,
     private auth: AngularFireAuth,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {
@@ -129,8 +130,59 @@ export class ValidateReceiptPage implements OnInit {
         });
         // Fechando modal a partir do método dismiss()
         this.refuseModal.dismiss();
+
+        this.afs
+          .doc(`majorEvents/${this.eventId}`)
+          .get()
+          .subscribe((doc) => {
+            const event = doc.data() as MajorEventItem;
+            const eventName = event.name;
+
+            this.afs
+              .doc(`users/${docId}`)
+              .get()
+              .subscribe((userDoc) => {
+                const user = userDoc.data() as User;
+                // Only first name from fullName
+                const firstName = user.fullName.split(' ')[0];
+
+                this.whatsAppAlert(firstName, user.phone, eventName, this.refuseForm.get('errorMessage').value);
+              });
+          });
       });
     });
+  }
+
+  async whatsAppAlert(name: string, phone: string, event: string, message: string) {
+    const alert = await this.alertController.create({
+      header: 'Enviar notificação por WhatsApp',
+      message: 'Envie uma mensagem para o usuário informando que o pagamento foi recusado.',
+      buttons: [
+        {
+          text: 'Não',
+          role: 'cancel',
+        },
+        {
+          text: 'Sim',
+          role: 'confirm',
+          handler: () => {
+            // Format phone from 11 99999-9999 to 5511999999999
+            let formattedPhone = phone.replace(/\D/g, '');
+            formattedPhone = formattedPhone.replace(/^(\d{2})(\d)/g, '55$1$2');
+
+            const text: string = `Olá, ${name}! O seu comprovante de pagamento do evento "${event}" foi recusado.%0a
+            A justificativa é "${message}".%0a%0a
+            Realize o envio novamente pelo link:%0a
+            https://fct-pp.web.app/inscricoes/pagar/${this.eventId}?utm_source=whatsapp&utm_medium=message&utm_campaign=payment_error`;
+
+            const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${text}`;
+            window.open(url, '_blank');
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }
 
