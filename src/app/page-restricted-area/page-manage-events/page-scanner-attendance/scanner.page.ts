@@ -99,7 +99,11 @@ export class ScannerPage implements OnInit {
           return attendance.map((item) => {
             return {
               ...item,
-              user: this.afs.collection('users').doc<User>(item.id).valueChanges().pipe(trace('firestore'), take(1)),
+              user: this.afs
+                .collection('users')
+                .doc<User>(item.id)
+                .get()
+                .pipe(map((document) => document.data())),
             };
           });
         })
