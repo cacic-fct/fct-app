@@ -64,7 +64,11 @@ export class PageListSubscriptions implements OnInit {
         map((subscription) =>
           subscription.map((item) => ({
             ...item,
-            user: this.afs.collection<User>('users').doc(item.id).valueChanges().pipe(first(), trace('firestore')),
+            user: this.afs
+              .collection<User>('users')
+              .doc(item.id)
+              .get()
+              .pipe(map((document) => document.data())),
           }))
         )
       );
