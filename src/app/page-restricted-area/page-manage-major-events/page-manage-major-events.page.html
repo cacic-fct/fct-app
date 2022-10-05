@@ -47,7 +47,7 @@
                   </ion-button>
                 </ion-row> -->
                 <ion-row>
-                  <ion-button fill="clear">
+                  <ion-button fill="clear" [routerLink]="['listar-inscritos', item.id]">
                     <ion-icon name="people-outline" slot="start"></ion-icon>
                     <p slot="end">Gerenciar inscritos</p>
                   </ion-button>
