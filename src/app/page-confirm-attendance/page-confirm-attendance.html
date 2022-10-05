@@ -12,7 +12,7 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>{{ eventInfo.name }}</ion-card-title>
-        <ion-card-subtitle>
+        <ion-card-subtitle *ngIf="eventInfo.attendanceCollectionEnd">
           Você pode registrar presença até {{ getDateFromTimestamp(eventInfo.attendanceCollectionEnd) | date: 'dd/MM HH:mm' }}
         </ion-card-subtitle>
       </ion-card-header>
