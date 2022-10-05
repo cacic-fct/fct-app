@@ -10,12 +10,11 @@ import { BehaviorSubject, take, Observable } from 'rxjs';
 import * as firestore from '@firebase/firestore';
 import { Timestamp } from '@firebase/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { EventItem } from './../../shared/services/event';
+import { EventItem } from 'src/app/shared/services/event';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-
 import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
-import { PlacesService } from './../../shared/services/places.service';
+import { PlacesService } from 'src/app/shared/services/places.service';
 
 @Component({
   selector: 'app-add-event',
@@ -62,7 +61,7 @@ export class AddEventPage implements OnInit {
     this.dataForm = this.formBuilder.group(
       {
         course: ['', Validators.required],
-        icon: ['', [Validators.required, Validators.pattern(/^\p{Emoji}|\p{Emoji_Modifier}|$/u)]], // TODO: validar apenas 1 emoji
+        icon: ['', [Validators.required, Validators.pattern(/^\p{Emoji}|\p{Emoji_Modifier}$/u)]], // TODO: validar apenas 1 emoji
         name: ['', Validators.required],
         shortDescription: ['', Validators.maxLength(80)],
         description: '',
