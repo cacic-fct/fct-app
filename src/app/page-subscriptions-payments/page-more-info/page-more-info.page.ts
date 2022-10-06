@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { fromUnixTime, isSameDay } from 'date-fns';
-import { combineLatest, first, map, Observable, switchMap, take, BehaviorSubject } from 'rxjs';
+import { first, Observable, take } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 import { EventItem } from 'src/app/shared/services/event';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
@@ -12,7 +12,6 @@ import { Timestamp } from '@firebase/firestore-types';
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
 import { formatDate } from '@angular/common';
-import { ModalController } from '@ionic/angular';
 
 import { documentId } from 'firebase/firestore';
 import { ActivatedRoute } from '@angular/router';
@@ -39,11 +38,12 @@ export class PageMoreInfoPage implements OnInit {
     public auth: AngularFireAuth,
     public enrollmentTypes: EnrollmentTypesService,
     private sanitizer: DomSanitizer,
-    private modalController: ModalController,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    // TODO: If event or subscription doesn't exist, redirect
+
     this.majorEventID = this.route.snapshot.paramMap.get('majorEventID');
     this.majorEvent$ = this.afs
       .doc<MajorEventItem>(`majorEvents/${this.majorEventID}`)
