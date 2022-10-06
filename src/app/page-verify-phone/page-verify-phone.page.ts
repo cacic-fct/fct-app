@@ -49,6 +49,9 @@ export class PageVerifyPhonePage implements OnInit {
 
   linkOrUpdatePhone() {
     if (this.isOnCooldown()) {
+      this.countdown = interval(1_000).subscribe(() => {
+        this.getTimeDifference();
+      });
       return;
     }
 
@@ -194,6 +197,10 @@ export class PageVerifyPhonePage implements OnInit {
     this.invalidCode = false;
   }
 
+  closeModal() {
+    this.windowRef.lastExecutionPhone = this.phone;
+    this.modalController.dismiss(null);
+  }
   mailto(): void {
     const userData = JSON.parse(localStorage.getItem('user'));
     const mailto: Mailto = {
