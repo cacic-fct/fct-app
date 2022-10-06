@@ -159,6 +159,10 @@
               <ion-icon slot="start" name="checkmark"></ion-icon>
               Inscrito
             </ion-button>
+            <ion-button [routerLink]="['detalhes', majorEventData.id]">
+              <ion-icon slot="start" name="ellipsis-horizontal"></ion-icon>
+              Mais detalhes
+            </ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
