@@ -5,7 +5,7 @@ import firebase from 'firebase/compat/app';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { WindowService } from '../shared/services/window.service';
 
-import { timer, take } from 'rxjs';
+import { timer, take, interval, Subscription } from 'rxjs';
 
 import { ModalController } from '@ionic/angular';
 
@@ -15,6 +15,7 @@ import { User } from '../shared/services/user';
 import { Mailto, NgxMailtoService } from 'ngx-mailto';
 
 import { add } from 'date-fns';
+import { trace } from '@angular/fire/compat/performance';
 
 @Component({
   selector: 'app-page-verify-phone',
@@ -33,6 +34,11 @@ export class PageVerifyPhonePage implements OnInit {
   updatePhone: boolean = false;
   buttonEnabled: boolean = false;
   phoneAlreadyRegistered: boolean = false;
+
+  timeDifference: number;
+  countdownSeconds: number;
+  countdownMinutes: number;
+  countdown: Subscription;
 
   constructor(
     public auth: AngularFireAuth,
@@ -57,12 +63,12 @@ export class PageVerifyPhonePage implements OnInit {
 
     this.setTimer();
 
-    this.auth.authState.pipe(take(1)).subscribe((userState) => {
+    this.auth.authState.pipe(take(1), trace('auth')).subscribe((userState) => {
       this.afs
         .collection('users')
         .doc<User>(userState.uid)
         .valueChanges()
-        .pipe(take(1))
+        .pipe(take(1), trace('firestore'))
         .subscribe((user) => {
           if (user.phone) {
             this.updatePhone = true;
@@ -76,6 +82,10 @@ export class PageVerifyPhonePage implements OnInit {
 
   setTimer() {
     const minutes: number = Math.pow(2, this.attempts);
+    if (this.countdown) {
+      this.countdown.unsubscribe();
+    }
+
     this.cooldown = true;
     this.attempts += 1;
 
@@ -83,17 +93,25 @@ export class PageVerifyPhonePage implements OnInit {
       minutes: minutes,
     });
 
-    this.timer = timer(minutes * 60000).subscribe(() => {
-      this.cooldown = false;
-      this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        size: 'invisible',
-      });
+    this.countdown = interval(1000).subscribe(() => {
+      this.getTimeDifference();
     });
+
+    const timerSubscription = timer(minutes * 60_000)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.cooldown = false;
+        this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+          size: 'invisible',
+        });
+        this.countdown.unsubscribe();
+      });
   }
 
   isOnCooldown(): boolean {
     if (this.windowRef.canExecuteAgainOn) {
       if (new Date() < this.windowRef.canExecuteAgainOn) {
+        this.cooldown = true;
         return true;
       }
     }
@@ -201,6 +219,19 @@ export class PageVerifyPhonePage implements OnInit {
     this.windowRef.lastExecutionPhone = this.phone;
     this.modalController.dismiss(null);
   }
+
+  // Attribution: Mwiza Kumwenda
+  // https://javascript.plainenglish.io/implement-a-countdown-timer-with-rxjs-in-angular-3852f21a4ea0
+  private getTimeDifference() {
+    this.timeDifference = this.windowRef.canExecuteAgainOn.getTime() - new Date().getTime();
+    this.allocateTimeUnits(this.timeDifference);
+  }
+
+  private allocateTimeUnits(timeDifference) {
+    this.countdownSeconds = Math.floor((timeDifference / 1000) % 60);
+    this.countdownMinutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+  }
+
   mailto(): void {
     const userData = JSON.parse(localStorage.getItem('user'));
     const mailto: Mailto = {
