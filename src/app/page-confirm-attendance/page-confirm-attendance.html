@@ -12,15 +12,12 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>{{ eventInfo.name }}</ion-card-title>
-        <ion-card-subtitle *ngIf="eventInfo.attendanceCollectionEnd">
-          Você pode registrar presença até {{ getDateFromTimestamp(eventInfo.attendanceCollectionEnd) | date: 'dd/MM HH:mm' }}
-        </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
         <form [formGroup]="dataForm" (ngSubmit)="onSubmit()">
           <ion-item>
             <ion-label position="floating">Insira o código informado<ion-text color="danger">*</ion-text></ion-label>
-            <ion-input formControlName="code" type="text"></ion-input>
+            <ion-input formControlName="code" type="text" maxlength="4"></ion-input>
           </ion-item>
         </form>
       </ion-card-content>
