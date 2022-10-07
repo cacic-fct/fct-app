@@ -8,7 +8,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
-import { take, Observable, of, map } from 'rxjs';
+import { take, Observable, of, map, switchMap } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { PageVerifyPhonePage } from 'src/app/page-verify-phone/page-verify-phone.page';
 
@@ -211,23 +211,25 @@ export class AuthService {
       trace('remoteconfig'),
       map((registerPrompt) => {
         if (registerPrompt) {
-          this.afs
+          return this.afs
             .doc<User>(`users/${user.uid}`)
             .valueChanges()
-            .pipe(trace('firestore'))
-            .subscribe((data) => {
-              if (data === undefined) {
-                return false;
-              }
-
-              if (!data.dataVersion || data.dataVersion !== this.dataVersion) {
-                this.router.navigate(['/register']);
-                return true;
-              }
-            });
+            .pipe(
+              trace('firestore'),
+              map((data) => {
+                if (data === undefined) {
+                  return true;
+                } else if (!data.dataVersion || data.dataVersion !== this.dataVersion) {
+                  this.router.navigate(['/register']);
+                  return true;
+                } else {
+                  return false;
+                }
+              })
+            );
         }
-        return false;
-      })
+      }),
+      switchMap((value) => value)
     );
   }
 
