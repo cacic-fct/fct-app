@@ -105,7 +105,8 @@ const routes: Routes = [
   {
     path: 'confirmar-presenca/:eventID',
     title: 'Confirmar presença em um evento',
-    loadChildren: () => import('./page-confirm-attendance/page-confirm-attendance.module').then((m) => m.PageConfirmAttendanceModule),
+    loadChildren: () =>
+      import('./page-confirm-attendance/page-confirm-attendance.module').then((m) => m.PageConfirmAttendanceModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
 ];
