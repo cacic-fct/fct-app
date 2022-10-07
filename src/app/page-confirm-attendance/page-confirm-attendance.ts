@@ -1,8 +1,9 @@
+import { NavController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map, Observable, take } from 'rxjs';
 import { EventItem } from '../shared/services/event';
@@ -15,7 +16,6 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 interface EventInfo {
   name: string;
-  attendanceCollectionEnd: TimestampType;
 }
 
 @UntilDestroy()
@@ -29,7 +29,6 @@ export class PageConfirmAttendance implements OnInit {
   dataForm: FormGroup;
   eventInfo$: Observable<EventInfo>;
   private eventRef: AngularFirestoreDocument<EventItem>;
-  private userID: string;
   private isSubEvent: boolean;
   private majorEventRef: AngularFirestoreDocument<MajorEventItem>;
   private isPaid: boolean;
@@ -40,7 +39,7 @@ export class PageConfirmAttendance implements OnInit {
     public formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private afs: AngularFirestore,
-    private router: Router,
+    private navController: NavController,
     private auth: AngularFireAuth
   ) {}
 
@@ -48,10 +47,6 @@ export class PageConfirmAttendance implements OnInit {
     this.eventID = this.route.snapshot.params.eventID;
     this.dataForm = this.formBuilder.group({
       code: ['', [Validators.required, this.codeValidator]],
-    });
-
-    this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
-      this.userID = user.uid;
     });
 
     this.eventRef = this.afs.collection<EventItem>('events').doc(this.eventID);
@@ -95,7 +90,6 @@ export class PageConfirmAttendance implements OnInit {
       untilDestroyed(this),
       map((event) => ({
         name: event.name,
-        attendanceCollectionEnd: event.attendanceCollectionEnd,
       }))
     );
   }
@@ -116,48 +110,51 @@ export class PageConfirmAttendance implements OnInit {
   }
 
   onSubmit() {
-    const isPaymentNecessary: boolean = this.isSubEvent && this.isPaid;
-    if (isPaymentNecessary) {
-      // Check if user payment status = 2
-      this.majorEventRef
-        .collection('subscriptions')
-        .doc(this.userID)
-        .valueChanges()
-        .pipe(take(1), trace('firestore'))
-        .subscribe((subscriptionItem) => {
-          debugger;
-          if (subscriptionItem.payment.status == 2) {
-            // Escrevendo na coleção 'attendance'
-            this.eventRef
-              .collection('attendance')
-              .doc(this.userID)
-              .set({
-                time: Timestamp.fromDate(new Date()),
-              });
-          } else {
-            // Escrevendo na coleção 'non-paying-attendance'
-            this.eventRef
-              .collection('non-paying-attendance')
-              .doc(this.userID)
-              .set({
-                time: Timestamp.fromDate(new Date()),
-              });
-          }
-        });
-    } else {
-      // Escrevendo na coleção 'attendance'
-      this.eventRef
-        .collection('attendance')
-        .doc(this.userID)
-        .set({
-          time: Timestamp.fromDate(new Date()),
-        });
-    }
+    this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
+      const userID = user.uid;
 
-    this.swalConfirm.fire();
-    setTimeout(() => {
-      this.swalConfirm.close();
-      this.router.navigate(['/menu'], { replaceUrl: true });
-    }, 1500);
+      const isPaymentNecessary: boolean = this.isSubEvent && this.isPaid;
+      if (isPaymentNecessary) {
+        // Check if user payment status = 2
+        this.majorEventRef
+          .collection('subscriptions')
+          .doc(userID)
+          .valueChanges()
+          .pipe(take(1), trace('firestore'))
+          .subscribe((subscriptionItem) => {
+            if (subscriptionItem.payment.status == 2) {
+              // Escrevendo na coleção 'attendance'
+              this.eventRef
+                .collection('attendance')
+                .doc(userID)
+                .set({
+                  time: Timestamp.fromDate(new Date()),
+                });
+            } else {
+              // Escrevendo na coleção 'non-paying-attendance'
+              this.eventRef
+                .collection('non-paying-attendance')
+                .doc(userID)
+                .set({
+                  time: Timestamp.fromDate(new Date()),
+                });
+            }
+          });
+      } else {
+        // Escrevendo na coleção 'attendance'
+        this.eventRef
+          .collection('attendance')
+          .doc(userID)
+          .set({
+            time: Timestamp.fromDate(new Date()),
+          });
+      }
+
+      this.swalConfirm.fire();
+      setTimeout(() => {
+        this.swalConfirm.close();
+        this.navController.back();
+      }, 1500);
+    });
   }
 }
