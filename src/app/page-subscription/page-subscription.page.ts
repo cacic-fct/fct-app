@@ -160,7 +160,7 @@ export class PageSubscriptionPage implements OnInit {
             observables.push(
               this.afs
                 .collection<EventItem>('events', (ref) =>
-                  ref.where(documentId(), 'in', majorEvent.events.slice(i, i + 10)).orderBy('date')
+                  ref.where(documentId(), 'in', majorEvent.events.slice(i, i + 10)).orderBy('eventStartDate', 'asc')
                 )
                 .valueChanges({ idField: 'id' })
                 .pipe(
@@ -252,6 +252,7 @@ export class PageSubscriptionPage implements OnInit {
                 )
             );
           }
+
           return combineLatest(observables).pipe(
             map((events) => {
               return events.flat();
