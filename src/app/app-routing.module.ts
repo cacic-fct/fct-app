@@ -99,10 +99,6 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
-    path: 'page-debug',
-    loadChildren: () => import('./page-debug/page-debug.module').then((m) => m.PageDebugPageModule),
-  },
-  {
     path: 'confirmar-presenca/:eventID',
     title: 'Confirmar presença em um evento',
     loadChildren: () =>

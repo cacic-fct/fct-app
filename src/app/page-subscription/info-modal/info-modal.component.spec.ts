@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PageDebugPage } from './page-debug.page';
+import { InfoModalComponent } from './info-modal.component';
 
-describe('PageDebugPage', () => {
-  let component: PageDebugPage;
-  let fixture: ComponentFixture<PageDebugPage>;
+describe('InfoModalComponent', () => {
+  let component: InfoModalComponent;
+  let fixture: ComponentFixture<InfoModalComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageDebugPage ],
+      declarations: [ InfoModalComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageDebugPage);
+    fixture = TestBed.createComponent(InfoModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

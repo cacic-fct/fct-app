@@ -1,3 +1,4 @@
+import { InfoModalComponent } from './info-modal/info-modal.component';
 import { MajorEventSubscription } from '../shared/services/major-event.service';
 import { EnrollmentTypesService } from './../shared/services/enrollment-types.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -351,6 +352,9 @@ export class PageSubscriptionPage implements OnInit {
           case '2':
             price = majorEvent.price.professors;
             break;
+          default:
+            price = majorEvent.price.single;
+            break;
         }
 
         this.auth.user.pipe(take(1)).subscribe((user) => {
@@ -459,6 +463,17 @@ export class PageSubscriptionPage implements OnInit {
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
+  }
+
+  async showEventInfo(event: EventItem) {
+    const modal = await this.modalController.create({
+      component: InfoModalComponent,
+      componentProps: {
+        event: event,
+      },
+      showBackdrop: true,
+    });
+    await modal.present();
   }
 }
 
