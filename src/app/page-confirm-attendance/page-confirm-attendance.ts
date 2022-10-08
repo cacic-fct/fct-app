@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map, Observable, take } from 'rxjs';
 import { EventItem } from '../shared/services/event';
@@ -34,12 +34,15 @@ export class PageConfirmAttendance implements OnInit {
   private isPaid: boolean;
   private attendanceCode: string;
   @ViewChild('swalConfirm') private swalConfirm: SwalComponent;
+  @ViewChild('swalNotFound') private swalNotFound: SwalComponent;
+  @ViewChild('swalNotOnTime') private swalNotOnTime: SwalComponent;
 
   constructor(
     public formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private afs: AngularFirestore,
     private navController: NavController,
+    private router: Router,
     private auth: AngularFireAuth
   ) {}
 
@@ -50,6 +53,26 @@ export class PageConfirmAttendance implements OnInit {
     });
 
     this.eventRef = this.afs.collection<EventItem>('events').doc(this.eventID);
+
+    this.eventRef
+      .valueChanges()
+      .pipe(take(1), trace('firestore'))
+      .subscribe((eventItem) => {
+        if (!eventItem) {
+          this.swalNotFound.fire();
+          setTimeout(() => {
+            this.router.navigate(['/menu']);
+            this.swalNotFound.close();
+          }, 2000);
+        }
+        if (!eventItem.attendanceCollectionStart || eventItem.attendanceCollectionEnd) {
+          this.swalNotOnTime.fire();
+          setTimeout(() => {
+            this.router.navigate(['/menu']);
+            this.swalNotOnTime.close();
+          }, 2000);
+        }
+      });
 
     const eventValueChanges$: Observable<EventItem> = this.eventRef.valueChanges();
     // attendanceCode is constant
