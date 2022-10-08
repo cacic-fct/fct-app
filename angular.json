@@ -30,6 +30,7 @@
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
               },
+              "src/googlee453356471cb5ac4.html",
               "src/manifest.webmanifest",
               "src/robots.txt"
             ],
@@ -40,7 +41,7 @@
             "scripts": [],
             "aot": false,
             "vendorChunk": true,
-            "extractLicenses": false,
+            "extractLicenses": true,
             "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,

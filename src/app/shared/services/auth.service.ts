@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { User } from '../services/user';
 import firebase from 'firebase/compat/app';
@@ -7,10 +7,13 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
-import { AngularFireRemoteConfig } from '@angular/fire/compat/remote-config';
-import { first, Observable } from 'rxjs';
+import { take, Observable } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
+import { PageVerifyPhonePage } from 'src/app/page-verify-phone/page-verify-phone.page';
+
+import * as firebaseAuth from 'firebase/auth';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { getStringChanges, RemoteConfig, getBooleanChanges } from '@angular/fire/remote-config';
 
 @Injectable()
 export class AuthService {
@@ -23,16 +26,47 @@ export class AuthService {
     public afs: AngularFirestore,
     public ngZone: NgZone,
     public modalController: ModalController,
-    public remoteConfig: AngularFireRemoteConfig,
+    private remoteConfig: RemoteConfig,
     public toastController: ToastController,
-    private fns: AngularFireFunctions
+    private fns: AngularFireFunctions,
+    private route: ActivatedRoute
   ) {
     this.auth.authState.pipe(trace('auth')).subscribe((user) => {
       if (user) {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem('user'));
-        this.CompareUserdataVersion(this.userData);
+
+        getStringChanges(this.remoteConfig, 'professors').subscribe((professors) => {
+          if (professors) {
+            const professorsList: string[] = JSON.parse(professors);
+
+            // Check if user email matches a professor email.
+            // Professors are exempt from the register prompt
+            if (professorsList.includes(user.email)) {
+              this.auth.idTokenResult.pipe(take(1)).subscribe((idTokenResult) => {
+                const claims = idTokenResult.claims;
+
+                // If role is not set, set it to professor (3000)
+                if (!claims.role || claims.role < 3000) {
+                  const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+                  const userData: User = {
+                    associateStatus: 'professor',
+                  };
+                  userRef.set(userData, {
+                    merge: true,
+                  });
+
+                  const addProfessor = this.fns.httpsCallable('addProfessorRole');
+                  addProfessor({ email: user.email }).pipe(take(1)).subscribe();
+                }
+              });
+            } else {
+              // Not a professor
+              this.CompareUserdataVersion(this.userData);
+            }
+          }
+        });
       } else {
         localStorage.removeItem('user');
       }
@@ -48,22 +82,35 @@ export class AuthService {
     return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
   }
 
-  anonAuth() {
-    return this.auth
-      .signInAnonymously()
-      .then(() => {
-        console.log('Signed in');
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  GoogleLink() {
+    return this.LinkProfile(new firebase.auth.GoogleAuthProvider());
+  }
+
+  async anonAuth() {
+    try {
+      await this.auth.signInAnonymously();
+      console.log('Signed in');
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async AuthLogin(provider: firebase.auth.AuthProvider) {
     this.auth.useDeviceLanguage();
     try {
-      const result = await this.auth.signInWithPopup(provider);
-      this.SetUserData(result.user);
+      this.auth.signInWithPopup(provider).then((result) => {
+        this.SetUserData(result.user);
+
+        this.route.queryParams.pipe(take(1)).subscribe((params) => {
+          const redirect = params['redirect'];
+
+          if (redirect) {
+            this.router.navigate([redirect]);
+          } else {
+            this.router.navigate(['menu']);
+          }
+        });
+      });
     } catch (error) {
       console.error('Login failed');
       console.error(error);
@@ -72,10 +119,28 @@ export class AuthService {
     }
   }
 
+  async LinkProfile(provider: firebase.auth.AuthProvider) {
+    this.auth.useDeviceLanguage();
+    try {
+      const result = await (await this.auth.currentUser).linkWithPopup(provider);
+      const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${result.user.uid}`);
+      const userData: User = {
+        linkedPersonalEmail: true,
+      };
+      return userRef.set(userData, {
+        merge: true,
+      });
+    } catch (error) {
+      console.error('Link profile failed');
+      console.error(error);
+      this.toastLoginFailed();
+    }
+  }
+
   async toastLoginFailed() {
     const toast = await this.toastController.create({
-      header: 'Houve um erro no seu login',
-      message: 'Verifique a sua conexão e faça login novamente.',
+      header: 'Ocorreu um erro no seu login',
+      message: 'Verifique a sua conexão e tente novamente.',
       icon: 'close-circle',
       position: 'bottom',
       duration: 5000,
@@ -90,8 +155,8 @@ export class AuthService {
     toast.present();
   }
 
-  SetUserData(user: firebase.User) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+  private SetUserData(user: firebase.User) {
+    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
     const userData: User = {
       uid: user.uid,
       email: user.email,
@@ -103,31 +168,63 @@ export class AuthService {
     });
   }
 
-  CompareUserdataVersion(user: firebase.User) {
-    this.remoteConfig.booleans.registerPrompt.pipe(first(), trace('remoteconfig')).subscribe((registerPrompt) => {
-      if (registerPrompt) {
-        this.afs
-          .doc<User>(`users/${user.uid}`)
-          .valueChanges()
-          .pipe(trace('firestore'))
-          .subscribe((data) => {
-            if (data === undefined) {
-              return;
-            }
-            if (!data.dataVersion || data.dataVersion !== this.dataVersion) {
-              this.router.navigate(['/register']);
-            }
-          });
+  private CompareUserdataVersion(user: firebase.User) {
+    getBooleanChanges(this.remoteConfig, 'registerPrompt')
+      .pipe(take(1), trace('remoteconfig'))
+      .subscribe((registerPrompt) => {
+        if (registerPrompt) {
+          this.afs
+            .doc<User>(`users/${user.uid}`)
+            .valueChanges()
+            .pipe(trace('firestore'))
+            .subscribe((data) => {
+              if (data === undefined) {
+                return;
+              }
+
+              if (!data.dataVersion || data.dataVersion !== this.dataVersion) {
+                this.router.navigate(['/register']);
+              }
+            });
+        }
+      });
+  }
+
+  async verifyPhoneModal(phone: string): Promise<boolean> {
+    const modal = await this.modalController.create({
+      component: PageVerifyPhonePage,
+      componentProps: {
+        phone: phone,
+      },
+      backdropDismiss: false,
+      swipeToClose: false,
+      keyboardClose: false,
+    });
+
+    await modal.present();
+
+    return modal.onDidDismiss().then((response) => {
+      const data = response.data;
+      if (data) {
+        return new Promise<boolean>((resolve) => {
+          resolve(true);
+        });
       }
+      return new Promise<boolean>((resolve) => {
+        resolve(false);
+      });
     });
   }
 
-  getUserUid(manualInput: string): { message?: string; status?: boolean; uid?: string } | Observable<any> {
+  async phoneUnlink() {
+    firebaseAuth.unlink(this.userData, firebase.auth.PhoneAuthProvider.PROVIDER_ID);
+  }
+  getUserUid(manualInput: string): GetUserUIDResponse | Observable<GetUserUIDResponse> {
     // Remove spaces from the string
     manualInput = manualInput.replace(/\s/g, '');
 
     // Check if input has only one '+' and numbers
-    const isNumeric: boolean = manualInput.match(/^\+?\d+$/) ? true : false;
+    const isNumeric: boolean = /^\+?\d+$/.test(manualInput);
 
     // If string doesn't include "@" and isn't numeric only or is empty, return false
     if ((!manualInput.includes('@') && !isNumeric) || manualInput === '') {
@@ -152,12 +249,13 @@ export class AuthService {
     return getUserUid({ string: manualInput });
   }
 
-  instanceOfResponse(object: any): object is Response {
+  instanceOfResponse(object: any): object is GetUserUIDResponse {
     return 'message' in object;
   }
 }
 
-interface Response {
-  status: boolean;
-  message: string;
+export interface GetUserUIDResponse {
+  status?: boolean;
+  message?: string;
+  uid?: string;
 }

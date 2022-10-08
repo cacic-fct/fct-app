@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
 import { parse } from 'twemoji-parser';
@@ -22,13 +22,17 @@ import { Timestamp } from '@firebase/firestore-types';
   templateUrl: './calendar-list-view.component.html',
   styleUrls: ['./calendar-list-view.component.scss'],
 })
-export class CalendarListViewComponent implements OnChanges {
+export class CalendarListViewComponent implements OnInit, OnChanges {
   courses = CoursesService.courses;
 
-  @Input() filter: Array<string>;
+  @Input() filter: {
+    courses: Array<string>;
+  };
 
-  courseFilter$: BehaviorSubject<Array<string> | null>;
-  dateFilter$: BehaviorSubject<Date | null>;
+  courseFilter$: BehaviorSubject<{
+    courses: Array<string>;
+  } | null> = new BehaviorSubject(null);
+  dateFilter$: BehaviorSubject<Date | null> = new BehaviorSubject(null);
 
   loadOlderCount: number = 0;
 
@@ -37,28 +41,28 @@ export class CalendarListViewComponent implements OnChanges {
   baseDate: Date = startOfDay(new Date());
 
   constructor(
-    firestore: AngularFirestore,
+    private afs: AngularFirestore,
     private navCtrl: NavController,
     private sanitizer: DomSanitizer,
     private toastController: ToastController
-  ) {
-    this.dateFilter$ = new BehaviorSubject(null);
-    this.courseFilter$ = new BehaviorSubject(null);
+  ) {}
+
+  ngOnInit() {
     this.dateFilter$.next(this.baseDate);
 
     this.items$ = combineLatest([this.courseFilter$, this.dateFilter$]).pipe(
       switchMap(([filter, date]) => {
-        return firestore
+        return this.afs
           .collection<EventItem>('events', (ref) => {
             let query: any = ref;
             if (date) {
-              query = query.where('date', '>=', this.baseDate);
+              query = query.where('eventStartDate', '>=', this.baseDate);
             }
-            if (filter.length > 0) {
-              query = query.where('course', 'in', filter);
+            if (filter['courses'].length > 0) {
+              query = query.where('course', 'in', filter['courses']);
             }
 
-            return query.orderBy('date', 'asc');
+            return query.orderBy('eventStartDate', 'asc');
           })
           .valueChanges({ idField: 'id' })
           .pipe(trace('firestore'));
@@ -81,7 +85,8 @@ export class CalendarListViewComponent implements OnChanges {
   }
 
   getEmoji(emoji: string): any {
-    if (emoji === undefined) {
+    if (emoji === undefined || !/^\p{Emoji}|\p{Emoji_Modifier}$/u.test(emoji)) {
+      // TODO: validar apenas 1 emoji
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);

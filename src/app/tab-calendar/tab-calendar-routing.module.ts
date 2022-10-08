@@ -8,11 +8,7 @@ const routes: Routes = [
     component: TabCalendarPage,
   },
   {
-    path: 'filter-modal',
-    loadChildren: () => import('./components/filter-modal/filter-modal.module').then((m) => m.FilterModalPageModule),
-  },
-  {
-    path: 'evento/:id',
+    path: 'evento/:eventID',
     title: 'Informações do evento',
     loadChildren: () =>
       import('./page-calendar-event/page-calendar-event.module').then((m) => m.PageCalendarEventPageModule),

@@ -9,16 +9,24 @@ const routes: Routes = [
     component: PageRestrictedAreaPage,
   },
   {
-    path: 'coletar-presenca',
-    title: 'Coletar presença',
-    loadChildren: () =>
-      import('./attendance/page-attendance/page-attendance.module').then((m) => m.PageAttendanceCollectPageModule),
-  },
-  {
     path: 'gerenciar-admins',
     title: 'Gerenciar admins',
     loadChildren: () =>
       import('./page-manage-admins/page-manage-admins.module').then((m) => m.PageManageAdminsPageModule),
+  },
+  {
+    path: 'gerenciar-grandes-eventos',
+    title: 'Gerenciar grandes eventos',
+    loadChildren: () =>
+      import('./page-manage-major-events/page-manage-major-events.module').then(
+        (m) => m.PageManageMajorEventsPageModule
+      ),
+  },
+  {
+    path: 'gerenciar-eventos',
+    title: 'Gerenciar eventos',
+    loadChildren: () =>
+      import('./page-manage-events/page-manage-events.module').then((m) => m.PageManageEventsPageModule),
   },
 ];
 

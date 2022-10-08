@@ -6,7 +6,7 @@ import { ToastController } from '@ionic/angular';
 
 import { fromUnixTime } from 'date-fns';
 import { ClipboardService } from 'ngx-clipboard';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
@@ -18,17 +18,17 @@ import OSM from 'ol/source/OSM';
 import Feature from 'ol/Feature';
 import { Icon, Style } from 'ol/style';
 import { fromLonLat, useGeographic } from 'ol/proj';
-import { Control, defaults as defaultControls } from 'ol/control';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { EventItem } from '../../shared/services/event';
-import { first, Observable } from 'rxjs';
+import { take, Observable } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 
 import { Timestamp } from '@firebase/firestore-types';
+import { WeatherInfo, WeatherService } from 'src/app/shared/services/weather.service';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -40,69 +40,80 @@ export class PageCalendarEventPage implements OnInit {
   item: EventItem;
   item$: Observable<EventItem>;
   map: Map;
+  weather: Observable<WeatherInfo>;
+  weatherFailed: boolean = false;
+  eventID: string;
 
   constructor(
     private toastController: ToastController,
     private clipboardService: ClipboardService,
     private router: Router,
+    private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
-    private afs: AngularFirestore
-  ) {
-    const id = this.router.url.split('/')[3];
-    this.item$ = this.afs.doc<EventItem>(`events/${id}`).valueChanges({ idField: 'id' }).pipe(trace('firestore'));
+    private afs: AngularFirestore,
+    private weatherService: WeatherService
+  ) {}
+
+  ngOnInit() {
+    this.eventID = this.route.snapshot.params.eventID;
+    this.item$ = this.afs
+      .doc<EventItem>(`events/${this.eventID}`)
+      .valueChanges({ idField: 'id' })
+      .pipe(trace('firestore'));
   }
 
-  ngOnInit() {}
-
   ionViewWillEnter() {
-    // first() unsubscribes after the first value is emitted
+    // take(1) unsubscribes after the first value is emitted
     // This is necessary because the map would be created multiple times otherwise
-    this.item$.pipe(first()).subscribe((item) => {
-      this.item = item;
-      if (!item.location) {
-        return;
+    this.item$.pipe(take(1)).subscribe((item) => {
+      if (item.location?.lat && item.location?.lon) {
+        useGeographic();
+        const iconStyle = new Style({
+          image: new Icon({
+            anchor: [0.5, 1],
+            scale: 0.5,
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-blue.png',
+          }),
+        });
+
+        this.weather = this.weatherService.getWeather(
+          this.getDateFromTimestamp(item.eventStartDate),
+          item.location.lat,
+          item.location.lon
+        );
+
+        let iconFeature = new Feature({
+          geometry: new Point([item.location.lon, item.location.lat]),
+          name: item.name,
+        });
+
+        iconFeature.setStyle(iconStyle);
+
+        const vectorSource = new VectorSource({
+          features: [iconFeature],
+        });
+
+        const vectorLayer = new VectorLayer({
+          source: vectorSource,
+        });
+
+        const rasterLayer = new TileLayer({
+          source: new OSM(),
+        });
+
+        this.map = new Map({
+          view: new View({
+            center: [item.location.lon, item.location.lat],
+            zoom: 18,
+            maxZoom: 19,
+            projection: 'EPSG:3857',
+          }),
+          layers: [rasterLayer, vectorLayer],
+          target: 'ol-map',
+        });
       }
-
-      useGeographic();
-      const iconStyle = new Style({
-        image: new Icon({
-          anchor: [0.5, 1],
-          scale: 0.5,
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'fraction',
-          src: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-blue.png',
-        }),
-      });
-
-      let iconFeature = new Feature({
-        geometry: new Point([this.item?.location.lon, this.item.location?.lat]),
-        name: this.item?.name,
-      });
-
-      iconFeature.setStyle(iconStyle);
-
-      const vectorSource = new VectorSource({
-        features: [iconFeature],
-      });
-
-      const vectorLayer = new VectorLayer({
-        source: vectorSource,
-      });
-
-      const rasterLayer = new TileLayer({
-        source: new OSM(),
-      });
-
-      this.map = new Map({
-        view: new View({
-          center: [this.item.location?.lon, this.item.location?.lat],
-          zoom: 18,
-          maxZoom: 19,
-          projection: 'EPSG:3857',
-        }),
-        layers: [rasterLayer, vectorLayer],
-        target: 'ol-map',
-      });
     });
   }
 
@@ -132,7 +143,7 @@ export class PageCalendarEventPage implements OnInit {
   async presentToast() {
     const toast = await this.toastController.create({
       header: 'ID do evento',
-      message: this.item.id,
+      message: this.eventID,
       icon: 'information-circle',
       position: 'bottom',
       duration: 5000,
@@ -141,7 +152,7 @@ export class PageCalendarEventPage implements OnInit {
           side: 'end',
           text: 'Copiar',
           handler: () => {
-            this.clipboardService.copy(this.item.id);
+            this.clipboardService.copy(this.eventID);
           },
         },
         {
@@ -174,7 +185,8 @@ export class PageCalendarEventPage implements OnInit {
   }
 
   getEmoji(emoji: string): any {
-    if (emoji === undefined) {
+    if (emoji === undefined || !/^\p{Emoji}|\p{Emoji_Modifier}$/u.test(emoji)) {
+      // TODO: validar apenas 1 emoji
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);

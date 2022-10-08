@@ -1,9 +1,15 @@
 import { NgModule } from '@angular/core';
-import { canActivate, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
-import { RouterModule, Routes } from '@angular/router';
+import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
+import { ActivatedRouteSnapshot, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import { PreloadingStrategyService } from './shared/services/preloading-strategy.service';
 
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['menu']);
+// Attribution: waternova
+// https://stackoverflow.com/questions/64456664/angularfireauthguard-redirecturl-after-login
+const redirectUnauthorizedToLogin = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  return redirectUnauthorizedTo(`/login?redirect=${state.url}`);
+};
+
+const redirectLoggedInToMenu = () => redirectLoggedInTo(['menu']);
 
 const routes: Routes = [
   {
@@ -12,13 +18,28 @@ const routes: Routes = [
     loadChildren: () => import('./tabs/tabs.module').then((m) => m.TabsPageModule),
   },
   {
-    path: 'about',
+    path: 'sobre',
     data: { preload: true },
     title: 'Sobre',
     loadChildren: () => import('./page-about/page-about.module').then((m) => m.PageAboutPageModule),
   },
   {
+    path: 'about',
+    redirectTo: 'sobre',
+    pathMatch: 'full',
+  },
+  {
+    path: 'humans.txt',
+    redirectTo: 'sobre',
+    pathMatch: 'full',
+  },
+  {
     path: 'licenses',
+    redirectTo: 'sobre/licencas',
+    pathMatch: 'full',
+  },
+  {
+    path: 'sobre/licencas',
     title: 'Licenças',
     loadChildren: () => import('./page-about/page-licenses/page-licenses.module').then((m) => m.PageLegalPageModule),
   },
@@ -41,6 +62,11 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
+    path: 'login',
+    loadChildren: () => import('./page-login/page-login.module').then((m) => m.PageLoginPageModule),
+    ...canActivate(redirectLoggedInToMenu),
+  },
+  {
     path: 'register',
     title: 'Registro',
     loadChildren: () => import('./page-register/page-register.module').then((m) => m.PageRegisterPageModule),
@@ -57,6 +83,20 @@ const routes: Routes = [
     path: 'entidades',
     title: 'Entidades estudantis',
     loadChildren: () => import('./page-contact-cas/page-contact-cas.module').then((m) => m.PageContactCasPageModule),
+  },
+  {
+    path: 'eventos/inscrever/:eventID',
+    title: 'Inscrição',
+    loadChildren: () =>
+      import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: 'inscricoes',
+    title: 'Minhas inscrições',
+    loadChildren: () =>
+      import('./page-subscriptions-payments/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
   },
 ];
 @NgModule({
