@@ -28,6 +28,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./page-manage-events/page-manage-events.module').then((m) => m.PageManageEventsPageModule),
   },
+  {
+    path: 'import-event',
+    loadChildren: () => import('./import-event/import-event.module').then( m => m.ImportEventPageModule)
+  },
 ];
 
 @NgModule({

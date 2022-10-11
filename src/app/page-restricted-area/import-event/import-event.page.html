@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/area-restrita"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Importar evento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <input type="file" class="file-input" accept="text/csv" (change)="uploadCSV($event)" #fileUpload />
+
+  <ion-button (click)="fileUpload.click()">
+    <ion-icon slot="start" name="cloud-upload"></ion-icon>
+    Enviar arquivo
+  </ion-button>
+</ion-content>
