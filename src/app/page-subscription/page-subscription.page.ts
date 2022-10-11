@@ -562,9 +562,9 @@ export class PageSubscriptionPage implements OnInit {
         const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
         // If event doesn't overlap or if it's itself, break
         if (
-          eventIterationStartDate >= eventItemEndDate ||
-          eventIterationEndDate <= eventItemStartDate ||
-          this.eventSchedule[i].id === eventItem.id
+          eventItemStartDate >= eventIterationEndDate ||
+          eventItemEndDate <= eventIterationStartDate ||
+          eventItem.id === this.eventSchedule[i].id
         ) {
           break;
         }
@@ -588,9 +588,9 @@ export class PageSubscriptionPage implements OnInit {
 
         // If event doesn't overlap or if it's itself, break
         if (
-          eventIterationEndDate <= eventItemStartDate ||
-          eventIterationStartDate >= eventItemEndDate ||
-          this.eventSchedule[i].id === eventItem.id
+          eventItemStartDate >= eventIterationEndDate ||
+          eventItemEndDate <= eventIterationStartDate ||
+          eventItem.id === this.eventSchedule[i].id
         ) {
           break;
         }
