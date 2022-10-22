@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CoursesService } from '../../shared/services/courses.service';
+import { CoursesService } from 'src/app/shared/services/courses.service';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -15,7 +15,7 @@ import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { EventItem } from '../../shared/services/events.service';
+import { EventItem } from 'src/app/shared/services/events.service';
 import { map, Observable, take } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { WeatherInfo, WeatherService } from 'src/app/shared/services/weather.service';

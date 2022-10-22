@@ -9,7 +9,7 @@ import { forkJoin, map, Observable, take } from 'rxjs';
 import { EventItem } from 'src/app/shared/services/events.service';
 import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { MajorEventItem, MajorEventSubscription } from './../../../shared/services/major-event.service';
+import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { DatesService } from 'src/app/shared/services/dates.service';
 
 interface Subscription extends MajorEventSubscription {
