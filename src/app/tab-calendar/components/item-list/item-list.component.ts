@@ -7,7 +7,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
-import { EventItem } from 'src/app/shared/services/event';
+import { EventItem } from 'src/app/shared/services/events.service';
 import { trace } from '@angular/fire/compat/performance';
 import { DatesService } from 'src/app/shared/services/dates.service';
 

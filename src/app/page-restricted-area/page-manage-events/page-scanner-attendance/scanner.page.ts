@@ -8,7 +8,7 @@ import { ToastController } from '@ionic/angular';
 import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { trace } from '@angular/fire/compat/performance';
-import { EventItem } from 'src/app/shared/services/event';
+import { EventItem } from 'src/app/shared/services/events.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';

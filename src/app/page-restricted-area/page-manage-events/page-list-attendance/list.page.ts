@@ -5,7 +5,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { map, Observable, take } from 'rxjs';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { EventItem } from 'src/app/shared/services/event';
+import { EventItem } from 'src/app/shared/services/events.service';
 import { User } from 'src/app/shared/services/user';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Timestamp } from '@firebase/firestore-types';

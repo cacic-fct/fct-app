@@ -5,7 +5,7 @@ import { trace } from '@angular/fire/compat/performance';
 import { fromUnixTime, isSameDay } from 'date-fns';
 import { combineLatest, first, map, Observable, take } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
-import { EventItem } from 'src/app/shared/services/event';
+import { EventItem } from 'src/app/shared/services/events.service';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { Timestamp } from '@firebase/firestore-types';
 import { parse } from 'twemoji-parser';

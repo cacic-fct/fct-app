@@ -1,5 +1,5 @@
 import { User } from 'src/app/shared/services/user';
-import { EventItem } from 'src/app/shared/services/event';
+import { EventItem } from 'src/app/shared/services/events.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { increment, serverTimestamp } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';

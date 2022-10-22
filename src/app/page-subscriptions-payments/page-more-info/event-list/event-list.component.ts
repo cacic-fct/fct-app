@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Timestamp } from '@firebase/firestore-types';
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
-import { EventItem } from 'src/app/shared/services/event';
+import { EventItem } from 'src/app/shared/services/events.service';
 import { DatesService } from 'src/app/shared/services/dates.service';
 
 @Component({

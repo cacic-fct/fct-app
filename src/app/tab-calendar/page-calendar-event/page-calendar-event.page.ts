@@ -15,7 +15,7 @@ import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { EventItem } from '../../shared/services/event';
+import { EventItem } from '../../shared/services/events.service';
 import { map, Observable, take } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { WeatherInfo, WeatherService } from 'src/app/shared/services/weather.service';

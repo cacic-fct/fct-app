@@ -1,4 +1,4 @@
-import { EventItem, EventSubscription } from 'src/app/shared/services/event';
+import { EventItem, EventSubscription } from 'src/app/shared/services/events.service';
 import { Timestamp } from '@firebase/firestore-types';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { Component, OnInit } from '@angular/core';

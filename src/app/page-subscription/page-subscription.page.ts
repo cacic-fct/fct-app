@@ -12,7 +12,7 @@ import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { compareAsc, fromUnixTime, isSameDay } from 'date-fns';
 import { map, Observable, take } from 'rxjs';
-import { EventItem } from 'src/app/shared/services/event';
+import { EventItem } from 'src/app/shared/services/events.service';
 import { ModalController, ToastController } from '@ionic/angular';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';

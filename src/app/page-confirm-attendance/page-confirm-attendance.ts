@@ -6,7 +6,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { combineLatest, map, Observable, take } from 'rxjs';
-import { EventItem } from '../shared/services/event';
+import { EventItem } from '../shared/services/events.service';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { fromUnixTime } from 'date-fns';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
