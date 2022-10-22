@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { compareAsc } from 'date-fns';
-import { take, map, Observable } from 'rxjs';
+import { map, Observable, take } from 'rxjs';
 import { DatesService } from '../shared/services/dates.service';
 import { MajorEventItem } from '../shared/services/major-event.service';
 import { MajorEventSubscription } from './../shared/services/major-event.service';

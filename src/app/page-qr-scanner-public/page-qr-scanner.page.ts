@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BarcodeFormat } from '@zxing/library';
 import { BehaviorSubject } from 'rxjs';
-import { ModalController } from '@ionic/angular';
-
-import { IonRouterOutlet, AlertController } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
+import { AlertController, IonRouterOutlet, ModalController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-page-qr-scanner',

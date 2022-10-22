@@ -4,7 +4,6 @@ import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { useGeographic } from 'ol/proj';
-import { Control, defaults as defaultControls } from 'ol/control';
 
 useGeographic();
 

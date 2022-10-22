@@ -1,13 +1,13 @@
 import { User } from 'src/app/shared/services/user';
 import { EventItem } from 'src/app/shared/services/event';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { serverTimestamp, increment } from '@angular/fire/firestore';
+import { increment, serverTimestamp } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { Observable, map, take, combineLatest } from 'rxjs';
+import { combineLatest, map, Observable, take } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { DatesService } from 'src/app/shared/services/dates.service';
 

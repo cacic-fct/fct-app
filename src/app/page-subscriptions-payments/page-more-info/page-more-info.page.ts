@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { fromUnixTime, isSameDay } from 'date-fns';
-import { first, Observable, take, combineLatest, map } from 'rxjs';
+import { combineLatest, first, map, Observable, take } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 import { EventItem } from 'src/app/shared/services/event';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';

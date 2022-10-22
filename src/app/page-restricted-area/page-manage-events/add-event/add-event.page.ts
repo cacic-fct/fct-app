@@ -6,7 +6,7 @@ import { MajorEventItem, MajorEventsService } from 'src/app/shared/services/majo
 import { format, getDayOfYear, isEqual, parseISO, setDayOfYear, subMilliseconds } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { BehaviorSubject, take, Observable, map } from 'rxjs';
+import { BehaviorSubject, map, Observable, take } from 'rxjs';
 import * as firestore from '@firebase/firestore';
 import { Timestamp } from '@firebase/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';

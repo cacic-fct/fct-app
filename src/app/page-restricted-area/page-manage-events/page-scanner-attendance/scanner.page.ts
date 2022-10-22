@@ -1,7 +1,7 @@
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { BarcodeFormat } from '@zxing/library';
-import { BehaviorSubject, take, isObservable, map, Observable } from 'rxjs';
+import { BehaviorSubject, isObservable, map, Observable, take } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';

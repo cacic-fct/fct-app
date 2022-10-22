@@ -1,7 +1,7 @@
 import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
 import { User } from 'src/app/shared/services/user';
 import { InfoModalComponent } from './info-modal/info-modal.component';
-import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
+import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -10,9 +10,8 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { ActivatedRoute, Router } from '@angular/router';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
-import { fromUnixTime, isSameDay, compareAsc } from 'date-fns';
-import { take, map, Observable } from 'rxjs';
-import { MajorEventItem } from 'src/app/shared/services/major-event.service';
+import { compareAsc, fromUnixTime, isSameDay } from 'date-fns';
+import { map, Observable, take } from 'rxjs';
 import { EventItem } from 'src/app/shared/services/event';
 import { ModalController, ToastController } from '@ionic/angular';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';

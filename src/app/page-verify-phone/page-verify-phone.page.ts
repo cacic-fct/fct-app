@@ -5,7 +5,7 @@ import firebase from 'firebase/compat/app';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { WindowService } from '../shared/services/window.service';
 
-import { timer, take, interval, Subscription } from 'rxjs';
+import { interval, Subscription, take, timer } from 'rxjs';
 
 import { ModalController } from '@ionic/angular';
 

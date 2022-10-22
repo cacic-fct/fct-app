@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { startOfMonth, endOfMonth, parseISO, addYears } from 'date-fns';
+import { addYears, endOfMonth, parseISO, startOfMonth } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, combineLatest, Observable, switchMap } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';

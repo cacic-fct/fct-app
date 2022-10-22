@@ -2,7 +2,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { startOfDay, endOfDay } from 'date-fns';
+import { endOfDay, startOfDay } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';

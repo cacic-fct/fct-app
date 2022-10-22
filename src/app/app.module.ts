@@ -1,4 +1,4 @@
-import { isDevMode, NgModule } from '@angular/core';
+import { isDevMode, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -7,35 +7,33 @@ import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import {
   AngularFireAnalyticsModule,
-  ScreenTrackingService,
-  UserTrackingService,
   APP_NAME,
   APP_VERSION,
+  ScreenTrackingService,
+  UserTrackingService
 } from '@angular/fire/compat/analytics';
 import {
   AngularFirestoreModule,
-  USE_EMULATOR as USE_FIRESTORE_EMULATOR,
   SETTINGS as FIRESTORE_SETTINGS,
+  USE_EMULATOR as USE_FIRESTORE_EMULATOR
 } from '@angular/fire/compat/firestore';
 import { AngularFirePerformanceModule, PerformanceMonitoringService } from '@angular/fire/compat/performance';
 import { getRemoteConfig, provideRemoteConfig } from '@angular/fire/remote-config';
 import { AngularFireFunctionsModule, USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions';
 import { AngularFireStorageModule, USE_EMULATOR as USE_STORAGE_EMULATOR } from '@angular/fire/compat/storage';
 import { environment } from '../environments/environment';
-import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
-registerLocaleData(localePt);
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { MarkdownModule } from 'ngx-markdown';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { provideAppCheck, initializeAppCheck, ReCaptchaV3Provider } from '@angular/fire/app-check';
+import { initializeAppCheck, provideAppCheck, ReCaptchaV3Provider } from '@angular/fire/app-check';
 import {
   AngularFireAuthModule,
   USE_DEVICE_LANGUAGE,
-  USE_EMULATOR as USE_AUTH_EMULATOR,
+  USE_EMULATOR as USE_AUTH_EMULATOR
 } from '@angular/fire/compat/auth';
 // Services
 import { ServiceWorkerService } from './shared/services/service-worker.service';
@@ -46,6 +44,8 @@ import { WeatherService } from './shared/services/weather.service';
 import { GlobalConstantsService } from './shared/services/global-constants.service';
 import { CoursesService } from './shared/services/courses.service';
 import { DatesService } from './shared/services/dates.service';
+
+registerLocaleData(localePt);
 
 @NgModule({
   declarations: [AppComponent],

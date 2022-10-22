@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { increment } from '@angular/fire/firestore';
+import { increment, serverTimestamp } from '@angular/fire/firestore';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
-import { Observable, map, take, combineLatest } from 'rxjs';
+import { combineLatest, map, Observable, take } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { User } from 'src/app/shared/services/user';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -13,7 +13,6 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { AlertController, IonModal } from '@ionic/angular';
-import { serverTimestamp } from '@angular/fire/firestore';
 import { DatesService } from 'src/app/shared/services/dates.service';
 
 @UntilDestroy()

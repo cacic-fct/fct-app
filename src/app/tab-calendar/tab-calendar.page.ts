@@ -1,17 +1,17 @@
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
-import { KeyValue, formatDate } from '@angular/common';
+import { formatDate, KeyValue } from '@angular/common';
 
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
-import { startOfWeek, endOfWeek, addDays, subDays, isSameDay, getDate, format, isSameWeek } from 'date-fns';
-import { ModalController } from '@ionic/angular';
+import { addDays, endOfWeek, format, getDate, isSameDay, isSameWeek, startOfWeek, subDays } from 'date-fns';
+import { ModalController, ToastController } from '@ionic/angular';
 import { FilterModalPage } from './components/filter-modal/filter-modal.page';
 import { getBooleanChanges, RemoteConfig } from '@angular/fire/remote-config';
-import { ToastController } from '@ionic/angular';
 import { trace } from '@angular/fire/compat/performance';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
 @UntilDestroy()
 @Component({
   selector: 'app-tab-calendar',

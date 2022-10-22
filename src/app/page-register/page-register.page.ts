@@ -24,6 +24,7 @@ import { take } from 'rxjs';
 import { WindowService } from '../shared/services/window.service';
 
 import firebase from 'firebase/compat/app';
+
 @Component({
   selector: 'app-page-register',
   templateUrl: './page-register.page.html',

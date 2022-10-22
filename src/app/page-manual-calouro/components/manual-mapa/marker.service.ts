@@ -1,8 +1,8 @@
 import Map from 'ol/Map';
 import { Injectable } from '@angular/core';
 import GeoJSON from 'ol/format/GeoJSON';
-import { Fill, Icon, Stroke, Style } from 'ol/style';
-import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
+import { Icon, Stroke, Style } from 'ol/style';
+import { Vector as VectorLayer } from 'ol/layer';
 import VectorSource from 'ol/source/Vector';
 import Overlay from 'ol/Overlay';
 

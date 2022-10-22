@@ -5,11 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Timestamp } from '@firebase/firestore-types';
-import { map, Observable, take, forkJoin } from 'rxjs';
+import { forkJoin, map, Observable, take } from 'rxjs';
 import { EventItem } from 'src/app/shared/services/event';
 import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { MajorEventSubscription, MajorEventItem } from './../../../shared/services/major-event.service';
+import { MajorEventItem, MajorEventSubscription } from './../../../shared/services/major-event.service';
 import { DatesService } from 'src/app/shared/services/dates.service';
 
 interface Subscription extends MajorEventSubscription {

@@ -8,13 +8,13 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
-import { take, Observable, map, switchMap } from 'rxjs';
+import { map, Observable, switchMap, take } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { PageVerifyPhonePage } from 'src/app/page-verify-phone/page-verify-phone.page';
 
 import * as firebaseAuth from 'firebase/auth';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
-import { getStringChanges, RemoteConfig, getBooleanChanges } from '@angular/fire/remote-config';
+import { getBooleanChanges, getStringChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { arrayRemove } from '@angular/fire/firestore';
 import { gte as versionGreaterThan } from 'semver';
 

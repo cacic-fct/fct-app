@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { PageRestrictedAreaPage } from './page-restricted-area.page';
 
-import { canActivate } from '@angular/fire/compat/auth-guard';
+import { canActivate, customClaims } from '@angular/fire/compat/auth-guard';
 import { pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { customClaims } from '@angular/fire/compat/auth-guard';
 
 const adminOnly = () =>
   pipe(

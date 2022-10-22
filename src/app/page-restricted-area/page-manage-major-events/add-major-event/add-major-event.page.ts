@@ -5,7 +5,7 @@ import { ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { format, parseISO, addHours } from 'date-fns';
+import { addHours, format, parseISO } from 'date-fns';
 import { Timestamp } from '@firebase/firestore';
 
 import { BehaviorSubject, Observable } from 'rxjs';

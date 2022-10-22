@@ -1,14 +1,13 @@
 import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
 import { AlertController, ToastController } from '@ionic/angular';
 import { User } from 'src/app/shared/services/user';
-import { EventSubscription } from 'src/app/shared/services/event';
+import { EventItem, EventSubscription } from 'src/app/shared/services/event';
 import { arrayRemove, arrayUnion, serverTimestamp } from '@angular/fire/firestore';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { addYears, endOfMonth, parseISO, startOfMonth } from 'date-fns';
 import { BehaviorSubject, combineLatest, map, Observable, switchMap, take } from 'rxjs';
-import { EventItem } from 'src/app/shared/services/event';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { DomSanitizer } from '@angular/platform-browser';

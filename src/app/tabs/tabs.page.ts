@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { trace } from '@angular/fire/compat/performance';
+
 @UntilDestroy()
 @Component({
   selector: 'app-tabs',

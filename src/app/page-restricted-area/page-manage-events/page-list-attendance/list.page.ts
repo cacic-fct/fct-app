@@ -1,9 +1,9 @@
-import { ToastController, AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
-import { take, map, Observable } from 'rxjs';
+import { map, Observable, take } from 'rxjs';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { EventItem } from 'src/app/shared/services/event';
 import { User } from 'src/app/shared/services/user';

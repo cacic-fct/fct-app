@@ -2,11 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 
-import { canActivate } from '@angular/fire/compat/auth-guard';
+import { canActivate, customClaims } from '@angular/fire/compat/auth-guard';
 
 import { pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { customClaims } from '@angular/fire/compat/auth-guard';
 
 const caAndGreater = () =>
   pipe(

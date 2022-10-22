@@ -5,7 +5,7 @@ import { trace } from '@angular/fire/compat/performance';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { map, Observable, take, combineLatest } from 'rxjs';
+import { combineLatest, map, Observable, take } from 'rxjs';
 import { EventItem } from '../shared/services/event';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { fromUnixTime } from 'date-fns';
@@ -13,7 +13,7 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { MajorEventItem } from '../shared/services/major-event.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-import { serverTimestamp, arrayRemove } from '@angular/fire/firestore';
+import { arrayRemove, serverTimestamp } from '@angular/fire/firestore';
 
 interface EventInfo {
   name: string;

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 
 import { take } from 'rxjs/operators';
