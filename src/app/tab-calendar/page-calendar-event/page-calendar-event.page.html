@@ -27,12 +27,12 @@
         <!-- TODO: Exibir data de término de um evento -->
         <h4 style="margin: 0; font-weight: 400">
           <!-- prettier-ignore -->
-          {{ toUppercase(getDateFromTimestamp(items.eventStartDate) | date: "EEEE, dd 'de' MMMM 'de' y") }}
+          {{ toUppercase(dates.getDateFromTimestamp(items.eventStartDate) | date: "EEEE, dd 'de' MMMM 'de' y") }}
         </h4>
         <h3 style="margin: 0; font-weight: 400">
-          {{ getDateFromTimestamp(items.eventStartDate) | date: 'HH:mm' }}
+          {{ dates.getDateFromTimestamp(items.eventStartDate) | date: 'HH:mm' }}
           <ng-container *ngIf="items.eventEndDate">
-            - {{ getDateFromTimestamp(items.eventEndDate) | date: 'HH:mm' }}
+            - {{ dates.getDateFromTimestamp(items.eventEndDate) | date: 'HH:mm' }}
           </ng-container>
         </h3>
 
@@ -71,7 +71,7 @@
       </div>
 
       <ng-container *ngIf="items.eventEndDate">
-        <ng-container *ngIf="today < getDateFromTimestamp(items.eventEndDate)">
+        <ng-container *ngIf="today < dates.getDateFromTimestamp(items.eventEndDate)">
           <div *ngIf="items.allowSubscription && (isUserAuthenticated | async)" class="ion-padding-vertical">
             <ion-button
               expand="block"

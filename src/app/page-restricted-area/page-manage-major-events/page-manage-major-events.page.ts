@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { startOfMonth, endOfMonth, parseISO, fromUnixTime, addYears } from 'date-fns';
+import { startOfMonth, endOfMonth, parseISO, addYears } from 'date-fns';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, combineLatest, Observable, switchMap } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
-import { Timestamp } from '@firebase/firestore-types';
 import { trace } from '@angular/fire/compat/performance';
 import { CoursesService } from 'src/app/shared/services/courses.service';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @Component({
   selector: 'app-page-manage-major-events',
@@ -18,7 +18,7 @@ export class PageManageMajorEventsPage implements OnInit {
   currentMonth$: BehaviorSubject<string | null> = new BehaviorSubject(this.currentMonth);
   majorEvents$: Observable<MajorEventItem[]>;
 
-  constructor(private afs: AngularFirestore, public courses: CoursesService) {}
+  constructor(private afs: AngularFirestore, public courses: CoursesService, public dates: DatesService) {}
 
   ngOnInit() {
     this.majorEvents$ = combineLatest([this.currentMonth$]).pipe(
@@ -35,10 +35,6 @@ export class PageManageMajorEventsPage implements OnInit {
           .pipe(trace('firestore'));
       })
     );
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   getLimitDate(): string {

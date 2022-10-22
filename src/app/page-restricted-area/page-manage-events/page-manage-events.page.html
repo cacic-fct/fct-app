@@ -31,8 +31,8 @@
                 <ion-label>
                   <h1 class="ion-text-wrap">{{item.name}}</h1>
                   <h4 class="date-item" *ngIf="item.eventStartDate && item.eventEndDate">
-                    Data do evento: {{ getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM HH:mm' }} - {{
-                    getDateFromTimestamp(item.eventEndDate) | date: 'dd/MM HH:mm' }}
+                    Data do evento: {{ dates.getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM HH:mm' }} - {{
+                    dates.getDateFromTimestamp(item.eventEndDate) | date: 'dd/MM HH:mm' }}
                   </h4>
                   <p class="ion-text-wrap" *ngIf="item.course">{{courses.getCourse(item.course)}}</p>
                   <p class="ion-text-wrap" *ngIf="item.inMajorEventName | async as majorEventName">

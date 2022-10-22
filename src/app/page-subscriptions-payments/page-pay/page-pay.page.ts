@@ -9,13 +9,11 @@ import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
-import { fromUnixTime } from 'date-fns';
-
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { Timestamp } from '@firebase/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-
-import { EnrollmentTypesService } from '../../shared/services/enrollment-types.service';
+import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @UntilDestroy()
 @Component({
@@ -56,7 +54,8 @@ export class PagePayPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public afs: AngularFirestore,
-    public enrollmentTypes: EnrollmentTypesService
+    public enrollmentTypes: EnrollmentTypesService,
+    public dates: DatesService
   ) {}
 
   ngOnInit() {
@@ -118,7 +117,7 @@ export class PagePayPage implements OnInit {
       .pipe(untilDestroyed(this), trace('firestore'));
 
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((event) => {
-      if (this.getDateFromTimestamp(event.subscriptionEndDate) < this.today) {
+      if (this.dates.getDateFromTimestamp(event.subscriptionEndDate) < this.today) {
         this.outOfDate = true;
         this.router.navigate(['inscricoes']);
         this.expired.fire();
@@ -291,10 +290,6 @@ export class PagePayPage implements OnInit {
       ],
     });
     toast.present();
-  }
-
-  getDateFromTimestamp(timestamp: any): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 }
 

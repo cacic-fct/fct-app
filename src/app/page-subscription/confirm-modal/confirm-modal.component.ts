@@ -4,15 +4,14 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { fromUnixTime, isSameDay } from 'date-fns';
-
-import { MajorEventItem } from '../../shared/services/major-event.service';
-import { EventItem } from '../../shared/services/event';
+import { MajorEventItem } from 'src/app/shared/services/major-event.service';
+import { EventItem } from 'src/app/shared/services/event';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
-
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @Component({
   selector: 'app-confirm-modal',
@@ -31,7 +30,8 @@ export class ConfirmModalComponent implements OnInit {
     public afs: AngularFirestore,
     public auth: AngularFireAuth,
     private modalController: ModalController,
-    public enrollmentTypes: EnrollmentTypesService
+    public enrollmentTypes: EnrollmentTypesService,
+    public dates: DatesService
   ) {}
 
   ngOnInit() {}
@@ -41,10 +41,6 @@ export class ConfirmModalComponent implements OnInit {
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);
     return formated;
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   onSubmit() {

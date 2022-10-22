@@ -8,13 +8,12 @@ import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types
 import { EventItem } from 'src/app/shared/services/event';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { Timestamp } from '@firebase/firestore-types';
-
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
 import { formatDate } from '@angular/common';
-
 import { documentId } from 'firebase/firestore';
 import { ActivatedRoute } from '@angular/router';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @Component({
   selector: 'app-page-more-info',
@@ -38,7 +37,8 @@ export class PageMoreInfoPage implements OnInit {
     public auth: AngularFireAuth,
     public enrollmentTypes: EnrollmentTypesService,
     private sanitizer: DomSanitizer,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public dates: DatesService
   ) {}
 
   ngOnInit() {
@@ -106,10 +106,6 @@ export class PageMoreInfoPage implements OnInit {
         }
       });
     });
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   formatDate(date: Date): string {

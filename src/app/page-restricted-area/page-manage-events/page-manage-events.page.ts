@@ -1,19 +1,19 @@
-import { GlobalConstantsService } from './../../shared/services/global-constants.service';
+import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
 import { AlertController, ToastController } from '@ionic/angular';
-import { User } from './../../shared/services/user';
-import { EventSubscription } from './../../shared/services/event';
+import { User } from 'src/app/shared/services/user';
+import { EventSubscription } from 'src/app/shared/services/event';
 import { arrayRemove, arrayUnion, serverTimestamp } from '@angular/fire/firestore';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
-import { addYears, endOfMonth, fromUnixTime, parseISO, startOfMonth } from 'date-fns';
+import { addYears, endOfMonth, parseISO, startOfMonth } from 'date-fns';
 import { BehaviorSubject, combineLatest, map, Observable, switchMap, take } from 'rxjs';
 import { EventItem } from 'src/app/shared/services/event';
-import { Timestamp } from '@firebase/firestore-types';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 interface EventItemQuery extends EventItem {
   inMajorEventName?: Observable<string>;
@@ -32,6 +32,7 @@ export class PageManageEvents implements OnInit {
   constructor(
     private afs: AngularFirestore,
     public courses: CoursesService,
+    public dates: DatesService,
     private sanitizer: DomSanitizer,
     private alertController: AlertController,
     private toastController: ToastController
@@ -75,10 +76,6 @@ export class PageManageEvents implements OnInit {
       );
   }
 
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
-  }
-
   getLimitDate(): string {
     return addYears(this.today, 1).toISOString();
   }
@@ -99,7 +96,7 @@ export class PageManageEvents implements OnInit {
     const alert = await this.alertController.create({
       header: 'Deseja abrir presença?',
       subHeader: `${event.name}`,
-      message: `Data do evento: ${this.getDateFromTimestamp(event.eventStartDate).toLocaleString('pt-BR', {
+      message: `Data do evento: ${this.dates.getDateFromTimestamp(event.eventStartDate).toLocaleString('pt-BR', {
         timeZone: 'America/Sao_Paulo',
         year: 'numeric',
         month: '2-digit',
@@ -163,7 +160,7 @@ export class PageManageEvents implements OnInit {
     const alert = await this.alertController.create({
       header: 'Deseja fechar presença?',
       subHeader: `${event.name}`,
-      message: `Data do evento: ${this.getDateFromTimestamp(event.eventStartDate).toLocaleString('pt-BR', {
+      message: `Data do evento: ${this.dates.getDateFromTimestamp(event.eventStartDate).toLocaleString('pt-BR', {
         timeZone: 'America/Sao_Paulo',
         year: 'numeric',
         month: '2-digit',

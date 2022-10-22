@@ -1,11 +1,9 @@
 import { ModalController } from '@ionic/angular';
 import { Component, Input, OnInit } from '@angular/core';
-import { fromUnixTime } from 'date-fns';
 import { EventItem } from 'src/app/shared/services/event';
-
-import { Timestamp } from '@firebase/firestore-types';
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @Component({
   selector: 'app-info-modal',
@@ -15,16 +13,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class InfoModalComponent implements OnInit {
   @Input() event: EventItem;
 
-  constructor(private sanitizer: DomSanitizer, private modalController: ModalController) {}
+  constructor(private sanitizer: DomSanitizer, private modalController: ModalController, public dates: DatesService) {}
 
   ngOnInit() {}
 
   toUppercase(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   getEmoji(emoji: string): any {

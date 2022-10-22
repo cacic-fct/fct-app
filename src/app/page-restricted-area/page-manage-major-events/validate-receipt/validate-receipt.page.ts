@@ -3,7 +3,6 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/comp
 import { ActivatedRoute } from '@angular/router';
 import { increment } from '@angular/fire/firestore';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
-import { fromUnixTime } from 'date-fns';
 import { Observable, map, take, combineLatest } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { User } from 'src/app/shared/services/user';
@@ -15,6 +14,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { AlertController, IonModal } from '@ionic/angular';
 import { serverTimestamp } from '@angular/fire/firestore';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @UntilDestroy()
 @Component({
@@ -39,7 +39,8 @@ export class ValidateReceiptPage implements OnInit {
     private afs: AngularFirestore,
     private auth: AngularFireAuth,
     private formBuilder: FormBuilder,
-    private alertController: AlertController
+    private alertController: AlertController,
+    public dates: DatesService
   ) {}
 
   ngOnInit() {
@@ -98,10 +99,6 @@ export class ValidateReceiptPage implements OnInit {
 
   private userDataByID(userId: string): Observable<User> {
     return this.afs.collection('users').doc<User>(userId).valueChanges().pipe(take(1));
-  }
-
-  getDateFromTimestamp(timestamp: TimestampType): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   confirm() {

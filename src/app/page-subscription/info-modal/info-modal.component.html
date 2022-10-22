@@ -21,12 +21,12 @@
       <!-- TODO: Exibir data de término de um evento -->
       <h4 style="margin: 0; font-weight: 400">
         <!-- prettier-ignore -->
-        {{ toUppercase(getDateFromTimestamp(event?.eventStartDate) | date: "EEEE, dd 'de' MMMM 'de' y") }}
+        {{ toUppercase(dates.getDateFromTimestamp(event?.eventStartDate) | date: "EEEE, dd 'de' MMMM 'de' y") }}
       </h4>
       <h3 style="margin: 0; font-weight: 400">
-        {{ getDateFromTimestamp(event?.eventStartDate) | date: 'HH:mm' }}
+        {{ dates.getDateFromTimestamp(event?.eventStartDate) | date: 'HH:mm' }}
         <ng-container *ngIf="event?.eventEndDate">
-          - {{ getDateFromTimestamp(event?.eventEndDate) | date: 'HH:mm' }}
+          - {{ dates.getDateFromTimestamp(event?.eventEndDate) | date: 'HH:mm' }}
         </ng-container>
       </h3>
     </div>

@@ -27,16 +27,16 @@
         <ion-item lines="none">
           Evento
           <span slot="end">
-            {{ getDateFromTimestamp(majorEvent.eventStartDate) | date: 'dd/MM' }} {{ majorEvent.eventEndDate && '- ' +
-            (getDateFromTimestamp(majorEvent.eventEndDate) | date: 'dd/MM') }}
+            {{ dates.getDateFromTimestamp(majorEvent.eventStartDate) | date: 'dd/MM' }} {{ majorEvent.eventEndDate && '- ' +
+            (dates.getDateFromTimestamp(majorEvent.eventEndDate) | date: 'dd/MM') }}
           </span>
         </ion-item>
 
         <ion-item lines="none" *ngIf="majorEvent.subscriptionStartDate && majorEvent.subscriptionEndDate">
           Inscrição
           <span slot="end">
-            {{ getDateFromTimestamp(majorEvent.subscriptionStartDate) | date: 'dd/MM' }} {{
-            majorEvent.subscriptionEndDate && '- ' + (getDateFromTimestamp(majorEvent.subscriptionEndDate) | date:
+            {{ dates.getDateFromTimestamp(majorEvent.subscriptionStartDate) | date: 'dd/MM' }} {{
+            majorEvent.subscriptionEndDate && '- ' + (dates.getDateFromTimestamp(majorEvent.subscriptionEndDate) | date:
             'dd/MM') }}
           </span>
         </ion-item>
@@ -125,7 +125,7 @@
               mode="ios"
               sticky="true"
               *ngIf="i == 0 || !dayCompare(eventsArray[i - 1].eventStartDate, event.eventStartDate)">
-              <ion-label> {{ formatDate(getDateFromTimestamp(event.eventStartDate)) }} </ion-label>
+              <ion-label> {{ formatDate(dates.getDateFromTimestamp(event.eventStartDate)) }} </ion-label>
             </ion-item-divider>
 
             <ion-list>
@@ -135,8 +135,8 @@
                   <h3 class="ion-text-wrap">{{ event.name }}</h3>
                   <h3 class="ion-text-wrap">{{ event.shortDescription }}</h3>
                   <h4>
-                    {{ (getDateFromTimestamp(event.eventStartDate) | date: 'HH:mm') }} {{ event.eventEndDate && ' às ' +
-                    (getDateFromTimestamp(event.eventEndDate) | date: 'HH:mm') }}
+                    {{ (dates.getDateFromTimestamp(event.eventStartDate) | date: 'HH:mm') }} {{ event.eventEndDate && ' às ' +
+                    (dates.getDateFromTimestamp(event.eventEndDate) | date: 'HH:mm') }}
                   </h4>
                   <p>{{ event.slotsAvailable }} vagas restantes</p>
                   <p>Sua posição na fila: {{ event.numberOfSubscriptions + 1 | number: '1.0-0' }}</p>

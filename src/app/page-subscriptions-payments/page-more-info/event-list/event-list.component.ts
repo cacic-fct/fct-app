@@ -2,12 +2,11 @@ import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { fromUnixTime, isSameDay } from 'date-fns';
 import { Observable } from 'rxjs';
-
 import { Timestamp } from '@firebase/firestore-types';
-
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
 import { EventItem } from 'src/app/shared/services/event';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @Component({
   selector: 'app-event-list',
@@ -17,13 +16,9 @@ import { EventItem } from 'src/app/shared/services/event';
 export class EventListComponent implements OnInit {
   @Input() eventInput$: Observable<EventItem[]>;
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer, public dates: DatesService) {}
 
   ngOnInit() {}
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
-  }
 
   formatDate(date: Date): string {
     let formated = formatDate(date, "EEEE, dd 'de' MMMM 'de' yyyy", 'pt-BR');

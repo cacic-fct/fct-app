@@ -28,16 +28,16 @@
           <ion-item lines="none">
             Evento
             <span slot="end">
-              {{ getDateFromTimestamp(majorEvent.eventStartDate) | date: 'dd/MM' }} {{ majorEvent.eventEndDate && '- ' +
-              (getDateFromTimestamp(majorEvent.eventEndDate) | date: 'dd/MM') }}
+              {{ dates.getDateFromTimestamp(majorEvent.eventStartDate) | date: 'dd/MM' }} {{ majorEvent.eventEndDate && '- ' +
+              (dates.getDateFromTimestamp(majorEvent.eventEndDate) | date: 'dd/MM') }}
             </span>
           </ion-item>
 
           <ion-item lines="none" *ngIf="majorEvent.subscriptionStartDate && majorEvent.subscriptionEndDate">
             Inscrição
             <span slot="end">
-              {{ getDateFromTimestamp(majorEvent.subscriptionStartDate) | date: 'dd/MM' }} {{
-              majorEvent.subscriptionEndDate && '- ' + (getDateFromTimestamp(majorEvent.subscriptionEndDate) | date:
+              {{ dates.getDateFromTimestamp(majorEvent.subscriptionStartDate) | date: 'dd/MM' }} {{
+              majorEvent.subscriptionEndDate && '- ' + (dates.getDateFromTimestamp(majorEvent.subscriptionEndDate) | date:
               'dd/MM') }}
             </span>
           </ion-item>
@@ -62,13 +62,13 @@
               <span slot="end">
                 <ng-container *ngIf="majorEventSubscription.payment.status === 0">Não pago</ng-container>
                 <ng-container *ngIf="majorEventSubscription.payment.status === 1">
-                  Comprovante enviado em {{ getDateFromTimestamp(majorEventSubscription.payment.time) | date:
+                  Comprovante enviado em {{ dates.getDateFromTimestamp(majorEventSubscription.payment.time) | date:
                   'dd/MM/yyyy' }}
                   <br />
                   Aguardando confirmação
                 </ng-container>
                 <ng-container *ngIf="majorEventSubscription.payment.status === 2">
-                  Pagamento validado em {{ getDateFromTimestamp(majorEventSubscription.payment.time) | date:
+                  Pagamento validado em {{ dates.getDateFromTimestamp(majorEventSubscription.payment.time) | date:
                   'dd/MM/yyyy' }}
                 </ng-container>
                 <ng-container *ngIf="majorEventSubscription.payment.status === 3"> Erro no pagamento </ng-container>

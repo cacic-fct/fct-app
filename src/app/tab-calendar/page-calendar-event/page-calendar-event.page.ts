@@ -1,35 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-
 import { CoursesService } from '../../shared/services/courses.service';
-
 import { ToastController } from '@ionic/angular';
-
-import { fromUnixTime } from 'date-fns';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { DomSanitizer } from '@angular/platform-browser';
 import { parse } from 'twemoji-parser';
-
 import Map from 'ol/Map';
 import View from 'ol/View';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import OSM from 'ol/source/OSM';
 import Feature from 'ol/Feature';
 import { Icon, Style } from 'ol/style';
-import { fromLonLat, useGeographic } from 'ol/proj';
+import { useGeographic } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
-
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-
 import { EventItem } from '../../shared/services/event';
 import { take, Observable, map } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
-
-import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { WeatherInfo, WeatherService } from 'src/app/shared/services/weather.service';
 import { serverTimestamp } from '@angular/fire/firestore';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -55,7 +46,8 @@ export class PageCalendarEventPage implements OnInit {
     private sanitizer: DomSanitizer,
     private afs: AngularFirestore,
     private auth: AngularFireAuth,
-    private weatherService: WeatherService
+    private weatherService: WeatherService,
+    public dates: DatesService
   ) {}
 
   ngOnInit() {
@@ -102,7 +94,7 @@ export class PageCalendarEventPage implements OnInit {
         });
 
         this.weather = this.weatherService.getWeather(
-          this.getDateFromTimestamp(item.eventStartDate),
+          this.dates.getDateFromTimestamp(item.eventStartDate),
           item.location.lat,
           item.location.lon
         );
@@ -153,10 +145,6 @@ export class PageCalendarEventPage implements OnInit {
       return this.courses[course].name;
     }
     return '';
-  }
-
-  getDateFromTimestamp(timestamp: TimestampType): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   toUppercase(string: string) {

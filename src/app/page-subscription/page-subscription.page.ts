@@ -1,8 +1,8 @@
-import { GlobalConstantsService } from './../shared/services/global-constants.service';
-import { User } from './../shared/services/user';
+import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
+import { User } from 'src/app/shared/services/user';
 import { InfoModalComponent } from './info-modal/info-modal.component';
-import { MajorEventSubscription } from '../shared/services/major-event.service';
-import { EnrollmentTypesService } from './../shared/services/enrollment-types.service';
+import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
+import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -12,19 +12,17 @@ import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { fromUnixTime, isSameDay, compareAsc } from 'date-fns';
 import { take, map, Observable } from 'rxjs';
-
-import { MajorEventItem } from '../shared/services/major-event.service';
-import { EventItem } from '../shared/services/event';
+import { MajorEventItem } from 'src/app/shared/services/major-event.service';
+import { EventItem } from 'src/app/shared/services/event';
 import { ModalController, ToastController } from '@ionic/angular';
-
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { trace } from '@angular/fire/compat/performance';
-
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { serverTimestamp } from '@angular/fire/firestore';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 @UntilDestroy()
 @Component({
@@ -83,7 +81,8 @@ export class PageSubscriptionPage implements OnInit {
     private modalController: ModalController,
     private toastController: ToastController,
     public enrollmentTypes: EnrollmentTypesService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public dates: DatesService
   ) {}
 
   ngOnInit() {
@@ -122,7 +121,7 @@ export class PageSubscriptionPage implements OnInit {
         } else {
           // If majorEventID is valid, check if subscriptions are open
           const majorEvent = document.data() as MajorEventItem;
-          if (this.getDateFromTimestamp(majorEvent.eventEndDate) < this.today) {
+          if (this.dates.getDateFromTimestamp(majorEvent.eventEndDate) < this.today) {
             this.router.navigate(['eventos']);
 
             this.eventOutOfSubscriptionDate.fire();
@@ -181,7 +180,10 @@ export class PageSubscriptionPage implements OnInit {
             this.eventSchedule.push(eventItem);
 
             // If there are no slots available, add event to form with disabled selection
-            if (eventItem.slotsAvailable <= 0 || this.getDateFromTimestamp(eventItem.eventStartDate) < this.today) {
+            if (
+              eventItem.slotsAvailable <= 0 ||
+              this.dates.getDateFromTimestamp(eventItem.eventStartDate) < this.today
+            ) {
               this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
             } else {
               this.dataForm.addControl(eventItem.id, this.formBuilder.control(null));
@@ -347,10 +349,6 @@ export class PageSubscriptionPage implements OnInit {
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);
     return formated;
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   // Ununsed
@@ -525,7 +523,10 @@ export class PageSubscriptionPage implements OnInit {
     const eventsSelected: EventItem[] = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
 
     eventsSelected.sort((a, b) => {
-      return compareAsc(this.getDateFromTimestamp(a.eventStartDate), this.getDateFromTimestamp(b.eventStartDate));
+      return compareAsc(
+        this.dates.getDateFromTimestamp(a.eventStartDate),
+        this.dates.getDateFromTimestamp(b.eventStartDate)
+      );
     });
 
     const modal = await this.modalController.create({
@@ -565,14 +566,14 @@ export class PageSubscriptionPage implements OnInit {
 
     const eventIndex = this.eventSchedule.findIndex((e) => e.id === eventItem.id);
 
-    const eventItemStartDate = this.getDateFromTimestamp(eventItem.eventStartDate);
-    const eventItemEndDate = this.getDateFromTimestamp(eventItem.eventEndDate);
+    const eventItemStartDate = this.dates.getDateFromTimestamp(eventItem.eventStartDate);
+    const eventItemEndDate = this.dates.getDateFromTimestamp(eventItem.eventEndDate);
 
     if (checked) {
       // For every event after eventIndex
       for (let i = eventIndex + 1; i < this.eventSchedule.length; i++) {
-        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
-        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+        const eventIterationStartDate = this.dates.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationEndDate = this.dates.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
         // If event doesn't overlap or if it's itself, break
         if (
           eventItemStartDate >= eventIterationEndDate ||
@@ -596,8 +597,8 @@ export class PageSubscriptionPage implements OnInit {
 
       // For every event before eventIdex
       for (let i = eventIndex - 1; i >= 0; i--) {
-        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
-        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+        const eventIterationStartDate = this.dates.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationEndDate = this.dates.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
 
         // If event doesn't overlap or if it's itself, break
         if (
@@ -622,7 +623,7 @@ export class PageSubscriptionPage implements OnInit {
     } else {
       // For every event after eventIndex
       for (let i = eventIndex + 1; i < this.eventSchedule.length; i++) {
-        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationStartDate = this.dates.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
 
         // If event doesn't overlap, break
         if (eventIterationStartDate >= eventItemEndDate) {
@@ -648,7 +649,7 @@ export class PageSubscriptionPage implements OnInit {
 
       // For every event before eventIdex
       for (let i = eventIndex - 1; i >= 0; i--) {
-        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+        const eventIterationEndDate = this.dates.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
 
         // If event doesn't overlap, break
         if (eventIterationEndDate <= eventItemStartDate) {

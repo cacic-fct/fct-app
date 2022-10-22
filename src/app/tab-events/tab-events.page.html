@@ -28,16 +28,16 @@
             <ion-item lines="none">
               Evento
               <span slot="end">
-                {{ getDateFromTimestamp(event.eventStartDate) | date: 'dd/MM' }} {{ event.eventEndDate && '- ' +
-                (getDateFromTimestamp(event.eventEndDate) | date: 'dd/MM') }}
+                {{ dates.getDateFromTimestamp(event.eventStartDate) | date: 'dd/MM' }} {{ event.eventEndDate && '- ' +
+                (dates.getDateFromTimestamp(event.eventEndDate) | date: 'dd/MM') }}
               </span>
             </ion-item>
 
             <ion-item lines="none" *ngIf="event.subscriptionStartDate && event.subscriptionEndDate">
               Inscrição
               <span slot="end">
-                {{ getDateFromTimestamp(event.subscriptionStartDate) | date: 'dd/MM' }} {{ event.subscriptionEndDate &&
-                '- ' + (getDateFromTimestamp(event.subscriptionEndDate) | date: 'dd/MM') }}
+                {{ dates.getDateFromTimestamp(event.subscriptionStartDate) | date: 'dd/MM' }} {{ event.subscriptionEndDate &&
+                '- ' + (dates.getDateFromTimestamp(event.subscriptionEndDate) | date: 'dd/MM') }}
               </span>
             </ion-item>
           </div>
@@ -85,7 +85,7 @@
 
           <div class="ion-padding">
             <ng-container
-              *ngIf="(event.subscriptionStartDate && event.subscriptionEndDate) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionStartDate), getDateFromTimestamp(event.subscriptionEndDate))">
+              *ngIf="(event.subscriptionStartDate && event.subscriptionEndDate) && isTodayBetweenDates(dates.getDateFromTimestamp(event.subscriptionStartDate), dates.getDateFromTimestamp(event.subscriptionEndDate))">
               <ng-container *ngIf="event.isSubscribed | async as isSubscribed; else notSubscribed">
                 <ion-button *ngIf="isSubscribed" [routerLink]="['/inscricoes']">
                   <ion-icon slot="start" name="checkmark"></ion-icon> Inscrito

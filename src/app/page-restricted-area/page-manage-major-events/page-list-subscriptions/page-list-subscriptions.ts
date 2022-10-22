@@ -4,13 +4,13 @@ import { trace } from '@angular/fire/compat/performance';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { fromUnixTime } from 'date-fns';
 import { Timestamp } from '@firebase/firestore-types';
 import { map, Observable, take, forkJoin } from 'rxjs';
 import { EventItem } from 'src/app/shared/services/event';
 import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventSubscription, MajorEventItem } from './../../../shared/services/major-event.service';
+import { DatesService } from 'src/app/shared/services/dates.service';
 
 interface Subscription extends MajorEventSubscription {
   id: string;
@@ -38,7 +38,8 @@ export class PageListSubscriptions implements OnInit {
     private afs: AngularFirestore,
     private router: Router,
     private route: ActivatedRoute,
-    public courses: CoursesService
+    public courses: CoursesService,
+    public dates: DatesService
   ) {}
 
   ngOnInit() {
@@ -79,10 +80,6 @@ export class PageListSubscriptions implements OnInit {
           }))
         )
       );
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   generateCSV() {
@@ -188,7 +185,7 @@ export class PageListSubscriptions implements OnInit {
                     item.payment.status,
                     status,
 
-                    this.getDateFromTimestamp(item.payment.time).toLocaleString('pt-BR', {
+                    this.dates.getDateFromTimestamp(item.payment.time).toLocaleString('pt-BR', {
                       timeZone: 'America/Sao_Paulo',
                       year: 'numeric',
                       month: '2-digit',
@@ -198,9 +195,9 @@ export class PageListSubscriptions implements OnInit {
                       second: '2-digit',
                     }),
 
-                    this.getDateFromTimestamp(item.payment.time).toISOString(),
+                    this.dates.getDateFromTimestamp(item.payment.time).toISOString(),
 
-                    this.getDateFromTimestamp(item.time).toLocaleString('pt-BR', {
+                    this.dates.getDateFromTimestamp(item.time).toLocaleString('pt-BR', {
                       timeZone: 'America/Sao_Paulo',
                       year: 'numeric',
                       month: '2-digit',
@@ -210,7 +207,7 @@ export class PageListSubscriptions implements OnInit {
                       second: '2-digit',
                     }),
 
-                    this.getDateFromTimestamp(item.time).toISOString(),
+                    this.dates.getDateFromTimestamp(item.time).toISOString(),
 
                     item.subscribedToEvents.join('; '),
                     subscribedToEventsNames,

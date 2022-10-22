@@ -6,7 +6,7 @@
       sticky="true"
       *ngIf="i == 0 || !dayCompare(eventsArray[i - 1].eventStartDate, event.eventStartDate)">
       <ion-label class="wrap-no-change">
-        {{ formatDate(getDateFromTimestamp(event.eventStartDate)) }}
+        {{ formatDate(dates.getDateFromTimestamp(event.eventStartDate)) }}
       </ion-label>
     </ion-item-divider>
 
@@ -17,8 +17,8 @@
           <h2 class="ion-text-wrap">{{ event.name }}</h2>
           <h3 class="ion-text-wrap">{{ event.shortDescription }}</h3>
           <h3>
-            {{ getDateFromTimestamp(event.eventStartDate) | date: 'HH:mm' }}
-            {{ event.eventEndDate && ' às ' + (getDateFromTimestamp(event.eventEndDate) | date: 'HH:mm') }}
+            {{ dates.getDateFromTimestamp(event.eventStartDate) | date: 'HH:mm' }}
+            {{ event.eventEndDate && ' às ' + (dates.getDateFromTimestamp(event.eventEndDate) | date: 'HH:mm') }}
           </h3>
           <!-- TODO: Botão de certificados -->
         </ion-label>

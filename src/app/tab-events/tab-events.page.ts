@@ -2,10 +2,9 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
-import { Timestamp } from '@firebase/firestore-types';
-import { compareAsc, fromUnixTime } from 'date-fns';
+import { compareAsc } from 'date-fns';
 import { take, map, Observable } from 'rxjs';
-
+import { DatesService } from '../shared/services/dates.service';
 import { MajorEventItem } from '../shared/services/major-event.service';
 import { MajorEventSubscription } from './../shared/services/major-event.service';
 
@@ -22,7 +21,7 @@ export class TabEventsPage {
   >;
   today: Date = new Date();
 
-  constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {}
+  constructor(public afs: AngularFirestore, public auth: AngularFireAuth, public dates: DatesService) {}
 
   ngOnInit() {
     this.auth.user.pipe(take(1)).subscribe((user) => {
@@ -58,10 +57,6 @@ export class TabEventsPage {
           })
         );
     });
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   isTodayBetweenDates(date1: Date, date2: Date) {
