@@ -1,29 +1,54 @@
+import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { trace } from '@angular/fire/compat/performance';
+import { serverTimestamp } from '@angular/fire/firestore';
 import { Timestamp } from '@firebase/firestore-types';
-import { combineLatest, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, map, Observable, switchMap, take } from 'rxjs';
 
+@Injectable()
 export class EventsService {
   constructor(private afs: AngularFirestore) {}
 
-  getEvent(eventID: string): Observable<EventItem | false> {
+  eventExists$(eventID: string) {
+    return this.getEvent$(eventID).pipe(map((event) => (event ? true : false)));
+  }
+
+  getEvent$(eventID: string): Observable<EventItem | false> {
     return this.afs
       .collection<EventItem>('events')
       .doc(eventID)
       .valueChanges()
-      .pipe(map((document) => (document ? document : false)));
+      .pipe(
+        trace('firestore'),
+        map((document) => (document ? document : false))
+      );
   }
 
-  numberOfSubscriptions(eventID: string): Observable<number> {
+  getNumberOfSubscriptions$(eventID: string): Observable<number> {
     return this.afs
       .collection(`events/${eventID}/subscriptions`)
       .valueChanges()
-      .pipe(map((document) => document.length));
+      .pipe(
+        trace('firestore'),
+        map((document) => document.length)
+      );
   }
 
-  getSlotsAvailable(eventID: string) {
-    return combineLatest([this.getEvent(eventID), this.numberOfSubscriptions(eventID)]).pipe(
+  getSubscriptions$(eventID: string): Observable<EventSubscription[]> {
+    return this.afs
+      .collection<EventSubscription>(`events/${eventID}/subscriptions`)
+      .valueChanges()
+      .pipe(
+        trace('firestore')
+      );
+  }
+
+  getSlotsAvailable$(eventID: string) {
+    return combineLatest([this.getEvent$(eventID), this.getNumberOfSubscriptions$(eventID)]).pipe(
       map(([event, subs]) => {
         if (event) {
+          // Esse atributo indicava quantos slots estão disponíveis
+          // Se existir, utilizar esse valor, mas não é recomendado que seja utilizado.
           if (event.slotsAvailable) {
             return event.slotsAvailable;
           }
@@ -34,6 +59,46 @@ export class EventsService {
           }
         } else {
           return false;
+        }
+      })
+    );
+  }
+
+  writeUserSubscription$(eventID: string, uid: string): Observable<boolean> {
+    return this.eventExists$(eventID).pipe(
+      take(1),
+      switchMap((eventExists) => {
+        if (eventExists) {
+          return this.afs
+            .collection<EventSubscription>(`events/${eventID}/subscriptions`)
+            .doc(uid)
+            .set({ time: serverTimestamp() as Timestamp })
+            .then(
+              () => true,
+              () => false
+            );
+        } else {
+          Promise.resolve(false);
+        }
+      })
+    );
+  }
+
+  writeUserAttendance$(eventID: string, uid: string, collection: string = 'attendance'): Observable<boolean> {
+    return this.eventExists$(eventID).pipe(
+      take(1),
+      switchMap((eventExists) => {
+        if (eventExists) {
+          return this.afs
+            .collection<EventAttendance>(`events/${eventID}/${collection}`)
+            .doc(uid)
+            .set({ time: serverTimestamp() as Timestamp })
+            .then(
+              () => true,
+              () => false
+            );
+        } else {
+          Promise.resolve(false);
         }
       })
     );
