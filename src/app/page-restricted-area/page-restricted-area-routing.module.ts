@@ -41,6 +41,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./page-manage-events/page-manage-events.module').then((m) => m.PageManageEventsPageModule),
   },
+  {
+    path: 'gerenciar-usuarios',
+    loadChildren: () => import('./page-manage-users/page-manage-users.module').then((m) => m.PageManageUsersPageModule),
+  },
 ];
 
 @NgModule({

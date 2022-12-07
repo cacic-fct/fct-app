@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/area-restrita/gerenciar-usuarios"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Buscar usuário</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid style="max-width: 400px">
+    <ion-row>
+      <ion-col>
+        <form [formGroup]="userSearchForm" (ngSubmit)="onSubmit()">
+          <ion-item>
+            <ion-label position="floating">Identificação do usuário</ion-label>
+            <ion-input type="text" formControlName="userData" placeholder="E-mail, telefone ou uid"></ion-input>
+          </ion-item>
+          <ion-button expand="block" type="submit">Editar</ion-button>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
