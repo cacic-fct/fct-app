@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -8,13 +8,10 @@ import { PageManageUsersPageRoutingModule } from './page-manage-users-routing.mo
 
 import { PageManageUsersPage } from './page-manage-users.page';
 
+import { UserEditModalComponent } from './components/user-edit-modal/user-edit-modal.component';
+
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PageManageUsersPageRoutingModule
-  ],
-  declarations: [PageManageUsersPage]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, PageManageUsersPageRoutingModule],
+  declarations: [PageManageUsersPage, UserEditModalComponent],
 })
 export class PageManageUsersPageModule {}

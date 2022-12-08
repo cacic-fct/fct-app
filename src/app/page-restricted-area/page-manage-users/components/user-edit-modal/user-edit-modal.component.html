@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons style="max-width: 100px" slot="start">
+      <ion-button (click)="closeModal()"><ion-icon icon="close" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-segment value="auth" #headerSegment>
+      <ion-segment-button value="auth"> Autenticação </ion-segment-button>
+      <ion-segment-button value="db"> Banco de dados </ion-segment-button>
+    </ion-segment>
+    <ion-buttons style="max-width: 100px" slot="end">
+      <ion-button (click)="closeModal()"><ion-icon icon="save" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form>
+    <div [style.display]="headerSegment.value === 'auth' ? 'block' : 'none'">
+      <div class="ion-padding">
+        <p>UID: {{ userData.uid }}</p>
+        <p>Criação da conta: {{ userData.metadata.creationTime }}</p>
+        <p>Último login: {{ userData.metadata.lastSignInTime }}</p>
+      </div>
+
+      <ion-item>
+        <ion-label position="floating">Nome (displayName)</ion-label>
+        <ion-input type="text" [value]="userData.displayName" disabled></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">E-mail</ion-label>
+        <ion-input type="email" [value]="userData.email" disabled></ion-input>
+      </ion-item>
+
+      <ion-item class="ion-text-nowrap">
+        <ion-label position="stacked" class="ion-text-nowrap">Conta desabilitada?</ion-label>
+        <ion-checkbox [checked]="userData.disabled"></ion-checkbox>
+      </ion-item>
+
+      <ion-item class="ion-text-nowrap">
+        <ion-label position="stacked" class="ion-text-nowrap">E-mail verificado?</ion-label>
+        <ion-checkbox [checked]="userData.emailVerified"></ion-checkbox>
+      </ion-item>
+
+      <ion-item style="margin-bottom: 16px">
+        <ion-label position="stacked">Telefone</ion-label>
+        <b slot="helper">
+          Utilize o formato +5511999998888<br />Lembre-se de também alterar o número na aba de Banco de Dados
+        </b>
+        <ion-input type="tel" [value]="userData.phoneNumber" placeholder="Nenhum"></ion-input>
+      </ion-item>
+
+      <!-- Claims text input -->
+
+      <ion-item style="min-height: 200px">
+        <ion-label position="floating">Claims</ion-label>
+        <ion-textarea
+          style="min-height: 150px"
+          type="text"
+          [value]="userData.customClaims | json"
+          placeholder='{&#10;&nbsp;&nbsp;"role":&nbsp;"9999"&#10;}'></ion-textarea>
+      </ion-item>
+
+      <ion-item style="min-height: 200px">
+        <ion-label position="stacked">Providers</ion-label>
+        <div class="providers" *ngFor="let provider of userData.providerData">
+          <p>
+            <b>{{ provider.providerId }}</b>
+          </p>
+
+          <p>UID: {{ provider.uid }}</p>
+          <p>E-mail: {{ provider.email }}</p>
+          <p>Display name: {{ provider.displayName }}</p>
+          <p>Photo URL: {{ provider.photoURL }}</p>
+          <p>Phone number: {{ provider.phoneNumber }}</p>
+        </div>
+      </ion-item>
+
+      <div class="ion-padding">
+        <ion-button color="danger" style="margin-top: 16px" (click)="presentDeleteAlert()">
+          Excluir usuário
+        </ion-button>
+
+        <ion-button color="primary" style="margin-top: 16px" (click)="copyJSON()"> Copiar JSON </ion-button>
+      </div>
+    </div>
+    <div [style.display]="headerSegment.value === 'db' ? 'block' : 'none'">
+      <h1>TODO</h1>
+    </div>
+  </form>
+</ion-content>

@@ -191,6 +191,36 @@ exports.getUserUid = functions.https.onCall((data, context) => {
     });
 });
 
+exports.deleteUser = functions.https.onCall((data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+  }
+
+  if (context.app == undefined) {
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'The function must be called from an App Check verified app.'
+    );
+  }
+
+  if (context.auth.token.role != 1000) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+  }
+
+  if (data.string === '') {
+    return { message: 'Invalid argument: A string must be provided.' };
+  }
+
+  return getAuth()
+    .deleteUser(data.uid)
+    .then(() => {
+      return { status: 'ok' };
+    })
+    .catch((error) => {
+      return { message: `${error}` };
+    });
+});
+
 exports.getUserProfile = functions.https.onCall((data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
