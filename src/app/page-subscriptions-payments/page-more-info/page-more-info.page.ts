@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { fromUnixTime, isSameDay } from 'date-fns';
-import { first, Observable, take, combineLatest, map } from 'rxjs';
+import { Observable, take, combineLatest, map } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 import { EventItem } from 'src/app/shared/services/event';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
@@ -15,6 +15,12 @@ import { formatDate } from '@angular/common';
 
 import { documentId } from 'firebase/firestore';
 import { ActivatedRoute } from '@angular/router';
+
+import { PDFDocument } from 'pdf-lib';
+import * as fontkit from '@pdf-lib/fontkit';
+import { HttpClient } from '@angular/common/http';
+
+import * as QRCode from 'qrcode';
 
 @Component({
   selector: 'app-page-more-info',
@@ -38,7 +44,8 @@ export class PageMoreInfoPage implements OnInit {
     public auth: AngularFireAuth,
     public enrollmentTypes: EnrollmentTypesService,
     private sanitizer: DomSanitizer,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -50,7 +57,7 @@ export class PageMoreInfoPage implements OnInit {
       .valueChanges({ idField: 'id' })
       .pipe(trace('firestore'));
 
-    this.auth.user.pipe(first(), trace('auth')).subscribe((user) => {
+    this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
       if (user) {
         const query = this.afs.doc<MajorEventSubscription>(
           `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`
@@ -128,5 +135,94 @@ export class PageMoreInfoPage implements OnInit {
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
+  }
+
+  async getCertificate() {
+    const testData = {
+      template: 'cacic.pdf',
+      certificate: {
+        name: 'Pedro de Alcântara João Carlos Leopoldo Salvador Bibiano Francisco Xavier de Paula Leocádio Miguel Gabriel Rafael Gonzaga',
+        event: 'SECOMPP22',
+        eventType: 'no evento',
+        date: '13 de dezembro de 2022',
+        content: 'Teste',
+        document: 'CPF: 000.000.000-00',
+        participation: 'Certificamos a participação de',
+      },
+    };
+
+    const pdf = this.http.get(`assets/certificates/templates/${testData.template}`, { responseType: 'blob' });
+    pdf.pipe(take(1)).subscribe(async (pdf) => {
+      const pdfBase64 = await this.convertBlobToBase64(pdf);
+      const pdfDoc = await PDFDocument.load(pdfBase64);
+
+      const interRegular = await fetch(
+        'https://cdn.jsdelivr.net/gh/rsms/inter@master/docs/font-files/Inter-Regular.woff2'
+      ).then((res) => res.arrayBuffer());
+
+      const interMedium = await fetch(
+        'https://cdn.jsdelivr.net/gh/rsms/inter@master/docs/font-files/Inter-Medium.woff2'
+      ).then((res) => res.arrayBuffer());
+
+      pdfDoc.registerFontkit(fontkit);
+
+      pdfDoc.embedFont(interRegular);
+      pdfDoc.embedFont(interMedium);
+
+      const form = pdfDoc.getForm();
+
+      const nameField = form.getTextField('name');
+      const name_smallField = form.getTextField('name_small');
+      const event_nameField = form.getTextField('event_name');
+      const event_name_smallField = form.getTextField('event_name_small');
+      const event_typeField = form.getTextField('event_type');
+      const dateField = form.getTextField('date');
+      const documentField = form.getTextField('document');
+      const qr_codeImageField = form.getButton('qr_code');
+      const urlField = form.getTextField('url');
+      const participationField = form.getTextField('participation');
+      const contentField = form.getTextField('content');
+
+      const verificationBaseUrl = 'https://fct-pp.web.app/certificado/verificar/';
+      const verificationUrl = verificationBaseUrl + this.majorEventID;
+
+      // Create QR Code from URL
+      const qrCode = await QRCode.toDataURL(verificationUrl, { errorCorrectionLevel: 'H' });
+
+      nameField.setText(testData.certificate.name);
+      name_smallField.setText(testData.certificate.name);
+      event_nameField.setText(testData.certificate.event);
+      event_name_smallField.setText(testData.certificate.event);
+      event_typeField.setText(testData.certificate.eventType);
+      urlField.setText(verificationUrl);
+      dateField.setText(testData.certificate.date);
+      documentField.setText(testData.certificate.document);
+      qr_codeImageField.setImage(await pdfDoc.embedPng(qrCode));
+      participationField.setText(testData.certificate.participation);
+      contentField.setText(testData.certificate.content);
+
+      form.flatten();
+
+      const pdfBytes = await pdfDoc.save();
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      const a = document.createElement('a');
+      a.href = pdfUrl;
+      a.download = 'certificate.pdf';
+      a.click();
+    });
+  }
+
+  convertBlobToBase64(pdf: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.readAsDataURL(pdf);
+    });
   }
 }
