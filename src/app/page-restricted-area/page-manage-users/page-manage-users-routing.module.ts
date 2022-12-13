@@ -12,6 +12,10 @@ const routes: Routes = [
     path: 'buscar-usuario',
     loadChildren: () => import('./page-search-user/page-search-user.module').then((m) => m.PageSearchUserPageModule),
   },
+  {
+    path: 'page-list-users',
+    loadChildren: () => import('./page-list-users/page-list-users.module').then( m => m.PageListUsersPageModule)
+  },
 ];
 
 @NgModule({
