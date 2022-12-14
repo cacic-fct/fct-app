@@ -144,7 +144,7 @@ export class PageMoreInfoPage implements OnInit {
       event_name_small: 'SECOMPP22',
       name_small: 'Pedro de Alcântara João Carlos Leopoldo Salvador Bibiano Francisco Xavier de Paula Leocádio Miguel',
       content:
-        'Palestras:\n• 14/12/2022 10:45 - SECOMPP22 - Carga horária: 5 horas\n• 15/12/2022 10:45 - SECOMPP23 - Carga horária: 10 horas\nTotal de horas: 15 horas\n\nMinicursos:\n• 16/12/2022 10:45 - SECOMPP24 - Carga horária: 5 horas\n• 17/12/2022 10:45 - SECOMPP25 - Carga horária: 10 horas \n\nTotal de horas: 15 horas',
+        'Palestras:\n• 14/12/2022 10:45 - SECOMPP22 - Carga horária: 5 horas\n• 15/12/2022 10:45 - SECOMPP23 - Carga horária: 10 horas\nTotal: 15 horas - 2 palestras\n\nMinicursos:\n• 16/12/2022 10:45 - SECOMPP24 - Carga horária: 5 horas\n• 17/12/2022 10:45 - SECOMPP25 - Carga horária: 10 horas\nTotal: 15 horas - 2 minicursos\n\nAtividades:\n• 18/12/2022 10:45 - SECOMPP26 - Carga horária: 5 horas\nTotal: 5 horas - 1 atividade',
       document: 'CPF: 000.000.000-00',
     };
 
