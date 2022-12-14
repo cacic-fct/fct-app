@@ -151,6 +151,7 @@ export class PageMoreInfoPage implements OnInit {
     const options: generateCertificateOptions = {
       eventType: 'majorEvent',
       certificateID: 'certificateID',
+      certificateName: 'certificateName',
     };
     this.genpdf.generateCertificate('cacic', inputs, options);
   }

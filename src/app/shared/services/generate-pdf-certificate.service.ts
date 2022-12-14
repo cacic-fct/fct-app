@@ -81,7 +81,7 @@ export class GeneratePdfCertificateService {
         const pdfUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = pdfUrl;
-        a.download = 'certificate.pdf';
+        a.download = options.certificateName + '.pdf';
         a.click();
       });
     });
@@ -90,6 +90,16 @@ export class GeneratePdfCertificateService {
 
 export interface generateCertificateOptions {
   eventType?: 'majorEvent' | 'shortcourse' | 'lecture';
+
+  /**
+   * O evento foi on-line?
+   */
   online?: boolean;
+
   certificateID: string;
+
+  /**
+   * Deve seguir o formato: "YYYY-MM-DD - Nome do Evento - Nome do Participante"
+   */
+  certificateName: string;
 }
