@@ -16,11 +16,10 @@ import { formatDate } from '@angular/common';
 import { documentId } from 'firebase/firestore';
 import { ActivatedRoute } from '@angular/router';
 
-import { PDFDocument } from 'pdf-lib';
-import * as fontkit from '@pdf-lib/fontkit';
-import { HttpClient } from '@angular/common/http';
-
-import * as QRCode from 'qrcode';
+import {
+  GeneratePdfCertificateService,
+  generateCertificateOptions,
+} from './../../shared/services/generate-pdf-certificate.service';
 
 @Component({
   selector: 'app-page-more-info',
@@ -45,7 +44,7 @@ export class PageMoreInfoPage implements OnInit {
     public enrollmentTypes: EnrollmentTypesService,
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private http: HttpClient
+    private genpdf: GeneratePdfCertificateService
   ) {}
 
   ngOnInit() {
@@ -138,91 +137,21 @@ export class PageMoreInfoPage implements OnInit {
   }
 
   async getCertificate() {
-    const testData = {
-      template: 'cacic.pdf',
-      certificate: {
-        name: 'Pedro de Alcântara João Carlos Leopoldo Salvador Bibiano Francisco Xavier de Paula Leocádio Miguel Gabriel Rafael Gonzaga',
-        event: 'SECOMPP22',
-        eventType: 'no evento',
-        date: '13 de dezembro de 2022',
-        content: 'Teste',
-        document: 'CPF: 000.000.000-00',
-        participation: 'Certificamos a participação de',
-      },
+    const inputs = {
+      name: 'Pedro de Alcântara João Carlos Leopoldo Salvador Bibiano Francisco Xavier de Paula Leocádio Miguel',
+      event_name: 'SECOMPP22',
+      date: '13 de dezembro de 2022',
+      event_name_small: 'SECOMPP22',
+      name_small: 'Pedro de Alcântara João Carlos Leopoldo Salvador Bibiano Francisco Xavier de Paula Leocádio Miguel',
+      content:
+        'Palestras:\n• 14/12/2022 10:45 - SECOMPP22 - Carga horária: 5 horas\n• 15/12/2022 10:45 - SECOMPP23 - Carga horária: 10 horas\nTotal de horas: 15 horas\n\nMinicursos:\n• 16/12/2022 10:45 - SECOMPP24 - Carga horária: 5 horas\n• 17/12/2022 10:45 - SECOMPP25 - Carga horária: 10 horas \n\nTotal de horas: 15 horas',
+      document: 'CPF: 000.000.000-00',
     };
 
-    const pdf = this.http.get(`assets/certificates/templates/${testData.template}`, { responseType: 'blob' });
-    pdf.pipe(take(1)).subscribe(async (pdf) => {
-      const pdfBase64 = await this.convertBlobToBase64(pdf);
-      const pdfDoc = await PDFDocument.load(pdfBase64);
-
-      const interRegular = await fetch(
-        'https://cdn.jsdelivr.net/gh/rsms/inter@master/docs/font-files/Inter-Regular.woff2'
-      ).then((res) => res.arrayBuffer());
-
-      const interMedium = await fetch(
-        'https://cdn.jsdelivr.net/gh/rsms/inter@master/docs/font-files/Inter-Medium.woff2'
-      ).then((res) => res.arrayBuffer());
-
-      pdfDoc.registerFontkit(fontkit);
-
-      pdfDoc.embedFont(interRegular);
-      pdfDoc.embedFont(interMedium);
-
-      const form = pdfDoc.getForm();
-
-      const nameField = form.getTextField('name');
-      const name_smallField = form.getTextField('name_small');
-      const event_nameField = form.getTextField('event_name');
-      const event_name_smallField = form.getTextField('event_name_small');
-      const event_typeField = form.getTextField('event_type');
-      const dateField = form.getTextField('date');
-      const documentField = form.getTextField('document');
-      const qr_codeImageField = form.getButton('qr_code');
-      const urlField = form.getTextField('url');
-      const participationField = form.getTextField('participation');
-      const contentField = form.getTextField('content');
-
-      const verificationBaseUrl = 'https://fct-pp.web.app/certificado/verificar/';
-      const verificationUrl = verificationBaseUrl + this.majorEventID;
-
-      // Create QR Code from URL
-      const qrCode = await QRCode.toDataURL(verificationUrl, { errorCorrectionLevel: 'H' });
-
-      nameField.setText(testData.certificate.name);
-      name_smallField.setText(testData.certificate.name);
-      event_nameField.setText(testData.certificate.event);
-      event_name_smallField.setText(testData.certificate.event);
-      event_typeField.setText(testData.certificate.eventType);
-      urlField.setText(verificationUrl);
-      dateField.setText(testData.certificate.date);
-      documentField.setText(testData.certificate.document);
-      qr_codeImageField.setImage(await pdfDoc.embedPng(qrCode));
-      participationField.setText(testData.certificate.participation);
-      contentField.setText(testData.certificate.content);
-
-      form.flatten();
-
-      const pdfBytes = await pdfDoc.save();
-      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-
-      const a = document.createElement('a');
-      a.href = pdfUrl;
-      a.download = 'certificate.pdf';
-      a.click();
-    });
-  }
-
-  convertBlobToBase64(pdf: Blob): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onerror = reject;
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(pdf);
-    });
+    const options: generateCertificateOptions = {
+      eventType: 'majorEvent',
+      certificateID: 'certificateID',
+    };
+    this.genpdf.generateCertificate('cacic', inputs, options);
   }
 }
