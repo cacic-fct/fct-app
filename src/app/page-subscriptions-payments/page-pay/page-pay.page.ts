@@ -4,7 +4,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Observable } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { DataUrl, NgxImageCompressService } from 'ngx-image-compress';
+import { NgxImageCompressService } from 'ngx-image-compress';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
@@ -12,7 +12,6 @@ import { trace } from '@angular/fire/compat/performance';
 import { fromUnixTime } from 'date-fns';
 
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
-import { ClipboardService } from 'ngx-clipboard';
 import { Timestamp } from '@firebase/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
@@ -51,7 +50,6 @@ export class PagePayPage implements OnInit {
 
   constructor(
     private storage: AngularFireStorage,
-    private clipboardService: ClipboardService,
     public auth: AngularFireAuth,
     private imageCompress: NgxImageCompressService,
     public toastController: ToastController,
@@ -132,7 +130,7 @@ export class PagePayPage implements OnInit {
   }
 
   copyPixToClipboard(chavePix: string) {
-    this.clipboardService.copy(chavePix);
+    navigator.clipboard.writeText(chavePix);
     this.presentToastCopied();
   }
 
@@ -171,6 +169,12 @@ export class PagePayPage implements OnInit {
         if (this.imageCompress.byteCount(result) > 10_000_000) {
           this.toastSize();
           return;
+        }
+
+        if (this.imageCompress.byteCount(result) < 10_000_000) {
+          const format = result.split(';')[0].split('/')[1];
+          this.uploadFile(result, format);
+          this.rawFile = result;
         }
       }
     );

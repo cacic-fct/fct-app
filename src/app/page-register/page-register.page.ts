@@ -4,7 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../shared/services/auth.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
@@ -19,12 +19,11 @@ import { Mailto, NgxMailtoService } from 'ngx-mailto';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-import { take, Observable, BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs';
 
 import { WindowService } from '../shared/services/window.service';
 
 import firebase from 'firebase/compat/app';
-
 @Component({
   selector: 'app-page-register',
   templateUrl: './page-register.page.html',
@@ -39,11 +38,7 @@ export class PageRegisterPage implements OnInit {
   userData: any;
   dataForm: FormGroup;
   isUnesp: boolean = false;
-  _isUnespSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.isUnesp);
-  isUnesp$: Observable<boolean> = this._isUnespSubject.asObservable();
   isUndergraduate: boolean = false;
-  _isUndergraduate: BehaviorSubject<boolean> = new BehaviorSubject(this.isUndergraduate);
-  isUndergraduate$: Observable<boolean> = this._isUndergraduate.asObservable();
 
   constructor(
     public authService: AuthService,
@@ -53,7 +48,8 @@ export class PageRegisterPage implements OnInit {
     public router: Router,
     public auth: AngularFireAuth,
     private mailtoService: NgxMailtoService,
-    private win: WindowService
+    private win: WindowService,
+    private toastController: ToastController
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
 
@@ -61,7 +57,7 @@ export class PageRegisterPage implements OnInit {
       academicID: [''],
       phone: ['', Validators.required],
       cpf: ['', this.validarCPF],
-      fullName: '',
+      fullName: ['', this.fullNameValidator],
       associateStatus: [''],
     });
   }
@@ -75,16 +71,15 @@ export class PageRegisterPage implements OnInit {
       .subscribe((user) => {
         if (user.email.includes('@unesp.br')) {
           this.isUnesp = true;
-          this._isUnespSubject.next(true);
           this.dataForm.controls.associateStatus.addValidators([Validators.required]);
           this.dataForm.controls.associateStatus.setValue(user.associateStatus);
           if (user.associateStatus === 'undergraduate') {
             this.isUndergraduate = true;
-            this._isUndergraduate.next(true);
 
             this.dataForm.controls.academicID.setValue(user.academicID);
             this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
           }
+          this.dataForm.controls.fullName.updateValueAndValidity({ onlySelf: true });
         } else {
           this.dataForm.controls.fullName.setValue(user.fullName);
         }
@@ -109,9 +104,10 @@ export class PageRegisterPage implements OnInit {
     this.afs
       .collection('users')
       .doc<User>(this.userData.uid)
-      .valueChanges()
+      .get()
       .pipe(take(1))
-      .subscribe(async (user) => {
+      .subscribe((userData) => {
+        const user = userData.data();
         if (user.phone && user.phone === this.dataForm.value.phone) {
           this.submitUserData(user);
           return;
@@ -120,30 +116,79 @@ export class PageRegisterPage implements OnInit {
         this.authService.verifyPhoneModal(this.dataForm.value.phone).then((response) => {
           if (response) {
             this.submitUserData(user);
+            return;
           }
-          return;
+          this.toastError('1');
         });
       });
   }
 
   submitUserData(user: User) {
+    if (!this.dataForm.value.phone) {
+      this.toastError('2');
+    }
+
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
     const userData: User = {
       fullName: this.isUnesp ? this.userData.displayName : this.dataForm.value.fullName,
       associateStatus: this.isUnesp ? this.dataForm.value.associateStatus : 'external',
-      academicID: this.isUnesp && this.isUndergraduate ? this.dataForm.value.academicID : null,
+      academicID: this.isUndergraduate ? this.dataForm.value.academicID : null,
       phone: this.dataForm.value.phone,
       dataVersion: this.dataVersion,
       cpf: this.dataForm.value.cpf,
     };
-    userRef.update(userData);
+    this.toastSubmitting();
+    userRef
+      .update(userData)
+      .then(() => {
+        this.mySwal.fire();
+        // Fake delay to let animation finish
+        setTimeout(() => {
+          this.mySwal.close();
+          this.router.navigate(['/menu']);
+        }, 1500);
+      })
+      .catch((error) => {
+        this.toastError('3');
+        console.error(error);
+      });
+  }
 
-    this.mySwal.fire();
-    // Fake delay to let animation finish
-    setTimeout(() => {
-      this.mySwal.close();
-      this.router.navigate(['/menu']);
-    }, 1500);
+  async toastError(code: string) {
+    const toast = await this.toastController.create({
+      header: 'Erro ao gravar registro',
+      message: `Tente novamente. Se o problema persistir, entre em contato conosco. Código: ${code}.`,
+      icon: 'checkmark-circle',
+      position: 'bottom',
+      duration: 7000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    toast.present();
+  }
+
+  async toastSubmitting() {
+    const toast = await this.toastController.create({
+      header: 'Enviando informações',
+      icon: 'hourglass',
+      position: 'bottom',
+      duration: 1000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    toast.present();
   }
 
   formatPhone() {
@@ -167,6 +212,18 @@ export class PageRegisterPage implements OnInit {
     cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     this.dataForm.controls.cpf.setValue(cpf);
   }
+
+  fullNameValidator = (control: AbstractControl): ValidationErrors | null => {
+    const name = control.value;
+    if (this.isUnesp) {
+      return null;
+    } else {
+      if (!name) {
+        return { fullName: true };
+      }
+    }
+    return null;
+  };
 
   validarCPF = (control: AbstractControl): ValidationErrors | null => {
     const cpf = control.value;
@@ -204,11 +261,32 @@ export class PageRegisterPage implements OnInit {
     return true;
   }
 
-  mailto(): void {
+  mailtoDocumentPhone(): void {
     const mailto: Mailto = {
       receiver: 'cacic.fct@gmail.com',
       subject: '[FCT-App] Validar meu cadastro',
-      body: `Olá!\nEu não possuo (ESPECIFIQUE: CPF/celular), vocês poderiam validar o meu cadastro?\n\n=== Não apague os dados abaixo ===\nE-mail: ${this.userData.email}\nuid: ${this.userData.uid}\n`,
+      body: `Olá!\nEu não possuo (ESPECIFIQUE: CPF/celular), vocês poderiam validar o meu cadastro?\n\n=== Não apague os dados abaixo ===\nE-mail: ${
+        this.userData.email
+      }\nuid: ${this.userData.uid}\n\nDados do formulário:\nNome completo (fullName): ${
+        this.dataForm.get('fullName').value
+      }\nCPF: ${this.dataForm.get('cpf').value}\nCelular: ${this.dataForm.get('phone').value}\nRA: ${
+        this.dataForm.get('academicID').value
+      }\nVínculo: ${this.isUnesp ? this.dataForm.get('associateStatus').value : 'external'}\n`,
+    };
+    this.mailtoService.open(mailto);
+  }
+
+  mailtoIssues(): void {
+    const mailto: Mailto = {
+      receiver: 'cacic.fct@gmail.com',
+      subject: '[FCT-App] Problemas no cadastro',
+      body: `Olá!\n\n...\n\n=== Não apague os dados abaixo ===\nE-mail: ${this.userData.email}\nuid: ${
+        this.userData.uid
+      }\n\nDados do formulário:\nNome completo (fullName): ${this.dataForm.get('fullName').value}\nCPF: ${
+        this.dataForm.get('cpf').value
+      }\nCelular: ${this.dataForm.get('phone').value}\nRA: ${this.dataForm.get('academicID').value}\nVínculo: ${
+        this.isUnesp ? this.dataForm.get('associateStatus').value : 'external'
+      }\n`,
     };
     this.mailtoService.open(mailto);
   }
@@ -216,12 +294,11 @@ export class PageRegisterPage implements OnInit {
   selectionChange(event) {
     if (event.target.value === 'undergraduate') {
       this.isUndergraduate = true;
-      this._isUndergraduate.next(true);
       this.dataForm.controls.academicID.setValidators([Validators.required, Validators.pattern('^[0-9]{9}$')]);
       this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
     } else {
       this.isUndergraduate = false;
-      this._isUndergraduate.next(false);
+      this.dataForm.controls.academicID.setValue('');
       this.dataForm.controls.academicID.clearValidators();
       this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
     }

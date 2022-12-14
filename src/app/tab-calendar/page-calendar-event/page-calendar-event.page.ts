@@ -5,7 +5,6 @@ import { CoursesService } from '../../shared/services/courses.service';
 import { ToastController } from '@ionic/angular';
 
 import { fromUnixTime } from 'date-fns';
-import { ClipboardService } from 'ngx-clipboard';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { DomSanitizer } from '@angular/platform-browser';
@@ -22,13 +21,15 @@ import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { EventItem } from '../../shared/services/event';
-import { take, Observable } from 'rxjs';
+import { take, Observable, map } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 
-import { Timestamp } from '@firebase/firestore-types';
+import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { WeatherInfo, WeatherService } from 'src/app/shared/services/weather.service';
+import { serverTimestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-page-calendar-event',
@@ -43,14 +44,17 @@ export class PageCalendarEventPage implements OnInit {
   weather: Observable<WeatherInfo>;
   weatherFailed: boolean = false;
   eventID: string;
+  subscribedToEvent: boolean;
+  isUserAuthenticated: Observable<boolean>;
+  today: Date = new Date();
 
   constructor(
     private toastController: ToastController,
-    private clipboardService: ClipboardService,
     private router: Router,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private afs: AngularFirestore,
+    private auth: AngularFireAuth,
     private weatherService: WeatherService
   ) {}
 
@@ -60,6 +64,25 @@ export class PageCalendarEventPage implements OnInit {
       .doc<EventItem>(`events/${this.eventID}`)
       .valueChanges({ idField: 'id' })
       .pipe(trace('firestore'));
+
+    this.isUserAuthenticated = this.auth.user.pipe(
+      trace('auth'),
+      map((user) => {
+        return !!user;
+      })
+    );
+
+    // Check if user is already subscribed to event
+    this.auth.user.pipe(take(1)).subscribe((user) => {
+      if (user) {
+        this.afs
+          .doc(`events/${this.eventID}/subscriptions/${user.uid}`)
+          .get()
+          .subscribe((doc) => {
+            this.subscribedToEvent = doc.exists;
+          });
+      }
+    });
   }
 
   ionViewWillEnter() {
@@ -132,7 +155,7 @@ export class PageCalendarEventPage implements OnInit {
     return '';
   }
 
-  getDateFromTimestamp(timestamp: Timestamp): Date {
+  getDateFromTimestamp(timestamp: TimestampType): Date {
     return fromUnixTime(timestamp.seconds);
   }
 
@@ -152,7 +175,7 @@ export class PageCalendarEventPage implements OnInit {
           side: 'end',
           text: 'Copiar',
           handler: () => {
-            this.clipboardService.copy(this.eventID);
+            navigator.clipboard.writeText(this.eventID);
           },
         },
         {
@@ -180,7 +203,7 @@ export class PageCalendarEventPage implements OnInit {
         },
       ],
     });
-    this.clipboardService.copy('https://fct-pp.web.app' + this.router.url);
+    navigator.clipboard.writeText('https://fct-pp.web.app' + this.router.url);
     toast.present();
   }
 
@@ -190,5 +213,71 @@ export class PageCalendarEventPage implements OnInit {
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
+  }
+
+  subscribeToEvent() {
+    // If event has eventGroup, subscribe to every item
+    this.item$.pipe(take(1)).subscribe((item) => {
+      if (item.eventGroup) {
+        item.eventGroup.forEach((eventID) => {
+          this.auth.user.subscribe((user) => {
+            this.afs
+              .doc(`events/${eventID}/subscriptions/${user.uid}`)
+              .set({
+                // @ts-ignore
+                time: serverTimestamp(),
+              })
+              .then(() => {
+                this.afs
+                  .doc(`users/${user.uid}/eventSubscriptions/${eventID}`)
+                  .set({
+                    reference: this.afs.doc(`events/${eventID}`).ref,
+                  })
+                  .then(() => {
+                    this.presentToastSubscribe();
+                    this.subscribedToEvent = true;
+                  });
+              });
+          });
+        });
+      } else {
+        this.auth.user.subscribe((user) => {
+          this.afs
+            .doc(`events/${this.eventID}/subscriptions/${user.uid}`)
+            .set({
+              // @ts-ignore
+              time: serverTimestamp(),
+            })
+            .then(() => {
+              this.afs
+                .doc(`users/${user.uid}/eventSubscriptions/${this.eventID}`)
+                .set({
+                  reference: this.afs.doc(`events/${this.eventID}`).ref,
+                })
+                .then(() => {
+                  this.presentToastSubscribe();
+                  this.subscribedToEvent = true;
+                });
+            });
+        });
+      }
+    });
+  }
+
+  async presentToastSubscribe() {
+    const toast = await this.toastController.create({
+      header: 'Você se inscreveu no evento',
+      icon: 'checkmark-circle',
+      position: 'bottom',
+      duration: 2000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    toast.present();
   }
 }

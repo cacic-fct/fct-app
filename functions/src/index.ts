@@ -142,8 +142,8 @@ exports.getUserUid = functions.https.onCall((data, context) => {
     );
   }
 
-  if (context.auth.token.role !== 1000) {
-    throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+  if (context.auth.token.role >= 3000) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an authorized role.');
   }
 
   if (data.string === '') {
@@ -195,14 +195,66 @@ exports.getUserUid = functions.https.onCall((data, context) => {
     });
 });
 
+exports.createEventSubscription = functions.firestore
+  .document(`events/{eventId}/subscriptions/{userId}`)
+  .onCreate(async (snap, context) => {
+    const eventRef = admin.firestore().collection('events').doc(context.params.eventId);
+    const event = await eventRef.get();
+    const numberOfSubscriptions = event.data()?.numberOfSubscriptions;
+    if (numberOfSubscriptions === undefined) {
+      return;
+    }
+    eventRef.update({ numberOfSubscriptions: admin.firestore.FieldValue.increment(1) });
+  });
 
-exports.createSubscription = functions.firestore.document(`events/{eventId}/subscriptions/{userId}`).onCreate(async (snap, context) => {
-  const eventId: string = context.params.eventId;
-  const eventSnap = await admin.firestore().collection('events').doc(eventId).get();
-  let numberOfSubscriptions: number =  eventSnap.data()?.numberOfSubscriptions;
-  numberOfSubscriptions = numberOfSubscriptions ? numberOfSubscriptions + 1 : 1;
-  await eventSnap.ref.update({ numberOfSubscriptions });
-});
+exports.createMajorEventSubscription = functions.firestore
+  .document(`majorEvents/{eventId}/subscriptions/{userId}`)
+  .onCreate(async (snap, context) => {
+    const data = snap.data();
+
+    // For each array in subscribedToEvents, increment the numberOfSubscriptions
+    data.subscribedToEvents.forEach((event: string) => {
+      const document = admin.firestore().doc(`events/${event}`);
+      document.update({
+        numberOfSubscriptions: admin.firestore.FieldValue.increment(1),
+      });
+    });
+  });
+
+exports.updateMajorEventSubscription = functions.firestore
+  .document(`majorEvents/{eventId}/subscriptions/{userId}`)
+  .onUpdate(async (change, context) => {
+    const beforeChange = change.before.data();
+    const afterChange = change.after.data();
+
+    if (beforeChange.subscribedToEvents !== afterChange.subscribedToEvents) {
+      // previouslySelectedEvents - eventsSelectedID = events that were removed
+      const removedEvents = beforeChange.subscribedToEvents.filter(
+        (event: string) => !afterChange.subscribedToEvents.includes(event)
+      );
+
+      // eventsSelectedID - previouslySelectedEvents = events that were added
+      const addedEvents = afterChange.subscribedToEvents.filter(
+        (event: string) => !beforeChange.subscribedToEvents.includes(event)
+      );
+
+      // For every removed event, decrement the number of subscribed users
+      removedEvents.forEach((event: string) => {
+        const document = admin.firestore().doc(`events/${event}`);
+        document.update({
+          numberOfSubscriptions: admin.firestore.FieldValue.increment(-1),
+        });
+      });
+
+      // For every added event, increment the number of subscribed users
+      addedEvents.forEach((event: string) => {
+        const document = admin.firestore().doc(`events/${event}`);
+        document.update({
+          numberOfSubscriptions: admin.firestore.FieldValue.increment(1),
+        });
+      });
+    }
+  });
 
 exports.addProfessorRole = functions.https.onCall((data, context) => {
   if (context.app == undefined) {
@@ -278,4 +330,55 @@ exports.addProfessorRole = functions.https.onCall((data, context) => {
         message: `${error}`,
       };
     });
+});
+
+// Attribution: amiregelz
+// https://stackoverflow.com/questions/36759627/firebase-login-as-other-user/71808501#71808501
+exports.impersonate = functions.https.onCall((data, context) => {
+  if (context.app == undefined) {
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'The function must be called from an App Check verified app.'
+    );
+  }
+  // Check if request is made by an admin
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
+  }
+  if (context.auth.token.role !== 1000) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+  }
+  const remoteConfig = admin.remoteConfig();
+
+  // Get whitelist array as string from remote config
+  return remoteConfig.getTemplate().then((template) => {
+    // @ts-ignore
+    const whitelist: string = template.parameters.adminWhitelist.defaultValue?.value;
+
+    if (context.auth?.uid) {
+      return admin
+        .auth()
+        .getUser(context.auth.uid)
+        .then((userRecord) => {
+          if (userRecord.email && whitelist.includes(userRecord.email)) {
+            const userId = data.uid;
+            return admin
+              .auth()
+              .createCustomToken(userId)
+              .then((customToken) => {
+                return {
+                  token: customToken,
+                };
+              });
+          } else {
+            throw new functions.https.HttpsError('failed-precondition', 'You are not whitelisted.');
+          }
+        })
+        .catch((error) => {
+          return { message: `${error}` };
+        });
+    }
+
+    throw new functions.https.HttpsError('failed-precondition', 'Your uid was not provided.');
+  });
 });

@@ -47,9 +47,9 @@ export class PageListSubscriptions implements OnInit {
       .pipe(untilDestroyed(this), trace('firestore'))
       .subscribe((document) => {
         if (!document.exists) {
-          this.router.navigate(['area-restrita/gerenciar-evento']);
           this.mySwal.fire();
           setTimeout(() => {
+            this.router.navigate(['area-restrita/gerenciar-eventos']);
             this.mySwal.close();
           }, 1000);
         }
@@ -85,12 +85,14 @@ export class PageListSubscriptions implements OnInit {
       .pipe(first(), trace('firestore'))
       .subscribe((users) => {
         const csv = [];
-        const headers = ['Nome', 'RA', 'Email', 'Data_locale', 'Data_iso'];
+        const headers = ['UID', 'Nome da conta Google', 'Nome', 'RA', 'Email', 'Data_locale', 'Data_iso'];
         csv.push(headers);
         this.subscriptions$.pipe(first()).subscribe((subscriptions) => {
           subscriptions.forEach((item) => {
             const user = users.find((user) => user.uid === item.id);
             const row = [
+              user.uid,
+              user.displayName,
               user.fullName,
               user.academicID,
               user.email,

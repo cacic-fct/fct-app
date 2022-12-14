@@ -24,6 +24,28 @@ const routes: Routes = [
     loadChildren: () => import('./page-about/page-about.module').then((m) => m.PageAboutPageModule),
   },
   {
+    path: 'privacidade',
+    data: { preload: true },
+    title: 'Política de privacidade',
+    loadChildren: () =>
+      import('./page-about/page-privacy-policy/page-privacy-policy.module').then((m) => m.PagePrivacyPolicyPageModule),
+  },
+  {
+    path: 'privacy',
+    redirectTo: 'privacidade',
+    pathMatch: 'full',
+  },
+  {
+    path: 'privacy-policy',
+    redirectTo: 'privacidade',
+    pathMatch: 'full',
+  },
+  {
+    path: 'politica-de-privacidade',
+    redirectTo: 'privacidade',
+    pathMatch: 'full',
+  },
+  {
     path: 'about',
     redirectTo: 'sobre',
     pathMatch: 'full',
@@ -73,7 +95,7 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
-    path: 'profile',
+    path: 'perfil',
     title: 'Perfil',
     data: { preload: true },
     loadChildren: () => import('./page-profile/page-profile.module').then((m) => m.PageProfilePageModule),
@@ -96,6 +118,13 @@ const routes: Routes = [
     title: 'Minhas inscrições',
     loadChildren: () =>
       import('./page-subscriptions-payments/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: 'confirmar-presenca/:eventID',
+    title: 'Confirmar presença em um evento',
+    loadChildren: () =>
+      import('./page-confirm-attendance/page-confirm-attendance.module').then((m) => m.PageConfirmAttendanceModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
 ];

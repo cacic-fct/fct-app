@@ -1,3 +1,5 @@
+import { GlobalConstantsService } from './../shared/services/global-constants.service';
+import { User } from './../shared/services/user';
 import { InfoModalComponent } from './info-modal/info-modal.component';
 import { MajorEventSubscription } from '../shared/services/major-event.service';
 import { EnrollmentTypesService } from './../shared/services/enrollment-types.service';
@@ -6,13 +8,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as firestore from '@firebase/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
 import { fromUnixTime, isSameDay, compareAsc } from 'date-fns';
-import { take, map, Observable, switchMap } from 'rxjs';
-
-import { documentId } from '@firebase/firestore';
+import { take, map, Observable } from 'rxjs';
 
 import { MajorEventItem } from '../shared/services/major-event.service';
 import { EventItem } from '../shared/services/event';
@@ -25,6 +24,7 @@ import { trace } from '@angular/fire/compat/performance';
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { serverTimestamp } from '@angular/fire/firestore';
 
 @UntilDestroy()
 @Component({
@@ -43,6 +43,8 @@ export class PageSubscriptionPage implements OnInit {
   private alreadySubscribed: SwalComponent;
   @ViewChild('eventNotFound')
   private eventNotFound: SwalComponent;
+  @ViewChild('eventOutOfSubscriptionDate')
+  private eventOutOfSubscriptionDate: SwalComponent;
 
   today: Date = new Date();
 
@@ -64,9 +66,13 @@ export class PageSubscriptionPage implements OnInit {
   eventGroupMinicursoCount: number = 0;
 
   opSelected: string;
-  disableEnrollmentTypeSelection: boolean = false;
+
+  paymentStatus: number;
 
   majorEventID = this.route.snapshot.params.eventID;
+
+  eventSchedule: EventItem[] = [];
+  isEventScheduleBeingChecked: boolean = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -81,23 +87,55 @@ export class PageSubscriptionPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    // If majorEventID is not valid, redirect
+    this.auth.user.pipe(take(1)).subscribe((user) => {
+      if (user) {
+        this.afs
+          .collection('users')
+          .doc<User>(user.uid)
+          .get()
+          .pipe(take(1))
+          .subscribe((doc) => {
+            if (doc.exists) {
+              if (doc.data().dataVersion !== GlobalConstantsService.userDataVersion) {
+                this.router.navigate(['/register']);
+              }
+            } else {
+              this.router.navigate(['/register']);
+            }
+          });
+      }
+    });
+
     this.afs
       .collection('majorEvents')
       .doc(this.majorEventID)
       .get()
       .pipe(untilDestroyed(this), trace('firestore'))
       .subscribe((document) => {
+        // If majorEventID is not valid, redirect
         if (!document.exists) {
           this.eventNotFound.fire();
           setTimeout(() => {
             this.router.navigate(['eventos']);
             this.eventNotFound.close();
           }, 1000);
+        } else {
+          // If majorEventID is valid, check if subscriptions are open
+          const majorEvent = document.data() as MajorEventItem;
+          if (this.getDateFromTimestamp(majorEvent.eventEndDate) < this.today) {
+            this.router.navigate(['eventos']);
+
+            this.eventOutOfSubscriptionDate.fire();
+            setTimeout(() => {
+              this.router.navigate(['eventos']);
+              this.eventOutOfSubscriptionDate.close();
+            }, 1000);
+          }
         }
       });
 
-    // Check if user is already subscribed
+    // Check if user has receipt validated
+    // If they have, they can't edit their subscription
     this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
       if (user) {
         this.afs
@@ -106,7 +144,7 @@ export class PageSubscriptionPage implements OnInit {
           .pipe(take(1), trace('firestore'))
           .subscribe((subscription) => {
             if (subscription?.payment) {
-              if (subscription.payment.status !== 4) {
+              if (subscription.payment.status === 2) {
                 this.alreadySubscribed.fire();
                 this.router.navigate(['/eventos'], { replaceUrl: true });
 
@@ -114,7 +152,8 @@ export class PageSubscriptionPage implements OnInit {
                   this.alreadySubscribed.close();
                 }, 1000);
               } else {
-                this.disableEnrollmentTypeSelection = true;
+                this.paymentStatus = subscription.payment.status;
+
                 if (subscription.subscriptionType) {
                   this.opSelected = subscription.subscriptionType.toString();
                 }
@@ -131,55 +170,53 @@ export class PageSubscriptionPage implements OnInit {
       .valueChanges({ idField: 'id' })
       .pipe(trace('firestore'));
 
-    this.events$ = this.majorEvent$.pipe(
-      map((majorEvent: MajorEventItem) => {
-        return this.afs
-          .collection<EventItem>('events', (ref) => {
-            return ref.where(documentId(), 'in', majorEvent.events).orderBy('eventStartDate', 'asc');
-          })
-          .valueChanges({ idField: 'id' })
-          .pipe(
-            map((events: EventItem[]) => {
-              return events.map((eventItem) => {
-                // If there are no slots available, add event to form with disabled selection
-                if (eventItem.slotsAvailable <= 0) {
-                  this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
-                } else {
-                  this.dataForm.addControl(eventItem.id, this.formBuilder.control(null));
-                }
+    this.events$ = this.afs
+      .collection<EventItem>(`events`, (ref) =>
+        ref.where('inMajorEvent', '==', this.majorEventID).orderBy('eventStartDate', 'asc')
+      )
+      .valueChanges({ idField: 'id' })
+      .pipe(
+        map((events: EventItem[]) => {
+          return events.map((eventItem) => {
+            this.eventSchedule.push(eventItem);
 
-                // If user is already subscribed, auto select event
-                this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
-                  if (user) {
-                    this.afs
-                      .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
-                      .get()
-                      .subscribe((document) => {
-                        // TODO: Remove me. This is for secompp22 only
-                        if (eventItem.eventType === 'palestra') {
-                          this.dataForm.get(eventItem.id).setValue(true);
-                        }
-                        ///
+            // If there are no slots available, add event to form with disabled selection
+            if (eventItem.slotsAvailable <= 0 || this.getDateFromTimestamp(eventItem.eventStartDate) < this.today) {
+              this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
+            } else {
+              this.dataForm.addControl(eventItem.id, this.formBuilder.control(null));
+            }
 
-                        if (document.exists) {
-                          const subscription = document.data() as MajorEventSubscription;
-                          if (subscription.subscribedToEvents.includes(eventItem.id) && eventItem.slotsAvailable > 0) {
-                            this.dataForm.get(eventItem.id).setValue(true);
-                          } else {
-                            this.dataForm.get(eventItem.id).setValue(false);
-                          }
-                        }
-                      });
-                  }
-                });
+            // If user is already subscribed, auto select event
+            this.auth.user.pipe(take(1), trace('auth')).subscribe((user) => {
+              if (user) {
+                this.afs
+                  .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
+                  .get()
+                  .subscribe((document) => {
+                    // TODO: Remove me. This is for secompp22 only
+                    if (eventItem.eventType === 'palestra') {
+                      this.dataForm.get(eventItem.id).setValue(true);
+                      this.dataForm.get(eventItem.id).disable();
+                    }
+                    ///
 
-                return eventItem;
-              });
-            })
-          );
-      }),
-      switchMap((events) => events)
-    );
+                    if (document.exists) {
+                      const subscription = document.data() as MajorEventSubscription;
+                      if (subscription.subscribedToEvents.includes(eventItem.id) && eventItem.slotsAvailable > 0) {
+                        this.dataForm.get(eventItem.id).setValue(true);
+                      } else {
+                        this.dataForm.get(eventItem.id).setValue(false);
+                      }
+                    }
+                  });
+              }
+            });
+
+            return eventItem;
+          });
+        })
+      );
 
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((majorEvent) => {
       if (this.maxCourses && this.maxCourses !== majorEvent.maxCourses) {
@@ -364,30 +401,86 @@ export class PageSubscriptionPage implements OnInit {
               .valueChanges({ idField: 'id' })
               .pipe(take(1), trace('firestore'))
               .subscribe((subscription) => {
-                if (!subscription.reference) {
+                if (this.paymentStatus !== 2) {
                   // Merge eventsSelected arrays
                   const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
 
                   // Create array with event IDs from eventsSelected
                   const eventsSelectedID = eventsSelected.map((event) => event.id);
 
-                  const now: Timestamp = firestore.Timestamp.fromDate(new Date());
+                  let status: number = 0;
+
+                  if (this.paymentStatus !== undefined) {
+                    switch (this.paymentStatus) {
+                      case 1:
+                        // User already sent payment proof, keep status as "pending verification"
+                        status = 1;
+                        break;
+                      case 3:
+                        // User had payment proof denied, keep status as "pending resending proof"
+                        status = 3;
+                        break;
+                      case 4:
+                      case 5:
+                        // If user has already paid,
+                        // but subscription was denied due to insufficient slots or schedule conflict,
+                        // set status to "pending verification"
+                        status = 1;
+                        break;
+                      case null:
+                        status = null;
+                        break;
+                      default:
+                        status = 0;
+                        break;
+                    }
+                  }
+
+                  let subscriptionType: number = Number.parseInt(this.opSelected);
+
+                  if (isNaN(subscriptionType)) {
+                    subscriptionType = null;
+                  }
 
                   this.afs
                     .collection(`majorEvents/${this.majorEventID}/subscriptions`)
                     .doc<MajorEventSubscription>(user.uid)
-                    .set({
-                      subscriptionType: Number.parseInt(this.opSelected),
-                      subscribedToEvents: eventsSelectedID,
-                      time: now,
-                      payment: {
-                        price: price,
-                        status: 0,
-                        time: now,
-                        author: user.uid,
-                      },
-                    })
-                    .then(() => {
+                    .get()
+                    .subscribe((doc) => {
+                      if (status === 0) {
+                        this.afs
+                          .collection(`majorEvents/${this.majorEventID}/subscriptions`)
+                          .doc<MajorEventSubscription>(user.uid)
+                          .set({
+                            subscriptionType: subscriptionType,
+                            subscribedToEvents: eventsSelectedID,
+                            // @ts-ignore
+                            time: serverTimestamp(),
+                            payment: {
+                              price: price,
+                              status: status,
+                              // @ts-ignore
+                              time: serverTimestamp(),
+                              author: user.uid,
+                            },
+                          });
+                      } else {
+                        this.afs
+                          .collection(`majorEvents/${this.majorEventID}/subscriptions`)
+                          .doc<MajorEventSubscription>(user.uid)
+                          .update({
+                            subscriptionType: subscriptionType,
+                            subscribedToEvents: eventsSelectedID,
+                            payment: {
+                              price: price,
+                              status: status,
+                              // @ts-ignore
+                              time: serverTimestamp(),
+                              author: user.uid,
+                            },
+                          });
+                      }
+
                       this.afs
                         .collection(`users/${user.uid}/majorEventSubscriptions`)
                         .doc(this.majorEventID)
@@ -398,19 +491,21 @@ export class PageSubscriptionPage implements OnInit {
                           this.successSwal.fire();
                           setTimeout(() => {
                             this.successSwal.close();
-                            this.router.navigate(['/inscricoes/pagar', this.majorEventID], { replaceUrl: true });
+                            if (
+                              this.paymentStatus === 1 ||
+                              this.paymentStatus === 4 ||
+                              this.paymentStatus === 5 ||
+                              price === 0
+                            ) {
+                              this.router.navigate(['/inscricoes'], { replaceUrl: true });
+                            } else {
+                              this.router.navigate(['/inscricoes/pagar', this.majorEventID], {
+                                replaceUrl: true,
+                              });
+                            }
                           }, 2000);
                         });
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                      this.errorSwal.fire();
                     });
-
-                  setTimeout(() => {
-                    this.successSwal.close();
-                    this.router.navigate(['/eventos'], { replaceUrl: true });
-                  }, 1500);
                 } else {
                   this.alreadySubscribed.fire();
                   this.router.navigate(['/eventos'], { replaceUrl: true });
@@ -458,6 +553,124 @@ export class PageSubscriptionPage implements OnInit {
     });
   }
 
+  checkForScheduleConflict(e, eventItem: EventItem) {
+    if (this.isEventScheduleBeingChecked) {
+      return;
+    }
+
+    this.isEventScheduleBeingChecked = true;
+    // This doesn't unselect the event if it's already selected, it only disables it
+
+    const checked: boolean = e.currentTarget.checked;
+
+    const eventIndex = this.eventSchedule.findIndex((e) => e.id === eventItem.id);
+
+    const eventItemStartDate = this.getDateFromTimestamp(eventItem.eventStartDate);
+    const eventItemEndDate = this.getDateFromTimestamp(eventItem.eventEndDate);
+
+    if (checked) {
+      // For every event after eventIndex
+      for (let i = eventIndex + 1; i < this.eventSchedule.length; i++) {
+        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+        // If event doesn't overlap or if it's itself, break
+        if (
+          eventItemStartDate >= eventIterationEndDate ||
+          eventItemEndDate <= eventIterationStartDate ||
+          eventItem.id === this.eventSchedule[i].id
+        ) {
+          break;
+        }
+
+        // If event overlaps, disable it
+
+        if (this.eventSchedule[i].eventGroup) {
+          this.eventSchedule[i].eventGroup.forEach((event) => {
+            this.dataForm.get(event).disable();
+          });
+        } else {
+          this.dataForm.get(this.eventSchedule[i].id).disable();
+          this.dataForm.get(this.eventSchedule[i].id).setValue(null);
+        }
+      }
+
+      // For every event before eventIdex
+      for (let i = eventIndex - 1; i >= 0; i--) {
+        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+
+        // If event doesn't overlap or if it's itself, break
+        if (
+          eventItemStartDate >= eventIterationEndDate ||
+          eventItemEndDate <= eventIterationStartDate ||
+          eventItem.id === this.eventSchedule[i].id
+        ) {
+          break;
+        }
+
+        // If event overlaps, disable it
+
+        if (this.eventSchedule[i].eventGroup) {
+          this.eventSchedule[i].eventGroup.forEach((event) => {
+            this.dataForm.get(event).disable();
+          });
+        } else {
+          this.dataForm.get(this.eventSchedule[i].id).disable();
+          this.dataForm.get(this.eventSchedule[i].id).setValue(null);
+        }
+      }
+    } else {
+      // For every event after eventIndex
+      for (let i = eventIndex + 1; i < this.eventSchedule.length; i++) {
+        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+
+        // If event doesn't overlap, break
+        if (eventIterationStartDate >= eventItemEndDate) {
+          break;
+        }
+
+        // If event overlaps, enable it
+
+        // TODO: Remove me. This is for secompp22 only
+        if (this.eventSchedule[i].eventType !== 'palestra') {
+          //////
+          if (this.eventSchedule[i].slotsAvailable > 0) {
+            if (this.eventSchedule[i].eventGroup) {
+              this.eventSchedule[i].eventGroup.forEach((event) => {
+                this.dataForm.get(event).enable();
+              });
+            } else {
+              this.dataForm.get(this.eventSchedule[i].id).enable();
+            }
+          }
+        }
+      }
+
+      // For every event before eventIdex
+      for (let i = eventIndex - 1; i >= 0; i--) {
+        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+
+        // If event doesn't overlap, break
+        if (eventIterationEndDate <= eventItemStartDate) {
+          break;
+        }
+
+        // If event overlaps, enable it
+
+        if (this.eventSchedule[i].eventType !== 'palestra') {
+          if (this.eventSchedule[i].eventGroup) {
+            this.eventSchedule[i].eventGroup.forEach((event) => {
+              this.dataForm.get(event).enable();
+            });
+          } else {
+            this.dataForm.get(this.eventSchedule[i].id).enable();
+          }
+        }
+      }
+    }
+    this.isEventScheduleBeingChecked = false;
+  }
+
   getEmoji(emoji: string): any {
     if (emoji === undefined) {
       return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
@@ -474,6 +687,22 @@ export class PageSubscriptionPage implements OnInit {
       showBackdrop: true,
     });
     await modal.present();
+  }
+
+  async processingToast() {
+    const toast = await this.toastController.create({
+      message: 'Processando...',
+      duration: 1000,
+      position: 'bottom',
+      icon: 'hourglass-outline',
+      buttons: [
+        {
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    toast.present();
   }
 }
 

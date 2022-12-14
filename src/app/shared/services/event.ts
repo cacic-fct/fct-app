@@ -30,4 +30,12 @@ export interface EventItem {
   eventGroup?: string[];
   createdBy: string;
   createdOn: Timestamp;
+  attendanceCollectionStart?: Timestamp;
+  attendanceCollectionEnd?: Timestamp;
+  attendanceCode?: string;
+  allowSubscription?: boolean;
+}
+
+export interface EventSubscription {
+  time: Timestamp;
 }

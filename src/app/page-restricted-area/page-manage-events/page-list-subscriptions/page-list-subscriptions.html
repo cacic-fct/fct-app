@@ -9,19 +9,23 @@
 
 <ion-content>
   <ng-container *ngIf="subscriptions$ | async as subscriptions; else: loading">
-    <div class="ion-padding" *ngIf="event$ | async; let event">
-      <h3 style="margin-bottom: 0">{{ event.name }}</h3>
-      <h4 style="margin: 0">{{ event.shortDescription }}</h4>
-      <h5 style="margin-top: 0">{{ getDateFromTimestamp(event.eventStartDate) | date: "dd/MM/y - HH:mm" }}</h5>
-      <ion-button (click)="generateCSV()">Baixar CSV</ion-button>
-    </div>
-    <div class="ion-padding-horizontal">
-      <p><b>Total de inscritos para este evento:</b> {{subscriptions.length}}</p>
-    </div>
+    <ng-container *ngIf="event$ | async as event">
+      <div class="ion-padding">
+        <h3 style="margin-bottom: 0">{{ event.name }}</h3>
+        <h4 style="margin: 0">{{ event.shortDescription }}</h4>
+        <h5 style="margin-top: 0">{{ getDateFromTimestamp(event.eventStartDate) | date: "dd/MM/y - HH:mm" }}</h5>
+        <ion-button (click)="generateCSV()">Baixar CSV</ion-button>
+      </div>
+      <div class="ion-padding-horizontal">
+        <p><b>Total de inscritos confirmados para este evento:</b> {{subscriptions.length}}</p>
+        <p *ngIf="event.slotsAvailable"><b>Total de vagas restantes:</b> {{ event.slotsAvailable }}</p>
+      </div>
+    </ng-container>
     <ion-item *ngFor="let subscriptionItem of subscriptions">
       <ion-label>
         <ng-container *ngIf="(subscriptionItem.user | async) as user">
-          <h2 class="ion-text-wrap">{{ user.fullName }}</h2>
+          <h2 class="ion-text-wrap" *ngIf="user.fullName">{{ user.fullName }}</h2>
+          <h2 class="ion-text-wrap" *ngIf="!user.fullName">Nome não cadastrado: {{ user.displayName }}</h2>
           <ng-container *ngIf="user.academicID; else notUnesp">
             <h3 class="ion-text-wrap">{{ courses.getCourse(user.academicID) }} | {{ user.academicID }}</h3>
           </ng-container>
@@ -29,6 +33,8 @@
           <ng-template #notUnesp>
             <h3 class="ion-text-wrap" *ngIf="user.academicID">Sem RA definido</h3>
           </ng-template>
+
+          <h3 class="ion-text-wrap">UID: {{ user.uid }}</h3>
         </ng-container>
         <h3 class="ion-text-wrap">{{ getDateFromTimestamp(subscriptionItem.time) | date: "HH:mm:ss - dd/MM/y" }}</h3>
       </ion-label>

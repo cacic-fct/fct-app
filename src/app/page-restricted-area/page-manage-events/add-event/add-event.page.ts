@@ -15,6 +15,7 @@ import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
 import { getStringChanges, RemoteConfig } from '@angular/fire/remote-config';
+import { serverTimestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-add-event',
@@ -42,14 +43,10 @@ export class AddEventPage implements OnInit {
 
   userData: any;
 
-  places$: Observable<{
-    [key: string]: {
-      [key: string]: string;
-    };
-  }>;
+  places$: Observable<placesRemoteConfig>;
 
   tzoffset = new Date().getTimezoneOffset() * 60_000;
-  parsedPlaces: any;
+  parsedPlaces: placesRemoteConfig;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -99,10 +96,11 @@ export class AddEventPage implements OnInit {
         inMajorEvent: ['none', Validators.required],
         eventType: ['none', Validators.required],
         hasDateEndForm: this.hasDateEnd,
-        issueCertificate: false,
+        issueCertificate: '',
         slotsAvailable: '',
         // doublePresence: false,
-        collectAttendanceForm: this.collectAttendance,
+        collectAttendanceForm: this.collectAttendance ? '' : null,
+        allowSubscription: null,
       },
       {
         validators: [this.validatorLatLong, this.validatorButton, this.validatorDateEnd],
@@ -114,9 +112,8 @@ export class AddEventPage implements OnInit {
     this.places$ = getStringChanges(this.remoteConfig, 'placesMap').pipe(
       map((places) => {
         if (places) {
-          // TODO: Fix me
-          const parsed = JSON.parse(places);
-          this.parsedPlaces = places;
+          const parsed: placesRemoteConfig = JSON.parse(places);
+          this.parsedPlaces = parsed;
           return parsed;
         }
       })
@@ -159,7 +156,7 @@ export class AddEventPage implements OnInit {
             }
           }
 
-          let location;
+          let location: { description: any; lat: any; lon: any } | null;
 
           if (
             !this.dataForm.get('location.description').value &&
@@ -201,9 +198,11 @@ export class AddEventPage implements OnInit {
               // doublePresence: this.dataForm.get('doublePresence').value,
               collectAttendance: this.dataForm.get('collectAttendanceForm').value === '' || false,
               createdBy: user.uid,
-              createdOn: Timestamp.fromDate(new Date()),
+              // @ts-ignore
+              createdOn: serverTimestamp(),
               slotsAvailable: Number.parseInt(this.dataForm.get('slotsAvailable').value) || 0,
               numberOfSubscriptions: 0,
+              allowSubscription: this.dataForm.get('allowSubscription').value === '' || false,
             })
             .then((res) => {
               if (majorEvent) {
@@ -342,4 +341,13 @@ export class AddEventPage implements OnInit {
     );
     this.dataForm.get('eventEndDate').setValue(subMilliseconds(newTime, this.tzoffset).toISOString().slice(0, -1));
   }
+}
+
+interface placesRemoteConfig {
+  [key: string]: {
+    name: string;
+    description: string;
+    lat: string;
+    lon: string;
+  };
 }
