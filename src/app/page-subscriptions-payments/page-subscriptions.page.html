@@ -45,18 +45,45 @@
                 *ngTemplateOutlet="eventFull; context: {majorEventData: majorEventData, subscriptionData: subscriptionData}">
               </ng-container>
             </div>
+            <div *ngSwitchCase="5">
+              <ng-container
+                *ngTemplateOutlet="scheduleConflict; context: {majorEventData: majorEventData, subscriptionData: subscriptionData}">
+              </ng-container>
+            </div>
           </ng-container>
         </ng-container>
       </ng-container>
     </ion-list>
   </ng-container>
 
-  <ng-container *ngIf="eventSubscriptions$ | async as eventSubscriptions">
+  <ng-container *ngIf="eventSubscriptions$ | async as eventSubscriptions; else loadingSpinner">
     <ng-container *ngFor="let eventSubscription of eventSubscriptions">
-      <ng-container *ngIf="eventSubscription.event | async as eventItem">
+      <ng-container *ngIf="eventSubscription.event as eventItem">
         <ng-container *ngIf="!eventItem.inMajorEvent">
           <ion-card>
-            <ion-card-header> <ion-card-title>{{ eventItem.name }}</ion-card-title> </ion-card-header>
+            <ion-card-header>
+              <ion-card-title>{{ eventItem.name }}</ion-card-title>
+
+              <ion-card-subtitle>
+                <!-- prettier-ignore -->
+                <p>
+                  Data do evento: {{ getDateFromTimestamp(eventItem.eventStartDate) | date: 'dd/MM/yyyy - HH:mm' }} {{ eventItem.eventEndDate && '– ' + getDateFromTimestamp(eventItem.eventEndDate) | date: 'dd/MM/yyyy - HH:mm' }}
+                </p>
+                <ng-container *ngIf="eventSubscription.userData | async as userData;">
+                  <p>Data de inscrição: {{ getDateFromTimestamp(userData.time) | date: 'dd/MM/yyyy - HH:mm' }}</p>
+                </ng-container>
+              </ion-card-subtitle>
+            </ion-card-header>
+            <ion-grid>
+              <ion-row *ngIf="eventItem.collectAttendance">
+                <ion-col *ngIf="eventItem.attendanceCollectionStart && !eventItem.attendanceCollectionEnd">
+                  <ion-button [routerLink]="['/confirmar-presenca', eventItem.id]">
+                    <ion-icon slot="start" name="person"></ion-icon>
+                    Confirmar presença
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-card>
         </ng-container>
       </ng-container>
@@ -177,7 +204,8 @@
       <ion-card-content>
         Inscrição realizada
         <br />
-        Pagamento confirmado em {{getDateFromTimestamp(subscriptionData.payment.time) | date: 'dd/MM/yyyy — HH:mm'}}
+        <!-- prettier-ignore -->
+        Pagamento confirmado em {{getDateFromTimestamp(subscriptionData.payment.validationTime) | date: 'dd/MM/yyyy — HH:mm'}}
         <br />
         Para editar a sua inscrição, entre em contato conosco.
       </ion-card-content>
@@ -259,6 +287,35 @@
     </ion-card>
   </ng-template>
 
+  <ng-template #scheduleConflict let-majorEventData="majorEventData" let-subscriptionData="subscriptionData">
+    <ion-card>
+      <ng-container
+        *ngTemplateOutlet="ionCardHeader; context: {majorEventData: majorEventData, subType: subscriptionData.subscriptionType, price: subscriptionData.payment.price, color: 'danger'}">
+      </ng-container>
+
+      <ion-card-content>
+        <ion-text color="danger">
+          <b>Não foi possível concluir a sua inscrição</b>
+          <br />
+          Há um choque de horário entre os eventos selecionados.
+          <br />
+          Para continuar, altere a sua inscrição.
+        </ion-text>
+      </ion-card-content>
+
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button color="danger" [routerLink]="['/eventos/inscrever', majorEventData.id]">
+              <ion-icon slot="start" name="pencil-outline"></ion-icon>
+              Alterar inscrição
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </ng-template>
+
   <ng-template #pastEvent let-majorEventData="majorEventData" let-subscriptionData="subscriptionData">
     <ion-card>
       <ng-container
@@ -287,5 +344,8 @@
 
   <ng-template #loading>
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </ng-template>
+  <ng-template #loadingSpinner>
+    <ion-spinner name="dots" style="margin: 0 auto; display: block"></ion-spinner>
   </ng-template>
 </ion-content>

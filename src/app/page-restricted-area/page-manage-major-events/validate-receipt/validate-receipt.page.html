@@ -4,25 +4,48 @@
       <ion-back-button defaultHref="/area-restrita/gerenciar-grandes-eventos"></ion-back-button>
     </ion-buttons>
     <ion-title>Comprovantes de {{ eventName$ | async }}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="arrayIndexBackward()" [disabled]="arrayIndex == 0" aria-label="Comprovante anterior">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-button>
+      {{ arrayIndex }}
+      <ion-button (click)="arrayIndexForward()" aria-label="Próxima comprovante">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ng-container *ngIf="subscriptions$ | async as subscriptions; else: loading">
     <h4 *ngIf="subscriptions.length == 0" class="ion-text-center">Não há nenhuma aprovação pendente.</h4>
-    <ng-container *ngFor="let subscription of subscriptions">
+    <!-- TODO: Melhorar interface quando arrayIndex aponta para um elemento não existente -->
+    <ng-container *ngIf="subscriptions[arrayIndex] as subscription">
       <ion-card>
-        <ion-card-header>
-          <ion-card-title
-            >{{ subscription.userDisplayName$ | async }} - {{ subscription.payment.price |
-            currency:'BRL':'symbol':'1.2-2' }}</ion-card-title
-          >
+        <ion-card-header *ngIf="subscription.userData$ | async as userData">
+          <!-- prettier-ignore -->
+          <ion-card-title>
+            {{ userData.fullName || userData.displayName}} - {{ subscription.payment.price | currency:'BRL':'symbol':'1.2-2' }}
+          </ion-card-title>
           <ion-card-subtitle>
             Se inscreveu em: {{ getDateFromTimestamp(subscription.time) | date:'dd/MM/yy - HH:mm' }}
             <br />
-            Última alteração na inscrição: {{ getDateFromTimestamp(subscription.payment.time) | date:'dd/MM/yy - HH:mm'
-            }}
+            <!-- prettier-ignore -->
+            Última alteração na inscrição: {{ getDateFromTimestamp(subscription.payment.time) | date:'dd/MM/yy - HH:mm' }}
           </ion-card-subtitle>
+          <p>UID: {{ userData.uid }}</p>
+          <p class="pre-wrap">
+            ID dos eventos selecionados: <br />
+            <br />
+            {{ formatArrayDisplay(subscription.subscribedToEvents) }}
+          </p>
+          <ion-button fill="clear" [href]="'mailto:' + userData.email">
+            <ion-icon name="mail" slot="icon-only"></ion-icon>
+          </ion-button>
+
+          <ion-button fill="clear" [href]="'https://wa.me/' + formatPhoneWhatsApp(userData.phone)">
+            <ion-icon name="logo-whatsapp" slot="icon-only"></ion-icon>
+          </ion-button>
         </ion-card-header>
         <ion-card-content>
           <p>
@@ -31,17 +54,14 @@
               <span class="alert-text ion-text-wrap"> Antes de validar, verifique se não há choque de horário. </span>
             </ion-text>
           </p>
-          <p>
-            <ion-text color="danger">
-              <ion-icon name="warning-outline" class="alert-icon" aria-hidden="true"></ion-icon>
-              <span class="alert-text ion-text-wrap"> ATENÇÃO: Os eventos estão fora de ordem.</span>
-            </ion-text>
-          </p>
-          <ng-container *ngIf="subscription.subEventsInfo.length != 0">
-            <ng-container *ngFor="let subEventInfo$ of subscription.subEventsInfo">
-              <ng-container *ngIf="subEventInfo$ | async as subEventInfo; else: loading">
-                <ion-text [color]="subEventInfo.slotsAvailable? '' : 'danger'">
+          <ng-container *ngIf="subscription.subEventsInfo | async as subEventsInfo; else loading">
+            <ng-container *ngIf="subEventsInfo.length != 0">
+              <ng-container *ngFor="let subEventInfo of subEventsInfo">
+                <ion-text
+                  [color]="subEventInfo.slotsAvailable > 0? '' : 'danger'"
+                  [style.color]="subEventInfo.eventType === 'palestra' ? '#0277bd' : ''">
                   <p>{{ subEventInfo.name }}: {{ subEventInfo.slotsAvailable }} vagas disponíveis.</p>
+                  <p>{{ subEventInfo.id }}</p>
                   <p style="margin-bottom: 24px">
                     {{ getDateFromTimestamp( subEventInfo.eventStartDate ) | date:'dd/MM/yy - HH:mm'}} - {{
                     getDateFromTimestamp( subEventInfo.eventEndDate ) | date:'HH:mm'}}
@@ -103,6 +123,11 @@
           <ion-item>
             <ion-label>Não há mais vagas</ion-label>
             <ion-radio slot="start" value="noSlots"></ion-radio>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Choque de horário</ion-label>
+            <ion-radio slot="start" value="scheduleConflict"></ion-radio>
           </ion-item>
         </ion-radio-group>
         <ng-container *ngIf="refuseForm.get('radioGroup').value == 'invalidReceipt'">

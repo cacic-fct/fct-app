@@ -5,7 +5,6 @@ import { CoursesService } from '../../shared/services/courses.service';
 import { ToastController } from '@ionic/angular';
 
 import { fromUnixTime } from 'date-fns';
-import { ClipboardService } from 'ngx-clipboard';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { DomSanitizer } from '@angular/platform-browser';
@@ -22,7 +21,6 @@ import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { EventItem } from '../../shared/services/event';
@@ -30,10 +28,9 @@ import { take, Observable, map } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
-import { Timestamp } from '@firebase/firestore';
 import { WeatherInfo, WeatherService } from 'src/app/shared/services/weather.service';
 import { serverTimestamp } from '@angular/fire/firestore';
-@UntilDestroy()
+
 @Component({
   selector: 'app-page-calendar-event',
   templateUrl: './page-calendar-event.page.html',
@@ -53,7 +50,6 @@ export class PageCalendarEventPage implements OnInit {
 
   constructor(
     private toastController: ToastController,
-    private clipboardService: ClipboardService,
     private router: Router,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
@@ -179,7 +175,7 @@ export class PageCalendarEventPage implements OnInit {
           side: 'end',
           text: 'Copiar',
           handler: () => {
-            this.clipboardService.copy(this.eventID);
+            navigator.clipboard.writeText(this.eventID);
           },
         },
         {
@@ -207,7 +203,7 @@ export class PageCalendarEventPage implements OnInit {
         },
       ],
     });
-    this.clipboardService.copy('https://fct-pp.web.app' + this.router.url);
+    navigator.clipboard.writeText('https://fct-pp.web.app' + this.router.url);
     toast.present();
   }
 

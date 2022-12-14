@@ -24,7 +24,7 @@ import { trace } from '@angular/fire/compat/performance';
 import { parse } from 'twemoji-parser';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { increment, serverTimestamp } from '@angular/fire/firestore';
+import { serverTimestamp } from '@angular/fire/firestore';
 
 @UntilDestroy()
 @Component({
@@ -70,6 +70,9 @@ export class PageSubscriptionPage implements OnInit {
   paymentStatus: number;
 
   majorEventID = this.route.snapshot.params.eventID;
+
+  eventSchedule: EventItem[] = [];
+  isEventScheduleBeingChecked: boolean = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -175,8 +178,10 @@ export class PageSubscriptionPage implements OnInit {
       .pipe(
         map((events: EventItem[]) => {
           return events.map((eventItem) => {
+            this.eventSchedule.push(eventItem);
+
             // If there are no slots available, add event to form with disabled selection
-            if (eventItem.slotsAvailable <= 0) {
+            if (eventItem.slotsAvailable <= 0 || this.getDateFromTimestamp(eventItem.eventStartDate) < this.today) {
               this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
             } else {
               this.dataForm.addControl(eventItem.id, this.formBuilder.control(null));
@@ -403,31 +408,38 @@ export class PageSubscriptionPage implements OnInit {
                   // Create array with event IDs from eventsSelected
                   const eventsSelectedID = eventsSelected.map((event) => event.id);
 
-                  let status: number;
+                  let status: number = 0;
 
                   if (this.paymentStatus !== undefined) {
-                    if (this.paymentStatus === 4) {
-                      // If user has already paid,
-                      // but subscription was denied due to insufficient slots,
-                      // set status to "pending verification"
-                      status = 1;
-                    } else if (this.eventsSelected.minicurso.length === 0) {
-                      // TODO: Me remova, apenas para SECOMPP22
-                      // If user didn't select any short course, set status to approved
-                      status = 1;
-                    } else if (this.paymentStatus === 1) {
-                      // User already sent payment proof, keep status as "pending verification"
-                      status = 1;
-                    } else if (this.paymentStatus === 3) {
-                      // User had payment proof denied, keep status as "pending resending proof"
-                      status = 3;
-                    } else if (this.paymentStatus === null) {
-                      status = null;
-                    } else {
-                      status = 0;
+                    switch (this.paymentStatus) {
+                      case 1:
+                        // User already sent payment proof, keep status as "pending verification"
+                        status = 1;
+                        break;
+                      case 3:
+                        // User had payment proof denied, keep status as "pending resending proof"
+                        status = 3;
+                        break;
+                      case 4:
+                      case 5:
+                        // If user has already paid,
+                        // but subscription was denied due to insufficient slots or schedule conflict,
+                        // set status to "pending verification"
+                        status = 1;
+                        break;
+                      case null:
+                        status = null;
+                        break;
+                      default:
+                        status = 0;
+                        break;
                     }
-                  } else {
-                    status = 0;
+                  }
+
+                  let subscriptionType: number = Number.parseInt(this.opSelected);
+
+                  if (isNaN(subscriptionType)) {
+                    subscriptionType = null;
                   }
 
                   this.afs
@@ -435,58 +447,64 @@ export class PageSubscriptionPage implements OnInit {
                     .doc<MajorEventSubscription>(user.uid)
                     .get()
                     .subscribe((doc) => {
-                      let previouslySelectedEvents;
-
-                      if (doc.exists) {
-                        previouslySelectedEvents = doc.data().subscribedToEvents;
+                      if (status === 0) {
+                        this.afs
+                          .collection(`majorEvents/${this.majorEventID}/subscriptions`)
+                          .doc<MajorEventSubscription>(user.uid)
+                          .set({
+                            subscriptionType: subscriptionType,
+                            subscribedToEvents: eventsSelectedID,
+                            // @ts-ignore
+                            time: serverTimestamp(),
+                            payment: {
+                              price: price,
+                              status: status,
+                              // @ts-ignore
+                              time: serverTimestamp(),
+                              author: user.uid,
+                            },
+                          });
+                      } else {
+                        this.afs
+                          .collection(`majorEvents/${this.majorEventID}/subscriptions`)
+                          .doc<MajorEventSubscription>(user.uid)
+                          .update({
+                            subscriptionType: subscriptionType,
+                            subscribedToEvents: eventsSelectedID,
+                            payment: {
+                              price: price,
+                              status: status,
+                              // @ts-ignore
+                              time: serverTimestamp(),
+                              author: user.uid,
+                            },
+                          });
                       }
 
                       this.afs
-                        .collection(`majorEvents/${this.majorEventID}/subscriptions`)
-                        .doc<MajorEventSubscription>(user.uid)
+                        .collection(`users/${user.uid}/majorEventSubscriptions`)
+                        .doc(this.majorEventID)
                         .set({
-                          subscriptionType: Number.parseInt(this.opSelected),
-                          subscribedToEvents: eventsSelectedID,
-                          // @ts-ignore
-                          time: serverTimestamp(),
-                          payment: {
-                            price: price,
-                            status: status,
-                            // @ts-ignore
-                            time: serverTimestamp(),
-                            author: user.uid,
-                          },
+                          reference: this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`).ref,
                         })
                         .then(() => {
-                          this.afs
-                            .collection(`users/${user.uid}/majorEventSubscriptions`)
-                            .doc(this.majorEventID)
-                            .set({
-                              reference: this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`).ref,
-                            })
-                            .then(() => {
-                              this.successSwal.fire();
-                              setTimeout(() => {
-                                this.successSwal.close();
-                                if (this.paymentStatus === 1 || this.paymentStatus === 4) {
-                                  this.router.navigate(['/inscricoes'], { replaceUrl: true });
-                                } else {
-                                  this.router.navigate(['/inscricoes/pagar', this.majorEventID], {
-                                    replaceUrl: true,
-                                  });
-                                }
-                              }, 2000);
-                            });
-                        })
-                        .catch((error) => {
-                          console.error(error);
-                          this.errorSwal.fire();
+                          this.successSwal.fire();
+                          setTimeout(() => {
+                            this.successSwal.close();
+                            if (
+                              this.paymentStatus === 1 ||
+                              this.paymentStatus === 4 ||
+                              this.paymentStatus === 5 ||
+                              price === 0
+                            ) {
+                              this.router.navigate(['/inscricoes'], { replaceUrl: true });
+                            } else {
+                              this.router.navigate(['/inscricoes/pagar', this.majorEventID], {
+                                replaceUrl: true,
+                              });
+                            }
+                          }, 2000);
                         });
-
-                      setTimeout(() => {
-                        this.successSwal.close();
-                        this.router.navigate(['/eventos'], { replaceUrl: true });
-                      }, 1500);
                     });
                 } else {
                   this.alreadySubscribed.fire();
@@ -533,6 +551,124 @@ export class PageSubscriptionPage implements OnInit {
         resolve(false);
       });
     });
+  }
+
+  checkForScheduleConflict(e, eventItem: EventItem) {
+    if (this.isEventScheduleBeingChecked) {
+      return;
+    }
+
+    this.isEventScheduleBeingChecked = true;
+    // This doesn't unselect the event if it's already selected, it only disables it
+
+    const checked: boolean = e.currentTarget.checked;
+
+    const eventIndex = this.eventSchedule.findIndex((e) => e.id === eventItem.id);
+
+    const eventItemStartDate = this.getDateFromTimestamp(eventItem.eventStartDate);
+    const eventItemEndDate = this.getDateFromTimestamp(eventItem.eventEndDate);
+
+    if (checked) {
+      // For every event after eventIndex
+      for (let i = eventIndex + 1; i < this.eventSchedule.length; i++) {
+        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+        // If event doesn't overlap or if it's itself, break
+        if (
+          eventItemStartDate >= eventIterationEndDate ||
+          eventItemEndDate <= eventIterationStartDate ||
+          eventItem.id === this.eventSchedule[i].id
+        ) {
+          break;
+        }
+
+        // If event overlaps, disable it
+
+        if (this.eventSchedule[i].eventGroup) {
+          this.eventSchedule[i].eventGroup.forEach((event) => {
+            this.dataForm.get(event).disable();
+          });
+        } else {
+          this.dataForm.get(this.eventSchedule[i].id).disable();
+          this.dataForm.get(this.eventSchedule[i].id).setValue(null);
+        }
+      }
+
+      // For every event before eventIdex
+      for (let i = eventIndex - 1; i >= 0; i--) {
+        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+
+        // If event doesn't overlap or if it's itself, break
+        if (
+          eventItemStartDate >= eventIterationEndDate ||
+          eventItemEndDate <= eventIterationStartDate ||
+          eventItem.id === this.eventSchedule[i].id
+        ) {
+          break;
+        }
+
+        // If event overlaps, disable it
+
+        if (this.eventSchedule[i].eventGroup) {
+          this.eventSchedule[i].eventGroup.forEach((event) => {
+            this.dataForm.get(event).disable();
+          });
+        } else {
+          this.dataForm.get(this.eventSchedule[i].id).disable();
+          this.dataForm.get(this.eventSchedule[i].id).setValue(null);
+        }
+      }
+    } else {
+      // For every event after eventIndex
+      for (let i = eventIndex + 1; i < this.eventSchedule.length; i++) {
+        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+
+        // If event doesn't overlap, break
+        if (eventIterationStartDate >= eventItemEndDate) {
+          break;
+        }
+
+        // If event overlaps, enable it
+
+        // TODO: Remove me. This is for secompp22 only
+        if (this.eventSchedule[i].eventType !== 'palestra') {
+          //////
+          if (this.eventSchedule[i].slotsAvailable > 0) {
+            if (this.eventSchedule[i].eventGroup) {
+              this.eventSchedule[i].eventGroup.forEach((event) => {
+                this.dataForm.get(event).enable();
+              });
+            } else {
+              this.dataForm.get(this.eventSchedule[i].id).enable();
+            }
+          }
+        }
+      }
+
+      // For every event before eventIdex
+      for (let i = eventIndex - 1; i >= 0; i--) {
+        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+
+        // If event doesn't overlap, break
+        if (eventIterationEndDate <= eventItemStartDate) {
+          break;
+        }
+
+        // If event overlaps, enable it
+
+        if (this.eventSchedule[i].eventType !== 'palestra') {
+          if (this.eventSchedule[i].eventGroup) {
+            this.eventSchedule[i].eventGroup.forEach((event) => {
+              this.dataForm.get(event).enable();
+            });
+          } else {
+            this.dataForm.get(this.eventSchedule[i].id).enable();
+          }
+        }
+      }
+    }
+    this.isEventScheduleBeingChecked = false;
   }
 
   getEmoji(emoji: string): any {

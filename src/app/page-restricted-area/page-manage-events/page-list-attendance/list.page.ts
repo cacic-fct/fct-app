@@ -1,3 +1,4 @@
+import { ToastController, AlertController } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -35,7 +36,9 @@ export class ListPage implements OnInit {
     private afs: AngularFirestore,
     private router: Router,
     private route: ActivatedRoute,
-    public courses: CoursesService
+    public courses: CoursesService,
+    private toastController: ToastController,
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {
@@ -47,9 +50,9 @@ export class ListPage implements OnInit {
       .pipe(untilDestroyed(this), trace('firestore'))
       .subscribe((document) => {
         if (!document.exists) {
-          this.router.navigate(['area-restrita/coletar-presenca']);
           this.mySwal.fire();
           setTimeout(() => {
+            this.router.navigate(['area-restrita/gerenciar-eventos']);
             this.mySwal.close();
           }, 1000);
         }
@@ -78,6 +81,54 @@ export class ListPage implements OnInit {
 
   getDateFromTimestamp(timestamp: Timestamp): Date {
     return fromUnixTime(timestamp.seconds);
+  }
+
+  deleteAttendance(attendanceID: string) {
+    this.afs
+      .collection(`events/${this.eventID}/attendance`)
+      .doc(attendanceID)
+      .delete()
+      .then(() => {
+        this.deletedToast();
+      });
+  }
+
+  async deleteAlert(attendanceID: string, username: string) {
+    const alert = await this.alertController.create({
+      header: 'Tem certeza que deseja remover essa presença?',
+      message: username,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Sim',
+          role: 'confirm',
+          handler: () => {
+            this.deleteAttendance(attendanceID);
+          },
+        },
+      ],
+    });
+
+    alert.present();
+  }
+
+  async deletedToast() {
+    const toast = await this.toastController.create({
+      message: 'Presença removida',
+      duration: 2000,
+      icon: 'checkmark-circle-outline',
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    toast.present();
   }
 
   generateCSV() {
