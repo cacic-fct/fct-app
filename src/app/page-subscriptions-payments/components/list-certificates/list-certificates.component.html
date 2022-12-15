@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">Fechar</ion-button>
+    </ion-buttons>
+    <ion-title>Seus certificados</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-template #loadingSpinner>
+    <ion-spinner name="dots" style="margin: 0 auto; display: block"></ion-spinner>
+  </ng-template>
+
+  <h1 class="ion-padding ion-text-center">Você não tem certificados emitidos</h1>
+
+  <ion-item lines="inset">
+    Participação
+    <ion-button slot="end" fill="clear" (click)="getCertificate()"
+      ><ion-icon name="download" slot="icon-only"></ion-icon
+    ></ion-button>
+  </ion-item>
+  <ion-item lines="inset">
+    Ministrante
+    <ion-button slot="end" fill="clear" disabled
+      ><ion-spinner class="download-spinner" name="crescent" slot="icon-only" color="primary"></ion-spinner
+    ></ion-button>
+  </ion-item>
+  <ion-item lines="inset">
+    Organizador
+    <ion-button slot="end" fill="clear"><ion-icon name="checkmark" slot="icon-only"></ion-icon></ion-button>
+  </ion-item>
+  <ion-item lines="inset">
+    Desenvolvedor
+    <ion-button slot="end" fill="clear"><ion-icon name="download" slot="icon-only"></ion-icon></ion-button>
+  </ion-item>
+
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      <ion-col class="ion-text-center">
+        <ion-button color="danger" (click)="mailtoReportError()">Informar problema</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
