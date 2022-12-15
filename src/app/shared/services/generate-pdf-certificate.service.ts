@@ -13,7 +13,7 @@ export class GeneratePdfCertificateService {
   public async generateCertificate(
     templateName: string,
     input: Record<string, string>,
-    options?: generateCertificateOptions
+    options: generateCertificateOptions
   ) {
     const pdfJson = this.http.get(`assets/certificates/templates/${templateName}.json`, { responseType: 'json' });
     pdfJson.pipe(take(1)).subscribe(async (pdf) => {
