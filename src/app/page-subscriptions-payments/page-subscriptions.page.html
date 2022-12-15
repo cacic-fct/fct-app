@@ -325,17 +325,10 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-button color="secondary">
-              <!-- #TODO: Redirect to a page where the users can get theirs certificates -->
+            <ion-button color="secondary" [routerLink]="['detalhes', majorEventData.id]">
               <ion-icon slot="start" name="document-text-outline"></ion-icon>
-              Listar certificados
+              Mais detalhes
             </ion-button>
-            <ng-container *ngIf="majorEventData.button && majorEventData.button.url">
-              <ion-button color="secondary" [href]="majorEventData.button.url" target="_blank">
-                <ion-icon slot="start" name="ellipsis-horizontal"></ion-icon>
-                Mais informações
-              </ion-button>
-            </ng-container>
           </ion-col>
         </ion-row>
       </ion-grid>
