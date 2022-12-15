@@ -16,6 +16,8 @@
 
   <ion-item lines="inset">
     Participação
+    <!-- TODO: Botão de share copia o link de verificação para o clipboard. Lembre-se de que o ícone de share é diferente no iOS -->
+    <ion-button slot="end" fill="clear"><ion-icon name="share-social-outline" slot="icon-only"></ion-icon> </ion-button>
     <ion-button slot="end" fill="clear" (click)="getCertificate()"
       ><ion-icon name="download" slot="icon-only"></ion-icon
     ></ion-button>
