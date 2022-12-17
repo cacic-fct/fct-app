@@ -1,10 +1,7 @@
 // @ts-strict-ignore
 import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { fromUnixTime, isSameDay } from 'date-fns';
 import { Observable } from 'rxjs';
-
-import { Timestamp } from '@firebase/firestore-types';
 
 import { EventItem } from 'src/app/shared/services/event';
 import { EmojiService } from './../../../shared/services/emoji.service';
@@ -27,9 +24,5 @@ export class EventListComponent implements OnInit {
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);
     return formated;
-  }
-
-  dayCompare(date1: Timestamp, date2: Timestamp): boolean {
-    return isSameDay(fromUnixTime(date1.seconds), fromUnixTime(date2.seconds));
   }
 }

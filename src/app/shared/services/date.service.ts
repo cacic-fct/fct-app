@@ -20,11 +20,11 @@ export class DateService {
     return new Date();
   }
 
-  dayCompare(date1: Timestamp, date2: Timestamp): boolean {
+  compareDayTimestamp(date1: Timestamp, date2: Timestamp): boolean {
     return isSameDay(this.getDateFromTimestamp(date1), this.getDateFromTimestamp(date2));
   }
 
-  monthCompare(date1: Timestamp, date2: Timestamp): boolean {
+  compareMonthTimestamp(date1: Timestamp, date2: Timestamp): boolean {
     return isSameMonth(fromUnixTime(date1.seconds), fromUnixTime(date2.seconds));
   }
 }

@@ -2,9 +2,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
-import { fromUnixTime, isSameDay } from 'date-fns';
 
 import { MajorEventItem } from '../../shared/services/major-event.service';
 import { EventItem } from '../../shared/services/event';
@@ -51,9 +49,5 @@ export class ConfirmModalComponent implements OnInit {
 
   closeModal() {
     this.modalController.dismiss(false);
-  }
-
-  dayCompare(date1: Timestamp, date2: Timestamp): boolean {
-    return isSameDay(fromUnixTime(date1.seconds), fromUnixTime(date2.seconds));
   }
 }

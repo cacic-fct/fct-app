@@ -124,7 +124,7 @@
             <ion-item-divider
               mode="ios"
               sticky="true"
-              *ngIf="i == 0 || !dayCompare(eventsArray[i - 1].eventStartDate, event.eventStartDate)">
+              *ngIf="i == 0 || !dateService.compareDayTimestamp(eventsArray[i - 1].eventStartDate, event.eventStartDate)">
               <ion-label> {{ formatDate(dateService.getDateFromTimestamp(event.eventStartDate)) }} </ion-label>
             </ion-item-divider>
 

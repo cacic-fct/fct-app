@@ -9,9 +9,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Timestamp } from '@firebase/firestore-types';
 import { formatDate } from '@angular/common';
-import { fromUnixTime, isSameDay, compareAsc } from 'date-fns';
+import { compareAsc } from 'date-fns';
 import { take, map, Observable } from 'rxjs';
 
 import { MajorEventItem } from '../shared/services/major-event.service';
@@ -341,10 +340,6 @@ export class PageSubscriptionPage implements OnInit {
     });
 
     toast.present();
-  }
-
-  dayCompare(date1: Timestamp, date2: Timestamp): boolean {
-    return isSameDay(fromUnixTime(date1.seconds), fromUnixTime(date2.seconds));
   }
 
   formatDate(date: Date): string {
