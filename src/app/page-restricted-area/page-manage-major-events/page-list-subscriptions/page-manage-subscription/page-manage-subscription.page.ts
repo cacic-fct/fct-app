@@ -10,9 +10,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Observable, map, take, combineLatest } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
-import { fromUnixTime } from 'date-fns';
-
-import { Timestamp as TimestampType } from '@firebase/firestore-types';
 
 @UntilDestroy()
 @Component({
@@ -88,9 +85,5 @@ export class PageManageSubscriptionPage implements OnInit {
           });
         });
     });
-  }
-
-  getDateFromTimestamp(timestamp: TimestampType): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 }

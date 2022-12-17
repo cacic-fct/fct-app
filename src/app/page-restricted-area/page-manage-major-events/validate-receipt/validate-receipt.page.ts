@@ -4,7 +4,6 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/comp
 import { ActivatedRoute } from '@angular/router';
 import { increment } from '@angular/fire/firestore';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
-import { fromUnixTime } from 'date-fns';
 import { Observable, map, take, combineLatest } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { User } from 'src/app/shared/services/user';
@@ -99,10 +98,6 @@ export class ValidateReceiptPage implements OnInit {
 
   private userDataByID(userId: string): Observable<User> {
     return this.afs.collection('users').doc<User>(userId).valueChanges().pipe(take(1));
-  }
-
-  getDateFromTimestamp(timestamp: TimestampType): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   confirm() {

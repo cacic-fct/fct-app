@@ -3,8 +3,7 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
-import { Timestamp } from '@firebase/firestore-types';
-import { compareAsc, fromUnixTime } from 'date-fns';
+import { compareAsc } from 'date-fns';
 import { take, map, Observable } from 'rxjs';
 
 import { MajorEventItem } from '../shared/services/major-event.service';
@@ -59,10 +58,6 @@ export class TabEventsPage {
           })
         );
     });
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   isTodayBetweenDates(date1: Date, date2: Date) {

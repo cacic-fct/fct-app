@@ -12,8 +12,8 @@ import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 
-import { DomSanitizer } from '@angular/platform-browser';
 import { EmojiService } from './../../shared/services/emoji.service';
+import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
   selector: 'app-confirm-modal',
@@ -28,12 +28,12 @@ export class ConfirmModalComponent implements OnInit {
   @Input() subscriptionType: string;
 
   constructor(
-    private sanitizer: DomSanitizer,
     public afs: AngularFirestore,
     public auth: AngularFireAuth,
     private modalController: ModalController,
     public enrollmentTypes: EnrollmentTypesService,
-    public emojiService: EmojiService
+    public emojiService: EmojiService,
+    public dateService: DateService
   ) {}
 
   ngOnInit() {}
@@ -43,10 +43,6 @@ export class ConfirmModalComponent implements OnInit {
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);
     return formated;
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   onSubmit() {

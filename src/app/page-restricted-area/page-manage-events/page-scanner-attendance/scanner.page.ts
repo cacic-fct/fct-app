@@ -8,7 +8,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { fromUnixTime } from 'date-fns';
 import { trace } from '@angular/fire/compat/performance';
 import { EventItem } from 'src/app/shared/services/event';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
@@ -193,10 +192,6 @@ export class ScannerPage implements OnInit {
 
   onHasPermission(has: boolean) {
     this.hasPermission = has;
-  }
-
-  getDateFromTimestamp(timestamp: TimestampType): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 
   /**

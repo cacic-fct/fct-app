@@ -8,6 +8,7 @@ import { Timestamp } from '@firebase/firestore-types';
 
 import { EventItem } from 'src/app/shared/services/event';
 import { EmojiService } from './../../../shared/services/emoji.service';
+import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
   selector: 'app-event-list',
@@ -17,13 +18,9 @@ import { EmojiService } from './../../../shared/services/emoji.service';
 export class EventListComponent implements OnInit {
   @Input() eventInput$: Observable<EventItem[]>;
 
-  constructor(public emojiService: EmojiService) {}
+  constructor(public emojiService: EmojiService, public dateService: DateService) {}
 
   ngOnInit() {}
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
-  }
 
   formatDate(date: Date): string {
     let formated = formatDate(date, "EEEE, dd 'de' MMMM 'de' yyyy", 'pt-BR');

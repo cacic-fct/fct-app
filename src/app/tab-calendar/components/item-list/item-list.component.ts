@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
-import { startOfDay, endOfDay, fromUnixTime } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
@@ -11,8 +11,8 @@ import { switchMap } from 'rxjs/operators';
 import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
 
-import { Timestamp } from '@firebase/firestore-types';
 import { EmojiService } from './../../../shared/services/emoji.service';
+import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
   selector: 'app-item-list',
@@ -34,7 +34,7 @@ export class ItemListComponent implements OnInit, OnChanges {
 
   items$: Observable<EventItem[]>;
 
-  constructor(private afs: AngularFirestore, public emojiService: EmojiService) {}
+  constructor(private afs: AngularFirestore, public emojiService: EmojiService, public dateService: DateService) {}
 
   ngOnInit() {
     this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
@@ -62,9 +62,5 @@ export class ItemListComponent implements OnInit, OnChanges {
   ngOnChanges() {
     this.dateFilter$.next(this.date);
     this.courseFilter$.next(this.filter);
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
   }
 }

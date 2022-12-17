@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
-import { fromUnixTime, isSameDay, isSameMonth, startOfDay, startOfWeek, sub } from 'date-fns';
+import { startOfDay, startOfWeek, sub } from 'date-fns';
 
 import { NavController, ToastController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -13,8 +13,8 @@ import { formatDate } from '@angular/common';
 import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
 
-import { Timestamp } from '@firebase/firestore-types';
 import { EmojiService } from './../../../shared/services/emoji.service';
+import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
   selector: 'app-calendar-list-view',
@@ -43,7 +43,8 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
     private afs: AngularFirestore,
     private navCtrl: NavController,
     private toastController: ToastController,
-    public emojiService: EmojiService
+    public emojiService: EmojiService,
+    public dateService: DateService
   ) {}
 
   ngOnInit() {
@@ -77,18 +78,6 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
     this.navCtrl.navigateForward(['calendario/evento', item.id], {
       state: { item: item },
     });
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(parseInt(timestamp.seconds.toString()));
-  }
-
-  dayCompare(date1: Timestamp, date2: Timestamp): boolean {
-    return isSameDay(fromUnixTime(date1.seconds), fromUnixTime(date2.seconds));
-  }
-
-  monthCompare(date1: Timestamp, date2: Timestamp): boolean {
-    return isSameMonth(fromUnixTime(date1.seconds), fromUnixTime(date2.seconds));
   }
 
   formatDate(date: Date): string {

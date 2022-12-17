@@ -25,6 +25,7 @@ import { trace } from '@angular/fire/compat/performance';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { serverTimestamp } from '@angular/fire/firestore';
 import { EmojiService } from './../shared/services/emoji.service';
+import { DateService } from 'src/app/shared/services/date.service';
 
 @UntilDestroy()
 @Component({
@@ -83,7 +84,8 @@ export class PageSubscriptionPage implements OnInit {
     private toastController: ToastController,
     public enrollmentTypes: EnrollmentTypesService,
     private formBuilder: FormBuilder,
-    public emojiService: EmojiService
+    public emojiService: EmojiService,
+    public dateService: DateService
   ) {}
 
   ngOnInit() {
@@ -122,7 +124,7 @@ export class PageSubscriptionPage implements OnInit {
         } else {
           // If majorEventID is valid, check if subscriptions are open
           const majorEvent = document.data() as MajorEventItem;
-          if (this.getDateFromTimestamp(majorEvent.eventEndDate) < this.today) {
+          if (this.dateService.getDateFromTimestamp(majorEvent.eventEndDate) < this.today) {
             this.router.navigate(['eventos']);
 
             this.eventOutOfSubscriptionDate.fire();
@@ -181,7 +183,10 @@ export class PageSubscriptionPage implements OnInit {
             this.eventSchedule.push(eventItem);
 
             // If there are no slots available, add event to form with disabled selection
-            if (eventItem.slotsAvailable <= 0 || this.getDateFromTimestamp(eventItem.eventStartDate) < this.today) {
+            if (
+              eventItem.slotsAvailable <= 0 ||
+              this.dateService.getDateFromTimestamp(eventItem.eventStartDate) < this.today
+            ) {
               this.dataForm.addControl(eventItem.id, this.formBuilder.control({ value: null, disabled: true }));
             } else {
               this.dataForm.addControl(eventItem.id, this.formBuilder.control(null));
@@ -347,15 +352,6 @@ export class PageSubscriptionPage implements OnInit {
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);
     return formated;
-  }
-
-  getDateFromTimestamp(timestamp: Timestamp): Date {
-    return fromUnixTime(timestamp.seconds);
-  }
-
-  // Ununsed
-  isBetweenDates(date1: Date, date2: Date, dateToCompare: Date): boolean {
-    return compareAsc(date1, dateToCompare) === -1 && compareAsc(dateToCompare, date2) === -1;
   }
 
   goToConfirmSubscription() {
@@ -525,7 +521,10 @@ export class PageSubscriptionPage implements OnInit {
     const eventsSelected: EventItem[] = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
 
     eventsSelected.sort((a, b) => {
-      return compareAsc(this.getDateFromTimestamp(a.eventStartDate), this.getDateFromTimestamp(b.eventStartDate));
+      return compareAsc(
+        this.dateService.getDateFromTimestamp(a.eventStartDate),
+        this.dateService.getDateFromTimestamp(b.eventStartDate)
+      );
     });
 
     const modal = await this.modalController.create({
@@ -565,14 +564,14 @@ export class PageSubscriptionPage implements OnInit {
 
     const eventIndex = this.eventSchedule.findIndex((e) => e.id === eventItem.id);
 
-    const eventItemStartDate = this.getDateFromTimestamp(eventItem.eventStartDate);
-    const eventItemEndDate = this.getDateFromTimestamp(eventItem.eventEndDate);
+    const eventItemStartDate = this.dateService.getDateFromTimestamp(eventItem.eventStartDate);
+    const eventItemEndDate = this.dateService.getDateFromTimestamp(eventItem.eventEndDate);
 
     if (checked) {
       // For every event after eventIndex
       for (let i = eventIndex + 1; i < this.eventSchedule.length; i++) {
-        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
-        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+        const eventIterationStartDate = this.dateService.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationEndDate = this.dateService.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
         // If event doesn't overlap or if it's itself, break
         if (
           eventItemStartDate >= eventIterationEndDate ||
@@ -596,8 +595,8 @@ export class PageSubscriptionPage implements OnInit {
 
       // For every event before eventIdex
       for (let i = eventIndex - 1; i >= 0; i--) {
-        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
-        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+        const eventIterationStartDate = this.dateService.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationEndDate = this.dateService.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
 
         // If event doesn't overlap or if it's itself, break
         if (
@@ -622,7 +621,7 @@ export class PageSubscriptionPage implements OnInit {
     } else {
       // For every event after eventIndex
       for (let i = eventIndex + 1; i < this.eventSchedule.length; i++) {
-        const eventIterationStartDate = this.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
+        const eventIterationStartDate = this.dateService.getDateFromTimestamp(this.eventSchedule[i].eventStartDate);
 
         // If event doesn't overlap, break
         if (eventIterationStartDate >= eventItemEndDate) {
@@ -648,7 +647,7 @@ export class PageSubscriptionPage implements OnInit {
 
       // For every event before eventIdex
       for (let i = eventIndex - 1; i >= 0; i--) {
-        const eventIterationEndDate = this.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
+        const eventIterationEndDate = this.dateService.getDateFromTimestamp(this.eventSchedule[i].eventEndDate);
 
         // If event doesn't overlap, break
         if (eventIterationEndDate <= eventItemStartDate) {
