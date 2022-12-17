@@ -27,18 +27,18 @@
         <ion-item lines="none">
           Evento
           <span slot="end">
-            {{ getDateFromTimestamp(majorEvent.eventStartDate) | date: 'dd/MM' }}
-            {{ majorEvent.eventEndDate && '- ' + (getDateFromTimestamp(majorEvent.eventEndDate) | date: 'dd/MM') }}
+            {{ getDateFromTimestamp(majorEvent.eventStartDate) | date : 'dd/MM' }}
+            {{ majorEvent.eventEndDate && '- ' + (getDateFromTimestamp(majorEvent.eventEndDate) | date : 'dd/MM') }}
           </span>
         </ion-item>
 
         <ion-item lines="none" *ngIf="majorEvent.subscriptionStartDate && majorEvent.subscriptionEndDate">
           Inscrição
           <span slot="end">
-            {{ getDateFromTimestamp(majorEvent.subscriptionStartDate) | date: 'dd/MM' }}
+            {{ getDateFromTimestamp(majorEvent.subscriptionStartDate) | date : 'dd/MM' }}
             {{
               majorEvent.subscriptionEndDate &&
-                '- ' + (getDateFromTimestamp(majorEvent.subscriptionEndDate) | date: 'dd/MM')
+                '- ' + (getDateFromTimestamp(majorEvent.subscriptionEndDate) | date : 'dd/MM')
             }}
           </span>
         </ion-item>
@@ -63,35 +63,35 @@
         <ng-template #singlePrice>
           <ion-item lines="none">
             Preço único
-            <span slot="end">{{ majorEvent.price.single | currency: 'BRL' }}</span>
+            <span slot="end">{{ majorEvent.price.single | currency : 'BRL' }}</span>
           </ion-item>
         </ng-template>
 
         <ng-template #multiPrice>
           <ion-item lines="none" *ngIf="subscriptionType === '0' && majorEvent.price.students">
             {{ enrollmentTypes.getEnrollmentType(0) }}
-            <span slot="end">{{ majorEvent.price.students | currency: 'BRL' }}</span>
+            <span slot="end">{{ majorEvent.price.students | currency : 'BRL' }}</span>
           </ion-item>
 
           <ion-item lines="none" *ngIf="subscriptionType === '1' && majorEvent.price.otherStudents">
             {{ enrollmentTypes.getEnrollmentType(1) }}
-            <span slot="end">{{ majorEvent.price.otherStudents | currency: 'BRL' }}</span>
+            <span slot="end">{{ majorEvent.price.otherStudents | currency : 'BRL' }}</span>
           </ion-item>
 
           <ion-item lines="none" *ngIf="subscriptionType === '2' && majorEvent.price.professors">
             {{ enrollmentTypes.getEnrollmentType(2) }}
-            <span slot="end">{{ majorEvent.price.professors | currency: 'BRL' }}</span>
+            <span slot="end">{{ majorEvent.price.professors | currency : 'BRL' }}</span>
           </ion-item>
         </ng-template>
       </div>
 
       <div class="card-section ion-padding-horizontal">
         <p>
-          {{ minicursosCount | number: '2.0-0' }} de {{ majorEvent.maxCourses | number: '2.0-0' }} minicursos
+          {{ minicursosCount | number : '2.0-0' }} de {{ majorEvent.maxCourses | number : '2.0-0' }} minicursos
           selecionados
         </p>
         <p>
-          {{ palestrasCount | number: '2.0-0' }} de {{ majorEvent.maxLectures | number: '2.0-0' }} palestras
+          {{ palestrasCount | number : '2.0-0' }} de {{ majorEvent.maxLectures | number : '2.0-0' }} palestras
           selecionados
         </p>
       </div>
@@ -107,12 +107,17 @@
         </ion-item-divider>
         <ion-list>
           <ion-item>
-            <img [src]="getEmoji(event.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
+            <img
+              [src]="emojiService.getEmoji(event.icon)"
+              class="twemoji"
+              slot="start"
+              aria-hidden="true"
+              loading="lazy" />
             <ion-label>
               <h3>{{ event.name }}</h3>
               <h4>
-                {{ getDateFromTimestamp(event.eventStartDate) | date: 'HH:mm' }}
-                {{ event.eventEndDate && ' às ' + (getDateFromTimestamp(event.eventEndDate) | date: 'HH:mm') }}
+                {{ getDateFromTimestamp(event.eventStartDate) | date : 'HH:mm' }}
+                {{ event.eventEndDate && ' às ' + (getDateFromTimestamp(event.eventEndDate) | date : 'HH:mm') }}
               </h4>
             </ion-label>
           </ion-item>

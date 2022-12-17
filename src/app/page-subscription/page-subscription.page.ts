@@ -22,10 +22,9 @@ import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { trace } from '@angular/fire/compat/performance';
 
-import { parse } from 'twemoji-parser';
-import { DomSanitizer } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { serverTimestamp } from '@angular/fire/firestore';
+import { EmojiService } from './../shared/services/emoji.service';
 
 @UntilDestroy()
 @Component({
@@ -76,7 +75,6 @@ export class PageSubscriptionPage implements OnInit {
   isEventScheduleBeingChecked: boolean = false;
 
   constructor(
-    private sanitizer: DomSanitizer,
     public afs: AngularFirestore,
     public auth: AngularFireAuth,
     private router: Router,
@@ -84,7 +82,8 @@ export class PageSubscriptionPage implements OnInit {
     private modalController: ModalController,
     private toastController: ToastController,
     public enrollmentTypes: EnrollmentTypesService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public emojiService: EmojiService
   ) {}
 
   ngOnInit() {
@@ -670,13 +669,6 @@ export class PageSubscriptionPage implements OnInit {
       }
     }
     this.isEventScheduleBeingChecked = false;
-  }
-
-  getEmoji(emoji: string): any {
-    if (emoji === undefined) {
-      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
-    }
-    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 
   async showEventInfo(event: EventItem) {

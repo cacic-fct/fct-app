@@ -10,8 +10,6 @@ import { EventItem } from 'src/app/shared/services/event';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { Timestamp } from '@firebase/firestore-types';
 
-import { parse } from 'twemoji-parser';
-import { DomSanitizer } from '@angular/platform-browser';
 import { formatDate } from '@angular/common';
 
 import { documentId } from 'firebase/firestore';
@@ -38,7 +36,6 @@ export class PageMoreInfoPage implements OnInit {
     public afs: AngularFirestore,
     public auth: AngularFireAuth,
     public enrollmentTypes: EnrollmentTypesService,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute
   ) {}
 
@@ -122,12 +119,5 @@ export class PageMoreInfoPage implements OnInit {
 
   dayCompare(date1: Timestamp, date2: Timestamp): boolean {
     return isSameDay(fromUnixTime(date1.seconds), fromUnixTime(date2.seconds));
-  }
-
-  getEmoji(emoji: string): any {
-    if (emoji === undefined) {
-      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
-    }
-    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 }

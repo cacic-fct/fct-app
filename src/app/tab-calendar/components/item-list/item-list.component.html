@@ -5,7 +5,7 @@
       style="cursor: pointer"
       [style.--background]="courses[item.course] ? courses[item.course].color + '25' : undefined"
       [routerLink]="['./evento', item.id]">
-      <img [src]="getEmoji(item.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
+      <img [src]="emojiService.getEmoji(item.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
 
       <ion-label>
         <h2 class="ion-text-wrap">{{ item.name }}</h2>
@@ -16,12 +16,12 @@
       </ion-label>
       <div slot="end">
         <h4 style="font-weight: 400; margin: 5px 0 0 0" class="ion-text-center">
-          {{ getDateFromTimestamp(item.eventStartDate) | date: 'HH:mm' }}
+          {{ getDateFromTimestamp(item.eventStartDate) | date : 'HH:mm' }}
         </h4>
         <ng-container *ngIf="item.eventEndDate">
           <p style="font-size: 10px; margin: 0" class="ion-text-center">–</p>
           <h4 style="font-weight: 400; margin: 0 0 5px 0" class="ion-text-center">
-            {{ getDateFromTimestamp(item.eventEndDate) | date: 'HH:mm' }}
+            {{ getDateFromTimestamp(item.eventEndDate) | date : 'HH:mm' }}
           </h4>
         </ng-container>
       </div>

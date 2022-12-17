@@ -3,20 +3,18 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
-import { parse } from 'twemoji-parser';
-
 import { fromUnixTime, isSameDay, isSameMonth, startOfDay, startOfWeek, sub } from 'date-fns';
 
 import { NavController, ToastController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
 
 import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
 
 import { Timestamp } from '@firebase/firestore-types';
+import { EmojiService } from './../../../shared/services/emoji.service';
 
 @Component({
   selector: 'app-calendar-list-view',
@@ -44,8 +42,8 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
   constructor(
     private afs: AngularFirestore,
     private navCtrl: NavController,
-    private sanitizer: DomSanitizer,
-    private toastController: ToastController
+    private toastController: ToastController,
+    public emojiService: EmojiService
   ) {}
 
   ngOnInit() {
@@ -83,14 +81,6 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
 
   getDateFromTimestamp(timestamp: Timestamp): Date {
     return fromUnixTime(parseInt(timestamp.seconds.toString()));
-  }
-
-  getEmoji(emoji: string): any {
-    if (emoji === undefined || !/^\p{Emoji}|\p{Emoji_Modifier}$/u.test(emoji)) {
-      // TODO: validar apenas 1 emoji
-      return this.sanitizer.bypassSecurityTrustResourceUrl(parse('❔')[0].url);
-    }
-    return this.sanitizer.bypassSecurityTrustResourceUrl(parse(emoji)[0].url);
   }
 
   dayCompare(date1: Timestamp, date2: Timestamp): boolean {
