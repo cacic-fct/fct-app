@@ -8,6 +8,7 @@ import { take, map, Observable } from 'rxjs';
 
 import { MajorEventItem } from '../shared/services/major-event.service';
 import { MajorEventSubscription } from './../shared/services/major-event.service';
+import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
   selector: 'app-tab-events',
@@ -22,7 +23,7 @@ export class TabEventsPage {
   >;
   today: Date = new Date();
 
-  constructor(public afs: AngularFirestore, public auth: AngularFireAuth) {}
+  constructor(public afs: AngularFirestore, public auth: AngularFireAuth, public dateService: DateService) {}
 
   ngOnInit() {
     this.auth.user.pipe(take(1)).subscribe((user) => {

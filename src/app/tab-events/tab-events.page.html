@@ -28,16 +28,17 @@
             <ion-item lines="none">
               Evento
               <span slot="end">
-                {{ getDateFromTimestamp(event.eventStartDate) | date: 'dd/MM' }} {{ event.eventEndDate && '- ' +
-                (getDateFromTimestamp(event.eventEndDate) | date: 'dd/MM') }}
+                <!-- prettier-ignore -->
+                {{ dateService.getDateFromTimestamp(event.eventStartDate) | date: 'dd/MM' }} {{ event.eventEndDate && '-' + (dateService.getDateFromTimestamp(event.eventEndDate) | date: 'dd/MM') }}
               </span>
             </ion-item>
 
             <ion-item lines="none" *ngIf="event.subscriptionStartDate && event.subscriptionEndDate">
               Inscrição
               <span slot="end">
-                {{ getDateFromTimestamp(event.subscriptionStartDate) | date: 'dd/MM' }} {{ event.subscriptionEndDate &&
-                '- ' + (getDateFromTimestamp(event.subscriptionEndDate) | date: 'dd/MM') }}
+                {{ dateService.getDateFromTimestamp(event.subscriptionStartDate) | date: 'dd/MM' }} {{
+                event.subscriptionEndDate && '- ' + (dateService.getDateFromTimestamp(event.subscriptionEndDate) | date:
+                'dd/MM') }}
               </span>
             </ion-item>
           </div>
@@ -85,7 +86,7 @@
 
           <div class="ion-padding">
             <ng-container
-              *ngIf="(event.subscriptionStartDate && event.subscriptionEndDate) && isTodayBetweenDates(getDateFromTimestamp(event.subscriptionStartDate), getDateFromTimestamp(event.subscriptionEndDate))">
+              *ngIf="(event.subscriptionStartDate && event.subscriptionEndDate) && isTodayBetweenDates(dateService.getDateFromTimestamp(event.subscriptionStartDate), dateService.getDateFromTimestamp(event.subscriptionEndDate))">
               <ng-container *ngIf="event.isSubscribed | async as isSubscribed; else notSubscribed">
                 <ion-button *ngIf="isSubscribed" [routerLink]="['/inscricoes']">
                   <ion-icon slot="start" name="checkmark"></ion-icon> Inscrito

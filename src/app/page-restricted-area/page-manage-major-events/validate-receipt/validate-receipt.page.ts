@@ -15,6 +15,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { AlertController, IonModal } from '@ionic/angular';
 import { serverTimestamp } from '@angular/fire/firestore';
+import { DateService } from 'src/app/shared/services/date.service';
 
 @UntilDestroy()
 @Component({
@@ -39,7 +40,8 @@ export class ValidateReceiptPage implements OnInit {
     private afs: AngularFirestore,
     private auth: AngularFireAuth,
     private formBuilder: FormBuilder,
-    private alertController: AlertController
+    private alertController: AlertController,
+    public dateService: DateService
   ) {}
 
   ngOnInit() {

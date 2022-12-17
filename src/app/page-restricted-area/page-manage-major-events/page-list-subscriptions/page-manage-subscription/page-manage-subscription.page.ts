@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Observable, map, take, combineLatest } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
+import { DateService } from 'src/app/shared/services/date.service';
 
 @UntilDestroy()
 @Component({
@@ -27,7 +28,12 @@ export class PageManageSubscriptionPage implements OnInit {
 
   eventsUserIsSubscribedTo$: Observable<EventItem[]>;
 
-  constructor(private route: ActivatedRoute, private afs: AngularFirestore, private auth: AngularFireAuth) {}
+  constructor(
+    private route: ActivatedRoute,
+    private afs: AngularFirestore,
+    private auth: AngularFireAuth,
+    public dateService: DateService
+  ) {}
 
   ngOnInit() {
     this.userData$ = this.afs.doc<User>(`users/${this.subscriptionID}`).valueChanges().pipe(untilDestroyed(this));
