@@ -1,11 +1,11 @@
 // @ts-strict-ignore
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { CoursesService } from 'src/app/shared/services/courses.service';
+import { DateService } from './../../../shared/services/date.service';
 
 import { startOfDay, startOfWeek, sub } from 'date-fns';
 
-import { NavController, ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
@@ -13,17 +13,12 @@ import { formatDate } from '@angular/common';
 import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
 
-import { EmojiService } from './../../../shared/services/emoji.service';
-import { DateService } from 'src/app/shared/services/date.service';
-
 @Component({
   selector: 'app-calendar-list-view',
   templateUrl: './calendar-list-view.component.html',
   styleUrls: ['./calendar-list-view.component.scss'],
 })
 export class CalendarListViewComponent implements OnInit, OnChanges {
-  courses = CoursesService.courses;
-
   @Input() filter: {
     courses: Array<string>;
   };
@@ -41,9 +36,7 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
 
   constructor(
     private afs: AngularFirestore,
-    private navCtrl: NavController,
     private toastController: ToastController,
-    public emojiService: EmojiService,
     public dateService: DateService
   ) {}
 
@@ -72,12 +65,6 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.courseFilter$.next(this.filter);
-  }
-
-  public openItem(item: any): void {
-    this.navCtrl.navigateForward(['calendario/evento', item.id], {
-      state: { item: item },
-    });
   }
 
   formatDate(date: Date): string {
