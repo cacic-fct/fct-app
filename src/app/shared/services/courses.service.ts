@@ -1,6 +1,5 @@
-// @ts-strict-ignore
 export class CoursesService {
-  public static courses = {
+  public static courses: courseList = {
     a1: {
       name: 'Para todos os cursos',
     },
@@ -51,4 +50,11 @@ export class CoursesService {
         return 'Vínculo inválido';
     }
   }
+}
+
+interface courseList {
+  [key: string]: {
+    name: string;
+    color?: string;
+  };
 }
