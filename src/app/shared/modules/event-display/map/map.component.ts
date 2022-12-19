@@ -12,8 +12,11 @@ import VectorSource from 'ol/source/Vector';
 
 import { EventItem } from '../../../services/event';
 
+/**
+ * Requires the eventItem input to be passed in.
+ */
 @Component({
-  selector: 'app-event-display-map',
+  selector: 'app-event-display-map[eventItem]',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })

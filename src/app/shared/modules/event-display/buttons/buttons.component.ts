@@ -9,8 +9,11 @@ import { EventItem } from '../../../services/event';
 import { serverTimestamp } from '@angular/fire/firestore';
 import { trace } from '@angular/fire/compat/performance';
 
+/**
+ * Requires the eventItem input to be passed in.
+ */
 @Component({
-  selector: 'app-event-display-buttons',
+  selector: 'app-event-display-buttons[eventItem]',
   templateUrl: './buttons.component.html',
   styleUrls: ['./buttons.component.scss'],
 })

@@ -9,8 +9,11 @@ import { StringManagementService } from './../../../services/string-management.s
 import { EmojiService } from './../../../services/emoji.service';
 import { EventItem } from '../../../services/event';
 
+/**
+ * Requires the eventItem input to be passed in.
+ */
 @Component({
-  selector: 'app-event-display-header',
+  selector: 'app-event-display-header[eventItem]',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
