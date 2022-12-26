@@ -25,7 +25,6 @@ export interface EventItem {
   eventType?: string;
   public?: boolean;
   issueCertificate?: boolean;
-  doublePresence?: boolean;
   collectAttendance?: boolean;
   eventGroup?: string[];
   createdBy: string;
@@ -34,6 +33,10 @@ export interface EventItem {
   attendanceCollectionEnd?: Timestamp;
   attendanceCode?: string;
   allowSubscription?: boolean;
+  /**
+   * Carga-horária em horas
+   */
+  creditHours?: number;
 }
 
 export interface EventSubscription {
