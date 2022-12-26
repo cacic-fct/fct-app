@@ -1,6 +1,7 @@
 import { Timestamp } from '@firebase/firestore-types';
+import { CertificateIssuingInProgress } from './certificates.service';
 
-export interface EventItem {
+export interface EventItem extends CertificateIssuingInProgress {
   name: string;
   icon: string;
   course: string;
@@ -25,7 +26,6 @@ export interface EventItem {
   eventType?: string;
   public?: boolean;
   issueCertificate?: boolean;
-  doublePresence?: boolean;
   collectAttendance?: boolean;
   eventGroup?: string[];
   createdBy: string;
@@ -34,6 +34,10 @@ export interface EventItem {
   attendanceCollectionEnd?: Timestamp;
   attendanceCode?: string;
   allowSubscription?: boolean;
+  /**
+   * Carga-horária em horas
+   */
+  creditHours?: number;
 }
 
 export interface EventSubscription {
