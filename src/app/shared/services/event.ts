@@ -1,6 +1,7 @@
 import { Timestamp } from '@firebase/firestore-types';
+import { CertificateIssuingInProgress } from './certificates.service';
 
-export interface EventItem {
+export interface EventItem extends CertificateIssuingInProgress {
   name: string;
   icon: string;
   course: string;
