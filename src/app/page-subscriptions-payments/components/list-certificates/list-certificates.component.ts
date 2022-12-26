@@ -1,7 +1,6 @@
+import { MailtoService, Mailto } from './../../../shared/services/mailto.service';
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-
-import { Mailto, NgxMailtoService } from 'ngx-mailto';
 
 import { User } from '@firebase/auth';
 
@@ -21,7 +20,7 @@ export class ListCertificatesComponent implements OnInit {
   constructor(
     private genpdf: GeneratePdfCertificateService,
     private modalController: ModalController,
-    private mailtoService: NgxMailtoService
+    private mailtoService: MailtoService
   ) {
     this.userData = JSON.parse(localStorage.getItem('user') as string);
   }
