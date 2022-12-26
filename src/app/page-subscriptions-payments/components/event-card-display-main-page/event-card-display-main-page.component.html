@@ -5,7 +5,6 @@
         <ng-container *ngIf="!eventItem.eventGroup; else eventGroupDescription">
           <app-event-card [eventSubscription]="eventSubscription"></app-event-card>
         </ng-container>
-
         <ng-template #eventGroupDescription>
           <ion-card>
             <ng-container *ngIf="eventItem.eventGroup">
@@ -21,3 +20,7 @@
     </ng-container>
   </ng-container>
 </ng-container>
+
+<ng-template #loadingSpinner>
+  <ion-spinner name="dots" style="margin: 0 auto; display: block"></ion-spinner>
+</ng-template>
