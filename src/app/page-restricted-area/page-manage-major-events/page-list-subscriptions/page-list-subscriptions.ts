@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
@@ -11,6 +12,7 @@ import { EventItem } from 'src/app/shared/services/event';
 import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventSubscription, MajorEventItem } from './../../../shared/services/major-event.service';
+import { DateService } from 'src/app/shared/services/date.service';
 
 interface Subscription extends MajorEventSubscription {
   id: string;
@@ -38,7 +40,8 @@ export class PageListSubscriptions implements OnInit {
     private afs: AngularFirestore,
     private router: Router,
     private route: ActivatedRoute,
-    public courses: CoursesService
+    public courses: CoursesService,
+    public dateService: DateService
   ) {}
 
   ngOnInit() {
