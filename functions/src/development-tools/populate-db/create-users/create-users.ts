@@ -12,9 +12,9 @@ import {
   professorDataFirestoreDocument,
   externalData,
   externalDataFirestoreDocument,
-} from './userData';
+} from './user-data';
 
-exports.createAdminUser = functions.https.onRequest(() => {
+exports.createAdminUser = functions.https.onCall(() => {
   const firestore = admin.firestore();
 
   getAuth()
@@ -50,9 +50,10 @@ exports.createAdminUser = functions.https.onRequest(() => {
           console.error('Error writing admin data to database:', error);
         });
     });
+  return { success: true };
 });
 
-exports.createUndergraduateUser = functions.https.onRequest(() => {
+exports.createUndergraduateUser = functions.https.onCall(() => {
   const firestore = admin.firestore();
 
   getAuth()
@@ -70,9 +71,10 @@ exports.createUndergraduateUser = functions.https.onRequest(() => {
     .catch((error) => {
       console.error('Error creating undergraduate user:', error);
     });
+  return { success: true };
 });
 
-exports.createProfessorUser = functions.https.onRequest(() => {
+exports.createProfessorUser = functions.https.onCall(() => {
   const firestore = admin.firestore();
 
   getAuth()
@@ -111,9 +113,10 @@ exports.createProfessorUser = functions.https.onRequest(() => {
     .catch((error) => {
       console.error('Error creating professor user:', error);
     });
+  return { success: true };
 });
 
-exports.createExternalUser = functions.https.onRequest(() => {
+exports.createExternalUser = functions.https.onCall(() => {
   const firestore = admin.firestore();
 
   getAuth()
@@ -131,4 +134,5 @@ exports.createExternalUser = functions.https.onRequest(() => {
     .catch((error) => {
       console.error('Error creating external user:', error);
     });
+  return { success: true };
 });
