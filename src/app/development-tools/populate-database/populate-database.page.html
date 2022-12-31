@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="development-tools"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Popular banco de dados</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-button (click)="createAdmin()">Click</ion-button>
+  <form>
+    <ion-list>
+      <ion-item-group>
+        <ion-item-divider>
+          <ion-label>Autenticação</ion-label>
+        </ion-item-divider>
+
+        <ion-item>
+          <ion-checkbox slot="start"></ion-checkbox>
+          <ion-label>
+            Conta de admin
+            <p>1x - Aluno de graduação com claim de admin</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-checkbox slot="start"></ion-checkbox>
+          <ion-label>Conta de graduação</ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-checkbox slot="start"></ion-checkbox>
+          <ion-label>Conta de professor</ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-checkbox slot="start"></ion-checkbox>
+          <ion-label>Conta de usuário externo</ion-label>
+        </ion-item>
+      </ion-item-group>
+
+      <ion-item-group>
+        <ion-item-divider>
+          <ion-label>Eventos</ion-label>
+        </ion-item-divider>
+        <ion-item>
+          <ion-checkbox slot="start"></ion-checkbox>
+          <ion-label>
+            Grande evento
+            <p>1x - Pago, com inscrição aberta e data futura</p>
+            <p>
+              Também cria para cada grande evento: <br />
+              2x - Evento comum<br />
+              1x - Grupo de eventos
+            </p>
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-checkbox slot="start"></ion-checkbox>
+          <ion-label>Eventos comuns</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-checkbox slot="start"></ion-checkbox>
+          <ion-label>Grupo de eventos</ion-label>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+  </form>
+</ion-content>

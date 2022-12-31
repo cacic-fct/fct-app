@@ -3,9 +3,15 @@ import * as admin from 'firebase-admin';
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
+import * as populate_db from './development-tools/populate-db/populate-db';
+
+import { FieldValue } from 'firebase-admin/firestore';
+
 initializeApp({
   credential: applicationDefault(),
 });
+
+exports.populate_db = populate_db;
 
 // Attribution: The Net Ninja
 // https://youtube.com/watch?v=VvcBqPua2DI&list=PL4cUxeGkcC9jUPIes_B8vRjn1_GaplOPQ
@@ -39,22 +45,7 @@ exports.addAdminRole = functions.https.onCall((data, context) => {
       const firestore = admin.firestore();
       const document = firestore.doc('claims/admin');
 
-      // Get admin array from document
-      document.get().then((doc) => {
-        if (doc.exists && doc.data()?.admins) {
-          // Add user email to array
-          const adminArray = doc.data()?.admins;
-          adminArray.push(data.email);
-          document.set({
-            admins: adminArray,
-          });
-        } else {
-          // If document or array don't exist, create them
-          document.set({
-            admins: [data.email],
-          });
-        }
-      });
+      document.set({ admins: FieldValue.arrayUnion(data.email) }, { merge: true });
 
       return {
         message: `${data.email} has been made an admin`,
