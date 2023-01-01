@@ -18,7 +18,10 @@ exports.createPaidMajorEvent = functions.https.onCall(() => {
   firestore.collection('events').doc('paidMajorEvent-event2').set(paidMajorEvent_event2, { merge: true });
 
   for (let i = 1; i <= 2; i++) {
-    firestore.collection('events').doc(`paidMajorEvent-event${i}`).set(paidMajorEvent_group_event(i), { merge: true });
+    firestore
+      .collection('events')
+      .doc(`paidMajorEvent-group-event${i}`)
+      .set(paidMajorEvent_group_event(i), { merge: true });
   }
   return { success: true };
 });
