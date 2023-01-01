@@ -195,7 +195,7 @@ exports.createEventSubscription = functions.firestore
     if (numberOfSubscriptions === undefined) {
       return;
     }
-    eventRef.update({ numberOfSubscriptions: admin.firestore.FieldValue.increment(1) });
+    eventRef.update({ numberOfSubscriptions: FieldValue.increment(1) });
   });
 
 exports.createMajorEventSubscription = functions.firestore
@@ -207,7 +207,7 @@ exports.createMajorEventSubscription = functions.firestore
     data.subscribedToEvents.forEach((event: string) => {
       const document = admin.firestore().doc(`events/${event}`);
       document.update({
-        numberOfSubscriptions: admin.firestore.FieldValue.increment(1),
+        numberOfSubscriptions: FieldValue.increment(1),
       });
     });
   });
@@ -233,7 +233,7 @@ exports.updateMajorEventSubscription = functions.firestore
       removedEvents.forEach((event: string) => {
         const document = admin.firestore().doc(`events/${event}`);
         document.update({
-          numberOfSubscriptions: admin.firestore.FieldValue.increment(-1),
+          numberOfSubscriptions: FieldValue.increment(-1),
         });
       });
 
@@ -241,7 +241,7 @@ exports.updateMajorEventSubscription = functions.firestore
       addedEvents.forEach((event: string) => {
         const document = admin.firestore().doc(`events/${event}`);
         document.update({
-          numberOfSubscriptions: admin.firestore.FieldValue.increment(1),
+          numberOfSubscriptions: FieldValue.increment(1),
         });
       });
     }
@@ -290,22 +290,8 @@ exports.addProfessorRole = functions.https.onCall((data, context) => {
           const firestore = admin.firestore();
           const document = firestore.doc('claims/professor');
 
-          // Get professor3000 array from document
-          document.get().then((doc) => {
-            if (doc.exists && doc.data()?.professor3000) {
-              // Add user email to array
-              const professor3000Array = doc.data()?.professor3000;
-              professor3000Array.push(data.email);
-              document.set({
-                professor3000: professor3000Array,
-              });
-            } else {
-              // If document or array don't exist, create them
-              document.set({
-                professor3000: [data.email],
-              });
-            }
-          });
+          document.set({ professors: FieldValue.arrayUnion(data.email) }, { merge: true });
+
           return {
             message: `${data.email} has been made a professor`,
           };
