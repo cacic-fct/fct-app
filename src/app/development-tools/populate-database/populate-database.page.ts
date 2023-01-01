@@ -66,7 +66,7 @@ export class PopulateDatabasePage implements OnInit {
   }
 
   createUndergraduate() {
-    const createUndergraduate = this.fns.httpsCallable('populate_db.create_users.createUndergraduateUser');
+    const createUndergraduate = this.fns.httpsCallable('populate_db-create_users-createUndergraduateUser');
     createUndergraduate(null).pipe(take(1)).subscribe();
   }
 
