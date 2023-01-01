@@ -1,4 +1,4 @@
-import { addDays } from 'date-fns';
+import { addDays, addHours } from 'date-fns';
 import { timestampFromDate } from '../../../shared/date.utils';
 
 export const paidMajorEvent_event1 = {
@@ -10,7 +10,7 @@ export const paidMajorEvent_event1 = {
   numberOfSubscriptions: 0,
   icon: '⚛️',
   eventStartDate: timestampFromDate(addDays(new Date(), 4)),
-  eventEndDate: timestampFromDate(addDays(new Date(), 4)),
+  eventEndDate: timestampFromDate(addHours(addDays(new Date(), 4), 1)),
   location: {
     description: 'Null island',
     lat: 0,
@@ -39,7 +39,7 @@ export const paidMajorEvent_event2 = {
   numberOfSubscriptions: 0,
   icon: '🎨',
   eventStartDate: timestampFromDate(addDays(new Date(), 4)),
-  eventEndDate: timestampFromDate(addDays(new Date(), 4)),
+  eventEndDate: timestampFromDate(addHours(addDays(new Date(), 4), 1)),
   location: {
     description: 'Null island',
     lat: 0,
@@ -66,7 +66,7 @@ export const event_data = {
   course: '12',
   icon: '🎮',
   eventStartDate: addDays(new Date(), 1),
-  eventEndDate: addDays(new Date(), 1),
+  eventEndDate: timestampFromDate(addHours(addDays(new Date(), 1), 1)),
   location: {
     description: 'Null island',
     lat: 0,
@@ -100,7 +100,7 @@ export const group_event = (i: number) => {
     icon: '😸',
     numberOfSubscriptions: 0,
     eventStartDate: timestampFromDate(addDays(new Date(), 3 + i)),
-    eventEndDate: timestampFromDate(addDays(new Date(), 3 + i)),
+    eventEndDate: timestampFromDate(addHours(addDays(new Date(), 3 + i), 1)),
     location: {
       description: 'Null island',
       lat: 0,
@@ -135,7 +135,7 @@ export const paidMajorEvent_group_event = (i: number) => {
     icon: '🧑‍💻',
     numberOfSubscriptions: 0,
     eventStartDate: timestampFromDate(addDays(new Date(), 3 + i)),
-    eventEndDate: timestampFromDate(addDays(new Date(), 3 + i)),
+    eventEndDate: timestampFromDate(addHours(addDays(new Date(), 3 + i), 1)),
     location: {
       description: 'Null island',
       lat: 0,
