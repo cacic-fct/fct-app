@@ -8,6 +8,7 @@ export const paidMajorEvent_event1 = {
   course: '12',
   slotsAvailable: 100,
   numberOfSubscriptions: 0,
+  icon: '⚛️',
   eventStartDate: timestampFromDate(addDays(new Date(), 4)),
   eventEndDate: timestampFromDate(addDays(new Date(), 4)),
   location: {
@@ -36,6 +37,7 @@ export const paidMajorEvent_event2 = {
   course: '12',
   slotsAvailable: 100,
   numberOfSubscriptions: 0,
+  icon: '🎨',
   eventStartDate: timestampFromDate(addDays(new Date(), 4)),
   eventEndDate: timestampFromDate(addDays(new Date(), 4)),
   location: {
