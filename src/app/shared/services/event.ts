@@ -27,13 +27,21 @@ export interface EventItem {
   issueCertificate?: boolean;
   doublePresence?: boolean;
   collectAttendance?: boolean;
-  eventGroup?: string[];
+  eventGroup?: {
+    groupEventIDs: string[];
+    groupDisplayName: string;
+    mainEventID: string;
+  };
   createdBy: string;
   createdOn: Timestamp;
   attendanceCollectionStart?: Timestamp;
   attendanceCollectionEnd?: Timestamp;
   attendanceCode?: string;
   allowSubscription?: boolean;
+  /**
+   * Carga-horária em horas
+   */
+  creditHours?: number;
 }
 
 export interface EventSubscription {
