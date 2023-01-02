@@ -12,9 +12,9 @@ export const paidMajorEvent_event1 = {
   eventStartDate: timestampFromDate(addDays(new Date(), 4)),
   eventEndDate: timestampFromDate(addHours(addDays(new Date(), 4), 1)),
   location: {
-    description: 'Null island',
-    lat: 0,
-    lon: 0,
+    description: 'FCT-Unesp',
+    lat: -22.12153,
+    lon: -51.40769,
   },
   button: {
     text: 'Visite nosso site',
@@ -41,9 +41,9 @@ export const paidMajorEvent_event2 = {
   eventStartDate: timestampFromDate(addDays(new Date(), 4)),
   eventEndDate: timestampFromDate(addHours(addDays(new Date(), 4), 1)),
   location: {
-    description: 'Null island',
-    lat: 0,
-    lon: 0,
+    description: 'FCT-Unesp',
+    lat: -22.12153,
+    lon: -51.40769,
   },
   button: {
     text: 'Visite nosso site',
@@ -65,28 +65,23 @@ export const event_data = {
   shortDescription: 'Evento individual',
   course: '12',
   icon: '🎮',
-  eventStartDate: addDays(new Date(), 1),
+  eventStartDate: timestampFromDate(addDays(new Date(), 1)),
   eventEndDate: timestampFromDate(addHours(addDays(new Date(), 1), 1)),
   location: {
-    description: 'Null island',
-    lat: 0,
-    lon: 0,
+    description: 'FCT-Unesp',
+    lat: -22.12153,
+    lon: -51.40769,
   },
   button: {
     text: 'Visite nosso site',
     url: 'https://google.com',
   },
-  eventType: 'minicurso',
   public: true,
   issueCertificate: true,
   collectAttendance: true,
   createdBy: 'populate-db',
   createdOn: timestampFromDate(new Date()),
   allowSubscription: true,
-  eventGroup: {
-    groupEventIDs: ['group-event1', 'group-event2'],
-    groupDisplayName: 'Grupo de eventos',
-    mainEventID: 'paidMajorEvent-event1',
 };
 
 export const event2_data = {
@@ -125,9 +120,9 @@ export const group_event = (i: number) => {
     eventStartDate: timestampFromDate(addDays(new Date(), 3 + i)),
     eventEndDate: timestampFromDate(addHours(addDays(new Date(), 3 + i), 1)),
     location: {
-      description: 'Null island',
-      lat: 0,
-      lon: 0,
+      description: 'FCT-Unesp',
+      lat: -22.12153,
+      lon: -51.40769,
     },
     button: {
       text: 'Visite nosso site',
@@ -160,9 +155,9 @@ export const paidMajorEvent_group_event = (i: number) => {
     eventStartDate: timestampFromDate(addDays(new Date(), 3 + i)),
     eventEndDate: timestampFromDate(addHours(addDays(new Date(), 3 + i), 1)),
     location: {
-      description: 'Null island',
-      lat: 0,
-      lon: 0,
+      description: 'FCT-Unesp',
+      lat: -22.12153,
+      lon: -51.40769,
     },
     button: {
       text: 'Visite nosso site',
