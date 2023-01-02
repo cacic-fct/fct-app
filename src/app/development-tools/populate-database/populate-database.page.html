@@ -7,11 +7,14 @@
     <ion-title>Popular banco de dados</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button (click)="populateDatabase()" fill="clear"
-        ><ion-icon name="play" slot="start"></ion-icon> Popular</ion-button
-      >
+      <ion-button (click)="populateDatabase()" fill="clear" [disabled]="numberOfSelectedCheckboxes === 0">
+        <ion-icon name="play" slot="start"> </ion-icon> Popular
+      </ion-button>
     </ion-buttons>
-    <ion-progress-bar [value]="progress"></ion-progress-bar>
+    <ion-progress-bar
+      [value]="progress"
+      *ngIf="populateStarted"
+      [color]="parseFloat(progress | number: '1.0-1') >= 1 ? 'success': ''"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
@@ -38,7 +41,10 @@
 
         <ion-item>
           <ion-checkbox slot="start" formControlName="createProfessor"></ion-checkbox>
-          <ion-label>Conta de professor</ion-label>
+          <ion-label>
+            Conta de professor
+            <p>1x - Conta @unesp.br com claim de professor</p>
+          </ion-label>
         </ion-item>
 
         <ion-item>
