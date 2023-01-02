@@ -1,3 +1,4 @@
+// TODO: Handle errors
 import { Component, OnInit } from '@angular/core';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { take } from 'rxjs';
