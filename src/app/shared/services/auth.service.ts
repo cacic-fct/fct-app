@@ -61,7 +61,7 @@ export class AuthService {
                     merge: true,
                   });
 
-                  const addProfessor = this.fns.httpsCallable('addProfessorRole');
+                  const addProfessor = this.fns.httpsCallable('claims-addProfessorRole');
                   addProfessor({ email: user.email }).pipe(take(1)).subscribe();
                 }
               });
