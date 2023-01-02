@@ -87,7 +87,30 @@ export const event_data = {
     groupEventIDs: ['group-event1', 'group-event2'],
     groupDisplayName: 'Grupo de eventos',
     mainEventID: 'paidMajorEvent-event1',
+};
+
+export const event2_data = {
+  name: 'Evento sem data de término',
+  description: 'Evento individual',
+  shortDescription: 'Evento individual',
+  course: '12',
+  icon: '🤨',
+  eventStartDate: timestampFromDate(addDays(new Date(), 1)),
+  eventEndDate: null,
+  location: {
+    description: 'FCT-Unesp',
+    lat: -22.12153,
+    lon: -51.40769,
   },
+  button: {
+    text: 'Visite nosso site',
+    url: 'https://google.com',
+  },
+  public: true,
+  issueCertificate: true,
+  collectAttendance: true,
+  createdBy: 'populate-db',
+  createdOn: timestampFromDate(new Date()),
 };
 
 export const group_event = (i: number) => {

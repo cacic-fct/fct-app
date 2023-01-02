@@ -3,6 +3,7 @@ import * as admin from 'firebase-admin';
 import { paidMajorEvent } from './major-event-data';
 import {
   event_data,
+  event2_data,
   group_event,
   paidMajorEvent_event1,
   paidMajorEvent_event2,
@@ -40,5 +41,6 @@ exports.createEvent = functions.https.onCall(() => {
   const firestore = admin.firestore();
 
   firestore.collection('events').doc(`event`).set(event_data, { merge: true });
+  firestore.collection('events').doc(`event2`).set(event2_data, { merge: true });
   return { success: true };
 });
