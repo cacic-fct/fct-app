@@ -297,7 +297,7 @@ export class AuthService {
       }
     }
 
-    const getUserUid = this.fns.httpsCallable('getUserUid');
+    const getUserUid = this.fns.httpsCallable('user_utils-getUserUid');
 
     return getUserUid({ string: manualInput });
   }
