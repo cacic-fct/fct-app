@@ -1,3 +1,5 @@
+import { GroupCreationModalComponent } from './components/group-creation-modal/group-creation-modal.component';
+import { ModalController } from '@ionic/angular';
 // @ts-strict-ignore
 import { GlobalConstantsService } from './../../shared/services/global-constants.service';
 import { AlertController, ToastController } from '@ionic/angular';
@@ -39,7 +41,8 @@ export class PageManageEvents implements OnInit {
     private toastController: ToastController,
     public emojiService: EmojiService,
     public dateService: DateService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private modalController: ModalController
   ) {
     this.dataForm = this.formBuilder.group({
       selectedCheckboxes: this.formBuilder.array([]),
@@ -239,7 +242,8 @@ export class PageManageEvents implements OnInit {
           id: eventItem.id,
           icon: eventItem.icon,
           name: eventItem.name,
-          eventStartDate: this.dateService.getDateFromTimestamp(eventItem.eventStartDate),
+          eventStartDate: eventItem.eventStartDate,
+          eventEndDate: eventItem.eventEndDate,
         })
       );
     } else {
@@ -275,7 +279,9 @@ export class PageManageEvents implements OnInit {
     const alert = await this.alertController.create({
       header: 'Deseja deletar o grupo?',
       subHeader: `${event.eventGroup?.groupDisplayName}`,
-      message: `Este grupo contém ${event.eventGroup.groupEventIDs.length} eventos.`,
+      message: `Um grupo só deve ser deletado se ocorreu algum engano em sua criação.<br><br>
+      Erros acontecerão se o grupo tiver certificados emitidos<br><br>
+      Este grupo contém ${event.eventGroup.groupEventIDs.length} eventos.`,
       buttons: [
         {
           text: 'Não',
@@ -298,12 +304,27 @@ export class PageManageEvents implements OnInit {
       .get()
       .subscribe((events) => {
         events.forEach((event) => {
-          debugger;
           this.afs.doc<EventItem>(`events/${event.id}`).update({
             // @ts-ignore
             eventGroup: deleteField(),
           });
         });
       });
+  }
+
+  async openCreateEventGroupModal() {
+    const modal = await this.modalController.create({
+      component: GroupCreationModalComponent,
+      componentProps: {
+        eventGroup: this.dataForm.get('selectedCheckboxes').value,
+      },
+      backdropDismiss: false,
+    });
+
+    modal.onDidDismiss().then(() => {
+      this.cancelGroupSelection();
+    });
+
+    return await modal.present();
   }
 }

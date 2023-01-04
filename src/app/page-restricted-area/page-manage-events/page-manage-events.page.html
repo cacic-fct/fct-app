@@ -14,6 +14,7 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
   <ion-toolbar *ngIf="groupUnderSelection">
     <ion-buttons slot="start">
       <ion-button (click)="cancelGroupSelection()">
@@ -22,7 +23,9 @@
     </ion-buttons>
     <ion-title>{{groupEventToolbarText(dataForm.get('selectedCheckboxes').value.length)}}</ion-title>
     <ion-buttons slot="primary">
-      <ion-button [disabled]="dataForm.get('selectedCheckboxes').value.length < 2">
+      <ion-button
+        [disabled]="dataForm.get('selectedCheckboxes').value.length < 2"
+        (click)="openCreateEventGroupModal()">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -53,9 +56,10 @@
                 <ion-col>
                   <ion-label>
                     <h1 class="ion-text-wrap">{{item.name}}</h1>
-                    <h4 class="date-item" *ngIf="item.eventStartDate && item.eventEndDate">
+                    <!-- prettier-ignore -->
+                    <h4 class="date-item">
                       Data do evento: {{ dateService.getDateFromTimestamp(item.eventStartDate) | date: 'dd/MM HH:mm' }}
-                      - {{ dateService.getDateFromTimestamp(item.eventEndDate) | date: 'dd/MM HH:mm' }}
+                      {{ item.eventEndDate ? ' - ' + (dateService.getDateFromTimestamp(item.eventEndDate) | date: 'dd/MM HH:mm') : ''}}
                     </h4>
                     <p class="ion-text-wrap" *ngIf="item.course">{{courses.getCourse(item.course)}}</p>
                     <p class="ion-text-wrap" *ngIf="item.inMajorEventName | async as majorEventName">
