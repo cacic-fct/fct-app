@@ -198,11 +198,12 @@ export class PageSubscriptionPage implements OnInit {
                   .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
                   .get()
                   .subscribe((document) => {
-                    // TODO: Remove me. This is for secompp22 only
-                    if (eventItem.eventType === 'palestra') {
+                    /* Autoselects and disabled palestras
+                    Used during SECOMPP22 when palestras were mandatory
+                     if (eventItem.eventType === 'palestra') {
                       this.dataForm.get(eventItem.id).setValue(true);
                       this.dataForm.get(eventItem.id).disable();
-                    }
+                    }*/
                     ///
 
                     if (document.exists) {
@@ -263,7 +264,7 @@ export class PageSubscriptionPage implements OnInit {
             return;
           }
 
-          if (!this.groupInSelection && event.eventGroup.groupEventIDs) {
+          if (!this.groupInSelection && event.eventGroup?.groupEventIDs) {
             this.groupInSelection = true;
             event.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
               if (eventFromGroup === event.id) {
@@ -301,7 +302,7 @@ export class PageSubscriptionPage implements OnInit {
           case 'minicurso':
             this.eventsSelected['minicurso'] = this.eventsSelected['minicurso'].filter((e) => e.id !== event.id);
 
-            if (!this.groupInSelection && event.eventGroup.groupEventIDs) {
+            if (!this.groupInSelection && event.eventGroup?.groupEventIDs) {
               this.groupInSelection = true;
               event.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
                 if (eventFromGroup === event.id) {
@@ -575,11 +576,10 @@ export class PageSubscriptionPage implements OnInit {
         ) {
           break;
         }
-
         // If event overlaps, disable it
 
-        if (this.eventSchedule[i].eventGroup.groupEventIDs) {
-          this.eventSchedule[i].eventGroup.groupEventIDs.forEach((event) => {
+        if (this.eventSchedule[i].eventGroup?.groupEventIDs) {
+          this.eventSchedule[i].eventGroup?.groupEventIDs.forEach((event) => {
             this.dataForm.get(event).disable();
           });
         } else {
@@ -604,7 +604,7 @@ export class PageSubscriptionPage implements OnInit {
 
         // If event overlaps, disable it
 
-        if (this.eventSchedule[i].eventGroup.groupEventIDs) {
+        if (this.eventSchedule[i].eventGroup?.groupEventIDs) {
           this.eventSchedule[i].eventGroup.groupEventIDs.forEach((event) => {
             this.dataForm.get(event).disable();
           });
@@ -625,19 +625,19 @@ export class PageSubscriptionPage implements OnInit {
 
         // If event overlaps, enable it
 
-        // TODO: Remove me. This is for secompp22 only
-        if (this.eventSchedule[i].eventType !== 'palestra') {
-          //////
-          if (this.eventSchedule[i].slotsAvailable > 0) {
-            if (this.eventSchedule[i].eventGroup.groupEventIDs) {
-              this.eventSchedule[i].eventGroup.groupEventIDs.forEach((event) => {
-                this.dataForm.get(event).enable();
-              });
-            } else {
-              this.dataForm.get(this.eventSchedule[i].id).enable();
-            }
+        /* Keeps event disabled if it's a palestra.
+         Used during SECOMPP22 where palestras were mandatory
+         if (this.eventSchedule[i].eventType !== 'palestra') { */
+        if (this.eventSchedule[i].slotsAvailable > 0) {
+          if (this.eventSchedule[i].eventGroup?.groupEventIDs) {
+            this.eventSchedule[i].eventGroup.groupEventIDs.forEach((event) => {
+              this.dataForm.get(event).enable();
+            });
+          } else {
+            this.dataForm.get(this.eventSchedule[i].id).enable();
           }
         }
+        // }
       }
 
       // For every event before eventIdex
@@ -652,7 +652,7 @@ export class PageSubscriptionPage implements OnInit {
         // If event overlaps, enable it
 
         if (this.eventSchedule[i].eventType !== 'palestra') {
-          if (this.eventSchedule[i].eventGroup.groupEventIDs) {
+          if (this.eventSchedule[i].eventGroup?.groupEventIDs) {
             this.eventSchedule[i].eventGroup.groupEventIDs.forEach((event) => {
               this.dataForm.get(event).enable();
             });
