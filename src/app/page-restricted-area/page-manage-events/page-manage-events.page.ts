@@ -233,7 +233,7 @@ export class PageManageEvents implements OnInit {
       });
   }
 
-  onCheckBoxChange(e: { target: { checked: boolean } }, eventItem: EventItem) {
+  onCheckBoxChange(e: any, eventItem: EventItem) {
     const checkArray: FormArray = this.dataForm.get('selectedCheckboxes') as FormArray;
 
     if (e.target.checked) {
