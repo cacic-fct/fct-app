@@ -257,9 +257,27 @@ export class ScannerPage implements OnInit {
       .doc(uid)
       .valueChanges()
       .pipe(
-        untilDestroyed(this),
+        take(1),
         trace('firestore'),
         map((subscription) => subscription.payment.status == 2)
+      );
+  }
+
+  /**
+   * Observable que indica se um usuário está inscrito no evento
+   * @param uid User ID, ID do usuário
+   */
+
+  isUserSubscribed$(uid: string): Observable<boolean> {
+    // Check if user doc exists in subscriptions
+    return this.afs
+      .collection<any>(`majorEvents/${this.majorEventID}/subscriptions`)
+      .doc(uid)
+      .get()
+      .pipe(
+        take(1),
+        trace('firestore'),
+        map((userDocument) => userDocument.exists)
       );
   }
 
@@ -305,7 +323,13 @@ export class ScannerPage implements OnInit {
         }
         // Else, write on 'attendance'
         else {
-          this.writeUIDAttendance(uid);
+          this.isUserSubscribed$(uid).subscribe((subscribed) => {
+            if (subscribed) {
+              this.writeUIDAttendance(uid);
+            } else {
+              this.writeUIDNSAttendance(uid);
+            }
+          });
         }
       }
       // User does not exists
@@ -334,6 +358,35 @@ export class ScannerPage implements OnInit {
           return false;
         }
         this.afs.collection(`events/${this.eventID}/attendance`).doc(uid).set({
+          // @ts-ignore
+          time: serverTimestamp(),
+          author: this.adminID,
+        });
+        this.audioSuccess.play();
+        this.toastSucess();
+        this.backdropColor('success');
+        this.attendanceSessionScans++;
+      });
+  }
+
+  /**
+   * Escreve um determinado UID na coleção 'not-subscribed-attendance'
+   * @param uid User ID, ID do usuário
+   */
+  writeUIDNSAttendance(uid: string) {
+    this.afs
+      .collection<Attendance>(`events/${this.eventID}/not-subscribed-attendance`)
+      .doc(uid)
+      .get()
+      .pipe(take(1), trace('firestore'))
+      .subscribe((document) => {
+        // If document with user uid already exists in non-paying-attendance collection
+        if (document.exists) {
+          this.backdropColor('duplicate');
+          this.toastDuplicate();
+          return false;
+        }
+        this.afs.collection(`events/${this.eventID}/not-subscribed-attendance`).doc(uid).set({
           // @ts-ignore
           time: serverTimestamp(),
           author: this.adminID,
