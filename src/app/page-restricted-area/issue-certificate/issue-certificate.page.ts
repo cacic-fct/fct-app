@@ -1,4 +1,3 @@
-import { ModalController } from '@ionic/angular';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   participationTypes,
@@ -21,7 +20,7 @@ export class IssueCertificatePage implements OnInit {
 
   dataForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private modalController: ModalController) {
+  constructor(private formBuilder: FormBuilder) {
     this.dataForm = this.formBuilder.group({
       issueToEveryone: [true, Validators.required],
       issueList: new FormArray([]),
