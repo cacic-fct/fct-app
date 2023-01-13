@@ -7,7 +7,6 @@ import {
   certificateTemplates,
 } from './../../shared/services/certificates.service';
 import { Component, OnInit } from '@angular/core';
-import { PreviewModalComponent } from 'src/app/page-restricted-area/issue-certificate/components/preview-modal/preview-modal.component';
 
 @Component({
   selector: 'app-issue-certificate',
@@ -56,14 +55,5 @@ export class IssueCertificatePage implements OnInit {
       .toLowerCase();
 
     this.dataForm.get('certificateID')?.setValue(certificateID);
-  }
-
-  async previewCertificate() {
-    const modal = await this.modalController.create({
-      component: PreviewModalComponent,
-      componentProps: {},
-    });
-
-    return await modal.present();
   }
 }
