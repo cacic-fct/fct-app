@@ -59,7 +59,6 @@ import {
   USE_DEVICE_LANGUAGE,
   USE_EMULATOR as USE_AUTH_EMULATOR,
 } from '@angular/fire/compat/auth';
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   declarations: [AppComponent],
@@ -68,7 +67,6 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    NgxExtendedPdfViewerModule,
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAnalyticsModule,

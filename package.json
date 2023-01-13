@@ -30,7 +30,6 @@
     "@zxing/ngx-scanner": "^3.8.0",
     "date-fns": "^2.29.3",
     "ng-qrcode": "^8.0.1",
-    "ngx-extended-pdf-viewer": "^16.0.0-alpha.2",
     "ngx-image-compress": "^13.1.13",
     "ngx-markdown": "^15.0.0",
     "ol": "^7.1.0",
