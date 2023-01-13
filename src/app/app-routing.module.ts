@@ -122,7 +122,7 @@ const routes: Routes = [
   },
   {
     path: 'inscricoes',
-    title: 'Minhas inscrições',
+    title: 'Minhas participações',
     loadChildren: () =>
       import('./page-subscriptions-payments/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
     ...canActivate(redirectUnauthorizedToLogin),
@@ -133,6 +133,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./page-confirm-attendance/page-confirm-attendance.module').then((m) => m.PageConfirmAttendanceModule),
     ...canActivate(redirectUnauthorizedToLogin),
+  },
+  // Redirect not found routes (404) to index
+  // Must be the last route
+  {
+    path: '**',
+    redirectTo: '',
   },
 ];
 @NgModule({

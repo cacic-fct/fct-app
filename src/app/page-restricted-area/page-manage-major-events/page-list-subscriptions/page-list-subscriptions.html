@@ -27,7 +27,9 @@
       <ion-label>
         <ng-container *ngIf="(subscriptionItem.user | async) as user">
           <h2 class="ion-text-wrap" *ngIf="user.fullName">{{ user.fullName }}</h2>
-          <h2 class="ion-text-wrap" *ngIf="!user.fullName">Nome não cadastrado: {{ user.displayName }}</h2>
+          <h2 class="ion-text-wrap" *ngIf="!user.fullName">
+            <ion-text color="danger">Nome não cadastrado: {{ user.displayName }}</ion-text>
+          </h2>
           <ng-container *ngIf="user.academicID; else notUnesp">
             <h3 class="ion-text-wrap">{{ courses.getCourse(user.academicID) }} | {{ user.academicID }}</h3>
           </ng-container>
@@ -38,13 +40,13 @@
           <h3 class="ion-text-wrap">{{ user.email }} | {{ user.phone || "Sem celular cadastrado" }}</h3>
           <h3 class="ion-text-wrap">UID: {{ user.uid }}</h3>
 
+          <!-- prettier-ignore -->
           <h3 class="ion-text-wrap">
-            Criação da inscrição: {{ dateService.getDateFromTimestamp(subscriptionItem.time) | date: "HH:mm:ss -
-            dd/MM/y" }}
+            Criação da inscrição: {{ dateService.getDateFromTimestamp(subscriptionItem.time) | date: "dd/MM/y - HH:mm:ss" }}
           </h3>
+          <!-- prettier-ignore -->
           <h3 class="ion-text-wrap">
-            Última edição da: {{ dateService.getDateFromTimestamp(subscriptionItem.payment.time) | date: "HH:mm:ss -
-            dd/MM/y" }}
+            Última edição da: {{ dateService.getDateFromTimestamp(subscriptionItem.payment.time) | date: "dd/MM/y - HH:mm:ss" }}
           </h3>
           <ion-button [routerLink]="['gerenciar-inscricao', user.uid]"> Editar inscrição </ion-button>
         </ng-container>
