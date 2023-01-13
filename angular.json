@@ -32,12 +32,7 @@
               },
               "src/googlee453356471cb5ac4.html",
               "src/manifest.webmanifest",
-              "src/robots.txt",
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
-                "output": "/assets/"
-              }
+              "src/robots.txt"
             ],
             "styles": [
               "src/theme/variables.scss",
