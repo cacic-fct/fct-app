@@ -1,4 +1,3 @@
-import { PreviewModalComponent } from './components/preview-modal/preview-modal.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,6 +10,6 @@ import { IssueCertificatePage } from './issue-certificate.page';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, FormsModule, IonicModule, IssueCertificatePageRoutingModule],
-  declarations: [IssueCertificatePage, PreviewModalComponent],
+  declarations: [IssueCertificatePage],
 })
 export class IssueCertificatePageModule {}
