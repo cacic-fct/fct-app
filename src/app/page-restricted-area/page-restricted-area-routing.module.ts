@@ -34,6 +34,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./page-manage-events/page-manage-events.module').then((m) => m.PageManageEventsPageModule),
   },
+  {
+    path: 'issue-certificate',
+    loadChildren: () => import('./issue-certificate/issue-certificate.module').then( m => m.IssueCertificatePageModule)
+  },
 ];
 
 @NgModule({
