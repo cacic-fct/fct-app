@@ -1,3 +1,4 @@
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { CertificatePreviewModalComponent } from './components/certificate-preview-modal/certificate-preview-modal.component';
 import { DateService } from 'src/app/shared/services/date.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -14,6 +15,7 @@ import {
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable, take } from 'rxjs';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-issue-certificate',
@@ -41,7 +43,9 @@ export class IssueCertificatePage implements OnInit {
     private router: Router,
     private afs: AngularFirestore,
     private dateService: DateService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private authService: AuthService,
+    private fns: AngularFireFunctions
   ) {
     this.eventID = this.route.snapshot.paramMap.get('eventID');
 
@@ -149,6 +153,56 @@ export class IssueCertificatePage implements OnInit {
     });
   }
 
+  autofill() {
+    this.dataForm.patchValue({
+      certificateName: 'Certificado de Participação',
+      certificateID: 'participacao',
+      certificateTemplate: 'cacic',
+      issueType: 'list',
+      issueList: [{ userData: 'Usuário 0' }],
+      participationType: { type: 'participacao' },
+      eventType: { type: 'palestra' },
+      contentType: { type: 'default' },
+    });
+
+    const issueList = this.dataForm.get('issueList') as FormArray;
+    // repeat 3 times
+    for (let i = 1; i <= 3; i++) {
+      issueList.push(
+        this.formBuilder.group({
+          userData: [`Usuário ${i}`, Validators.required],
+        })
+      );
+    }
+  }
+  async prepareUserUids(userDataList: string[]): Promise<boolean> {
+    const userUidList: string[] = [];
+
+    const notFoundList: number[] = [];
+
+    for (let i = 0; i < userDataList.length; i++) {
+      await this.authService.getUserUid(userDataList[i]).then((response) => {
+        const uid = response.data;
+        if (uid) {
+          userUidList.push(uid);
+        } else {
+          notFoundList.push(i);
+        }
+      });
+    }
+
+    if (notFoundList.length > 0) {
+      // Set error FormGroup that are on notFoundList
+      const issueList = this.dataForm.get('issueList') as FormArray;
+      notFoundList.forEach((index) => {
+        issueList.controls[index].setErrors({ notFound: true });
+      });
+      return false;
+    }
+
+    return true;
+  }
+
   onSubmit() {
     if (this.dataForm.invalid) {
       return;
@@ -157,35 +211,50 @@ export class IssueCertificatePage implements OnInit {
     const issueList = this.dataForm.get('issueList')?.value;
     const userDataList: string[] = issueList.map((item: { userData: string }) => item.userData);
 
-    const certificateData = {
-      certificateName: this.dataForm.get('certificateName')?.value,
-      certificateID: this.dataForm.get('certificateID')?.value,
-      certificateTemplate: this.dataForm.get('certificateTemplate')?.value,
-      issueDate: this.dateService.TimestampFromDate(this.dateService.parseISO(this.dataForm.get('issueDate')?.value)),
-      participation: {
-        type: this.dataForm.get('participationType')?.get('type')?.value,
-        custom: this.dataForm.get('participationType')?.get('custom')?.value,
-      },
-      event: {
-        type: this.dataForm.get('eventType')?.get('type')?.value,
-        custom: this.dataForm.get('eventType')?.get('custom')?.value,
-      },
-      content: {
-        type: this.dataForm.get('contentType')?.get('type')?.value,
-        custom: this.dataForm.get('contentType')?.get('custom')?.value,
-      },
-      issuedTo: {
-        toPayer: this.dataForm.get('batchIssue')?.get('toPayer')?.value,
-        toNonSubscriber: this.dataForm.get('batchIssue')?.get('toNonSubscriber')?.value,
-        toNonPayer: this.dataForm.get('batchIssue')?.get('toNonPayer')?.value,
-        toList: userDataList,
-      },
-    };
+    this.prepareUserUids(userDataList).then(async (response) => {
+      if (!response) {
+        // Alert user that some users were not found
+        const alert = await this.alertController.create({
+          header: 'Alguns usuários não foram encontrados',
+          message: 'Verifique a lista de usuários e tente novamente.',
+          buttons: ['OK'],
+        });
 
-    this.openConfirmModal(certificateData).then((result) => {
-      if (!result) {
+        await alert.present();
+
         return;
       }
+
+      const certificateData = {
+        certificateName: this.dataForm.get('certificateName')?.value,
+        certificateID: this.dataForm.get('certificateID')?.value,
+        certificateTemplate: this.dataForm.get('certificateTemplate')?.value,
+        issueDate: this.dateService.TimestampFromDate(this.dateService.parseISO(this.dataForm.get('issueDate')?.value)),
+        participation: {
+          type: this.dataForm.get('participationType')?.get('type')?.value,
+          custom: this.dataForm.get('participationType')?.get('custom')?.value,
+        },
+        event: {
+          type: this.dataForm.get('eventType')?.get('type')?.value,
+          custom: this.dataForm.get('eventType')?.get('custom')?.value,
+        },
+        content: {
+          type: this.dataForm.get('contentType')?.get('type')?.value,
+          custom: this.dataForm.get('contentType')?.get('custom')?.value,
+        },
+        issuedTo: {
+          toPayer: this.dataForm.get('batchIssue')?.get('toPayer')?.value,
+          toNonSubscriber: this.dataForm.get('batchIssue')?.get('toNonSubscriber')?.value,
+          toNonPayer: this.dataForm.get('batchIssue')?.get('toNonPayer')?.value,
+          toList: userDataList,
+        },
+      };
+
+      this.openConfirmModal(certificateData).then((result) => {
+        if (!result) {
+          return;
+        }
+      });
     });
   }
 

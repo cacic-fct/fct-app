@@ -44,6 +44,12 @@
         <ng-container *ngIf="dataForm.get('issueType').value === 'list'" formArrayName="issueList">
           <ion-item *ngFor="let person of getIssueList(); index as i" [formGroupName]="i">
             <ion-label>{{ i + 1 }}.</ion-label>
+            <ion-label
+              color="danger"
+              style="padding-left: 8px"
+              *ngIf="dataForm.get('issueList').get(i.toString()).errors?.notFound">
+              Não encontrado
+            </ion-label>
             <ion-input formControlName="userData" placeholder="E-mail, celular ou UID"> </ion-input>
             <ion-button fill="clear" color="danger" (click)="removeIssueList(i)">
               <ion-icon slot="icon-only" name="trash"> </ion-icon>
@@ -154,6 +160,10 @@
       </ng-template>
     </ion-modal>
   </form>
+
+  <div>
+    <ion-button (click)="autofill()">Auto-preencher</ion-button>
+  </div>
 </ion-content>
 
 <swal
