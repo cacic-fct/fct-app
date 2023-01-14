@@ -216,7 +216,7 @@ export class IssueCertificatePage implements OnInit {
         // Alert user that some users were not found
         const alert = await this.alertController.create({
           header: 'Alguns usuários não foram encontrados',
-          message: 'Verifique a lista de usuários e tente novamente.',
+          message: 'Verifique a lista e tente novamente.',
           buttons: ['OK'],
         });
 
@@ -254,6 +254,8 @@ export class IssueCertificatePage implements OnInit {
         if (!result) {
           return;
         }
+
+        // TODO: Send data to cloud function
       });
     });
   }
