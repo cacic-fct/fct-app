@@ -7,9 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { IssueCertificatePageRoutingModule } from './issue-certificate-routing.module';
 
 import { IssueCertificatePage } from './issue-certificate.page';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, IonicModule, IssueCertificatePageRoutingModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    IonicModule,
+    IssueCertificatePageRoutingModule,
+    SweetAlert2Module,
+  ],
   declarations: [IssueCertificatePage],
 })
 export class IssueCertificatePageModule {}

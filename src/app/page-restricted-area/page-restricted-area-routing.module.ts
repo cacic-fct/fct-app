@@ -35,8 +35,13 @@ const routes: Routes = [
       import('./page-manage-events/page-manage-events.module').then((m) => m.PageManageEventsPageModule),
   },
   {
-    path: 'issue-certificate',
-    loadChildren: () => import('./issue-certificate/issue-certificate.module').then( m => m.IssueCertificatePageModule)
+    path: 'emitir-certificado/:eventType/:eventID',
+    loadChildren: () =>
+      import('./issue-certificate/issue-certificate.module').then((m) => m.IssueCertificatePageModule),
+  },
+  {
+    path: 'emitir-certificado',
+    redirectTo: '',
   },
 ];
 

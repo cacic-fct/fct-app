@@ -1,3 +1,5 @@
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   participationTypes,
@@ -5,7 +7,8 @@ import {
   contentTypes,
   certificateTemplates,
 } from './../../shared/services/certificates.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
 @Component({
   selector: 'app-issue-certificate',
@@ -18,12 +21,36 @@ export class IssueCertificatePage implements OnInit {
   public contentTypes = contentTypes;
   public certificateTemplates = certificateTemplates;
 
+  @ViewChild('swalNotFound')
+  public readonly swalNotFound!: SwalComponent;
+
+  eventType: string | null;
+  eventID: string | null;
+
   dataForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private alertController: AlertController,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this.eventType = this.route.snapshot.paramMap.get('eventType');
+    this.eventID = this.route.snapshot.paramMap.get('eventID');
+
+    if (this.eventType === null || this.eventID === null) {
+      this.swalNotFound.fire();
+      this.router.navigate(['/area-restrita']);
+    }
+
     this.dataForm = this.formBuilder.group({
-      issueToEveryone: [true, Validators.required],
-      issueList: new FormArray([]),
+      issueType: ['', Validators.required],
+      issueList: this.formBuilder.array([]),
+      batchIssue: this.formBuilder.group({
+        toPaid: [true, Validators.required],
+        toNonSubscriber: [false, Validators.required],
+        toNonPaid: [false, Validators.required],
+      }),
       certificateName: ['', Validators.required],
       certificateID: ['', Validators.required],
       certificateTemplate: ['', Validators.required],
@@ -35,6 +62,76 @@ export class IssueCertificatePage implements OnInit {
   }
 
   ngOnInit() {}
+
+  addToIssueList() {
+    const issueList = this.dataForm.get('issueList') as FormArray;
+    issueList.push(
+      this.formBuilder.group({
+        userData: ['', Validators.required],
+      })
+    );
+  }
+
+  issueCheckboxChange() {
+    if (this.dataForm.get('issueType')?.value === 'list') {
+      if (this.getIssueList().length === 0) {
+        this.addToIssueList();
+      }
+    }
+  }
+
+  removeIssueList(i: number) {
+    if (this.getIssueList().length === 1) {
+      return;
+    }
+    const issueList = this.dataForm.get('issueList') as FormArray;
+    issueList.removeAt(i);
+  }
+
+  getIssueList() {
+    return (this.dataForm.get('issueList') as FormArray).controls;
+  }
+
+  clearIssueList() {
+    const issueList = this.dataForm.get('issueList') as FormArray;
+    issueList.clear();
+    this.addToIssueList();
+  }
+
+  async clearIssueListAlert() {
+    const alert = await this.alertController.create({
+      header: 'Limpar lista',
+      message: 'Tem certeza que deseja limpar a lista de usuários?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Limpar',
+          handler: () => {
+            this.clearIssueList();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  formatCertificateName() {
+    const certificateName = this.dataForm.get('certificateName')?.value;
+    let formatName = certificateName
+      // Remove trailing spaces
+      .trim()
+      // Remove multiple spaces in a row
+      .replace(/\s+/g, ' ');
+
+    // Capitalize first letter
+    formatName = formatName.charAt(0).toUpperCase() + formatName.slice(1);
+
+    this.dataForm.get('certificateName')?.setValue(formatName);
+  }
 
   formatCertificateID() {
     // Get string and format it to be used as a Firestore collection ID
@@ -51,6 +148,8 @@ export class IssueCertificatePage implements OnInit {
       .replace(/\s/g, '-')
       // Remove multiple dashes in a row '---' -> '-'
       .replace(/-+/g, '-')
+      // Remove trailing dash
+      .replace(/-$/, '')
       .toLowerCase();
 
     this.dataForm.get('certificateID')?.setValue(certificateID);

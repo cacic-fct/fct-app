@@ -5,16 +5,56 @@
 </ion-header>
 
 <ion-content>
-  <h1>SECOMPP22</h1>
+  <h1 class="ion-padding-horizontal">SECOMPP22</h1>
   <form [formGroup]="dataForm">
     <ion-list>
+      <div class="ion-padding-vertical">
+        <ion-item>
+          <ion-label>Tipo da emissão</ion-label>
+          <ion-select formControlName="issueType" (ionChange)="issueCheckboxChange()">
+            <ion-select-option value="batch"> Emissão em massa </ion-select-option>
+            <ion-select-option value="list"> Emissão por listagem manual </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ng-container *ngIf="dataForm.get('issueType').value === 'batch'" formGroupName="batchIssue">
+          <ion-item>
+            <ion-label>Emitir para inscritos pagantes</ion-label>
+            <ion-toggle formControlName="toPaid"> </ion-toggle>
+            <ion-note slot="helper">Quem pagou, se inscreveu e esteve presente</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label>Emitir para pagantes não inscritos</ion-label>
+            <ion-note slot="helper">Quem pagou, não se inscreveu no evento e teve presença coletada</ion-note>
+            <ion-toggle formControlName="toNonSubscriber"> </ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-label>Emitir para não pagantes</ion-label>
+            <ion-toggle formControlName="toNonPaid"> </ion-toggle>
+            <ion-note slot="helper">Quem não pagou e teve presença coletada</ion-note>
+          </ion-item>
+        </ng-container>
+
+        <ng-container *ngIf="dataForm.get('issueType').value === 'list'" formArrayName="issueList">
+          <ion-item *ngFor="let person of getIssueList(); index as i" [formGroupName]="i">
+            <ion-label>{{ i + 1 }}.</ion-label>
+            <ion-input formControlName="userData" placeholder="E-mail, celular ou UID"> </ion-input>
+            <ion-button fill="clear" color="danger" (click)="removeIssueList(i)">
+              <ion-icon slot="icon-only" name="trash"> </ion-icon>
+            </ion-button>
+          </ion-item>
+          <div class="ion-padding">
+            <ion-button (click)="addToIssueList()">Adicionar</ion-button>
+            <ion-button (click)="clearIssueListAlert()" color="danger">Limpar</ion-button>
+          </div>
+        </ng-container>
+      </div>
       <ion-item>
-        <ion-label>Emitir para todos</ion-label>
-        <ion-checkbox slot="end" formControlName="issueToEveryone"></ion-checkbox>
-      </ion-item>
-      <ion-item>
-        <ion-label>Nome do certificado a ser gerado</ion-label>
-        <ion-input formControlName="certificateName" (ionChange)="formatCertificateID()"></ion-input>
+        <ion-label class="ion-text-wrap">Nome do certificado a ser gerado</ion-label>
+        <ion-input
+          formControlName="certificateName"
+          (ionChange)="formatCertificateID()"
+          (ionBlur)="formatCertificateName()"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -96,3 +136,13 @@
     </ion-modal>
   </form>
 </ion-content>
+
+<swal
+  #swalNotFound
+  title="Evento não encontrado"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false">
+</swal>
