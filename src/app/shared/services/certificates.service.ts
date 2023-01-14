@@ -1,13 +1,18 @@
 import { Timestamp } from '@firebase/firestore-types';
 
-export const participationTypes = {
+interface CertificateOptionsTypes {
+  custom: string;
+  [key: string]: string;
+}
+
+export const participationTypes: CertificateOptionsTypes = {
   custom: 'Personalizado',
   participacao: 'Certificamos a participação de',
   participacaoDigital: 'Certificamos a participação digital de',
   certificamosQue: 'Certificamos que',
 };
 
-export const eventTypes = {
+export const eventTypes: CertificateOptionsTypes = {
   custom: 'Personalizado',
   evento: 'no evento',
   minicurso: 'no minicurso',
@@ -15,7 +20,7 @@ export const eventTypes = {
   atividade: 'na atividade',
 };
 
-export const contentTypes = {
+export const contentTypes: CertificateOptionsTypes = {
   custom: 'Personalizado',
   default: 'Atividades realizadas (padrão)',
 };
@@ -137,21 +142,21 @@ export interface Certificate {
   };
 }
 
-export interface CertificateIssuingInProgress {
-  certificateIssuingInProgress?: {
-    issuingName: string;
-    issuingStartDate: Timestamp;
-    issuingAuthor: string;
+export interface CertificateIssueInProgress {
+  certificateIssueInProgress?: {
+    issueName: string;
+    issueStartDate: Timestamp;
+    issueAuthor: string;
     lastSuccessfulUserID: string;
     issuedCount: number;
-    certificateData: CertificateIssuingData;
+    certificateData: CertificateIssueData;
   };
 }
 
-interface CertificateIssuingData {
+interface CertificateIssueData {
   eventName: string;
-  issuingDate: Timestamp;
-  issuingTo?: string[];
+  issueDate: Timestamp;
+  issueTo?: string[];
   participationType: {
     /** 0 - Custom
      *
@@ -187,5 +192,31 @@ interface CertificateIssuingData {
      */
     code: number;
     custom?: string;
+  };
+}
+
+export interface CertificateTemplateData {
+  certificateName: string;
+  certificateID: string;
+  certificateTemplate: string;
+  issueDate: Timestamp;
+  actualissueDate?: Timestamp;
+  participation: {
+    type: string;
+    custom: string;
+  };
+  event: {
+    type: string;
+    custom: string;
+  };
+  content: {
+    type: string;
+    custom: string;
+  };
+  issuedTo: {
+    toPayer: string;
+    toNonSubscriber: string;
+    toNonPayer: string;
+    toList: string[];
   };
 }

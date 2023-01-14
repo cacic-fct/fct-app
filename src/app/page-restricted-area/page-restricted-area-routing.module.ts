@@ -34,17 +34,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./page-manage-events/page-manage-events.module').then((m) => m.PageManageEventsPageModule),
   },
-  {
-    path: 'emitir-certificado/:eventType/:eventID',
-    loadChildren: () =>
-      import('./page-manage-major-events/issue-certificate/issue-certificate.module').then(
-        (m) => m.IssueCertificatePageModule
-      ),
-  },
-  {
-    path: 'emitir-certificado',
-    redirectTo: '',
-  },
 ];
 
 @NgModule({

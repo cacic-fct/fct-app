@@ -1,6 +1,10 @@
+import { CertificatePreviewModalComponent } from './components/certificate-preview-modal/certificate-preview-modal.component';
+import { DateService } from 'src/app/shared/services/date.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AlertController, ModalController } from '@ionic/angular';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   participationTypes,
   eventTypes,
@@ -9,6 +13,7 @@ import {
 } from '../../../shared/services/certificates.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { Observable, take } from 'rxjs';
 
 @Component({
   selector: 'app-issue-certificate',
@@ -24,8 +29,8 @@ export class IssueCertificatePage implements OnInit {
   @ViewChild('swalNotFound')
   public readonly swalNotFound!: SwalComponent;
 
-  eventType: string | null;
   eventID: string | null;
+  event$: Observable<MajorEventItem>;
 
   dataForm: FormGroup;
 
@@ -33,35 +38,178 @@ export class IssueCertificatePage implements OnInit {
     private formBuilder: FormBuilder,
     private alertController: AlertController,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private afs: AngularFirestore,
+    private dateService: DateService,
+    private modalController: ModalController
   ) {
-    this.eventType = this.route.snapshot.paramMap.get('eventType');
     this.eventID = this.route.snapshot.paramMap.get('eventID');
 
-    if (this.eventType === null || this.eventID === null) {
+    if (this.eventID === null) {
       this.swalNotFound.fire();
-      this.router.navigate(['/area-restrita']);
+      this.router.navigate(['/area-restrita/gerenciar-grandes-eventos']);
     }
 
     this.dataForm = this.formBuilder.group({
       issueType: ['', Validators.required],
       issueList: this.formBuilder.array([]),
-      batchIssue: this.formBuilder.group({
-        toPaid: [true, Validators.required],
-        toNonSubscriber: [false, Validators.required],
-        toNonPaid: [false, Validators.required],
-      }),
+      batchIssue: this.formBuilder.group(
+        {
+          toPayer: [true],
+          toNonSubscriber: [false],
+          toNonPayer: [false],
+        },
+        {
+          validators: [this.batchIssueValidator],
+        }
+      ),
       certificateName: ['', Validators.required],
       certificateID: ['', Validators.required],
       certificateTemplate: ['', Validators.required],
-      issuingDate: ['', Validators.required],
-      participationType: ['', Validators.required],
-      eventType: ['', Validators.required],
-      contentType: ['', Validators.required],
+      issueDate: [
+        this.dateService.getISOStringToIonDatetime(this.dateService.getDateNowWithTimezoneOffset()),
+        Validators.required,
+      ],
+
+      participationType: this.formBuilder.group(
+        {
+          type: ['', Validators.required],
+          custom: [''],
+        },
+        {
+          validators: [this.customGroupValidator],
+        }
+      ),
+
+      eventType: this.formBuilder.group(
+        {
+          type: ['', Validators.required],
+          custom: [''],
+        },
+        {
+          validators: [this.customGroupValidator],
+        }
+      ),
+
+      contentType: this.formBuilder.group(
+        {
+          type: ['', Validators.required],
+          custom: [''],
+        },
+        {
+          validators: [this.customGroupValidator],
+        }
+      ),
+    });
+
+    this.event$ = this.afs.collection('majorEvents').doc(this.eventID!).valueChanges() as Observable<MajorEventItem>;
+  }
+
+  customGroupValidator(control: AbstractControl): ValidationErrors | null {
+    const eventType = control.get('type')?.value;
+    const custom = control.get('custom')?.value;
+
+    if (eventType === 'custom' && custom === '') {
+      return { customRequired: true };
+    }
+    return null;
+  }
+
+  batchIssueValidator(control: AbstractControl): ValidationErrors | null {
+    // Only validate if issueType is batch
+    const issueType = control.parent?.get('issueType')?.value;
+
+    if (issueType !== 'batch') {
+      return null;
+    }
+
+    const toPayer = control.get('toPayer')?.value;
+    const toNonSubscriber = control.get('toNonSubscriber')?.value;
+    const toNonPayer = control.get('toNonPayer')?.value;
+
+    // At least one option must be selected
+    if (!toPayer && !toNonSubscriber && !toNonPayer) {
+      console.log('At least one option must be selected');
+      return { atLeastOneOption: true };
+    }
+
+    return null;
+  }
+
+  ngOnInit() {
+    this.event$.pipe(take(1)).subscribe((event) => {
+      if (event === undefined) {
+        this.swalNotFound.fire();
+
+        setTimeout(() => {
+          this.router.navigate(['/area-restrita/gerenciar-grandes-eventos']);
+          this.swalNotFound.close();
+        }, 1000);
+      }
     });
   }
 
-  ngOnInit() {}
+  onSubmit() {
+    if (this.dataForm.invalid) {
+      return;
+    }
+
+    const issueList = this.dataForm.get('issueList')?.value;
+    const userDataList: string[] = issueList.map((item: { userData: string }) => item.userData);
+
+    const certificateData = {
+      certificateName: this.dataForm.get('certificateName')?.value,
+      certificateID: this.dataForm.get('certificateID')?.value,
+      certificateTemplate: this.dataForm.get('certificateTemplate')?.value,
+      issueDate: this.dateService.TimestampFromDate(this.dateService.parseISO(this.dataForm.get('issueDate')?.value)),
+      participation: {
+        type: this.dataForm.get('participationType')?.get('type')?.value,
+        custom: this.dataForm.get('participationType')?.get('custom')?.value,
+      },
+      event: {
+        type: this.dataForm.get('eventType')?.get('type')?.value,
+        custom: this.dataForm.get('eventType')?.get('custom')?.value,
+      },
+      content: {
+        type: this.dataForm.get('contentType')?.get('type')?.value,
+        custom: this.dataForm.get('contentType')?.get('custom')?.value,
+      },
+      issuedTo: {
+        toPayer: this.dataForm.get('batchIssue')?.get('toPayer')?.value,
+        toNonSubscriber: this.dataForm.get('batchIssue')?.get('toNonSubscriber')?.value,
+        toNonPayer: this.dataForm.get('batchIssue')?.get('toNonPayer')?.value,
+        toList: userDataList,
+      },
+    };
+
+    this.openConfirmModal(certificateData).then((result) => {
+      if (!result) {
+        return;
+      }
+    });
+  }
+
+  async openConfirmModal(certificateData: { [key: string]: any }): Promise<boolean> {
+    const modal = await this.modalController.create({
+      component: CertificatePreviewModalComponent,
+      componentProps: {
+        certificateData: certificateData,
+      },
+      showBackdrop: true,
+    });
+    await modal.present();
+
+    return modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        return new Promise<boolean>((resolve) => {
+          resolve(true);
+        });
+      }
+      return new Promise<boolean>((resolve) => {
+        resolve(false);
+      });
+    });
+  }
 
   addToIssueList() {
     const issueList = this.dataForm.get('issueList') as FormArray;
@@ -72,7 +220,7 @@ export class IssueCertificatePage implements OnInit {
     );
   }
 
-  issueCheckboxChange() {
+  issueToggleChange() {
     if (this.dataForm.get('issueType')?.value === 'list') {
       if (this.getIssueList().length === 0) {
         this.addToIssueList();

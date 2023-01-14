@@ -1,17 +1,23 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="area-restrita/gerenciar-grandes-eventos"> </ion-back-button>
+    </ion-buttons>
     <ion-title>Emissão de certificados</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <h1 class="ion-padding-horizontal">SECOMPP22</h1>
+  <ng-container *ngIf="event$ | async as event">
+    <h1 class="ion-padding-horizontal">{{ event.name }}</h1>
+  </ng-container>
+
   <form [formGroup]="dataForm">
     <ion-list>
       <div class="ion-padding-vertical">
         <ion-item>
           <ion-label>Tipo da emissão</ion-label>
-          <ion-select formControlName="issueType" (ionChange)="issueCheckboxChange()">
+          <ion-select formControlName="issueType" (ionChange)="issueToggleChange()">
             <ion-select-option value="batch"> Emissão em massa </ion-select-option>
             <ion-select-option value="list"> Emissão por listagem manual </ion-select-option>
           </ion-select>
@@ -20,7 +26,7 @@
         <ng-container *ngIf="dataForm.get('issueType').value === 'batch'" formGroupName="batchIssue">
           <ion-item>
             <ion-label>Emitir para inscritos pagantes</ion-label>
-            <ion-toggle formControlName="toPaid"> </ion-toggle>
+            <ion-toggle formControlName="toPayer"> </ion-toggle>
             <ion-note slot="helper">Quem pagou, se inscreveu e esteve presente</ion-note>
           </ion-item>
           <ion-item>
@@ -30,7 +36,7 @@
           </ion-item>
           <ion-item>
             <ion-label>Emitir para não pagantes</ion-label>
-            <ion-toggle formControlName="toNonPaid"> </ion-toggle>
+            <ion-toggle formControlName="toNonPayer"> </ion-toggle>
             <ion-note slot="helper">Quem não pagou e teve presença coletada</ion-note>
           </ion-item>
         </ng-container>
@@ -75,61 +81,74 @@
 
       <ion-item>
         <ion-label>Data de emissão</ion-label>
-        <ion-datetime-button datetime="issuingDate"></ion-datetime-button>
+        <ion-datetime-button datetime="issueDate"></ion-datetime-button>
       </ion-item>
 
-      <ion-item>
-        <ion-label>Tipo de participação</ion-label>
-        <ion-select interface="popover" formControlName="participationType">
-          <ng-container *ngFor="let participationType of participationTypes | keyvalue">
-            <ion-select-option *ngIf="!(participationType.key === 'custom')" [value]="participationType.key">
-              {{ participationType.value }}
-            </ion-select-option>
-          </ng-container>
-          <ion-select-option value="custom"> Personalizado </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item *ngIf="dataForm.get('participationType').value === 'custom'">
-        <ion-label>Tipo de participação personalizado</ion-label>
-        <ion-input placeholder="Escreva aqui"></ion-input>
-      </ion-item>
+      <ng-container formGroupName="participationType">
+        <ion-item>
+          <ion-label>Tipo de participação</ion-label>
+          <ion-select interface="popover" formControlName="type">
+            <ng-container *ngFor="let participationType of participationTypes | keyvalue">
+              <ion-select-option *ngIf="!(participationType.key === 'custom')" [value]="participationType.key">
+                {{ participationType.value }}
+              </ion-select-option>
+            </ng-container>
+            <ion-select-option value="custom"> Personalizado </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item *ngIf="dataForm.get('participationType').value.type === 'custom'">
+          <ion-label>Tipo de participação personalizado</ion-label>
+          <ion-input placeholder="Escreva aqui" formControlName="custom"></ion-input>
+        </ion-item>
+      </ng-container>
 
-      <ion-item>
-        <ion-label>Tipo de evento</ion-label>
-        <ion-select interface="popover" formControlName="eventType">
-          <ng-container *ngFor="let eventType of eventTypes | keyvalue">
-            <ion-select-option *ngIf="!(eventType.key === 'custom')" [value]="eventType.key">
-              {{ eventType.value }}
-            </ion-select-option>
-          </ng-container>
-          <ion-select-option value="custom"> Personalizado </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item *ngIf="dataForm.get('eventType').value === 'custom'">
-        <ion-label>Tipo de evento personalizado</ion-label>
-        <ion-input placeholder="Escreva aqui"></ion-input>
-      </ion-item>
+      <ng-container formGroupName="eventType">
+        <ion-item>
+          <ion-label>Tipo de evento</ion-label>
+          <ion-select interface="popover" formControlName="type">
+            <ng-container *ngFor="let eventType of eventTypes | keyvalue">
+              <ion-select-option *ngIf="!(eventType.key === 'custom')" [value]="eventType.key">
+                {{ eventType.value }}
+              </ion-select-option>
+            </ng-container>
+            <ion-select-option value="custom"> Personalizado </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item *ngIf="dataForm.get('eventType').value.type === 'custom'">
+          <ion-label>Tipo de evento personalizado</ion-label>
+          <ion-input placeholder="Escreva aqui" formControlName="custom"></ion-input>
+        </ion-item>
+      </ng-container>
 
-      <ion-item>
-        <ion-label>Conteúdo</ion-label>
-        <ion-select interface="popover" formControlName="contentType">
-          <ng-container *ngFor="let contentType of contentTypes | keyvalue">
-            <ion-select-option *ngIf="!(contentType.key === 'custom')" [value]="contentType.key">
-              {{ contentType.value }}
-            </ion-select-option>
-          </ng-container>
-          <ion-select-option value="custom"> Personalizado </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item *ngIf="dataForm.get('contentType').value === 'custom'">
-        <ion-label>Conteúdo personalizado</ion-label>
-        <ion-textarea placeholder="Escreva aqui"></ion-textarea>
-      </ion-item>
+      <ng-container formGroupName="contentType">
+        <ion-item>
+          <ion-label>Conteúdo</ion-label>
+          <ion-select interface="popover" formControlName="type">
+            <ng-container *ngFor="let contentType of contentTypes | keyvalue">
+              <ion-select-option *ngIf="!(contentType.key === 'custom')" [value]="contentType.key">
+                {{ contentType.value }}
+              </ion-select-option>
+            </ng-container>
+            <ion-select-option value="custom"> Personalizado </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item *ngIf="dataForm.get('contentType').value.type === 'custom'">
+          <ion-label>Conteúdo personalizado</ion-label>
+          <ion-textarea placeholder="Escreva aqui" formControlName="custom"></ion-textarea>
+        </ion-item>
+      </ng-container>
     </ion-list>
+
+    <div class="ion-padding-bottom">
+      <ion-button class="ion-padding" type="submit" (click)="onSubmit()" [disabled]="!dataForm.valid">
+        Emitir certificados
+      </ion-button>
+      <p style="font-size: 0.75em" class="ion-padding-horizontal">Ao continuar, confira os dados com atenção.</p>
+    </div>
 
     <ion-modal [keepContentsMounted]="true">
       <ng-template>
-        <ion-datetime id="issuingDate" presentation="date-time" showDefaultButtons="true" formControlName="issuingDate">
+        <ion-datetime id="issueDate" presentation="date-time" showDefaultButtons="true" formControlName="issueDate">
           <span slot="title">Selecione a data de emissão</span>
         </ion-datetime>
       </ng-template>

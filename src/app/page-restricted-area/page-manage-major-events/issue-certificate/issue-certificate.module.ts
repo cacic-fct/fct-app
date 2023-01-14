@@ -1,3 +1,4 @@
+import { CertificatePreviewModalComponent } from './components/certificate-preview-modal/certificate-preview-modal.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,6 +19,6 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     IssueCertificatePageRoutingModule,
     SweetAlert2Module,
   ],
-  declarations: [IssueCertificatePage],
+  declarations: [IssueCertificatePage, CertificatePreviewModalComponent],
 })
 export class IssueCertificatePageModule {}
