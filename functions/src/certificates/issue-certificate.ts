@@ -153,7 +153,7 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
     throw new functions.https.HttpsError('not-found', 'User data not found.');
   }
 
-  const documentID = firestore.collection(`dummy`).doc().id;
+  const documentID = firestore.collection('dummy').doc().id;
 
   let userDocumentFormat;
 
@@ -174,10 +174,12 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
       issueDate: certificateData.issueDate as Timestamp,
       content: await generateContent(eventsUserParticipated),
       certificateName: certificateData.certificateName,
+      attendedEvents: eventsUserParticipated,
     });
 
     await firestore.doc(`certificates/${eventID}/${documentID}/private`).set({
       document: userData.cpf,
+      uid: userUID,
     });
 
     await firestore.doc(`certificates/${eventID}/${documentID}/admin`).set({
