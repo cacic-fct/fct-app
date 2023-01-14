@@ -140,7 +140,7 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
 
   // Check if user already has certificate with same ID
   const certificate = await firestore
-    .doc(`users/${userUID}/certificates/${eventID}/${certificateData.certificateID}/public`)
+    .doc(`users/${userUID}/certificates/majorEvents/${eventID}/${certificateData.certificateID}`)
     .get();
 
   if (certificate.exists) {
@@ -164,11 +164,11 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
     userDocumentFormat = userDocumentFormat.replace(/-\d{2}/, '-••');
   }
 
-  const eventsUserParticipated = await getEventsUserParticipated(eventID, userUID);
+  const eventsUserParticipated: string[] = await getEventsUserParticipated(eventID, userUID);
 
   try {
     // Create certificate
-    await firestore.doc(`certificates/${eventID}/${certificateData.certificateID}/${userUID}`).set({
+    await firestore.doc(`certificates/${eventID}/${documentID}/public`).set({
       fullName: userData.fullName,
       document: userDocumentFormat,
       issueDate: certificateData.issueDate as Timestamp,
@@ -176,11 +176,11 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
       certificateName: certificateData.certificateName,
     });
 
-    await firestore.doc(`certificates/${eventID}/${certificateData.certificateID}/${userUID}/private/data`).set({
+    await firestore.doc(`certificates/${eventID}/${documentID}/private`).set({
       document: userData.cpf,
     });
 
-    await firestore.doc(`certificates/${eventID}/${certificateData.certificateID}/${userUID}/admin/data`).set({
+    await firestore.doc(`certificates/${eventID}/${documentID}/admin`).set({
       actualIssueDate: FieldValue.serverTimestamp(),
       issuedBy: 'eu',
     });
