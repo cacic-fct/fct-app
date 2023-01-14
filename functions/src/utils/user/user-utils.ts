@@ -1,11 +1,11 @@
 import * as functions from 'firebase-functions';
 import { getAuth } from 'firebase-admin/auth';
-import { MainReturnType } from '../../shared/return-types';
+import { StringDataReturnType } from '../../shared/return-types';
 
 // Attribution: The Net Ninja
 // https://youtube.com/watch?v=VvcBqPua2DI&list=PL4cUxeGkcC9jUPIes_B8vRjn1_GaplOPQ
 
-exports.getUserUid = functions.https.onCall(async (data, context): Promise<MainReturnType> => {
+exports.getUserUid = functions.https.onCall(async (data, context): Promise<StringDataReturnType> => {
   if (!context.auth) {
     throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
   }
