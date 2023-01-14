@@ -1,3 +1,4 @@
+import { ModalController } from '@ionic/angular';
 import {
   participationTypes,
   eventTypes,
@@ -14,7 +15,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class CertificatePreviewModalComponent implements OnInit {
   @Input() certificateData!: CertificateTemplateData;
 
-  constructor() {}
+  constructor(private modalController: ModalController) {}
 
   ngOnInit() {
     console.log(this.certificateData);
@@ -36,5 +37,13 @@ export class CertificatePreviewModalComponent implements OnInit {
     return this.certificateData.content.type === 'custom'
       ? this.certificateData.content.custom
       : contentTypes[this.certificateData.content.type];
+  }
+
+  onSubmit() {
+    this.modalController.dismiss(true);
+  }
+
+  closeModal() {
+    this.modalController.dismiss(false);
   }
 }

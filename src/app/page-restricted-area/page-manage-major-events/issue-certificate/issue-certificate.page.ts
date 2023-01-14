@@ -255,7 +255,16 @@ export class IssueCertificatePage implements OnInit {
           return;
         }
 
-        // TODO: Send data to cloud function
+        const payload = {
+          certificateData: certificateData,
+          issuer: 'eu',
+          majorEventID: this.eventID,
+        };
+
+        const issueData = this.fns.httpsCallable('certificates-issueMajorEventCertificate');
+        issueData(payload).subscribe((response) => {
+          console.log(response);
+        });
       });
     });
   }
