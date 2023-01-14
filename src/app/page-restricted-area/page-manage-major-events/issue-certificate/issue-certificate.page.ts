@@ -6,7 +6,7 @@ import {
   eventTypes,
   contentTypes,
   certificateTemplates,
-} from './../../shared/services/certificates.service';
+} from '../../../shared/services/certificates.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 

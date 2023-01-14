@@ -37,7 +37,9 @@ const routes: Routes = [
   {
     path: 'emitir-certificado/:eventType/:eventID',
     loadChildren: () =>
-      import('./issue-certificate/issue-certificate.module').then((m) => m.IssueCertificatePageModule),
+      import('./page-manage-major-events/issue-certificate/issue-certificate.module').then(
+        (m) => m.IssueCertificatePageModule
+      ),
   },
   {
     path: 'emitir-certificado',
