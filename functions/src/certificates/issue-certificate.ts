@@ -74,16 +74,32 @@ exports.issueMajorEventCertificate = functions.https.onCall(
       });
     }
 
+    let failed = [];
     if (data.certificateData.issuedTo.toPayer) {
       // For every event in majorEvent.eventList, get the list of participants
       const eventList = majorEvent.data()?.eventList as string[];
       for (const eventID of eventList) {
-        const subscriptionList = await firestore.collection(`majorEvents/${eventID}/subscriptions`).get();
+        const subscriptionList = await firestore
+          .collection(`majorEvents/${eventID}/subscriptions`)
+          .where('payment.status', '==', 2)
+          .get();
+
         for (const attendance of subscriptionList.docs) {
           const uid = attendance.id;
-          issueCertificate(data.certificateData, uid, eventID);
+          const result = await issueCertificate(data.certificateData, uid, eventID);
+          if (!result.success) {
+            failed.push({ uid: uid, eventID: eventID, error: result.message });
+          }
         }
       }
+    }
+
+    if (failed.length > 0) {
+      return {
+        success: false,
+        message: 'Some certificates were not issued.',
+        //data: failed,
+      };
     }
 
     return {
@@ -131,22 +147,34 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
 
   const eventsUserParticipated = await getEventsUserParticipated(eventID, userUID);
 
-  // Create certificate
-  await firestore.doc(`users/${userUID}/certificates/${eventID}/${documentID}`).set({
-    fullName: userData.data().fullName,
-    document: userDocumentFormat,
-    issueDate: certificateData.issueDate,
-    content: generateContent(eventsUserParticipated),
-  });
+  try {
+    // Create certificate
+    await firestore.doc(`users/${userUID}/certificates/${eventID}/${documentID}`).set({
+      fullName: userData.data().fullName,
+      document: userDocumentFormat,
+      issueDate: certificateData.issueDate,
+      content: generateContent(eventsUserParticipated),
+    });
 
-  await firestore.doc(`users/${userUID}/certificates/${eventID}/${documentID}/private`).set({
-    document: userData.data().document,
-  });
+    await firestore.doc(`users/${userUID}/certificates/${eventID}/${documentID}/private`).set({
+      document: userData.data().document,
+    });
 
-  // Reference certificate in users/id/certificates
-  await firestore.doc(`users/${userUID}/certificates/${eventID}/${documentID}`).set({
-    reference: firestore.doc(`users/${userUID}/certificates/${eventID}/${documentID}`),
-  });
+    // Reference certificate in users/id/certificates
+    await firestore.doc(`users/${userUID}/certificates/${eventID}/${documentID}`).set({
+      reference: firestore.doc(`users/${userUID}/certificates/${eventID}/${documentID}`),
+    });
+  } catch (error) {
+    return {
+      success: false,
+      message: error,
+    };
+  }
+
+  return {
+    success: true,
+    message: 'Certificate issued successfully.',
+  };
 };
 
 const getEventsUserParticipated = async (majorEventID: string, userUID: string): Promise<string[]> => {
