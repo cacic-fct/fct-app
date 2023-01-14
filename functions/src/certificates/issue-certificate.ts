@@ -188,8 +188,8 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
     });
 
     // Reference certificate in users/id/certificates
-    await firestore.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${documentID}`).set({
-      reference: firestore.doc(`certificates/${eventID}/${certificateData.certificateID}/${userUID}`),
+    await firestore.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${certificateData.certificateID}`).set({
+      reference: firestore.collection(`certificates/${eventID}/${documentID}`),
     });
   } catch (error) {
     return {
