@@ -22,7 +22,7 @@ exports.getUserUid = functions.https.onCall(async (data, context): Promise<Strin
   }
 
   if (data.string === '') {
-    return { message: 'Invalid argument: A string must be provided.', success: false };
+    return { message: 'Invalid argument: A string must be provided.', success: false, data: null };
   }
 
   if (data.string.includes('@')) {
@@ -34,7 +34,7 @@ exports.getUserUid = functions.https.onCall(async (data, context): Promise<Strin
         message: 'User found by email',
       };
     } catch (error) {
-      return { message: `${error}`, success: false };
+      return { message: `${error}`, success: false, data: null };
     }
   }
   // Remove spaces from the string
@@ -45,11 +45,11 @@ exports.getUserUid = functions.https.onCall(async (data, context): Promise<Strin
 
   // Check if string only has numbers
   if (!isNumeric) {
-    return { message: 'Invalid argument: Invalid input', success: false };
+    return { message: 'Invalid argument: Invalid input', success: false, data: null };
   }
 
   if (data.string.length < 11 || data.string.length > 14) {
-    return { message: 'Invalid argument: Invalid input', success: false };
+    return { message: 'Invalid argument: Invalid input', success: false, data: null };
   }
 
   if (data.string.length === 11) {
@@ -66,6 +66,6 @@ exports.getUserUid = functions.https.onCall(async (data, context): Promise<Strin
       message: 'User found by phone number',
     };
   } catch (error) {
-    return { message: `${error}`, success: false };
+    return { message: `${error}`, success: false, data: null };
   }
 });

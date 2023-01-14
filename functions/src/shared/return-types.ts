@@ -4,5 +4,5 @@ export interface MainReturnType {
 }
 
 export interface StringDataReturnType extends MainReturnType {
-  data?: string;
+  data: string | null;
 }
