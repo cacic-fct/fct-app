@@ -11,6 +11,17 @@
     </ion-item-divider>
 
     <ion-list>
+      <!-- TODO: Remova-me -->
+      <ion-item>
+        <img [src]="emojiService.getEmoji('🤔')" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
+        <ion-label>
+          <h2 class="ion-text-wrap">TODO: Remova-me</h2>
+          <h3 class="ion-text-wrap">Exemplo de presença</h3>
+          <h3>25:00 às 26:00</h3>
+          <h3><ion-icon name="checkmark" class="attendance-checkmark-icon"></ion-icon> Presente</h3>
+        </ion-label>
+      </ion-item>
+      <!----------------->
       <ion-item [routerLink]="['evento', event.id]" routerDirection="forward">
         <img [src]="emojiService.getEmoji(event.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
         <ion-label>

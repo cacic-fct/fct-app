@@ -28,7 +28,7 @@ export interface MajorEventItem extends CertificateIssueInProgress {
   course: string;
   description?: string;
   eventStartDate: Timestamp;
-  eventEndDate?: Timestamp;
+  eventEndDate: Timestamp;
   subscriptionStartDate?: Timestamp;
   subscriptionEndDate?: Timestamp;
   maxCourses?: number;

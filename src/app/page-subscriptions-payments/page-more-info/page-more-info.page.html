@@ -68,6 +68,19 @@
           </ng-template>
         </div>
 
+        <div class="card-section ion-padding-horizontal">
+          <div class="card-label">
+            <ion-icon name="document-text-outline" aria-hidden="true"></ion-icon>
+            Certificados
+          </div>
+
+          <ng-container>
+            <ion-button color="primary" class="ion-padding" (click)="getCertificateList()">
+              <ion-icon name="list" slot="start"></ion-icon>Listar certificados
+            </ion-button>
+          </ng-container>
+        </div>
+
         <div class="ion-padding">
           <h2>Inscrito</h2>
           <app-event-list [eventInput]="subscribedEvents$" [isSubscribedList]="true"></app-event-list>
