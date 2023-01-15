@@ -12,15 +12,12 @@
     <ion-spinner name="dots" style="margin: 0 auto; display: block"></ion-spinner>
   </ng-template>
 
-  <h1 class="ion-padding ion-text-center">Você não tem certificados emitidos</h1>
-
-  <ng-container *ngIf="certificatesColletion$ | async as certificatesCollection">
+  <ng-container *ngIf="certificatesColletion$ | async as certificatesCollection; else loading">
+    <ng-container *ngIf="certificatesCollection.length === 0">
+      <h1 class="ion-padding ion-text-center">Você não tem certificados emitidos</h1>
+    </ng-container>
     <ng-container *ngFor="let certificate of certificatesCollection">
       <ng-container *ngIf="certificate.certificateData | async as certificateData">
-        {{ certificate.id }}
-        <br />
-        {{ certificateData | json }}
-
         <ion-item lines="inset">
           {{ certificateData.certificateName }}
           <ion-button slot="end" fill="clear" (click)="copyValidationUrl(certificate.id)">
@@ -42,3 +39,7 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+
+<ng-template #loading>
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+</ng-template>

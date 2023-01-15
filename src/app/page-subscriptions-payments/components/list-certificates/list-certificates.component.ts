@@ -3,11 +3,11 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MailtoService, Mailto } from './../../../shared/services/mailto.service';
 import { Component, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { filterNullish, isDefined } from 'src/app/shared/services/rxjs.service';
+import { filterNullish } from 'src/app/shared/services/rxjs.service';
 
 import { User } from '@firebase/auth';
 
-import { first, map, Observable, take, switchMap, combineLatest, filter } from 'rxjs';
+import { map, Observable, take, switchMap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserCertificateDocument, CertificateService } from 'src/app/shared/services/certificates.service';
 
