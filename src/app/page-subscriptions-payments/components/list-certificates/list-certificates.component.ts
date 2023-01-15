@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MailtoService, Mailto } from './../../../shared/services/mailto.service';
 import { Component, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { filterNullish } from 'src/app/shared/services/rxjs.service';
+import { filterNullish, isDefined } from 'src/app/shared/services/rxjs.service';
 
 import { User } from '@firebase/auth';
 

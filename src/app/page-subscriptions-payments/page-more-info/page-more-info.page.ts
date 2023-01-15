@@ -131,7 +131,7 @@ export class PageMoreInfoPage implements OnInit {
     return formated;
   }
 
-  async getCertificate() {
+  async getCertificateList() {
     const modal = await this.modalController.create({
       component: ListCertificatesComponent,
       componentProps: {

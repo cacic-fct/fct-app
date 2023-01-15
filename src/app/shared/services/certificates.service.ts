@@ -1,3 +1,4 @@
+import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { EventItem } from 'src/app/shared/services/event';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { DocumentReference } from '@angular/fire/firestore';
@@ -77,35 +78,50 @@ export class CertificateService {
 
         const verificationURL = `https://fct-pp.web.app/certificado/verificar/${eventID}-${certificateUserData.id}`;
 
-        this.getCertificateContent(eventID, certificateUserData.id!)
+        this.afs
+          .doc<MajorEventItem>(`majorEvents/${eventID}`)
+          .get()
           .pipe(take(1))
-          .subscribe((content) => {
-            let input = {
-              name: certificateData.fullName,
-              name_small: certificateData.fullName,
-              date: formatDate(certificateData.issueDate.toDate(), "dd 'de' MMMM 'de' yyyy", {
-                locale: ptBR,
-              }),
-              document: certificateData.document,
-              event_type: certificateStoreData.eventType.custom || certificateStoreData.eventType.type,
-              participation_type:
-                certificateStoreData.participationType.custom || certificateStoreData.participationType.type,
-              url: verificationURL,
-              qrcode: verificationURL,
-              qrcode2: verificationURL,
-              content: content,
-            };
+          .subscribe((majorEvent) => {
+            const majorEventData = majorEvent.data();
 
-            const inputs = [input];
+            if (!majorEventData) {
+              throw new Error('Major event data is missing');
+            }
 
-            PDFGenerate({ template, inputs, options: { font } }).then((pdf) => {
-              const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
-              const pdfUrl = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = pdfUrl;
-              a.download = certificateStoreData.certificateName + '.pdf';
-              a.click();
-            });
+            this.getCertificateContent(eventID, certificateUserData.id!)
+              .pipe(take(1))
+              .subscribe((content) => {
+                let input = {
+                  name: certificateData.fullName,
+                  name_small: certificateData.fullName,
+                  event_name: majorEventData.name,
+                  event_name_small: majorEventData.name,
+                  date: formatDate(certificateData.issueDate.toDate(), "dd 'de' MMMM 'de' yyyy", {
+                    locale: ptBR,
+                  }),
+                  document: certificateData.document,
+                  event_type: certificateStoreData.eventType.custom || eventTypes[certificateStoreData.eventType.type],
+                  participation_type:
+                    certificateStoreData.participationType.custom ||
+                    participationTypes[certificateStoreData.participationType.type],
+                  url: verificationURL,
+                  qrcode: verificationURL,
+                  qrcode2: verificationURL,
+                  content: content,
+                };
+
+                const inputs = [input];
+
+                PDFGenerate({ template, inputs, options: { font } }).then((pdf) => {
+                  const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
+                  const pdfUrl = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = pdfUrl;
+                  a.download = certificateStoreData.certificateName + '.pdf';
+                  a.click();
+                });
+              });
           });
       });
     });
