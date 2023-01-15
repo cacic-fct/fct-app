@@ -1,5 +1,40 @@
 import { Timestamp } from '@firebase/firestore-types';
 
+interface CertificateOptionsTypes {
+  custom: string;
+  [key: string]: string;
+}
+
+export const participationTypes: CertificateOptionsTypes = {
+  custom: 'Personalizado',
+  participacao: 'Certificamos a participação de',
+  participacaoDigital: 'Certificamos a participação digital de',
+  certificamosQue: 'Certificamos que',
+};
+
+export const eventTypes: CertificateOptionsTypes = {
+  custom: 'Personalizado',
+  evento: 'no evento',
+  minicurso: 'no minicurso',
+  palestra: 'na palestra',
+  atividade: 'na atividade',
+};
+
+export const contentTypes: CertificateOptionsTypes = {
+  custom: 'Personalizado',
+  default: 'Atividades realizadas (padrão)',
+};
+
+export const certificateTemplates = {
+  cacic: {
+    displayName: 'CACiC',
+    /**
+     * Preferibly the same name as the key
+     */
+    templateFilename: 'cacic',
+  },
+};
+
 export interface Certificate {
   /**
    * User's "fullName"
