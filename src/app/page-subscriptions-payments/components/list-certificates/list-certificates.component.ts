@@ -77,7 +77,7 @@ export class ListCertificatesComponent implements OnInit {
       receiver: 'cacic.fct@gmail.com',
       subject: '[FCT-App] Problema com certificado',
       // TODO: Adicionar o id do evento no corpo do e-mail
-      body: `Olá!\n\n\n\n\n=== Não apague os dados abaixo ===\nE-mail: ${this.userData.email}\nuid: ${this.userData.uid}\n`,
+      body: `Olá!\n\n\n\n\n=== Não apague os dados abaixo ===\nE-mail: ${this.userData.email}\nuid: ${this.userData.uid}\nmajorEventID: ${this.majorEventID}\n`,
     };
     this.mailtoService.open(mailto);
   }

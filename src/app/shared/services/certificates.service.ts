@@ -8,6 +8,7 @@ import { format as formatDate } from 'date-fns';
 
 import { Template, generate as PDFGenerate } from '@pdfme/generator';
 import { HttpClient } from '@angular/common/http';
+import { ptBR } from 'date-fns/locale';
 
 @Injectable({
   providedIn: 'root',
@@ -40,17 +41,13 @@ export class CertificateService {
       .doc<CertificateDocPublic>(`/certificates/${eventID}/${certificateUserData.id}/public`)
       .get();
 
-    console.log('here 2');
-
     certificateData$.pipe(take(1)).subscribe(async (certificateDataSnapshot) => {
-      console.log('here 3');
       const certificateData = certificateDataSnapshot.data();
       if (!certificateData) {
         throw new Error('Certificate data is missing');
       }
 
       pdfJson.pipe(take(1)).subscribe(async (pdf) => {
-        console.log('here pdf');
         const template = pdf as Template;
 
         let font = {};
@@ -80,13 +77,15 @@ export class CertificateService {
 
         const verificationURL = `https://fct-pp.web.app/certificado/verificar/${eventID}-${certificateUserData.id}`;
 
-        console.log('here before content');
         this.getCertificateContent(eventID, certificateUserData.id!)
           .pipe(take(1))
           .subscribe((content) => {
-            console.log('here content', certificateData);
             let input = {
               name: certificateData.fullName,
+              name_small: certificateData.fullName,
+              date: formatDate(certificateData.issueDate.toDate(), "dd 'de' MMMM 'de' yyyy", {
+                locale: ptBR,
+              }),
               document: certificateData.document,
               event_type: certificateStoreData.eventType.custom || certificateStoreData.eventType.type,
               participation_type:
@@ -135,7 +134,6 @@ export class CertificateService {
 
           // Generate content
           const a = generateContent(eventInfoCache);
-          console.log('generate content ok');
           return a;
         } else {
           throw new Error('Unable to generate content, certificate does not exist');
@@ -188,7 +186,7 @@ function generateContent(eventInfoCache: Observable<EventItem | undefined>[]): O
       const userTimezoneOffset = new Date().getTimezoneOffset() / 60;
       const userTimezoneOffsetString = `${userTimezoneOffset > 0 ? '-' : '+'}${Math.abs(userTimezoneOffset)}`;
 
-      content += `\nDatas de acordo com o fuso horário ${userTimezone} (UTC${userTimezoneOffsetString}).`;
+      content += `\nDatas de acordo com o fuso horário "${userTimezone}" (UTC${userTimezoneOffsetString}).`;
 
       return content;
     })
