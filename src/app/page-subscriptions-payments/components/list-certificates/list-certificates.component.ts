@@ -121,3 +121,84 @@ export class ListCertificatesComponent implements OnInit {
     this.genpdf.generateCertificate('cacic', inputs, options);
   }
 }
+
+const generateContent = async (eventsUserAttended: string[], eventInfoCache: EventCacheObject) => {
+  const palestras: EventCache[] = [];
+  const minicursos: EventCache[] = [];
+  const uncategorized: EventCache[] = [];
+
+  // TODO: Considerar grupos de eventos
+  for (const eventID of eventsUserAttended) {
+    switch (eventInfoCache[eventID].eventType) {
+      case 'palestra':
+        palestras.push(eventInfoCache[eventID]);
+        break;
+      case 'minicurso':
+        minicursos.push(eventInfoCache[eventID]);
+        break;
+      default:
+        uncategorized.push(eventInfoCache[eventID]);
+        break;
+    }
+  }
+
+  // Sort events by date
+  palestras.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
+  minicursos.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
+  uncategorized.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
+
+  // Generate content string
+  let content = '';
+
+  content += makeText('Palestra', palestras);
+  content += makeText('Minicurso', minicursos);
+  content += makeText('Atividade', uncategorized);
+
+  console.log(content);
+
+  return content;
+};
+
+function makeText(type: string, array: EventCache[]): string {
+  let content = type;
+
+  if (array.length === 0) {
+    return '';
+  }
+
+  if (array.length > 1) {
+    // If last character is 'm' replace it with 'ns'
+    if (content.slice(-1) === 'm') {
+      content = content.slice(0, -1) + 'ns';
+    } else if (content.slice(-2) === 'ão') {
+      content = content.slice(0, -2) + 'ões';
+    } else {
+      content += 's';
+    }
+  }
+  content += ':\n';
+
+  let totalWorkload = 0;
+  for (const event of array) {
+    content += `• ${formatTimestamp(event.eventStartDate)} - ${event.eventName} - Carga horária: ${
+      event.workload ? event.workload + ' horas' : 'indefinida'
+    };\n`;
+  }
+  content = content.slice(0, -2) + '.\n';
+  content += `\nCarga horária total: ${totalWorkload} horas\n`;
+  content += '\n\n';
+
+  return content;
+}
+
+function convertTimezone(date: Date, timezone: string): Date {
+  const convertedDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+  return convertedDate;
+}
+
+function formatTimestamp(date: Timestamp): string {
+  let dateFormatted = date.toDate();
+  dateFormatted = convertTimezone(dateFormatted, 'America/Sao_Paulo');
+
+  return formatDate(dateFormatted, 'dd/MM/yyyy - HH:mm');
+}
