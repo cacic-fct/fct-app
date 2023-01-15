@@ -222,7 +222,7 @@ const issueCertificate = async (
     // Reference certificate in users/id/certificates
     await firestore.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${documentID}`).set({
       publicReference: firestore.doc(`certificates/${eventID}/${documentID}/public`),
-      certificateName: certificateData.certificateName,
+      certificateID: certificateData.certificateID,
     });
   } catch (error) {
     return {
