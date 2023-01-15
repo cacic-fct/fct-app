@@ -132,7 +132,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
 
       for (const attendance of subscriptionList.docs) {
         const uid = attendance.id;
-        const result = await issueCertificate(data.certificateData, uid, majorEventID);
+        const result = await issueCertificate(data.certificateData, uid, majorEventID, context.auth.uid);
         if (!result.success) {
           console.log('Error:', result);
           failed.push({ uid: uid, error: result.message });
@@ -157,7 +157,12 @@ exports.issueMajorEventCertificate = functions.https.onCall(
   }
 );
 
-const issueCertificate = async (certificateData: CertificateData, userUID: string, eventID: string) => {
+const issueCertificate = async (
+  certificateData: CertificateData,
+  userUID: string,
+  eventID: string,
+  adminUID: string
+) => {
   const firestore = admin.firestore();
   const auth = getAuth();
 
@@ -200,7 +205,7 @@ const issueCertificate = async (certificateData: CertificateData, userUID: strin
       fullName: userData.fullName,
       document: userDocumentFormat,
       issueDate: new Timestamp(certificateData.issueDate.seconds, certificateData.issueDate.nanoseconds),
-      certificateName: certificateData.certificateName,
+      certificateID: certificateData.certificateID,
       attendedEvents: eventsUserAttended,
     });
 
@@ -211,7 +216,7 @@ const issueCertificate = async (certificateData: CertificateData, userUID: strin
 
     await firestore.doc(`certificates/${eventID}/${documentID}/admin`).set({
       actualIssueDate: FieldValue.serverTimestamp(),
-      issuedBy: 'eu',
+      issuedBy: adminUID,
     });
 
     // Reference certificate in users/id/certificates
