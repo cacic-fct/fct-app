@@ -157,12 +157,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
   }
 );
 
-const issueCertificate = async (
-  certificateData: CertificateData,
-  userUID: string,
-  eventID: string,
-  eventInfoCache: EventCacheObject
-) => {
+const issueCertificate = async (certificateData: CertificateData, userUID: string, eventID: string) => {
   const firestore = admin.firestore();
   const auth = getAuth();
 
