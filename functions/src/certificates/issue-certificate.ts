@@ -1,5 +1,5 @@
 import { format as formatDate } from 'date-fns';
-import { Timestamp } from '@firebase/firestore-types';
+import { Timestamp } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
@@ -129,7 +129,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
   }
 );
 
-const issueCertificate = async (certificateData: any, userUID: string, eventID: string) => {
+const issueCertificate = async (certificateData: CertificateData, userUID: string, eventID: string) => {
   const firestore = admin.firestore();
   const auth = getAuth();
 
@@ -171,7 +171,7 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
     await firestore.doc(`certificates/${eventID}/${documentID}/public`).set({
       fullName: userData.fullName,
       document: userDocumentFormat,
-      issueDate: certificateData.issueDate as Timestamp,
+      issueDate: certificateData.issueDate,
       content: await generateContent(eventsUserParticipated),
       certificateName: certificateData.certificateName,
       attendedEvents: eventsUserParticipated,
@@ -188,8 +188,9 @@ const issueCertificate = async (certificateData: any, userUID: string, eventID: 
     });
 
     // Reference certificate in users/id/certificates
-    await firestore.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${certificateData.certificateID}`).set({
-      reference: firestore.collection(`certificates/${eventID}/${documentID}`),
+    await firestore.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${documentID}`).set({
+      publicReference: firestore.doc(`certificates/${eventID}/${documentID}/public`),
+      certificateName: certificateData.certificateName,
     });
   } catch (error) {
     return {
@@ -250,21 +251,25 @@ const generateContent = async (eventsUserParticipated: string[]) => {
         type: event.eventType,
         group: event.eventGroup,
       };
-      switch (event.type) {
+      console.log('StartDate:', event.eventStartDate);
+      switch (event.eventType) {
         case 'palestra':
           palestras.push(eventData);
+          break;
         case 'minicurso':
           minicursos.push(eventData);
+          break;
         default:
           uncategorized.push(eventData);
+          break;
       }
     }
   }
 
   // Sort events by date
-  palestras.sort((a, b) => b.date.toMillis() - a.date.toMillis());
-  minicursos.sort((a, b) => b.date.toMillis() - a.date.toMillis());
-  uncategorized.sort((a, b) => b.date.toMillis() - a.date.toMillis());
+  palestras.sort((a, b) => a.date.toMillis() - b.date.toMillis());
+  minicursos.sort((a, b) => a.date.toMillis() - b.date.toMillis());
+  uncategorized.sort((a, b) => a.date.toMillis() - b.date.toMillis());
 
   // Generate content string
   let content = '';
@@ -309,7 +314,6 @@ const generateContent = async (eventsUserParticipated: string[]) => {
 };
 
 function formatTimestamp(date: Timestamp): string {
-  // Format timestamp to dd/mm/yyyy - hh:mm
   const dateFormatted = date.toDate();
   return formatDate(dateFormatted, 'dd/MM/yyyy - HH:mm');
 }
@@ -317,28 +321,31 @@ function formatTimestamp(date: Timestamp): string {
 interface MajorEventCertificateData {
   majorEventID: string;
   issuer: string;
-  certificateData: {
-    certificateName: string;
-    certificateID: string;
-    certificateTemplate: string;
-    issueDate: Timestamp;
-    participation: {
-      type: string;
-      custom?: string;
-    };
-    event: {
-      type: string;
-      custom?: string;
-    };
-    content: {
-      type: string;
-      custom?: string;
-    };
-    issuedTo: {
-      toPayer: boolean;
-      toNonSubscriber: boolean;
-      toNonPayer: boolean;
-      toList: string[];
-    };
+
+  certificateData: CertificateData;
+}
+
+interface CertificateData {
+  certificateName: string;
+  certificateID: string;
+  certificateTemplate: string;
+  issueDate: Timestamp;
+  participation: {
+    type: string;
+    custom?: string;
+  };
+  event: {
+    type: string;
+    custom?: string;
+  };
+  content: {
+    type: string;
+    custom?: string;
+  };
+  issuedTo: {
+    toPayer: boolean;
+    toNonSubscriber: boolean;
+    toNonPayer: boolean;
+    toList: string[];
   };
 }
