@@ -86,6 +86,8 @@ exports.issueMajorEventCertificate = functions.https.onCall(
         certificateName: data.certificateData.certificateName,
         certificateTemplate: data.certificateData.certificateTemplate,
         certificateContent: data.certificateData.content,
+        eventType: data.certificateData.event,
+        participationType: data.certificateData.participation,
       });
 
       certificateAdmin.ref.set({
@@ -112,7 +114,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
             if (data) {
               const eventInfo = {
                 eventName: data.name,
-                workload: data.workload,
+                creditHours: data.creditHours,
                 eventStartDate: data.eventStartDate,
                 eventType: data.eventType,
                 eventGroup: data.eventGroup,
@@ -300,7 +302,7 @@ interface EventCacheObject {
 interface EventCache {
   eventStartDate: Timestamp;
   eventName: string;
-  workload: number;
+  creditHours: number;
   eventType: string;
   eventGroup?: {
     groupDisplayName: string;
