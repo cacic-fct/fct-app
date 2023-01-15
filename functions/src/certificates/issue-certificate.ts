@@ -95,6 +95,29 @@ exports.issueMajorEventCertificate = functions.https.onCall(
       });
     }
 
+    const eventInfoCache: EventCacheObject = {};
+
+    majorEvent.data()?.events.forEach((eventID: string) => {
+      firestore
+        .doc(`events/${eventID}`)
+        .get()
+        .then((event) => {
+          if (event.exists) {
+            const data = event.data();
+            if (data) {
+              const eventInfo = {
+                eventName: data.name,
+                workload: data.workload,
+                eventStartDate: data.eventStartDate,
+                eventType: data.eventType,
+                eventGroup: data.eventGroup,
+              };
+              eventInfoCache[eventID] = eventInfo;
+            }
+          }
+        });
+    });
+
     let failed = [];
     if (data.certificateData.issuedTo.toPayer) {
       const subscriptionList = await firestore
@@ -104,7 +127,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
 
       for (const attendance of subscriptionList.docs) {
         const uid = attendance.id;
-        const result = await issueCertificate(data.certificateData, uid, majorEventID);
+        const result = await issueCertificate(data.certificateData, uid, majorEventID, eventInfoCache);
         if (!result.success) {
           console.log('Error:', result);
           failed.push({ uid: uid, error: result.message });
@@ -129,7 +152,12 @@ exports.issueMajorEventCertificate = functions.https.onCall(
   }
 );
 
-const issueCertificate = async (certificateData: CertificateData, userUID: string, eventID: string) => {
+const issueCertificate = async (
+  certificateData: CertificateData,
+  userUID: string,
+  eventID: string,
+  eventInfoCache: EventCacheObject
+) => {
   const firestore = admin.firestore();
   const auth = getAuth();
 
@@ -172,7 +200,7 @@ const issueCertificate = async (certificateData: CertificateData, userUID: strin
       fullName: userData.fullName,
       document: userDocumentFormat,
       issueDate: certificateData.issueDate,
-      content: await generateContent(eventsUserParticipated),
+      content: await generateContent(eventsUserParticipated, eventInfoCache),
       certificateName: certificateData.certificateName,
       attendedEvents: eventsUserParticipated,
     });
@@ -232,86 +260,73 @@ const getEventsUserParticipated = async (majorEventID: string, userUID: string):
   return eventsUserParticipated;
 };
 
-const generateContent = async (eventsUserParticipated: string[]) => {
-  // For every event userParticipated in, get event type and store it
-  const firestore = admin.firestore();
-
-  const palestras = [];
-  const minicursos = [];
-  const uncategorized = [];
+const generateContent = async (eventsUserParticipated: string[], eventInfoCache: EventCacheObject) => {
+  const palestras: EventCache[] = [];
+  const minicursos: EventCache[] = [];
+  const uncategorized: EventCache[] = [];
 
   // TODO: Considerar grupos de eventos
   for (const eventID of eventsUserParticipated) {
-    const event = (await firestore.doc(`events/${eventID}`).get()).data();
-    if (event) {
-      const eventData = {
-        date: event.eventStartDate as Timestamp,
-        name: event.name,
-        workload: event.duration,
-        type: event.eventType,
-        group: event.eventGroup,
-      };
-      console.log('StartDate:', event.eventStartDate);
-      switch (event.eventType) {
-        case 'palestra':
-          palestras.push(eventData);
-          break;
-        case 'minicurso':
-          minicursos.push(eventData);
-          break;
-        default:
-          uncategorized.push(eventData);
-          break;
-      }
+    switch (eventInfoCache[eventID].eventType) {
+      case 'palestra':
+        palestras.push(eventInfoCache[eventID]);
+        break;
+      case 'minicurso':
+        minicursos.push(eventInfoCache[eventID]);
+        break;
+      default:
+        uncategorized.push(eventInfoCache[eventID]);
+        break;
     }
   }
 
   // Sort events by date
-  palestras.sort((a, b) => a.date.toMillis() - b.date.toMillis());
-  minicursos.sort((a, b) => a.date.toMillis() - b.date.toMillis());
-  uncategorized.sort((a, b) => a.date.toMillis() - b.date.toMillis());
+  palestras.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
+  minicursos.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
+  uncategorized.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
 
   // Generate content string
   let content = '';
 
-  if (palestras.length > 0) {
-    let totalWorkload = 0;
-    content += 'Palestras:\n';
-    for (const palestra of palestras) {
-      content += `• ${formatTimestamp(palestra.date)} - ${palestra.name} - Carga horária: ${palestra.workload} horas\n`;
-    }
-    content += `\nCarga horária total: ${totalWorkload} horas\n`;
-    content += '\n\n';
-  }
-  if (minicursos.length > 0) {
-    let totalWorkload = 0;
-    content += 'Minicursos:\n';
-    for (const minicurso of minicursos) {
-      content += `• ${formatTimestamp(minicurso.date)} - ${minicurso.name} - Carga horária: ${
-        minicurso.workload
-      } horas\n`;
-      totalWorkload += minicurso.workload;
-    }
-    content += `\nCarga horária total: ${totalWorkload} horas\n`;
-    content += '\n\n';
-  }
-
-  if (uncategorized.length > 0) {
-    let totalWorkload = 0;
-    content += 'Atividades:\n';
-    for (const atividade of uncategorized) {
-      content += `• ${formatTimestamp(atividade.date)} - ${atividade.name} - Carga horária: ${
-        atividade.workload
-      } horas\n`;
-    }
-    content += `\nCarga horária total: ${totalWorkload} horas\n`;
-    content += '\n\n';
-  }
+  makeText('Palestra', palestras);
+  makeText('Minicurso', minicursos);
+  makeText('Atividade', uncategorized);
 
   console.log(content);
 
   return content;
 };
+
+function makeText(type: string, array: any[]): string {
+  let content = '';
+
+  if (array.length > 0) {
+    content += type;
+    if (array.length > 1) {
+      // If last character is 'm' replace it with 'ns'
+      if (content.slice(-1) === 'm') {
+        content = content.slice(0, -1) + 'ns';
+      } else if (content.slice(-2) === 'ão') {
+        content = content.slice(0, -2) + 'ões';
+      } else {
+        content += 's';
+      }
+    }
+    content += '\n:';
+
+    let totalWorkload = 0;
+    for (const event of array) {
+      content += `• ${formatTimestamp(event.eventStartDate)} - ${event.eventName} - Carga horária: ${
+        event.workload + 'horas' || 'indefinida'
+      };\n`;
+    }
+    content = content.slice(0, -2) + '.\n';
+    content += `\nCarga horária total: ${totalWorkload} horas\n`;
+    content += '\n\n';
+  }
+
+  return content;
+}
 
 function formatTimestamp(date: Timestamp): string {
   const dateFormatted = date.toDate();
@@ -348,4 +363,20 @@ interface CertificateData {
     toNonPayer: boolean;
     toList: string[];
   };
+}
+
+interface EventCacheObject {
+  [eventID: string]: EventCache;
+}
+
+interface EventCache {
+  eventStartDate: Timestamp;
+  eventName: string;
+  workload: number;
+  eventType: string;
+  eventGroup?: {
+    groupDisplayName: string;
+    groupEventIDs: string[];
+    mainEventID: string;
+  } | null;
 }
