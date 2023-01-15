@@ -443,3 +443,29 @@ export interface CertificateStoreData {
   };
   id?: string;
 }
+
+export interface CertificateTemplateData {
+  certificateName: string;
+  certificateID: string;
+  certificateTemplate: string;
+  issueDate: Timestamp;
+  actualissueDate?: Timestamp;
+  participation: {
+    type: string;
+    custom: string;
+  };
+  event: {
+    type: string;
+    custom: string;
+  };
+  content: {
+    type: string;
+    custom: string;
+  };
+  issuedTo: {
+    toPayer: string;
+    toNonSubscriber: string;
+    toNonPayer: string;
+    toList: string[];
+  };
+}
