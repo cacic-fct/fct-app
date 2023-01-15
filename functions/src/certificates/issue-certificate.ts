@@ -59,8 +59,8 @@ exports.issueMajorEventCertificate = functions.https.onCall(
 
       // If certificate is issuing to person already on list, return error
       if (issuedTo.toList.length > 0) {
-        for (const uid of issuedTo.toList) {
-          if (data.certificateData.issuedTo.toList.includes(uid)) {
+        for (const newUid of data.certificateData.issuedTo.toList) {
+          if (issuedTo.toList.includes(newUid)) {
             throw new functions.https.HttpsError('already-exists', 'Certificate already exists.');
           }
         }
@@ -90,6 +90,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
           certificateID: data.certificateData.certificateID,
           certificateName: data.certificateData.certificateName,
           certificateTemplate: data.certificateData.certificateTemplate,
+          certificateContent: data.certificateData.content,
         },
         issuedOn: FieldValue.serverTimestamp(),
       });
@@ -192,17 +193,16 @@ const issueCertificate = async (
     userDocumentFormat = userDocumentFormat.replace(/-\d{2}/, '-••');
   }
 
-  const eventsUserParticipated: string[] = await getEventsUserParticipated(eventID, userUID);
+  const eventsUserAttended: string[] = await geteventsUserAttended(eventID, userUID);
 
   try {
     // Create certificate
     await firestore.doc(`certificates/${eventID}/${documentID}/public`).set({
       fullName: userData.fullName,
       document: userDocumentFormat,
-      issueDate: certificateData.issueDate,
-      content: await generateContent(eventsUserParticipated, eventInfoCache),
+      issueDate: new Timestamp(certificateData.issueDate.seconds, certificateData.issueDate.nanoseconds),
       certificateName: certificateData.certificateName,
-      attendedEvents: eventsUserParticipated,
+      attendedEvents: eventsUserAttended,
     });
 
     await firestore.doc(`certificates/${eventID}/${documentID}/private`).set({
@@ -233,7 +233,7 @@ const issueCertificate = async (
   };
 };
 
-const getEventsUserParticipated = async (majorEventID: string, userUID: string): Promise<string[]> => {
+const geteventsUserAttended = async (majorEventID: string, userUID: string): Promise<string[]> => {
   const firestore = admin.firestore();
   const majorEventRef = firestore.doc(`majorEvents/${majorEventID}`);
 
@@ -246,97 +246,21 @@ const getEventsUserParticipated = async (majorEventID: string, userUID: string):
   const subscribedToEvents = userSubscription.subscribedToEvents;
 
   // For every event user is subscribed to, check if user doc is in attendance
-  const eventsUserParticipated = [];
+  const eventsUserAttended = [];
 
   for (const eventID of subscribedToEvents) {
-    functions.logger.log(`Checking event ${eventID}`);
     const attendance = await firestore.doc(`events/${eventID}/attendance/${userUID}`).get();
     if (attendance.exists) {
-      functions.logger.log(`User is attending event ${eventID}`);
-      eventsUserParticipated.push(eventID);
+      eventsUserAttended.push(eventID);
     }
   }
 
-  return eventsUserParticipated;
+  return eventsUserAttended;
 };
-
-const generateContent = async (eventsUserParticipated: string[], eventInfoCache: EventCacheObject) => {
-  const palestras: EventCache[] = [];
-  const minicursos: EventCache[] = [];
-  const uncategorized: EventCache[] = [];
-
-  // TODO: Considerar grupos de eventos
-  for (const eventID of eventsUserParticipated) {
-    switch (eventInfoCache[eventID].eventType) {
-      case 'palestra':
-        palestras.push(eventInfoCache[eventID]);
-        break;
-      case 'minicurso':
-        minicursos.push(eventInfoCache[eventID]);
-        break;
-      default:
-        uncategorized.push(eventInfoCache[eventID]);
-        break;
-    }
-  }
-
-  // Sort events by date
-  palestras.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
-  minicursos.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
-  uncategorized.sort((a, b) => a.eventStartDate.toMillis() - b.eventStartDate.toMillis());
-
-  // Generate content string
-  let content = '';
-
-  makeText('Palestra', palestras);
-  makeText('Minicurso', minicursos);
-  makeText('Atividade', uncategorized);
-
-  console.log(content);
-
-  return content;
-};
-
-function makeText(type: string, array: any[]): string {
-  let content = '';
-
-  if (array.length > 0) {
-    content += type;
-    if (array.length > 1) {
-      // If last character is 'm' replace it with 'ns'
-      if (content.slice(-1) === 'm') {
-        content = content.slice(0, -1) + 'ns';
-      } else if (content.slice(-2) === 'ão') {
-        content = content.slice(0, -2) + 'ões';
-      } else {
-        content += 's';
-      }
-    }
-    content += '\n:';
-
-    let totalWorkload = 0;
-    for (const event of array) {
-      content += `• ${formatTimestamp(event.eventStartDate)} - ${event.eventName} - Carga horária: ${
-        event.workload + 'horas' || 'indefinida'
-      };\n`;
-    }
-    content = content.slice(0, -2) + '.\n';
-    content += `\nCarga horária total: ${totalWorkload} horas\n`;
-    content += '\n\n';
-  }
-
-  return content;
-}
-
-function formatTimestamp(date: Timestamp): string {
-  const dateFormatted = date.toDate();
-  return formatDate(dateFormatted, 'dd/MM/yyyy - HH:mm');
-}
 
 interface MajorEventCertificateData {
   majorEventID: string;
   issuer: string;
-
   certificateData: CertificateData;
 }
 
