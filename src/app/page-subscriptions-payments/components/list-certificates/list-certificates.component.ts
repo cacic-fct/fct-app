@@ -87,7 +87,9 @@ export class ListCertificatesComponent implements OnInit {
 
     this.certificateService.generateCertificate(this.majorEventID, certificateData, certificate);
 
-    event.target.disabled = false;
+    setTimeout(() => {
+      event.target.disabled = false;
+    }, 5000);
   }
 
   getCertificateData$(certificateID: string) {
