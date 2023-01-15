@@ -5,8 +5,12 @@ import { getAuth } from 'firebase-admin/auth';
 import { FieldValue } from 'firebase-admin/firestore';
 import { MainReturnType } from './../shared/return-types';
 
-exports.issueMajorEventCertificate = functions.https.onCall(
-  async (data: MajorEventCertificateData, context): Promise<MainReturnType> => {
+exports.issueMajorEventCertificate = functions
+  .runWith({
+    timeoutSeconds: 300,
+    memory: '256MB',
+  })
+  .https.onCall(async (data: MajorEventCertificateData, context): Promise<MainReturnType & { data?: any[] }> => {
     if (context.app == undefined) {
       throw new functions.https.HttpsError(
         'failed-precondition',
@@ -64,7 +68,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
       if (issuedTo.toList.length > 0) {
         for (const newUid of data.certificateData.issuedTo.toList) {
           if (issuedTo.toList.includes(newUid)) {
-            throw new functions.https.HttpsError('already-exists', 'Certificate already exists.');
+            throw new functions.https.HttpsError('already-exists', `Certificate already exists to ${newUid}.`);
           }
         }
       }
@@ -136,28 +140,34 @@ exports.issueMajorEventCertificate = functions.https.onCall(
         const uid = attendance.id;
         const result = await issueCertificate(data.certificateData, uid, majorEventID, context.auth.uid);
         if (!result.success) {
-          console.log('Error:', result);
           failed.push({ uid: uid, error: result.message });
         }
       }
     }
 
     if (failed.length > 0) {
-      console.log('Error:', failed);
+      // Store failed certificates in database
+      await firestore
+        .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`)
+        .set(
+          {
+            failed: failed,
+          },
+          { merge: true }
+        );
 
       return {
         success: false,
         message: 'Some certificates were not issued.',
-        //data: failed,
+        data: failed,
       };
     }
 
     return {
       success: true,
-      message: 'Certificate issued successfully.',
+      message: 'Certificates issued successfully.',
     };
-  }
-);
+  });
 
 const issueCertificate = async (
   certificateData: CertificateData,
@@ -169,9 +179,14 @@ const issueCertificate = async (
   const auth = getAuth();
 
   // Check if user exists
-  auth.getUser(userUID).catch((error) => {
-    throw new functions.https.HttpsError('not-found', 'User not found.');
-  });
+  try {
+    auth.getUser(userUID);
+  } catch {
+    return {
+      success: false,
+      message: 'User not found.',
+    };
+  }
 
   // Check if user already has certificate with same ID
   const certificate = await firestore
@@ -179,18 +194,38 @@ const issueCertificate = async (
     .get();
 
   if (certificate.exists) {
-    throw new functions.https.HttpsError('already-exists', 'Certificate already exists.');
+    return {
+      success: false,
+      message: 'Certificate already issued.',
+    };
   }
 
   const userData = (await firestore.doc(`users/${userUID}`).get()).data();
 
   if (!userData) {
-    throw new functions.https.HttpsError('not-found', 'User data not found.');
+    return {
+      success: false,
+      message: 'User data not found.',
+    };
   }
 
   const documentID = firestore.collection('dummy').doc().id;
 
   let userDocumentFormat;
+
+  if (!userData.cpf) {
+    return {
+      success: false,
+      message: 'User document not found.',
+    };
+  }
+
+  if (!userData.fullName) {
+    return {
+      success: false,
+      message: 'User fullName not found.',
+    };
+  }
 
   if (userData.cpf.match(/\d{3}\.\d{3}\.\d{3}-\d{2}/)) {
     // Censor first 3 digits
@@ -200,6 +235,13 @@ const issueCertificate = async (
   }
 
   const eventsUserAttended: string[] = await geteventsUserAttended(eventID, userUID);
+
+  if (eventsUserAttended.length === 0) {
+    return {
+      success: false,
+      message: 'User did not attend any events.',
+    };
+  }
 
   try {
     // Create certificate
@@ -246,7 +288,7 @@ const geteventsUserAttended = async (majorEventID: string, userUID: string): Pro
   // Get userSubscription.subscribedToEvents
   const userSubscription = (await majorEventRef.collection('subscriptions').doc(userUID).get()).data();
   if (!userSubscription) {
-    throw new functions.https.HttpsError('not-found', 'User not subscribed to major event.');
+    return [];
   }
 
   const subscribedToEvents = userSubscription.subscribedToEvents;
@@ -277,15 +319,15 @@ interface CertificateData {
   issueDate: Timestamp;
   participation: {
     type: string;
-    custom?: string;
+    custom?: string | null;
   };
   event: {
     type: string;
-    custom?: string;
+    custom?: string | null;
   };
   content: {
     type: string;
-    custom?: string;
+    custom?: string | null;
   };
   issuedTo: {
     toPayer: boolean;

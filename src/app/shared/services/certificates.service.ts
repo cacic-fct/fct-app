@@ -3,7 +3,7 @@ import { EventItem } from 'src/app/shared/services/event';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Timestamp } from '@firebase/firestore-types';
-import { Observable, take, switchMap, combineLatest, map } from 'rxjs';
+import { Observable, take, switchMap, combineLatest, map, mergeMap, forkJoin, of } from 'rxjs';
 import { Injectable, isDevMode } from '@angular/core';
 import { format as formatDate } from 'date-fns';
 
@@ -42,13 +42,46 @@ export class CertificateService {
       .doc<CertificateDocPublic>(`/certificates/${eventID}/${certificateUserData.id}/public`)
       .get();
 
-    certificateData$.pipe(take(1)).subscribe(async (certificateDataSnapshot) => {
-      const certificateData = certificateDataSnapshot.data();
-      if (!certificateData) {
-        throw new Error('Certificate data is missing');
-      }
+    certificateData$
+      .pipe(
+        mergeMap(() => {
+          const pdfJson$ = pdfJson.pipe(take(1));
+          const majorEvent$ = this.afs.doc<MajorEventItem>(`majorEvents/${eventID}`).get().pipe(take(1));
+          const content$ = this.getCertificateContent(eventID, certificateUserData.id!);
+          const InterRegular$ = this.http
+            .get('https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-regular.woff', {
+              responseType: 'arraybuffer',
+            })
+            .pipe(take(1));
+          const InterMedium$ = this.http
+            .get('https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-500.woff', {
+              responseType: 'arraybuffer',
+            })
+            .pipe(take(1));
+          const InterLight$ = this.http
+            .get('https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-300.woff', {
+              responseType: 'arraybuffer',
+            })
+            .pipe(take(1));
 
-      pdfJson.pipe(take(1)).subscribe(async (pdf) => {
+          return forkJoin([
+            certificateData$,
+            pdfJson$,
+            majorEvent$,
+            content$,
+            InterRegular$,
+            InterMedium$,
+            InterLight$,
+          ]);
+        })
+      )
+      .pipe(take(1))
+      .subscribe(async ([certificateData, pdf, majorEvent, content, InterRegular, InterMedium, InterLight]) => {
+        const certificateDataSnapshot = certificateData.data();
+        if (!certificateDataSnapshot) {
+          throw new Error('Certificate data is missing');
+        }
+
         const template = pdf as Template;
 
         let font = {};
@@ -57,20 +90,14 @@ export class CertificateService {
           case 'cacic':
             font = {
               Inter_Regular: {
-                data: await fetch(
-                  'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-regular.woff'
-                ).then((res) => res.arrayBuffer()),
+                data: InterRegular,
                 fallback: true,
               },
               Inter_Medium: {
-                data: await fetch(
-                  'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-500.woff'
-                ).then((res) => res.arrayBuffer()),
+                data: InterMedium,
               },
               Inter_Light: {
-                data: await fetch(
-                  'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-300.woff'
-                ).then((res) => res.arrayBuffer()),
+                data: InterLight,
               },
             };
             break;
@@ -78,53 +105,42 @@ export class CertificateService {
 
         const verificationURL = `https://fct-pp.web.app/certificado/verificar/${eventID}-${certificateUserData.id}`;
 
-        this.afs
-          .doc<MajorEventItem>(`majorEvents/${eventID}`)
-          .get()
-          .pipe(take(1))
-          .subscribe((majorEvent) => {
-            const majorEventData = majorEvent.data();
+        const majorEventData = majorEvent.data();
 
-            if (!majorEventData) {
-              throw new Error('Major event data is missing');
-            }
+        if (!majorEventData) {
+          throw new Error('Major event is missing');
+        }
 
-            this.getCertificateContent(eventID, certificateUserData.id!)
-              .pipe(take(1))
-              .subscribe((content) => {
-                let input = {
-                  name: certificateData.fullName,
-                  name_small: certificateData.fullName,
-                  event_name: majorEventData.name,
-                  event_name_small: majorEventData.name,
-                  date: formatDate(certificateData.issueDate.toDate(), "dd 'de' MMMM 'de' yyyy", {
-                    locale: ptBR,
-                  }),
-                  document: certificateData.document,
-                  event_type: certificateStoreData.eventType.custom || eventTypes[certificateStoreData.eventType.type],
-                  participation_type:
-                    certificateStoreData.participationType.custom ||
-                    participationTypes[certificateStoreData.participationType.type],
-                  url: verificationURL,
-                  qrcode: verificationURL,
-                  qrcode2: verificationURL,
-                  content: content,
-                };
+        let input = {
+          name: certificateDataSnapshot.fullName,
+          name_small: certificateDataSnapshot.fullName,
+          event_name: majorEventData.name,
+          event_name_small: majorEventData.name,
+          date: formatDate(certificateDataSnapshot.issueDate.toDate(), "dd 'de' MMMM 'de' yyyy", {
+            locale: ptBR,
+          }),
+          document: `Documento: ${certificateDataSnapshot.document}`,
+          event_type: certificateStoreData.eventType.custom || eventTypes[certificateStoreData.eventType.type],
+          participation_type:
+            certificateStoreData.participationType.custom ||
+            participationTypes[certificateStoreData.participationType.type],
+          url: verificationURL,
+          qrcode: verificationURL,
+          qrcode2: verificationURL,
+          content: content,
+        };
 
-                const inputs = [input];
+        const inputs = [input];
 
-                PDFGenerate({ template, inputs, options: { font } }).then((pdf) => {
-                  const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
-                  const pdfUrl = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = pdfUrl;
-                  a.download = certificateStoreData.certificateName + '.pdf';
-                  a.click();
-                });
-              });
-          });
+        PDFGenerate({ template, inputs, options: { font } }).then((pdf) => {
+          const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
+          const pdfUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = pdfUrl;
+          a.download = certificateStoreData.certificateName + '.pdf';
+          a.click();
+        });
       });
-    });
   }
 
   getCertificateContent(eventID: string, certificateID: string): Observable<string> {

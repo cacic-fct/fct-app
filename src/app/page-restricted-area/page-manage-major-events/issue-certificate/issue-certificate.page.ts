@@ -232,15 +232,15 @@ export class IssueCertificatePage implements OnInit {
         issueDate: this.dateService.TimestampFromDate(this.dateService.parseISO(this.dataForm.get('issueDate')?.value)),
         participation: {
           type: this.dataForm.get('participationType')?.get('type')?.value,
-          custom: this.dataForm.get('participationType')?.get('custom')?.value,
+          custom: this.dataForm.get('participationType')?.get('custom')?.value || null,
         },
         event: {
           type: this.dataForm.get('eventType')?.get('type')?.value,
-          custom: this.dataForm.get('eventType')?.get('custom')?.value,
+          custom: this.dataForm.get('eventType')?.get('custom')?.value || null,
         },
         content: {
           type: this.dataForm.get('contentType')?.get('type')?.value,
-          custom: this.dataForm.get('contentType')?.get('custom')?.value,
+          custom: this.dataForm.get('contentType')?.get('custom')?.value || null,
         },
         issuedTo: {
           toPayer: this.dataForm.get('batchIssue')?.get('toPayer')?.value,
