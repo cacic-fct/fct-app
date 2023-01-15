@@ -132,7 +132,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
 
       for (const attendance of subscriptionList.docs) {
         const uid = attendance.id;
-        const result = await issueCertificate(data.certificateData, uid, majorEventID, eventInfoCache);
+        const result = await issueCertificate(data.certificateData, uid, majorEventID);
         if (!result.success) {
           console.log('Error:', result);
           failed.push({ uid: uid, error: result.message });
