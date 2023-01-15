@@ -37,7 +37,6 @@ exports.issueMajorEventCertificate = functions
       throw new functions.https.HttpsError('not-found', 'Major event not found.');
     }
 
-    // Check if certificate already exists
     const certificate = await firestore
       .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}`)
       .get();
@@ -130,6 +129,7 @@ exports.issueMajorEventCertificate = functions
     });
 
     let failed = [];
+
     if (data.certificateData.issuedTo.toPayer) {
       const subscriptionList = await firestore
         .collection(`majorEvents/${majorEventID}/subscriptions`)
@@ -146,7 +146,7 @@ exports.issueMajorEventCertificate = functions
     }
 
     if (failed.length > 0) {
-      // Store failed certificates in database
+      // Store failed in database
       await firestore
         .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`)
         .set(
@@ -178,7 +178,6 @@ const issueCertificate = async (
   const firestore = admin.firestore();
   const auth = getAuth();
 
-  // Check if user exists
   try {
     auth.getUser(userUID);
   } catch {
@@ -263,7 +262,6 @@ const issueCertificate = async (
       issuedBy: adminUID,
     });
 
-    // Reference certificate in users/id/certificates
     await firestore.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${documentID}`).set({
       publicReference: firestore.doc(`certificates/${eventID}/${documentID}/public`),
       certificateID: certificateData.certificateID,
@@ -285,7 +283,6 @@ const geteventsUserAttended = async (majorEventID: string, userUID: string): Pro
   const firestore = admin.firestore();
   const majorEventRef = firestore.doc(`majorEvents/${majorEventID}`);
 
-  // Get userSubscription.subscribedToEvents
   const userSubscription = (await majorEventRef.collection('subscriptions').doc(userUID).get()).data();
   if (!userSubscription) {
     return [];
@@ -293,9 +290,9 @@ const geteventsUserAttended = async (majorEventID: string, userUID: string): Pro
 
   const subscribedToEvents = userSubscription.subscribedToEvents;
 
-  // For every event user is subscribed to, check if user doc is in attendance
   const eventsUserAttended = [];
 
+  // For every event user is subscribed to, check if user doc is in attendance
   for (const eventID of subscribedToEvents) {
     const attendance = await firestore.doc(`events/${eventID}/attendance/${userUID}`).get();
     if (attendance.exists) {
