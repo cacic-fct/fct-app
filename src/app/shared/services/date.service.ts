@@ -14,6 +14,10 @@ export class DateService {
     return compareAsc(date1, dateToCompare) === -1 && compareAsc(dateToCompare, date2) === -1;
   }
 
+  isInThePast(date: Date): boolean {
+    return compareAsc(date, this.today()) === -1;
+  }
+
   today(): Date {
     return new Date();
   }
