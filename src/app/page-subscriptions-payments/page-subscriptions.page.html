@@ -174,7 +174,7 @@
         Inscrição realizada
         <br />
         <!-- prettier-ignore -->
-        Pagamento confirmado em {{ dateService.getDateFromTimestamp(subscriptionData.payment.validationTime) | date: 'dd/MM/yyyy — HH:mm'}}
+        <span *ngIf="subscriptionData.payment.validationTime">Pagamento confirmado em {{ dateService.getDateFromTimestamp(subscriptionData.payment.validationTime) | date: 'dd/MM/yyyy — HH:mm'}}</span>
         <br />
         Para editar a sua inscrição, entre em contato conosco.
       </ion-card-content>

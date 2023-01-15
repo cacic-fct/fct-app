@@ -1,3 +1,4 @@
+import { DocumentReference } from '@angular/fire/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 
 export interface Certificate {
@@ -47,8 +48,8 @@ export interface Certificate {
   };
 }
 
-export interface CertificateIssuingInProgress {
-  certificateIssuingInProgress?: {
+export interface CertificateIssueInProgress {
+  CertificateIssueInProgress?: {
     issuingName: string;
     issuingStartDate: Timestamp;
     issuingAuthor: string;
@@ -98,4 +99,9 @@ interface CertificateIssuingData {
     code: number;
     custom?: string;
   };
+}
+
+export interface UserCertificateDocument {
+  publicReference: DocumentReference;
+  certificateName: string;
 }

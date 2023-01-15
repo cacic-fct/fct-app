@@ -1,6 +1,8 @@
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MailtoService, Mailto } from './../../../shared/services/mailto.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { isDefined } from 'src/app/shared/services/rxjs.service';
 
 import { User } from '@firebase/auth';
 
@@ -8,6 +10,9 @@ import {
   GeneratePdfCertificateService,
   generateCertificateOptions,
 } from './../../../shared/services/generate-pdf-certificate.service';
+import { first, map, Observable, take, switchMap, combineLatest } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { UserCertificateDocument } from 'src/app/shared/services/certificates.service';
 
 @Component({
   selector: 'app-list-certificates',
@@ -15,14 +20,69 @@ import {
   styleUrls: ['./list-certificates.component.scss'],
 })
 export class ListCertificatesComponent implements OnInit {
+  @Input() majorEventID!: string;
   userData: User;
+  certificatesColletion$: Observable<UserCertificateDocument[]>;
+  userID!: string;
+
+  certificates$: Observable<any>;
 
   constructor(
     private genpdf: GeneratePdfCertificateService,
     private modalController: ModalController,
-    private mailtoService: MailtoService
+    private mailtoService: MailtoService,
+    private auth: AngularFireAuth,
+    private afs: AngularFirestore
   ) {
     this.userData = JSON.parse(localStorage.getItem('user') as string);
+
+    this.certificatesColletion$ = this.auth.user.pipe(
+      first(isDefined),
+      map((user) => {
+        this.userID = user.uid;
+        return this.afs
+          .collection<UserCertificateDocument>(`/users/${user.uid}/certificates/majorEvents/${this.majorEventID}`)
+          .valueChanges({ idField: 'id' });
+      }),
+      switchMap((value) => value)
+    );
+
+    // Get all certificates based on this.certificatesColletion$ documment ids
+
+    this.certificates$ = this.certificatesColletion$.pipe(
+      map((certificates) => {
+        return certificates.map((certificate) => {
+          const options = {
+            name: this.userData.displayName,
+            event_name: certificate.eventName,
+
+            date: certificate.eventDate,
+            event_name_small: certificate.eventName,
+            name_small: this.userData.displayName,
+            certificateID: certificate.id,
+            userID: this.userID,
+          };
+          return options;
+        });
+      })
+    );
+
+    // this.certificates$ = this.certificatesColletion$.pipe(
+    //   map(([certificates, user]) => {
+    //     return certificates.map((certificate) => {
+    //       const options: generateCertificateOptions = {
+    //         name: user.displayName,
+    //         event_name: certificate.eventName,
+    //         date: certificate.eventDate,
+    //         event_name_small: certificate.eventName,
+    //         name_small: user.displayName,
+    //         certificateID: certificate.id,
+    //         userID: user.uid,
+    //       };
+    //       return options;
+    //     });
+    //   })
+    // );
   }
 
   ngOnInit() {}

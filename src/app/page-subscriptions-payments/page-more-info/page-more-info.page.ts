@@ -135,7 +135,7 @@ export class PageMoreInfoPage implements OnInit {
     const modal = await this.modalController.create({
       component: ListCertificatesComponent,
       componentProps: {
-        data: {},
+        majorEventID: this.majorEventID,
       },
       showBackdrop: true,
     });
