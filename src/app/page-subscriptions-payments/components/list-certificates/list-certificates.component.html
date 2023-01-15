@@ -15,7 +15,7 @@
   <h1 class="ion-padding ion-text-center">Você não tem certificados emitidos</h1>
 
   <ng-container *ngIf="certificatesColletion$ | async as certificatesCollection">
-    <ng-container *ngFor="let certificate of certificatesCollection"> asd: {{ certificate }} </ng-container>
+    <ng-container *ngFor="let certificate of certificatesCollection"> asd: {{ certificate | json }} </ng-container>
   </ng-container>
 
   <ion-item lines="inset">
