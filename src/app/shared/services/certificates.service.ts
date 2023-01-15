@@ -35,37 +35,6 @@ export const certificateTemplates = {
   },
 };
 
-export class CertificateService {
-  getTemplateURL(templateName: string) {
-    if (Object.values(certificateTemplates).some((template) => template.templateFilename === templateName)) {
-      //return `https://cdn.jsdelivr.net/gh/cacic-fct/fct-app@latest/src/assets/certificates/templates/${templateName}.json`;
-      return `assets/certificates/templates/${templateName}.json`;
-    }
-
-    return 'Unknown template name';
-  }
-
-  cacicCertificatePreviewInputs(data: CacicTemplateInput) {
-    const url = 'https://fct-pp.web.app/certificado/validar/exemplo';
-    return [
-      {
-        date: data.date,
-        participation_type: data.participationType,
-        name: data.name,
-        event_type: data.eventType,
-        event_name: data.eventName,
-        qrcode: url,
-        url: url,
-        name_small: data.name,
-        document: '000.000.000-00',
-        event_name_small: data.eventName,
-        content: data.content,
-        qrcode2: url,
-      },
-    ];
-  }
-}
-
 interface CacicTemplate {
   [0]: {
     date: string;
