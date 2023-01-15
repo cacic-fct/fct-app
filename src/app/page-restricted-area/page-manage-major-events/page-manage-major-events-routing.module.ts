@@ -24,12 +24,12 @@ const routes: Routes = [
       import('./page-list-subscriptions/page-list-subscriptions.module').then((m) => m.PageListSubscriptionsModule),
   },
   {
-    path: 'emitir-certificado/:eventID',
+    path: 'emitir-certificados/:eventID',
     loadChildren: () =>
       import('./issue-certificate/issue-certificate.module').then((m) => m.IssueCertificatePageModule),
   },
   {
-    path: 'emitir-certificado',
+    path: 'emitir-certificados',
     redirectTo: '',
   },
 ];

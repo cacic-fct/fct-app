@@ -137,7 +137,7 @@ export class CertificateService {
           const pdfUrl = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = pdfUrl;
-          a.download = certificateStoreData.certificateName + '.pdf';
+          a.download = `${majorEventData.name} - ${certificateStoreData.certificateName} - ${certificateDataSnapshot.fullName}.pdf`;
           a.click();
         });
       });
