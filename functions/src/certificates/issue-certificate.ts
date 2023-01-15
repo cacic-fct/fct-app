@@ -39,9 +39,13 @@ exports.issueMajorEventCertificate = functions.https.onCall(
       .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}`)
       .get();
 
+    const certificateAdmin = await firestore
+      .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`)
+      .get();
+
     if (certificate.exists) {
       // Check to whom the certificate was issued
-      const issuedTo = certificate.data()?.issuedTo as {
+      const issuedTo = certificateAdmin.data()?.issuedTo as {
         toPayer: boolean;
         toNonSubscriber: boolean;
         toNonPayer: boolean;
@@ -67,7 +71,7 @@ exports.issueMajorEventCertificate = functions.https.onCall(
       }
 
       // If certificate is issuing to new people, add them to the list
-      await certificate.ref.update({
+      await certificateAdmin.ref.update({
         issuedTo: {
           toPayer: data.certificateData.issuedTo.toPayer,
           toNonSubscriber: data.certificateData.issuedTo.toNonSubscriber,
@@ -80,19 +84,20 @@ exports.issueMajorEventCertificate = functions.https.onCall(
     // If certificate doesn't exist, create it
     else {
       await certificate.ref.set({
+        certificateName: data.certificateData.certificateName,
+        certificateTemplate: data.certificateData.certificateTemplate,
+        certificateContent: data.certificateData.content,
+      });
+
+      certificateAdmin.ref.set({
         issuedTo: {
           toPayer: data.certificateData.issuedTo.toPayer,
           toNonSubscriber: data.certificateData.issuedTo.toNonSubscriber,
           toNonPayer: data.certificateData.issuedTo.toNonPayer,
           toList: data.certificateData.issuedTo.toList,
         },
-        certificateData: {
-          certificateID: data.certificateData.certificateID,
-          certificateName: data.certificateData.certificateName,
-          certificateTemplate: data.certificateData.certificateTemplate,
-          certificateContent: data.certificateData.content,
-        },
-        issuedOn: FieldValue.serverTimestamp(),
+        firstIssuedOn: FieldValue.serverTimestamp(),
+        firstIssuedBy: context.auth.uid,
       });
     }
 
