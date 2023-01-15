@@ -255,10 +255,13 @@ const generateContent = async (eventsUserParticipated: string[]) => {
       switch (event.eventType) {
         case 'palestra':
           palestras.push(eventData);
+          break;
         case 'minicurso':
           minicursos.push(eventData);
+          break;
         default:
           uncategorized.push(eventData);
+          break;
       }
     }
   }
