@@ -15,9 +15,17 @@ import { HttpClient } from '@angular/common/http';
 export class CertificateService {
   constructor(private afs: AngularFirestore, private http: HttpClient) {}
 
-  generateCertificate(eventID: string, certificateData: any, certificateUserData: any) {
+  generateCertificate(
+    eventID: string,
+    certificateStoreData: CertificateStoreData,
+    certificateUserData: UserCertificateDocument
+  ) {
+    if (!certificateUserData.id || !certificateStoreData.id) {
+      throw new Error('Request is malformed');
+    }
+
     let pdfJson: Observable<Object>;
-    const pdfPath = `assets/certificates/templates/${certificateData.certificateTemplate}.json`;
+    const pdfPath = `assets/certificates/templates/${certificateStoreData.certificateTemplate}.json`;
     if (isDevMode()) {
       pdfJson = this.http.get(pdfPath, {
         responseType: 'json',
@@ -28,62 +36,79 @@ export class CertificateService {
       });
     }
 
-    pdfJson.pipe(take(1)).subscribe(async (pdf) => {
-      const template = pdf as Template;
+    const certificateData$ = this.afs
+      .doc<CertificateDocPublic>(`/certificates/${eventID}/${certificateUserData.id}/public`)
+      .get();
 
-      let font = {};
+    console.log('here 2');
 
-      switch (certificateData.certificateTemplate) {
-        case 'cacic':
-          font = {
-            Inter_Regular: {
-              data: await fetch(
-                'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-regular.woff'
-              ).then((res) => res.arrayBuffer()),
-              fallback: true,
-            },
-            Inter_Medium: {
-              data: await fetch(
-                'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-500.woff'
-              ).then((res) => res.arrayBuffer()),
-            },
-            Inter_Light: {
-              data: await fetch(
-                'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-300.woff'
-              ).then((res) => res.arrayBuffer()),
-            },
-          };
-          break;
+    certificateData$.pipe(take(1)).subscribe(async (certificateDataSnapshot) => {
+      console.log('here 3');
+      const certificateData = certificateDataSnapshot.data();
+      if (!certificateData) {
+        throw new Error('Certificate data is missing');
       }
 
-      const verificationURL = `https://fct-pp.web.app/certificado/verificar/${eventID}-${certificateUserData.id}`;
+      pdfJson.pipe(take(1)).subscribe(async (pdf) => {
+        console.log('here pdf');
+        const template = pdf as Template;
 
-      this.getCertificateContent(eventID, certificateData.certificateID)
-        .pipe(take(1))
-        .subscribe((content) => {
-          console.log(content);
-          let input = {
-            name: certificateUserData.fullName,
-            document: certificateUserData.document,
-            event_type: certificateData.eventType,
-            participation_type: certificateData.participationType,
-            url: verificationURL,
-            qrcode: verificationURL,
-            qrcode2: verificationURL,
-            content: content,
-          };
+        let font = {};
 
-          const inputs = [input];
+        switch (certificateStoreData.certificateTemplate) {
+          case 'cacic':
+            font = {
+              Inter_Regular: {
+                data: await fetch(
+                  'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-regular.woff'
+                ).then((res) => res.arrayBuffer()),
+                fallback: true,
+              },
+              Inter_Medium: {
+                data: await fetch(
+                  'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-500.woff'
+                ).then((res) => res.arrayBuffer()),
+              },
+              Inter_Light: {
+                data: await fetch(
+                  'https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-300.woff'
+                ).then((res) => res.arrayBuffer()),
+              },
+            };
+            break;
+        }
 
-          PDFGenerate({ template, inputs, options: { font } }).then((pdf) => {
-            const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
-            const pdfUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = pdfUrl;
-            a.download = certificateData.certificateName + '.pdf';
-            a.click();
+        const verificationURL = `https://fct-pp.web.app/certificado/verificar/${eventID}-${certificateUserData.id}`;
+
+        console.log('here before content');
+        this.getCertificateContent(eventID, certificateUserData.id!)
+          .pipe(take(1))
+          .subscribe((content) => {
+            console.log('here content', certificateData);
+            let input = {
+              name: certificateData.fullName,
+              document: certificateData.document,
+              event_type: certificateStoreData.eventType.custom || certificateStoreData.eventType.type,
+              participation_type:
+                certificateStoreData.participationType.custom || certificateStoreData.participationType.type,
+              url: verificationURL,
+              qrcode: verificationURL,
+              qrcode2: verificationURL,
+              content: content,
+            };
+
+            const inputs = [input];
+
+            PDFGenerate({ template, inputs, options: { font } }).then((pdf) => {
+              const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
+              const pdfUrl = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = pdfUrl;
+              a.download = certificateStoreData.certificateName + '.pdf';
+              a.click();
+            });
           });
-        });
+      });
     });
   }
 
@@ -110,9 +135,10 @@ export class CertificateService {
 
           // Generate content
           const a = generateContent(eventInfoCache);
+          console.log('generate content ok');
           return a;
         } else {
-          return '';
+          throw new Error('Unable to generate content, certificate does not exist');
         }
       })
     );
@@ -318,9 +344,24 @@ interface CertificateDocPublic {
 
 export interface UserCertificateDocument {
   publicReference: DocumentReference;
-  certificateName: string;
+  certificateID: string;
+  id?: string;
 }
 
-interface EventCache {
-  [eventID: string]: Observable<EventItem | undefined>;
+export interface CertificateStoreData {
+  certificateContent: {
+    custom?: string;
+    type: string;
+  };
+  certificateName: string;
+  certificateTemplate: string;
+  eventType: {
+    type: string;
+    custom?: string;
+  };
+  participationType: {
+    type: string;
+    custom?: string;
+  };
+  id?: string;
 }

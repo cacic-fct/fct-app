@@ -1,12 +1,13 @@
+import { CertificateStoreData } from './../../../shared/services/certificates.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MailtoService, Mailto } from './../../../shared/services/mailto.service';
-import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { isDefined } from 'src/app/shared/services/rxjs.service';
+import { Component, OnInit } from '@angular/core';
+import { ModalController, ToastController } from '@ionic/angular';
+import { filterNullish } from 'src/app/shared/services/rxjs.service';
 
 import { User } from '@firebase/auth';
 
-import { first, map, Observable, take, switchMap, combineLatest } from 'rxjs';
+import { first, map, Observable, take, switchMap, combineLatest, filter } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserCertificateDocument, CertificateService } from 'src/app/shared/services/certificates.service';
 
@@ -16,9 +17,9 @@ import { UserCertificateDocument, CertificateService } from 'src/app/shared/serv
   styleUrls: ['./list-certificates.component.scss'],
 })
 export class ListCertificatesComponent implements OnInit {
-  @Input() majorEventID!: string;
+  majorEventID!: string;
   userData: User;
-  certificatesColletion$: Observable<UserCertificateDocument[]>;
+  certificatesColletion$: Observable<UserCertificateDocumentLocal[]>;
   userID!: string;
 
   certificates$!: Observable<any>;
@@ -28,57 +29,41 @@ export class ListCertificatesComponent implements OnInit {
     private mailtoService: MailtoService,
     private auth: AngularFireAuth,
     private afs: AngularFirestore,
-    private certificateService: CertificateService
+    private certificateService: CertificateService,
+    private toastController: ToastController
   ) {
     this.userData = JSON.parse(localStorage.getItem('user') as string);
 
     this.certificatesColletion$ = this.auth.user.pipe(
-      first(isDefined),
+      filterNullish(),
       map((user) => {
         this.userID = user.uid;
         return this.afs
           .collection<UserCertificateDocument>(`/users/${user.uid}/certificates/majorEvents/${this.majorEventID}`)
-          .valueChanges({ idField: 'id' });
+          .valueChanges({ idField: 'id' })
+          .pipe(
+            map((certificates) =>
+              certificates.map((certificate) => ({
+                ...certificate,
+                certificateData: this.afs
+                  .doc<CertificateStoreData>(
+                    `/majorEvents/${this.majorEventID}/certificates/${certificate.certificateID}`
+                  )
+                  .get()
+                  .pipe(
+                    map((certificateData) => {
+                      return {
+                        ...(certificateData.data() as CertificateStoreData),
+                        id: certificateData.id,
+                      };
+                    })
+                  ),
+              }))
+            )
+          );
       }),
       switchMap((value) => value)
     );
-
-    // Get all certificates based on this.certificatesColletion$ documment ids
-
-    // this.certificates$ = this.certificatesColletion$.pipe(
-    //   map((certificates) => {
-    //     return certificates.map((certificate) => {
-    //       const options = {
-    //         name: this.userData.displayName,
-    //         event_name: certificate.eventName,
-
-    //         date: certificate.eventDate,
-    //         event_name_small: certificate.eventName,
-    //         name_small: this.userData.displayName,
-    //         certificateID: certificate.id,
-    //         userID: this.userID,
-    //       };
-    //       return options;
-    //     });
-    //   })
-    // );
-
-    // this.certificates$ = this.certificatesColletion$.pipe(
-    //   map(([certificates, user]) => {
-    //     return certificates.map((certificate) => {
-    //       const options: generateCertificateOptions = {
-    //         name: user.displayName,
-    //         event_name: certificate.eventName,
-    //         date: certificate.eventDate,
-    //         event_name_small: certificate.eventName,
-    //         name_small: user.displayName,
-    //         certificateID: certificate.id,
-    //         userID: user.uid,
-    //       };
-    //       return options;
-    //     });
-    //   })
-    // );
   }
 
   ngOnInit() {}
@@ -97,16 +82,42 @@ export class ListCertificatesComponent implements OnInit {
     this.mailtoService.open(mailto);
   }
 
-  async getCertificate() {
-    this.certificateService.generateCertificate(
-      this.majorEventID,
-      {
-        certificateName: 'nombre',
-        certificateID: 've3n3KJqD1imLKJgeYTw',
-        eventType: 'algo',
-        participationType: 'algo',
-      },
-      'cacic'
-    );
+  async getCertificate(event: any, certificateData: CertificateStoreData, certificate: UserCertificateDocumentLocal) {
+    event.target.disabled = true;
+
+    this.certificateService.generateCertificate(this.majorEventID, certificateData, certificate);
+
+    event.target.disabled = false;
   }
+
+  getCertificateData$(certificateID: string) {
+    return this.afs
+      .collection(`/majorEvents/${this.majorEventID}/certificates`)
+      .doc(certificateID)
+      .valueChanges()
+      .pipe(take(1));
+  }
+
+  async copyValidationUrl(certificateID: string) {
+    const toast = await this.toastController.create({
+      header: 'Compartilhar certificado',
+      message: 'Link copiado para a área de transferência.',
+      icon: 'copy',
+      position: 'bottom',
+      duration: 2000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    navigator.clipboard.writeText(`https://fct-pp.web.app/certificado/validar/${this.majorEventID}-${certificateID}`);
+    toast.present();
+  }
+}
+
+interface UserCertificateDocumentLocal extends UserCertificateDocument {
+  certificateData: Observable<CertificateStoreData>;
 }
