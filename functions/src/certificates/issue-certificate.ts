@@ -188,9 +188,9 @@ const issueCertificate = async (certificateData: CertificateData, userUID: strin
     });
 
     // Reference certificate in users/id/certificates
-    await firestore.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${certificateData.certificateID}`).set({
-      public_reference: firestore.doc(`certificates/${eventID}/${documentID}/public`),
-      certificateID: documentID,
+    await firestore.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${documentID}`).set({
+      publicReference: firestore.doc(`certificates/${eventID}/${documentID}/public`),
+      certificateName: certificateData.certificateName,
     });
   } catch (error) {
     return {
@@ -314,7 +314,6 @@ const generateContent = async (eventsUserParticipated: string[]) => {
 };
 
 function formatTimestamp(date: Timestamp): string {
-  // Format timestamp to dd/mm/yyyy - hh:mm
   const dateFormatted = date.toDate();
   return formatDate(dateFormatted, 'dd/MM/yyyy - HH:mm');
 }
