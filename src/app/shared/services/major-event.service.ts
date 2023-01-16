@@ -3,7 +3,6 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Timestamp } from '@firebase/firestore-types';
 import { Observable } from 'rxjs';
 import { startOfDay } from 'date-fns';
-import { CertificateIssueInProgress } from './certificates.service';
 
 // TODO como utilizar Observables para retornar os grandes eventos futuros?
 
@@ -23,7 +22,7 @@ export class MajorEventsService {
   }
 }
 
-export interface MajorEventItem extends CertificateIssueInProgress {
+export interface MajorEventItem {
   name: string;
   course: string;
   description?: string;
