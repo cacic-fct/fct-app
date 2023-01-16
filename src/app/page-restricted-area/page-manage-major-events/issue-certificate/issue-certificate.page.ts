@@ -133,7 +133,6 @@ export class IssueCertificatePage implements OnInit {
 
     // At least one option must be selected
     if (!toPayer && !toNonSubscriber && !toNonPayer) {
-      console.log('At least one option must be selected');
       return { atLeastOneOption: true };
     }
 

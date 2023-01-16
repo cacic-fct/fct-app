@@ -248,7 +248,6 @@ function generateContent(
 
         switch (event.eventType) {
           case 'minicurso':
-            console.log(event);
             minicursos.push(event);
             break;
           case 'palestra':
