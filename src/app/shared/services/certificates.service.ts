@@ -161,11 +161,11 @@ export class CertificateService {
 
           // Get event info from cache
           for (const eventID of eventsUserAttended) {
-            eventInfoCache.push(this.afs.doc<EventItem>(`events/${eventID}`).valueChanges());
+            eventInfoCache.push(this.afs.doc<EventItem>(`events/${eventID}`).valueChanges({ idField: 'id' }));
           }
 
           // Generate content
-          const a = generateContent(eventInfoCache);
+          const a = generateContent(eventInfoCache, eventsUserAttended);
           return a;
         } else {
           throw new Error('Unable to generate content, certificate does not exist');
@@ -174,22 +174,81 @@ export class CertificateService {
     );
   }
 }
-function generateContent(eventInfoCache: Observable<EventItem | undefined>[]): Observable<string> {
+function generateContent(
+  eventInfoCache: Observable<EventItem | undefined>[],
+  eventsUserAttended: string[]
+): Observable<string> {
   const eventInfo$ = combineLatest(eventInfoCache);
 
   return eventInfo$.pipe(
     take(1),
     map((eventInfo) => {
+      // Sort events by date
+      eventInfo.sort((a, b) => {
+        if (a === undefined || b === undefined) {
+          return 0;
+        }
+
+        if (a.eventStartDate === undefined || b.eventStartDate === undefined) {
+          return 0;
+        }
+
+        return a.eventStartDate.toDate().getTime() - b.eventStartDate.toDate().getTime();
+      });
+
       const minicursos = [];
       const palestras = [];
       const uncategorized = [];
 
-      for (const event of eventInfo) {
-        if (event === undefined) {
+      const skip: string[] = [];
+
+      for (let event of eventInfo) {
+        if (event === undefined || skip.includes(event.id!)) {
           continue;
         }
+
+        // If user attended every event of group, display 1 event with all credit hours using eventgroup.groupDisplayName as name
+        // If user didn't attend every event of group, don't display anything
+        if (event.eventGroup) {
+          const groupEvents = eventInfo.filter((e) => {
+            return e?.eventGroup?.mainEventID === event?.eventGroup?.mainEventID;
+          });
+
+          // Get the events the user attended from the group
+          const groupEventsAttended = groupEvents.filter((e) => {
+            return eventsUserAttended.includes(e?.id!);
+          });
+
+          // Add every event that is part of group from eventInfo to skip array
+          for (const e of groupEvents) {
+            if (e) {
+              skip.push(e.id!);
+            }
+          }
+
+          // If user didn't attend every event of group, don't display anything
+          if (groupEvents.length !== groupEventsAttended.length) {
+            continue;
+          }
+
+          // If user attended every event of group, display 1 event with all credit hours using eventgroup.groupDisplayName as name
+          let creditHours = groupEventsAttended.reduce((acc, cur) => {
+            if (cur === undefined || cur.creditHours === undefined) {
+              return acc;
+            }
+            return acc + cur.creditHours;
+          }, 0);
+
+          event = {
+            ...event,
+            name: event.eventGroup.groupDisplayName,
+            creditHours: creditHours,
+          };
+        }
+
         switch (event.eventType) {
           case 'minicurso':
+            console.log(event);
             minicursos.push(event);
             break;
           case 'palestra':
