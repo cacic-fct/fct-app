@@ -19,22 +19,22 @@
           <ion-label>Tipo da emissão</ion-label>
           <ion-select formControlName="issueType" (ionChange)="issueToggleChange()">
             <ion-select-option value="batch"> Emissão em massa </ion-select-option>
-            <ion-select-option value="list"> Emissão por listagem manual </ion-select-option>
+            <ion-select-option value="list" disabled=""> Emissão por listagem manual </ion-select-option>
           </ion-select>
         </ion-item>
 
         <ng-container *ngIf="dataForm.get('issueType').value === 'batch'" formGroupName="batchIssue">
-          <ion-item>
+          <ion-item disabled="">
             <ion-label>Emitir para inscritos pagantes</ion-label>
             <ion-toggle formControlName="toPayer"> </ion-toggle>
             <ion-note slot="helper">Quem pagou, se inscreveu e esteve presente</ion-note>
           </ion-item>
-          <ion-item>
+          <ion-item disabled="">
             <ion-label>Emitir para pagantes não inscritos</ion-label>
             <ion-note slot="helper">Quem pagou, não se inscreveu no evento e teve presença coletada</ion-note>
             <ion-toggle formControlName="toNonSubscriber"> </ion-toggle>
           </ion-item>
-          <ion-item>
+          <ion-item disabled="">
             <ion-label>Emitir para não pagantes</ion-label>
             <ion-toggle formControlName="toNonPayer"> </ion-toggle>
             <ion-note slot="helper">Quem não pagou e teve presença coletada</ion-note>
