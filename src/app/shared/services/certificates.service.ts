@@ -210,6 +210,7 @@ function generateContent(
         // If user attended every event of group, display 1 event with all credit hours using eventgroup.groupDisplayName as name
         // If user didn't attend every event of group, don't display anything
         if (event.eventGroup) {
+          // Get all events that are part of the same group
           const groupEvents = eventInfo.filter((e) => {
             return e?.eventGroup?.mainEventID === event?.eventGroup?.mainEventID;
           });
@@ -227,7 +228,7 @@ function generateContent(
           }
 
           // If user didn't attend every event of group, don't display anything
-          if (groupEvents.length !== groupEventsAttended.length) {
+          if (event.eventGroup.groupEventIDs.length !== groupEventsAttended.length) {
             continue;
           }
 
@@ -300,12 +301,18 @@ function makeText(typeSingular: string, typePlural: string, array: EventItem[]):
 
   let totalCreditHours = 0;
   for (const event of array) {
-    content += `• ${formatTimestamp(event.eventStartDate)} - ${event.name} - Carga horária: ${
-      event.creditHours ? event.creditHours + ' horas' : 'indefinida'
-    };\n`;
+    content += `• ${formatTimestamp(event.eventStartDate)} - ${event.name}`;
+    if (event.creditHours) {
+      content += ` - Carga horária: ${event.creditHours} horas`;
+      totalCreditHours += event.creditHours;
+    }
+    content += ';\n';
   }
   content = content.slice(0, -2) + '.\n';
-  content += `Carga horária total: ${totalCreditHours} horas.\n\n`;
+
+  if (totalCreditHours > 0) {
+    content += `Carga horária total: ${totalCreditHours} horas.\n\n`;
+  }
 
   return content;
 }
