@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { getBooleanChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { trace } from '@angular/fire/compat/performance';
+import { Auth, idToken, getIdTokenResult } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
@@ -15,14 +15,17 @@ import { trace } from '@angular/fire/compat/performance';
 export class TabsPage {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
 
+  private auth: Auth = inject(Auth);
+  idToken$ = idToken(this.auth);
+
   _allowRestrictedArea: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   allowRestrictedArea$: Observable<boolean> = this._allowRestrictedArea.asObservable();
   readonly manual$: Observable<boolean>;
   readonly events$: Observable<boolean>;
   readonly map$: Observable<boolean>;
 
-  constructor(public auth: AngularFireAuth) {
-    this.auth.idTokenResult.pipe(untilDestroyed(this)).subscribe((idTokenResult) => {
+  constructor() {
+    this.auth.currentUser?.getIdTokenResult().then((idTokenResult) => {
       if (idTokenResult) {
         const claims = idTokenResult.claims;
         if (claims.role < 3000) {
