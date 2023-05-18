@@ -8,7 +8,7 @@ import { trace } from '@angular/fire/compat/performance';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { environment } from 'src/environments/environment';
-import { Auth, user, User } from '@angular/fire/auth';
+import { Auth, authState, user, User } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
@@ -19,6 +19,7 @@ import { Auth, user, User } from '@angular/fire/auth';
 export class TabMenuPage {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
+  authState$ = authState(this.auth);
 
   isProduction: boolean = environment.production;
   userData: User;
