@@ -53,14 +53,8 @@ import { CoursesService } from './shared/services/courses.service';
 
 import { CertificateService } from 'src/app/shared/services/certificates.service';
 
-import { connectAuthEmulator, getAuth, getRedirectResult, provideAuth, useDeviceLanguage } from '@angular/fire/auth';
+import { connectAuthEmulator, getAuth, provideAuth, useDeviceLanguage } from '@angular/fire/auth';
 import { provideAnalytics, getAnalytics, logEvent } from '@angular/fire/analytics';
-
-import {
-  AngularFireAuthModule,
-  USE_DEVICE_LANGUAGE,
-  USE_EMULATOR as USE_AUTH_EMULATOR,
-} from '@angular/fire/compat/auth';
 
 @NgModule({
   declarations: [AppComponent],
