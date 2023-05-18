@@ -92,20 +92,20 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./auth/login/login.module').then((m) => m.LoginPageModule),
+    loadChildren: () => import('src/app/auth/login/login.module').then((m) => m.LoginPageModule),
     ...canActivate(redirectLoggedInToMenu),
   },
   {
     path: 'register',
     title: 'Registro',
-    loadChildren: () => import('./auth/register/register.module').then((m) => m.RegisterPageModule),
+    loadChildren: () => import('src/app/auth/register/register.module').then((m) => m.RegisterPageModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'perfil',
     title: 'Perfil',
     data: { preload: true },
-    loadChildren: () => import('./page-profile/page-profile.module').then((m) => m.PageProfilePageModule),
+    loadChildren: () => import('src/app/profile/profile-info/profile-info.module').then((m) => m.ProfileInfoPageModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {

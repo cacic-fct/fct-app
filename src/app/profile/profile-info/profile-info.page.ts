@@ -2,18 +2,18 @@
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Component, inject, OnInit } from '@angular/core';
 import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
-import { CoursesService } from '../shared/services/courses.service';
+import { CoursesService } from 'src/app/shared/services/courses.service';
 
 import { take, Observable, BehaviorSubject } from 'rxjs';
-import { User } from '../shared/services/user';
+import { User } from 'src/app/shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
 
 @Component({
-  selector: 'app-page-profile',
-  templateUrl: './page-profile.page.html',
-  styleUrls: ['./page-profile.page.scss'],
+  selector: 'app-profile-info',
+  templateUrl: './profile-info.page.html',
+  styleUrls: ['./profile-info.page.scss'],
 })
-export class PageProfilePage implements OnInit {
+export class ProfileInfoPage implements OnInit {
   private auth: Auth = inject(Auth);
 
   user$ = user(this.auth);

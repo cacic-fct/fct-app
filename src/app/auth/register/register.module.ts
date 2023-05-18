@@ -10,7 +10,7 @@ import { RegisterPage } from './register.page';
 
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
-import { PageVerifyPhonePageModule } from '../../page-verify-phone/page-verify-phone.module';
+import { VerifyPhonePageModule } from 'src/app/auth/verify-phone/verify-phone.module';
 
 @NgModule({
   imports: [
@@ -20,7 +20,7 @@ import { PageVerifyPhonePageModule } from '../../page-verify-phone/page-verify-p
     IonicModule,
     RegisterPageRoutingModule,
     SweetAlert2Module,
-    PageVerifyPhonePageModule,
+    VerifyPhonePageModule,
   ],
   declarations: [RegisterPage],
 })

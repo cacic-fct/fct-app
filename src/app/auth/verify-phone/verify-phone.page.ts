@@ -11,25 +11,25 @@ import {
   PhoneAuthProvider,
 } from '@angular/fire/auth';
 
-import { WindowService } from '../shared/services/window.service';
+import { WindowService } from '../../shared/services/window.service';
 
 import { timer, take, interval, Subscription } from 'rxjs';
 
 import { ModalController } from '@ionic/angular';
 
-import { User } from '../shared/services/user';
+import { User } from 'src/app/shared/services/user';
 
-import { Mailto, MailtoService } from './../shared/services/mailto.service';
+import { Mailto, MailtoService } from 'src/app/shared/services/mailto.service';
 
 import { add } from 'date-fns';
 import { trace } from '@angular/fire/compat/performance';
 
 @Component({
-  selector: 'app-page-verify-phone',
-  templateUrl: './page-verify-phone.page.html',
-  styleUrls: ['./page-verify-phone.page.scss'],
+  selector: 'app-verify-phone',
+  templateUrl: './verify-phone.page.html',
+  styleUrls: ['./verify-phone.page.scss'],
 })
-export class PageVerifyPhonePage implements OnInit {
+export class VerifyPhonePage implements OnInit {
   private auth: Auth = inject(Auth);
   authState$ = authState(this.auth);
 
