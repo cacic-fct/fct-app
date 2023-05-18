@@ -3,9 +3,9 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TabMenuPage } from './tab-menu.page';
+import { TabMenuPage } from './menu.page';
 
-import { TabMenuPageRoutingModule } from './tab-menu-routing.module';
+import { TabMenuPageRoutingModule } from './menu-routing.module';
 
 @NgModule({
   imports: [

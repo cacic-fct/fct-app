@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TabEventsPage } from './tab-events.page';
+import { MajorEventsDisplayPage } from './major-events-display.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: TabEventsPage,
+    component: MajorEventsDisplayPage,
   },
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TabEventsPageRoutingModule {}
+export class MajorEventsDisplayPageRoutingModule {}

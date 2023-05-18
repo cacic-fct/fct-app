@@ -24,17 +24,20 @@ const routes: Routes = [
       {
         path: 'eventos',
         title: 'Lista de eventos',
-        loadChildren: () => import('../tab-events/tab-events.module').then((m) => m.TabEventsPageModule),
+        loadChildren: () =>
+          import('src/app/tabs/major-events-display/major-events-display.module').then(
+            (m) => m.MajorEventsDisplayPageModule
+          ),
       },
       {
         path: 'mapa',
         title: 'Mapa',
-        loadChildren: () => import('../tab-map/tab-map.module').then((m) => m.TabMapPageModule),
+        loadChildren: () => import('src/app/tabs/map/map.module').then((m) => m.TabMapPageModule),
       },
       {
         path: 'menu',
         title: 'Menu',
-        loadChildren: () => import('../tab-menu/tab-menu.module').then((m) => m.TabMenuPageModule),
+        loadChildren: () => import('src/app/tabs/menu/menu.module').then((m) => m.TabMenuPageModule),
       },
       {
         path: 'area-restrita',

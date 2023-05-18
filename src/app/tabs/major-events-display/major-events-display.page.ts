@@ -5,17 +5,17 @@ import { trace } from '@angular/fire/compat/performance';
 import { compareAsc } from 'date-fns';
 import { take, map, Observable } from 'rxjs';
 
-import { MajorEventItem } from '../shared/services/major-event.service';
-import { MajorEventSubscription } from './../shared/services/major-event.service';
+import { MajorEventItem } from 'src/app/shared/services/major-event.service';
+import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { user, Auth } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-tab-events',
-  templateUrl: 'tab-events.page.html',
-  styleUrls: ['tab-events.page.scss'],
+  selector: 'app-major-events-display',
+  templateUrl: 'major-events-display.page.html',
+  styleUrls: ['major-events-display.page.scss'],
 })
-export class TabEventsPage {
+export class MajorEventsDisplayPage {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
 

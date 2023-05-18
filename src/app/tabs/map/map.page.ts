@@ -9,9 +9,9 @@ import { Control, defaults as defaultControls } from 'ol/control';
 useGeographic();
 
 @Component({
-  selector: 'app-tab-map',
-  templateUrl: 'tab-map.page.html',
-  styleUrls: ['tab-map.page.scss'],
+  selector: 'app-map',
+  templateUrl: 'map.page.html',
+  styleUrls: ['map.page.scss'],
 })
 export class TabMapPage implements AfterViewInit {
   map: Map | undefined | null;

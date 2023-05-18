@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import { Component, inject } from '@angular/core';
 
-import { AuthService } from '../shared/services/auth.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 import { trace } from '@angular/fire/compat/performance';
 
@@ -13,8 +13,8 @@ import { Auth, authState, user, User } from '@angular/fire/auth';
 @UntilDestroy()
 @Component({
   selector: 'app-tab3',
-  templateUrl: 'tab-menu.page.html',
-  styleUrls: ['tab-menu.page.scss'],
+  templateUrl: 'menu.page.html',
+  styleUrls: ['menu.page.scss'],
 })
 export class TabMenuPage {
   private auth: Auth = inject(Auth);
