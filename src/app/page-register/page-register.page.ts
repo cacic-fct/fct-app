@@ -92,9 +92,13 @@ export class PageRegisterPage implements OnInit {
       });
 
     this.windowRef = this.win.windowRef;
-    this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      size: 'invisible',
-    });
+    this.windowRef.recaptchaVerifier = new RecaptchaVerifier(
+      'continue-button',
+      {
+        size: 'invisible',
+      },
+      this.auth
+    );
   }
 
   onSubmit() {
