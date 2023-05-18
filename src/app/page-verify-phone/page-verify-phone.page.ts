@@ -112,9 +112,13 @@ export class PageVerifyPhonePage implements OnInit {
       .pipe(take(1))
       .subscribe(() => {
         this.cooldown = false;
-        this.windowRef.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible',
-        });
+        this.windowRef.recaptchaVerifier = new RecaptchaVerifier(
+          'resend-sms',
+          {
+            size: 'invisible',
+          },
+          this.auth
+        );
         this.countdown.unsubscribe();
       });
   }
