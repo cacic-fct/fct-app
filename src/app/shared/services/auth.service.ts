@@ -24,7 +24,7 @@ import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
 import { take, Observable, map, switchMap, lastValueFrom } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
-import { VerifyPhonePage } from 'src/app/verify-phone/verify-phone.page';
+import { VerifyPhonePage } from 'src/app/auth/verify-phone/verify-phone.page';
 
 import { unlink } from 'firebase/auth';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
