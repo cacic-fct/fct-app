@@ -92,13 +92,13 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./page-login/page-login.module').then((m) => m.PageLoginPageModule),
+    loadChildren: () => import('./auth/login/login.module').then((m) => m.LoginPageModule),
     ...canActivate(redirectLoggedInToMenu),
   },
   {
     path: 'register',
     title: 'Registro',
-    loadChildren: () => import('./page-register/page-register.module').then((m) => m.PageRegisterPageModule),
+    loadChildren: () => import('./auth/register/register.module').then((m) => m.RegisterPageModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {

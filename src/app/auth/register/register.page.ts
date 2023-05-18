@@ -4,7 +4,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 
 import { Router } from '@angular/router';
 
-import { AuthService } from '../shared/services/auth.service';
+import { AuthService } from '../../shared/services/auth.service';
 import { AlertController, ToastController } from '@ionic/angular';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
@@ -14,22 +14,22 @@ import { Auth, RecaptchaVerifier } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
-import { GlobalConstantsService } from '../shared/services/global-constants.service';
+import { GlobalConstantsService } from '../../shared/services/global-constants.service';
 
 import { trace } from '@angular/fire/compat/performance';
 
-import { Mailto, MailtoService } from './../shared/services/mailto.service';
+import { Mailto, MailtoService } from '../../shared/services/mailto.service';
 
 import { take } from 'rxjs';
 
-import { WindowService } from '../shared/services/window.service';
+import { WindowService } from '../../shared/services/window.service';
 
 @Component({
   selector: 'app-page-register',
-  templateUrl: './page-register.page.html',
-  styleUrls: ['./page-register.page.scss'],
+  templateUrl: './register.page.html',
+  styleUrls: ['./register.page.scss'],
 })
-export class PageRegisterPage implements OnInit {
+export class RegisterPage implements OnInit {
   @ViewChild('mySwal')
   private mySwal: SwalComponent;
   windowRef: any;
