@@ -5,8 +5,20 @@ import { Injectable, NgZone, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { User } from '../services/user';
-import firebase from 'firebase/compat/app';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import {
+  Auth,
+  signInAnonymously,
+  signInWithRedirect,
+  getRedirectResult,
+  GoogleAuthProvider,
+  authState,
+  User as UserAuth,
+  idToken,
+  AuthProvider,
+  linkWithRedirect,
+  PhoneAuthProvider,
+  onAuthStateChanged,
+} from '@angular/fire/auth';
 
 import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
@@ -23,12 +35,15 @@ import { gte as versionGreaterThan } from 'semver';
 @Injectable()
 export class AuthService {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
+  private auth: Auth = inject(Auth);
 
-  userData: firebase.User;
+  authState$ = authState(this.auth);
+  idToken$ = idToken(this.auth);
+
+  userData: UserAuth;
   localDataVersion: string = GlobalConstantsService.userDataVersion;
 
   constructor(
-    public auth: AngularFireAuth,
     public router: Router,
     public afs: AngularFirestore,
     public ngZone: NgZone,
@@ -37,8 +52,58 @@ export class AuthService {
     private fns: AngularFireFunctions,
     private route: ActivatedRoute
   ) {
-    this.auth.authState.pipe(trace('auth')).subscribe((user) => {
+    this.authState$.pipe(trace('auth')).subscribe((user) => {
       if (user) {
+        getRedirectResult(this.auth)
+          .then((result) => {
+            if (result.user === null) {
+              return;
+            }
+            // Google Access Token. You can use it to access Google APIs.
+            // const credential = GoogleAuthProvider.credentialFromResult(result);
+            // const token = credential.accessToken;
+
+            if (localStorage.getItem('linkingProfile')) {
+              localStorage.removeItem('linkingProfile');
+
+              const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${result.user.uid}`);
+              const userData: User = {
+                linkedPersonalEmail: true,
+              };
+              return userRef.set(userData, {
+                merge: true,
+              });
+            }
+
+            const user = result.user;
+            this.SetUserData(user);
+
+            this.route.queryParams.pipe(take(1)).subscribe((params) => {
+              const redirect = params['redirect'];
+              console.log('Redirect', redirect);
+
+              if (redirect) {
+                this.router.navigate([redirect]);
+              } else {
+                this.router.navigate(['menu']);
+              }
+            });
+          })
+          .catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData?.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+
+            console.error('Error code:', errorCode);
+            console.error('Error message:', errorMessage);
+            console.error('Email:', email);
+            console.error('Credential:', credential);
+          });
+
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem('user'));
@@ -46,27 +111,31 @@ export class AuthService {
         getStringChanges(this.remoteConfig, 'professors').subscribe((professors) => {
           if (professors) {
             const professorsList: string[] = JSON.parse(professors);
-
             // Check if user email matches a professor email.
             // Professors are exempt from the register prompt
             if (professorsList.includes(user.email)) {
-              this.auth.idTokenResult.pipe(take(1)).subscribe((idTokenResult) => {
-                const claims = idTokenResult.claims;
+              this.auth.currentUser
+                .getIdTokenResult()
+                .then((idTokenResult) => {
+                  const claims = idTokenResult.claims;
 
-                // If role is not set, set it to professor (3000)
-                if (!claims.role || claims.role < 3000) {
-                  const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-                  const userData: User = {
-                    associateStatus: 'professor',
-                  };
-                  userRef.set(userData, {
-                    merge: true,
-                  });
+                  // If role is not set, set it to professor (3000)
+                  if (!claims.role || claims.role < 3000) {
+                    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+                    const userData: User = {
+                      associateStatus: 'professor',
+                    };
+                    userRef.set(userData, {
+                      merge: true,
+                    });
 
-                  const addProfessor = this.fns.httpsCallable('claims-addProfessorRole');
-                  addProfessor({ email: user.email }).pipe(take(1)).subscribe();
-                }
-              });
+                    const addProfessor = this.fns.httpsCallable('claims-addProfessorRole');
+                    addProfessor({ email: user.email }).pipe(take(1)).subscribe();
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             }
           } else {
             // Not a professor or remote config not loaded yet
@@ -120,38 +189,26 @@ export class AuthService {
   }
 
   GoogleAuth() {
-    return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
+    return this.AuthLogin(new GoogleAuthProvider());
   }
 
   GoogleLink() {
-    return this.LinkProfile(new firebase.auth.GoogleAuthProvider());
+    return this.LinkProfile(new GoogleAuthProvider());
   }
 
   async anonAuth() {
     try {
-      await this.auth.signInAnonymously();
+      await signInAnonymously(this.auth);
       console.log('Signed in');
     } catch (error) {
       console.error(error);
     }
   }
 
-  async AuthLogin(provider: firebase.auth.AuthProvider) {
+  async AuthLogin(provider: AuthProvider) {
     this.auth.useDeviceLanguage();
     try {
-      this.auth.signInWithPopup(provider).then((result) => {
-        this.SetUserData(result.user);
-
-        this.route.queryParams.pipe(take(1)).subscribe((params) => {
-          const redirect = params['redirect'];
-
-          if (redirect) {
-            this.router.navigate([redirect]);
-          } else {
-            this.router.navigate(['menu']);
-          }
-        });
-      });
+      signInWithRedirect(this.auth, provider);
     } catch (error) {
       console.error('Login failed');
       console.error(error);
@@ -160,17 +217,11 @@ export class AuthService {
     }
   }
 
-  async LinkProfile(provider: firebase.auth.AuthProvider) {
+  async LinkProfile(provider: AuthProvider) {
     this.auth.useDeviceLanguage();
     try {
-      const result = await (await this.auth.currentUser).linkWithPopup(provider);
-      const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${result.user.uid}`);
-      const userData: User = {
-        linkedPersonalEmail: true,
-      };
-      return userRef.set(userData, {
-        merge: true,
-      });
+      localStorage.setItem('linkingProfile', 'true');
+      await linkWithRedirect(this.auth.currentUser, provider);
     } catch (error) {
       console.error('Link profile failed');
       console.error(error);
@@ -196,7 +247,7 @@ export class AuthService {
     toast.present();
   }
 
-  private SetUserData(user: firebase.User) {
+  private SetUserData(user: UserAuth) {
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
     const userData: User = {
       uid: user.uid,
@@ -209,7 +260,7 @@ export class AuthService {
     });
   }
 
-  private CompareUserdataVersion(user: firebase.User): Observable<boolean> {
+  private CompareUserdataVersion(user: UserAuth): Observable<boolean> {
     return getBooleanChanges(this.remoteConfig, 'registerPrompt').pipe(
       take(1),
       trace('remoteconfig'),
@@ -271,7 +322,7 @@ export class AuthService {
   }
 
   async phoneUnlink() {
-    unlink(this.userData, firebase.auth.PhoneAuthProvider.PROVIDER_ID);
+    unlink(this.userData, PhoneAuthProvider.PROVIDER_ID);
   }
 
   async getUserUid(manualInput: string): Promise<StringDataReturnType> {
