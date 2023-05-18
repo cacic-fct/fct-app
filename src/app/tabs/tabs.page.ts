@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { trace } from '@angular/fire/compat/performance';
-import { Auth, idToken, getIdTokenResult } from '@angular/fire/auth';
+import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
@@ -16,7 +16,7 @@ export class TabsPage {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
 
   private auth: Auth = inject(Auth);
-  idToken$ = idToken(this.auth);
+  user$ = user(this.auth);
 
   _allowRestrictedArea: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   allowRestrictedArea$: Observable<boolean> = this._allowRestrictedArea.asObservable();
@@ -25,12 +25,16 @@ export class TabsPage {
   readonly map$: Observable<boolean>;
 
   constructor() {
-    this.auth.currentUser?.getIdTokenResult().then((idTokenResult) => {
-      if (idTokenResult) {
-        const claims = idTokenResult.claims;
-        if (claims.role < 3000) {
-          this._allowRestrictedArea.next(true);
-        }
+    this.user$.pipe(untilDestroyed(this), trace('auth')).subscribe((user) => {
+      if (user) {
+        getIdTokenResult(user).then((idTokenResult) => {
+          if (idTokenResult) {
+            const claims = idTokenResult.claims;
+            if (claims.role < 3000) {
+              this._allowRestrictedArea.next(true);
+            }
+          }
+        });
       }
     });
 

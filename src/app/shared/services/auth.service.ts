@@ -12,7 +12,7 @@ import {
   GoogleAuthProvider,
   authState,
   User as UserAuth,
-  idToken,
+  getIdTokenResult,
   AuthProvider,
   PhoneAuthProvider,
   signInWithPopup,
@@ -38,7 +38,6 @@ export class AuthService {
   private auth: Auth = inject(Auth);
 
   authState$ = authState(this.auth);
-  idToken$ = idToken(this.auth);
 
   userData: UserAuth;
   localDataVersion: string = GlobalConstantsService.userDataVersion;
@@ -65,7 +64,7 @@ export class AuthService {
             // Check if user email matches a professor email.
             // Professors are exempt from the register prompt
             if (professorsList.includes(user.email)) {
-              this.auth.currentUser.getIdTokenResult().then((idTokenResult) => {
+              getIdTokenResult(user).then((idTokenResult) => {
                 const claims = idTokenResult.claims;
 
                 // If role is not set, set it to professor (3000)

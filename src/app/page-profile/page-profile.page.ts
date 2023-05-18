@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Component, inject, OnInit } from '@angular/core';
-import { Auth, user } from '@angular/fire/auth';
+import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 import { CoursesService } from '../shared/services/courses.service';
 
 import { take, Observable, BehaviorSubject } from 'rxjs';
@@ -35,13 +35,13 @@ export class PageProfilePage implements OnInit {
 
   ngOnInit() {
     this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
-      user.getIdTokenResult().then((idTokenResult) => {
-        if (idTokenResult.claims.role === 3000) {
-          this._isProfessor.next(true);
-        }
-      });
-
       if (user) {
+        getIdTokenResult(user).then((idTokenResult) => {
+          if (idTokenResult.claims.role === 3000) {
+            this._isProfessor.next(true);
+          }
+        });
+
         this.userFirestore$ = this.afs.doc<User>(`users/${user.uid}`).valueChanges().pipe(take(1), trace('firestore'));
       }
     });
