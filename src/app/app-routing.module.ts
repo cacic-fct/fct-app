@@ -110,7 +110,10 @@ const routes: Routes = [
   {
     path: 'entidades',
     title: 'Entidades estudantis',
-    loadChildren: () => import('./page-contact-cas/page-contact-cas.module').then((m) => m.PageContactCasPageModule),
+    loadChildren: () =>
+      import('src/app/freshmen/student-organizations/student-organizations.module').then(
+        (m) => m.StudentOrganizationsPageModule
+      ),
   },
   {
     path: 'eventos/inscrever/:eventID',
