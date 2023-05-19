@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TabCalendarPage } from './tab-calendar.page';
+import { CalendarPage } from './calendar.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: TabCalendarPage,
+    component: CalendarPage,
   },
   {
     path: 'evento/:eventID',
     title: 'Informações do evento',
     loadChildren: () =>
-      import('./page-calendar-event/page-calendar-event.module').then((m) => m.PageCalendarEventPageModule),
+      import('./event-info-display/event-info-display.module').then((m) => m.EventInfoDisplayPageModule),
   },
 ];
 
@@ -19,4 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TabCalendarPageRoutingModule {}
+export class CalendarPageRoutingModule {}

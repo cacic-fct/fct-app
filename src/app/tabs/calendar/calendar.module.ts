@@ -4,14 +4,14 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TabCalendarPage } from './tab-calendar.page';
+import { CalendarPage } from './calendar.page';
 
-import { TabCalendarPageRoutingModule } from './tab-calendar-routing.module';
+import { CalendarPageRoutingModule } from './calendar-routing.module';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { ItemListViewComponent } from './components/item-list-view/item-list.component';
 
 @NgModule({
-  imports: [IonicModule, CommonModule, FormsModule, TabCalendarPageRoutingModule],
-  declarations: [TabCalendarPage, ItemListComponent, CalendarListViewComponent, FilterModalPage, ItemListViewComponent],
+  imports: [IonicModule, CommonModule, FormsModule, CalendarPageRoutingModule],
+  declarations: [CalendarPage, ItemListComponent, CalendarListViewComponent, FilterModalPage, ItemListViewComponent],
 })
-export class TabCalendarPageModule {}
+export class CalendarPageModule {}

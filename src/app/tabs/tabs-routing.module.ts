@@ -19,7 +19,7 @@ const routes: Routes = [
       {
         path: 'calendario',
         title: 'Calendário de eventos',
-        loadChildren: () => import('../tab-calendar/tab-calendar.module').then((m) => m.TabCalendarPageModule),
+        loadChildren: () => import('src/app/tabs/calendar/calendar.module').then((m) => m.CalendarPageModule),
       },
       {
         path: 'eventos',
@@ -32,12 +32,12 @@ const routes: Routes = [
       {
         path: 'mapa',
         title: 'Mapa',
-        loadChildren: () => import('src/app/tabs/map/map.module').then((m) => m.TabMapPageModule),
+        loadChildren: () => import('src/app/tabs/map/map.module').then((m) => m.MapPageModule),
       },
       {
         path: 'menu',
         title: 'Menu',
-        loadChildren: () => import('src/app/tabs/menu/menu.module').then((m) => m.TabMenuPageModule),
+        loadChildren: () => import('src/app/tabs/menu/menu.module').then((m) => m.MenuPageModule),
       },
       {
         path: 'area-restrita',

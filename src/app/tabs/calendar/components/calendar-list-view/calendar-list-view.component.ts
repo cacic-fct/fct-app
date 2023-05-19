@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { DateService } from './../../../shared/services/date.service';
+import { DateService } from '../../../../shared/services/date.service';
 
 import { startOfDay, startOfWeek, sub } from 'date-fns';
 

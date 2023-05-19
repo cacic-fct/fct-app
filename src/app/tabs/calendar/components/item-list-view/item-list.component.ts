@@ -11,7 +11,7 @@ import { switchMap } from 'rxjs/operators';
 import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
 
-import { EmojiService } from './../../../shared/services/emoji.service';
+import { EmojiService } from '../../../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({

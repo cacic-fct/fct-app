@@ -16,7 +16,7 @@ import { Auth, authState, user, User } from '@angular/fire/auth';
   templateUrl: 'menu.page.html',
   styleUrls: ['menu.page.scss'],
 })
-export class TabMenuPage {
+export class MenuPage {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
   authState$ = authState(this.auth);

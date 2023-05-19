@@ -1,13 +1,13 @@
 // @ts-strict-ignore
 import { Component, inject, OnInit } from '@angular/core';
 
-import { CoursesService } from '../../shared/services/courses.service';
+import { CoursesService } from '../../../shared/services/courses.service';
 
 import { ToastController } from '@ionic/angular';
 
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { EventItem } from '../../shared/services/event';
+import { EventItem } from '../../../shared/services/event';
 import { take, Observable, map } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -15,11 +15,11 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Analytics, logEvent } from '@angular/fire/analytics';
 
 @Component({
-  selector: 'app-page-calendar-event',
-  templateUrl: './page-calendar-event.page.html',
-  styleUrls: ['./page-calendar-event.page.scss'],
+  selector: 'app-event-info-display',
+  templateUrl: './event-info-display.page.html',
+  styleUrls: ['./event-info-display.page.scss'],
 })
-export class PageCalendarEventPage implements OnInit {
+export class EventInfoDisplayPage implements OnInit {
   private analytics: Analytics = inject(Analytics);
   courses = CoursesService.courses;
   item: EventItem;

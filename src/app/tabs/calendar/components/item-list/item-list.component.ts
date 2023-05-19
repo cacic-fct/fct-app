@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { EventItem } from './../../../shared/services/event';
-import { EmojiService } from './../../../shared/services/emoji.service';
+import { EventItem } from '../../../../shared/services/event';
+import { EmojiService } from '../../../../shared/services/emoji.service';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { NavController } from '@ionic/angular';
 

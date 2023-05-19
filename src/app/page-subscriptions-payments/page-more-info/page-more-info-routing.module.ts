@@ -12,8 +12,8 @@ const routes: Routes = [
     path: 'evento/:eventID',
     title: 'Informações do evento',
     loadChildren: () =>
-      import('src/app/tab-calendar/page-calendar-event/page-calendar-event.module').then(
-        (m) => m.PageCalendarEventPageModule
+      import('src/app/tabs/calendar/event-info-display/event-info-display.module').then(
+        (m) => m.EventInfoDisplayPageModule
       ),
   },
 ];

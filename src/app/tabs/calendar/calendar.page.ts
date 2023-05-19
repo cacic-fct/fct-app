@@ -15,11 +15,11 @@ import { trace } from '@angular/fire/compat/performance';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @UntilDestroy()
 @Component({
-  selector: 'app-tab-calendar',
-  templateUrl: 'tab-calendar.page.html',
-  styleUrls: ['tab-calendar.page.scss'],
+  selector: 'app-calendar',
+  templateUrl: 'calendar.page.html',
+  styleUrls: ['calendar.page.scss'],
 })
-export class TabCalendarPage {
+export class CalendarPage {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
   // Selected calendar date
   active: string;

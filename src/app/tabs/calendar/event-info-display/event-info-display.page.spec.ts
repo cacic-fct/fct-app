@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { MapPage } from './map.page';
+import { EventInfoDisplayPage } from './event-info-display.page';
 
-describe('MapPage', () => {
-  let component: MapPage;
-  let fixture: ComponentFixture<MapPage>;
+describe('EventInfoDisplayPage', () => {
+  let component: EventInfoDisplayPage;
+  let fixture: ComponentFixture<EventInfoDisplayPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [MapPage],
+      declarations: [EventInfoDisplayPage],
       imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MapPage);
+    fixture = TestBed.createComponent(EventInfoDisplayPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

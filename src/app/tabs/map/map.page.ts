@@ -13,7 +13,7 @@ useGeographic();
   templateUrl: 'map.page.html',
   styleUrls: ['map.page.scss'],
 })
-export class TabMapPage implements AfterViewInit {
+export class MapPage implements AfterViewInit {
   map: Map | undefined | null;
 
   constructor() {}
