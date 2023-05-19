@@ -1,9 +1,9 @@
 // @ts-strict-ignore
-import { GlobalConstantsService } from './../shared/services/global-constants.service';
-import { User } from './../shared/services/user';
+import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
+import { User } from 'src/app/shared/services/user';
 import { InfoModalComponent } from './info-modal/info-modal.component';
-import { MajorEventSubscription } from '../shared/services/major-event.service';
-import { EnrollmentTypesService } from './../shared/services/enrollment-types.service';
+import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
+import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
@@ -12,8 +12,8 @@ import { formatDate } from '@angular/common';
 import { compareAsc } from 'date-fns';
 import { take, map, Observable } from 'rxjs';
 
-import { MajorEventItem } from '../shared/services/major-event.service';
-import { EventItem } from '../shared/services/event';
+import { MajorEventItem } from 'src/app/shared/services/major-event.service';
+import { EventItem } from 'src/app/shared/services/event';
 import { ModalController, ToastController } from '@ionic/angular';
 
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
@@ -22,17 +22,17 @@ import { trace } from '@angular/fire/compat/performance';
 
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { serverTimestamp } from '@angular/fire/firestore';
-import { EmojiService } from './../shared/services/emoji.service';
+import { EmojiService } from 'src/app/shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-page-subscription',
-  templateUrl: 'page-subscription.page.html',
-  styleUrls: ['page-subscription.page.scss'],
+  selector: 'app-subscribe',
+  templateUrl: 'subscribe.page.html',
+  styleUrls: ['subscribe.page.scss'],
 })
-export class PageSubscriptionPage implements OnInit {
+export class SubscribePage implements OnInit {
   @ViewChild('successSwal')
   private successSwal: SwalComponent;
   @ViewChild('errorSwal')

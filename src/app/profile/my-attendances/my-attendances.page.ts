@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import { EventItem, EventSubscription } from 'src/app/shared/services/event';
 import { Timestamp } from '@firebase/firestore-types';
-import { MajorEventItem, MajorEventSubscription } from '../shared/services/major-event.service';
+import { MajorEventItem, MajorEventSubscription } from '../../shared/services/major-event.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { map, Observable, switchMap, combineLatest } from 'rxjs';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
@@ -9,17 +9,17 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { trace } from '@angular/fire/compat/performance';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { EnrollmentTypesService } from '../shared/services/enrollment-types.service';
+import { EnrollmentTypesService } from '../../shared/services/enrollment-types.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-page-subscriptions',
-  templateUrl: './page-subscriptions.page.html',
-  styleUrls: ['./page-subscriptions.page.scss'],
+  selector: 'app-subscribe',
+  templateUrl: './my-attendances.page.html',
+  styleUrls: ['./my-attendances.page.scss'],
 })
-export class PageSubscriptionsPage implements OnInit {
+export class MyAttendancesPage implements OnInit {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
 

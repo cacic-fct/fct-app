@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { EventItem } from 'src/app/shared/services/event';
-import { EmojiService } from './../../../shared/services/emoji.service';
+import { EmojiService } from '../../../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({

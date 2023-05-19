@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DocumentReference } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 import { DateService } from 'src/app/shared/services/date.service';
-import { EventSubscriptionLocal } from '../../page-subscriptions.page';
+import { EventSubscriptionLocal } from 'src/app/profile/my-attendances/my-attendances.page';
 
 @Component({
   selector: 'app-event-card[eventSubscription]',

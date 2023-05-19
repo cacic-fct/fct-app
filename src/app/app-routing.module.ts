@@ -117,14 +117,14 @@ const routes: Routes = [
     path: 'eventos/inscrever/:eventID',
     title: 'Inscrição',
     loadChildren: () =>
-      import('./page-subscription/page-subscription.module').then((m) => m.PageSubscriptionPageModule),
+      import('src/app/tabs/major-events-display/subscribe/subscribe.module').then((m) => m.SubscribePageModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'inscricoes',
     title: 'Minhas participações',
     loadChildren: () =>
-      import('./page-subscriptions-payments/page-subscriptions.module').then((m) => m.PageSubscriptionsPageModule),
+      import('src/app/profile/my-attendances/my-attendances.module').then((m) => m.MyAttendancesPageModule),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {

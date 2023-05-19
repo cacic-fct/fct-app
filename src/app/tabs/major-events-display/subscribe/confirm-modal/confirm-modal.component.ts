@@ -3,13 +3,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { formatDate } from '@angular/common';
 
-import { MajorEventItem } from '../../shared/services/major-event.service';
-import { EventItem } from '../../shared/services/event';
+import { MajorEventItem } from '../../../../shared/services/major-event.service';
+import { EventItem } from '../../../../shared/services/event';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 
-import { EmojiService } from './../../shared/services/emoji.service';
+import { EmojiService } from '../../../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({

@@ -1,6 +1,6 @@
-import { CertificateStoreData } from './../../../shared/services/certificates.service';
+import { CertificateStoreData } from '../../../../shared/services/certificates.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { MailtoService, Mailto } from './../../../shared/services/mailto.service';
+import { MailtoService, Mailto } from '../../../../shared/services/mailto.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import { filterNullish } from 'src/app/shared/services/rxjs.service';

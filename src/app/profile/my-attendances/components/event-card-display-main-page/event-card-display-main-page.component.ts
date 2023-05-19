@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EventSubscriptionLocal } from '../../page-subscriptions.page';
+import { EventSubscriptionLocal } from 'src/app/profile/my-attendances/my-attendances.page';
 
 @Component({
   selector: 'app-event-card-display-main-page[eventSubscriptionsInput]',
