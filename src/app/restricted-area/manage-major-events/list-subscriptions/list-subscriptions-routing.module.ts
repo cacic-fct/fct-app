@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PageListSubscriptions } from './page-list-subscriptions';
+import { ListSubscriptionsPage } from './list-subscriptions';
 
 const routes: Routes = [
   {
     path: '',
-    component: PageListSubscriptions,
+    component: ListSubscriptionsPage,
   },
   {
     path: 'gerenciar-inscricao/:subscriptionID',
@@ -20,4 +20,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PageListSubscriptionsRoutingModule {}
+export class ListSubscriptionsPageRoutingModule {}

@@ -21,7 +21,9 @@ const routes: Routes = [
     path: 'listar-inscritos/:eventID',
     title: 'Listar inscritos',
     loadChildren: () =>
-      import('./page-list-subscriptions/page-list-subscriptions.module').then((m) => m.PageListSubscriptionsModule),
+      import('src/app/restricted-area/manage-major-events/list-subscriptions/list-subscriptions.module').then(
+        (m) => m.ListSubscriptionsPageModule
+      ),
   },
   {
     path: 'emitir-certificados/:eventID',

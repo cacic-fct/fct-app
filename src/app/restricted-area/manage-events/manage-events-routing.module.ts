@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PageManageEvents } from './page-manage-events.page';
+import { PageManageEvents } from './manage-events.page';
 
 const routes: Routes = [
   {
@@ -11,17 +11,23 @@ const routes: Routes = [
     path: 'listar-inscritos/:eventID',
     title: 'Listar inscritos',
     loadChildren: () =>
-      import('./page-list-subscriptions/page-list-subscriptions.module').then((m) => m.PageListSubscriptionsModule),
+      import('src/app/restricted-area/manage-events/list-subscriptions/list-subscriptions.module').then(
+        (m) => m.ListSubscriptionsPageModule
+      ),
   },
   {
     path: 'listar-presencas/:eventID',
     title: 'Listar presenças',
-    loadChildren: () => import('./page-list-attendance/list.module').then((m) => m.ListPageModule),
+    loadChildren: () =>
+      import('src/app/restricted-area/manage-events/list-attendances/list.module').then((m) => m.ListPageModule),
   },
   {
     path: 'coletar-presencas/:eventID',
     title: 'Coletar presenças',
-    loadChildren: () => import('./page-scanner-attendance/scanner.module').then((m) => m.ScannerPageModule),
+    loadChildren: () =>
+      import('src/app/restricted-area/manage-events/attendance-scanner/scanner.module').then(
+        (m) => m.ScannerPageModule
+      ),
   },
   {
     path: 'adicionar',

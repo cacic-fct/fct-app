@@ -20,11 +20,11 @@ interface Subscription extends MajorEventSubscription {
 }
 @UntilDestroy()
 @Component({
-  selector: 'app-page-list-subscriptions',
-  templateUrl: './page-list-subscriptions.html',
-  styleUrls: ['./page-list-subscriptions.scss'],
+  selector: 'app-list-subscriptions',
+  templateUrl: './list-subscriptions.html',
+  styleUrls: ['./list-subscriptions.scss'],
 })
-export class PageListSubscriptions implements OnInit {
+export class ListSubscriptionsPage implements OnInit {
   @ViewChild('mySwal')
   private mySwal!: SwalComponent;
 

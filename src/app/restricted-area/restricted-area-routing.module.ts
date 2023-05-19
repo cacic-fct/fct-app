@@ -29,8 +29,7 @@ const routes: Routes = [
   {
     path: 'gerenciar-eventos',
     title: 'Gerenciar eventos',
-    loadChildren: () =>
-      import('./page-manage-events/page-manage-events.module').then((m) => m.PageManageEventsPageModule),
+    loadChildren: () => import('./manage-events/manage-events.module').then((m) => m.ManageEventsPageModule),
   },
 ];
 
