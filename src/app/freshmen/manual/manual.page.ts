@@ -8,11 +8,11 @@ import { useGeographic } from 'ol/proj';
 import { MarkerService } from './components/manual-mapa/marker.service';
 
 @Component({
-  selector: 'app-page-manual-calouro',
-  templateUrl: './page-manual-calouro.page.html',
-  styleUrls: ['./page-manual-calouro.page.scss'],
+  selector: 'app-manual',
+  templateUrl: './manual.page.html',
+  styleUrls: ['./manual.page.scss'],
 })
-export class PageManualCalouroPage implements AfterViewInit {
+export class ManualPage implements AfterViewInit {
   map: Map | undefined | null;
   constructor(private markerService: MarkerService) {}
 

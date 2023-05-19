@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PageManualCalouroPageRoutingModule } from './page-manual-calouro-routing.module';
+import { ManualPageRoutingModule } from './manual-routing.module';
 
-import { PageManualCalouroPage } from './page-manual-calouro.page';
+import { ManualPage } from './manual.page';
 
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -17,10 +17,10 @@ import { ModuleManualModule } from './components/module-manual/module-manual.mod
     CommonModule,
     FormsModule,
     IonicModule,
-    PageManualCalouroPageRoutingModule,
+    ManualPageRoutingModule,
     MarkdownModule.forChild(),
     ModuleManualModule,
   ],
-  declarations: [PageManualCalouroPage],
+  declarations: [ManualPage],
 })
-export class PageManualCalouroPageModule {}
+export class ManualPageModule {}

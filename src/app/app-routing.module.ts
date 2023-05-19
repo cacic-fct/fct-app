@@ -75,21 +75,21 @@ const routes: Routes = [
   {
     path: 'manual-do-calouro',
     title: 'Manual do Calouro',
-    loadChildren: () =>
-      import('./page-manual-calouro/page-manual-calouro.module').then((m) => m.PageManualCalouroPageModule),
+    loadChildren: () => import('src/app/freshmen/manual/manual.module').then((m) => m.ManualPageModule),
   },
   {
     path: 'calouros',
     title: 'Página dos calouros',
-    loadChildren: () => import('./page-calouros/page-calouros.module').then((m) => m.PageCalourosPageModule),
+    loadChildren: () => import('src/app/freshmen/welcome/welcome.module').then((m) => m.WelcomePageModule),
   },
-  {
-    path: 'scan',
-    title: 'Escanear',
-    loadChildren: () =>
-      import('./page-qr-scanner-public/page-qr-scanner.module').then((m) => m.PageQrScannerPageModule),
-    ...canActivate(redirectUnauthorizedToLogin),
-  },
+  // Unused route
+  // {
+  //   path: 'scan',
+  //   title: 'Escanear',
+  //   loadChildren: () =>
+  //     import('./page-qr-scanner-public/page-qr-scanner.module').then((m) => m.PageQrScannerPageModule),
+  //   ...canActivate(redirectUnauthorizedToLogin),
+  // },
   {
     path: 'login',
     loadChildren: () => import('src/app/auth/login/login.module').then((m) => m.LoginPageModule),

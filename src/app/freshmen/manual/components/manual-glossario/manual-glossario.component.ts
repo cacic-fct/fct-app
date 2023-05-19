@@ -5,10 +5,7 @@ import { Glossario } from 'src/assets/manual-do-calouro/sections/glossario.servi
 @Component({
   selector: 'app-manual-glossario',
   templateUrl: './manual-glossario.component.html',
-  styleUrls: [
-    './manual-glossario.component.scss',
-    '../../page-manual-calouro.page.scss',
-  ],
+  styleUrls: ['./manual-glossario.component.scss', '../../manual.page.scss'],
 })
 export class ManualGlossarioComponent implements OnInit {
   dictionary = Glossario.glossary;
