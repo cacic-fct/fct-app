@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PageManageAdminsPage } from './page-manage-admins.page';
+import { ManageAdminsPage } from './manage-admins.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: PageManageAdminsPage
-  }
+    component: ManageAdminsPage,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PageManageAdminsPageRoutingModule {}
+export class ManageAdminsPageRoutingModule {}

@@ -16,16 +16,14 @@ const routes: Routes = [
     path: 'gerenciar-admins',
     title: 'Gerenciar admins',
     loadChildren: () =>
-      import('./page-manage-admins/page-manage-admins.module').then((m) => m.PageManageAdminsPageModule),
+      import('src/app/restricted-area/manage-admins/manage-admins.module').then((m) => m.ManageAdminsPageModule),
     ...canActivate(adminOnly),
   },
   {
     path: 'gerenciar-grandes-eventos',
     title: 'Gerenciar grandes eventos',
     loadChildren: () =>
-      import('./page-manage-major-events/page-manage-major-events.module').then(
-        (m) => m.PageManageMajorEventsPageModule
-      ),
+      import('./manage-major-events/manage-major-events.module').then((m) => m.ManageMajorEventsPageModule),
     ...canActivate(adminOnly),
   },
   {

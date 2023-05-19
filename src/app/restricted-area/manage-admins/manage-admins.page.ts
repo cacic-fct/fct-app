@@ -8,11 +8,11 @@ import { ToastController } from '@ionic/angular';
 import { take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-page-manage-admins',
-  templateUrl: './page-manage-admins.page.html',
-  styleUrls: ['./page-manage-admins.page.scss'],
+  selector: 'app-manage-admins',
+  templateUrl: './manage-admins.page.html',
+  styleUrls: ['./manage-admins.page.scss'],
 })
-export class PageManageAdminsPage implements OnInit {
+export class ManageAdminsPage implements OnInit {
   addAdminForm: FormGroup = new FormGroup({
     adminEmail: new FormControl(''),
   });

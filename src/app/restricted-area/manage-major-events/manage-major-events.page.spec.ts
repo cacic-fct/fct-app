@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PageManageAdminsPage } from './page-manage-admins.page';
+import { ManageMajorEventsPage } from './manage-major-events.page';
 
-describe('PageManageAdminsPage', () => {
-  let component: PageManageAdminsPage;
-  let fixture: ComponentFixture<PageManageAdminsPage>;
+describe('PageListMajorEventsPage', () => {
+  let component: ManageMajorEventsPage;
+  let fixture: ComponentFixture<ManageMajorEventsPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageManageAdminsPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [ManageMajorEventsPage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageManageAdminsPage);
+    fixture = TestBed.createComponent(ManageMajorEventsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

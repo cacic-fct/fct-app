@@ -9,11 +9,11 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
-  selector: 'app-page-manage-major-events',
-  templateUrl: './page-manage-major-events.page.html',
-  styleUrls: ['./page-manage-major-events.page.scss'],
+  selector: 'app-manage-major-events',
+  templateUrl: './manage-major-events.page.html',
+  styleUrls: ['./manage-major-events.page.scss'],
 })
-export class PageManageMajorEventsPage implements OnInit {
+export class ManageMajorEventsPage implements OnInit {
   today: Date = new Date();
   currentMonth: string = this.today.toISOString();
   currentMonth$: BehaviorSubject<string | null> = new BehaviorSubject(this.currentMonth);
