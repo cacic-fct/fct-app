@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PageRestrictedAreaPage } from './page-restricted-area.page';
+import { RestrictedAreaPage } from './restricted-area.page';
 
-describe('PageRestrictedAreaPage', () => {
-  let component: PageRestrictedAreaPage;
-  let fixture: ComponentFixture<PageRestrictedAreaPage>;
+describe('RestrictedAreaPage', () => {
+  let component: RestrictedAreaPage;
+  let fixture: ComponentFixture<RestrictedAreaPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageRestrictedAreaPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [RestrictedAreaPage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageRestrictedAreaPage);
+    fixture = TestBed.createComponent(RestrictedAreaPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

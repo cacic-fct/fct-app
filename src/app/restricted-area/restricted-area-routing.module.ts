@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PageRestrictedAreaPage } from './page-restricted-area.page';
+import { RestrictedAreaPage } from './restricted-area.page';
 
 import { canActivate } from '@angular/fire/compat/auth-guard';
 import { adminOnly } from '../shared/services/routing/guards.service';
@@ -10,7 +10,7 @@ import { adminOnly } from '../shared/services/routing/guards.service';
 const routes: Routes = [
   {
     path: '',
-    component: PageRestrictedAreaPage,
+    component: RestrictedAreaPage,
   },
   {
     path: 'gerenciar-admins',
@@ -40,4 +40,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PageRestrictedAreaPageRoutingModule {}
+export class RestrictedAreaPageRoutingModule {}

@@ -4,7 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Timestamp } from '@firebase/firestore';
 import { DateService } from 'src/app/shared/services/date.service';
-import { EmojiService } from './../../../../shared/services/emoji.service';
+import { EmojiService } from '../../../../shared/services/emoji.service';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({

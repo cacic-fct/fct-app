@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { ModalController } from '@ionic/angular';
-import { EmojiService } from './../../../../shared/services/emoji.service';
-import { StringManagementService } from './../../../../shared/services/string-management.service';
+import { EmojiService } from '../../../../shared/services/emoji.service';
+import { StringManagementService } from '../../../../shared/services/string-management.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({

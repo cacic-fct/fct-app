@@ -43,7 +43,7 @@ const routes: Routes = [
         path: 'area-restrita',
         title: 'Área restrita',
         loadChildren: () =>
-          import('../page-restricted-area/page-restricted-area.module').then((m) => m.PageRestrictedAreaPageModule),
+          import('src/app/restricted-area/restricted-area.module').then((m) => m.RestrictedAreaPageModule),
         ...canActivate(caAndGreater),
       },
     ],

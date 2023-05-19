@@ -4,7 +4,7 @@ import {
   eventTypes,
   contentTypes,
   CertificateTemplateData,
-} from './../../../../../shared/services/certificates.service';
+} from '../../../../../shared/services/certificates.service';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({

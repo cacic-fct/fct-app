@@ -1,10 +1,10 @@
 // @ts-strict-ignore
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
-import { User } from './../../../../shared/services/user';
-import { EventItem } from './../../../../shared/services/event';
+import { User } from '../../../../shared/services/user';
+import { EventItem } from '../../../../shared/services/event';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { serverTimestamp, increment } from '@angular/fire/firestore';
-import { MajorEventSubscription } from './../../../../shared/services/major-event.service';
+import { MajorEventSubscription } from '../../../../shared/services/major-event.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { Component, inject, OnInit } from '@angular/core';

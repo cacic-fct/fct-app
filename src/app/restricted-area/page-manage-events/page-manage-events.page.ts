@@ -1,10 +1,10 @@
 import { GroupCreationModalComponent } from './components/group-creation-modal/group-creation-modal.component';
 import { ModalController } from '@ionic/angular';
 // @ts-strict-ignore
-import { GlobalConstantsService } from './../../shared/services/global-constants.service';
+import { GlobalConstantsService } from '../../shared/services/global-constants.service';
 import { AlertController, ToastController } from '@ionic/angular';
-import { User } from './../../shared/services/user';
-import { EventSubscription } from './../../shared/services/event';
+import { User } from '../../shared/services/user';
+import { EventSubscription } from '../../shared/services/event';
 import { arrayRemove, arrayUnion, deleteField, serverTimestamp } from '@angular/fire/firestore';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -14,7 +14,7 @@ import { BehaviorSubject, combineLatest, map, Observable, switchMap, take } from
 import { EventItem } from 'src/app/shared/services/event';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
-import { EmojiService } from './../../shared/services/emoji.service';
+import { EmojiService } from '../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
