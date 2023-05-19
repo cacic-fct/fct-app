@@ -7,9 +7,9 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map, Observable, take, combineLatest } from 'rxjs';
-import { EventItem } from '../shared/services/event';
+import { EventItem } from '../../shared/services/event';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { MajorEventItem } from '../shared/services/major-event.service';
+import { MajorEventItem } from '../../shared/services/major-event.service';
 
 import { serverTimestamp, arrayRemove } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
@@ -20,11 +20,11 @@ interface EventInfo {
 
 @UntilDestroy()
 @Component({
-  selector: 'app-page-confirm-attendance',
-  templateUrl: './page-confirm-attendance.html',
-  styleUrls: ['./page-confirm-attendance.scss'],
+  selector: 'app-confirm-attendance',
+  templateUrl: './confirm-attendance.html',
+  styleUrls: ['./confirm-attendance.scss'],
 })
-export class PageConfirmAttendance implements OnInit {
+export class ConfirmAttendancePage implements OnInit {
   eventID: string;
   dataForm: FormGroup;
   eventInfo$: Observable<EventInfo>;
