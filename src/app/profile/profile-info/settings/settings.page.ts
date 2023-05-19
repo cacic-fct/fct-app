@@ -8,11 +8,11 @@ import { Mailto, MailtoService } from 'src/app/shared/services/mailto.service';
 import { Auth, authState } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-page-settings',
-  templateUrl: './page-settings.page.html',
-  styleUrls: ['./page-settings.page.scss'],
+  selector: 'app-settings',
+  templateUrl: './settings.page.html',
+  styleUrls: ['./settings.page.scss'],
 })
-export class PageSettingsPage implements OnInit {
+export class SettingsPage implements OnInit {
   private auth: Auth = inject(Auth);
   authState$ = authState(this.auth);
 
