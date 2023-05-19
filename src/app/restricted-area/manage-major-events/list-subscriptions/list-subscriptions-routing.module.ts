@@ -10,9 +10,9 @@ const routes: Routes = [
   {
     path: 'gerenciar-inscricao/:subscriptionID',
     loadChildren: () =>
-      import('./page-manage-subscription/page-manage-subscription.module').then(
-        (m) => m.PageManageSubscriptionPageModule
-      ),
+      import(
+        'src/app/restricted-area/manage-major-events/list-subscriptions/manage-subscription/manage-subscription.module'
+      ).then((m) => m.ManageSubscriptionPageModule),
   },
 ];
 

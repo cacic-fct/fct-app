@@ -15,11 +15,11 @@ import { Auth, user } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-page-manage-subscription',
-  templateUrl: './page-manage-subscription.page.html',
-  styleUrls: ['./page-manage-subscription.page.scss'],
+  selector: 'app-manage-subscription',
+  templateUrl: './manage-subscription.page.html',
+  styleUrls: ['./manage-subscription.page.scss'],
 })
-export class PageManageSubscriptionPage implements OnInit {
+export class ManageSubscriptionPage implements OnInit {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
 
