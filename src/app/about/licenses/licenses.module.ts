@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PageLegalPageRoutingModule } from './page-licenses-routing.module';
+import { PageLegalPageRoutingModule } from './licenses-routing.module';
 
-import { PageLicensesPage } from './page-licenses.page';
+import { LicensesPage } from './licenses.page';
 
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -14,6 +14,6 @@ import { DisplayLicensesComponent } from './display-licenses/display-licenses.co
 
 @NgModule({
   imports: [CommonModule, FormsModule, IonicModule, PageLegalPageRoutingModule, MarkdownModule.forChild()],
-  declarations: [PageLicensesPage, DisplayLicensesComponent],
+  declarations: [LicensesPage, DisplayLicensesComponent],
 })
 export class PageLegalPageModule {}

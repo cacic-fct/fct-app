@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PagePrivacyPolicyPage } from './page-privacy-policy.page';
+import { PrivacyPolicyPage } from './privacy-policy.page';
 
-describe('PagePrivacyPolicyPage', () => {
-  let component: PagePrivacyPolicyPage;
-  let fixture: ComponentFixture<PagePrivacyPolicyPage>;
+describe('PrivacyPolicyPage', () => {
+  let component: PrivacyPolicyPage;
+  let fixture: ComponentFixture<PrivacyPolicyPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PagePrivacyPolicyPage ],
-      imports: [IonicModule.forRoot()]
+      declarations: [PrivacyPolicyPage],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PagePrivacyPolicyPage);
+    fixture = TestBed.createComponent(PrivacyPolicyPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

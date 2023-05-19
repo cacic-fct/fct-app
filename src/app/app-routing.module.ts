@@ -28,14 +28,13 @@ const routes: Routes = [
     path: 'sobre',
     data: { preload: true },
     title: 'Sobre',
-    loadChildren: () => import('./page-about/page-about.module').then((m) => m.PageAboutPageModule),
+    loadChildren: () => import('./about/about.module').then((m) => m.AboutPageModule),
   },
   {
     path: 'privacidade',
     data: { preload: true },
     title: 'Política de privacidade',
-    loadChildren: () =>
-      import('./page-about/page-privacy-policy/page-privacy-policy.module').then((m) => m.PagePrivacyPolicyPageModule),
+    loadChildren: () => import('./about/privacy-policy/privacy-policy.module').then((m) => m.PrivacyPolicyPageModule),
   },
   {
     path: 'privacy',
@@ -70,7 +69,7 @@ const routes: Routes = [
   {
     path: 'sobre/licencas',
     title: 'Licenças',
-    loadChildren: () => import('./page-about/page-licenses/page-licenses.module').then((m) => m.PageLegalPageModule),
+    loadChildren: () => import('./about/licenses/licenses.module').then((m) => m.PageLegalPageModule),
   },
   {
     path: 'manual-do-calouro',

@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PagePrivacyPolicyPage } from './page-privacy-policy.page';
+import { SupportPage } from './support.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: PagePrivacyPolicyPage
-  }
+    component: SupportPage,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PagePrivacyPolicyPageRoutingModule {}
+export class SupportPageRoutingModule {}
