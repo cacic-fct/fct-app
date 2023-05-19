@@ -1,4 +1,4 @@
-import { ListCertificatesComponent } from './../components/list-certificates/list-certificates.component';
+import { ListCertificatesComponent } from '../components/list-certificates/list-certificates.component';
 import { ModalController } from '@ionic/angular';
 // @ts-strict-ignore
 import { Component, inject, OnInit } from '@angular/core';
@@ -18,11 +18,11 @@ import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-page-more-info',
-  templateUrl: './page-more-info.page.html',
-  styleUrls: ['./page-more-info.page.scss'],
+  selector: 'app-more-info',
+  templateUrl: './more-info.page.html',
+  styleUrls: ['./more-info.page.scss'],
 })
-export class PageMoreInfoPage implements OnInit {
+export class MoreInfoPage implements OnInit {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
 

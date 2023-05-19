@@ -16,7 +16,7 @@ const routes: Routes = [
   {
     path: 'detalhes/:majorEventID',
     title: 'Detalhes da inscrição',
-    loadChildren: () => import('./page-more-info/page-more-info.module').then((m) => m.PageMoreInfoPageModule),
+    loadChildren: () => import('./more-info/more-info.module').then((m) => m.MoreInfoPageModule),
   },
 ];
 
