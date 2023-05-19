@@ -22,11 +22,11 @@ import { Auth, user } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-page-pay',
-  templateUrl: './page-pay.page.html',
-  styleUrls: ['./page-pay.page.scss'],
+  selector: 'app-send-receipt',
+  templateUrl: './send-receipt.page.html',
+  styleUrls: ['./send-receipt.page.scss'],
 })
-export class PagePayPage implements OnInit {
+export class SendReceiptPage implements OnInit {
   @ViewChild('eventNotFound')
   private eventNotFound: SwalComponent;
 
