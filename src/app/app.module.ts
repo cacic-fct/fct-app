@@ -10,13 +10,14 @@ registerLocaleData(localePt);
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 // AngularFire
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFunctions, provideFunctions, connectFunctionsEmulator } from '@angular/fire/functions';
 import { fetchAndActivate, getRemoteConfig, provideRemoteConfig } from '@angular/fire/remote-config';
 import { getStorage, provideStorage, connectStorageEmulator } from '@angular/fire/storage';
 import { provideAppCheck, initializeAppCheck, ReCaptchaV3Provider } from '@angular/fire/app-check';
 import { connectAuthEmulator, getAuth, provideAuth, useDeviceLanguage } from '@angular/fire/auth';
 import { provideAnalytics, getAnalytics, logEvent } from '@angular/fire/analytics';
+import { provideFirestore, initializeFirestore, connectFirestoreEmulator } from '@angular/fire/firestore';
 
 import { AngularFirePerformanceModule, PerformanceMonitoringService } from '@angular/fire/compat/performance';
 import { AngularFireModule } from '@angular/fire/compat';
@@ -99,6 +100,7 @@ import { MarkdownModule } from 'ngx-markdown';
       if (environment.useEmulators) {
         connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
       }
+
       return auth;
     }),
 
@@ -124,11 +126,23 @@ import { MarkdownModule } from 'ngx-markdown';
     }),
 
     provideFunctions(() => {
-      const functions = getFunctions(undefined, 'southamerica-east1');
+      const functions = getFunctions(getApp(), 'southamerica-east1');
       if (environment.useEmulators) {
         connectFunctionsEmulator(functions, 'localhost', 5001);
       }
       return functions;
+    }),
+
+    provideFirestore(() => {
+      const firestore = initializeFirestore(getApp(), {
+        ignoreUndefinedProperties: true,
+      });
+
+      if (environment.useEmulators) {
+        connectFirestoreEmulator(firestore, 'localhost', 8081);
+      }
+
+      return firestore;
     }),
 
     provideFirebaseApp(() => initializeApp(environment.firebase)),
