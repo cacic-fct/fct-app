@@ -481,3 +481,20 @@ export interface CertificateTemplateData {
     toList: string[];
   };
 }
+
+export interface CertificateAdminData {
+  extraInfo: string;
+  failed: {
+    error: string;
+    uid: string;
+  }[];
+
+  firstIssuedBy: string;
+  firstIssuedOn: Timestamp;
+  issueTo: {
+    toList: string[];
+    toNonPayer: boolean;
+    toNonSubscriber: boolean;
+    toPayer: boolean;
+  };
+}
