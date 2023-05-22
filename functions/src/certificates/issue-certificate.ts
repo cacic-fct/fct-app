@@ -1,229 +1,197 @@
-import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { DocumentData, DocumentSnapshot, Firestore, getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import { FieldValue } from 'firebase-admin/firestore';
 import { MainReturnType } from './../shared/return-types';
 import { deleteCollection } from './../shared/firestore.utils';
-import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { onCall, HttpsError, CallableRequest } from 'firebase-functions/v2/https';
 
-exports.issueMajorEventCertificate = onCall({ timeoutSeconds: 540, memory: '1GiB' }, async (request): Promise<MainReturnType> => {
-  const data: MajorEventCertificateData = request.data;
-  const context = request;
+exports.issueMajorEventCertificate = onCall(
+  { timeoutSeconds: 540, memory: '1GiB' },
+  async (request): Promise<MainReturnType> => {
+    const data: MajorEventCertificateData = request.data;
+    const context = request;
 
-  if (context.app == undefined) {
-    throw new HttpsError('failed-precondition', 'The function must be called from an App Check verified app.');
-  }
+    if (context.app == undefined) {
+      throw new HttpsError('failed-precondition', 'The function must be called from an App Check verified app.');
+    }
 
-  // Check if request is made by an admin
-  if (!context.auth) {
-    throw new HttpsError('failed-precondition', 'The function must be called while authenticated.');
-  }
+    // Check if request is made by an admin
+    if (!context.auth) {
+      throw new HttpsError('failed-precondition', 'The function must be called while authenticated.');
+    }
 
-  if (context.auth.token.role !== 1000) {
-    throw new HttpsError('failed-precondition', 'The function must be called by an admin.');
-  }
+    if (context.auth.token.role !== 1000) {
+      throw new HttpsError('failed-precondition', 'The function must be called by an admin.');
+    }
 
-  const db = getFirestore();
+    const db = getFirestore();
 
-  const majorEventID: string = data.majorEventID;
+    const majorEventID: string = data.majorEventID;
 
-  // Return error if major event doesn't exist
-  const majorEvent = await db.doc(`majorEvents/${majorEventID}`).get();
-  if (!majorEvent.exists) {
-    throw new HttpsError('not-found', 'Major event not found.');
-  }
+    // Return error if major event doesn't exist
+    const majorEvent = await db.doc(`majorEvents/${majorEventID}`).get();
+    if (!majorEvent.exists) {
+      throw new HttpsError('not-found', 'Major event not found.');
+    }
 
-  const majorEventData = majorEvent.data();
-  if (!majorEventData) {
-    throw new HttpsError('not-found', 'Major event data not found.');
-  }
+    const majorEventData = majorEvent.data();
+    if (!majorEventData) {
+      throw new HttpsError('not-found', 'Major event data not found.');
+    }
 
-  if (
-    majorEventData?.tasks &&
-    majorEventData.tasks.certificateID &&
-    majorEventData?.tasks?.certificateID !== data.certificateData.certificateID
-  ) {
-    throw new HttpsError('already-exists', `Certificate '${majorEventData?.tasks?.certificateID}' is being issued.`);
-  }
-
-  const certificate = await db
-    .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}`)
-    .get();
-
-  const certificateAdmin = await db
-    .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`)
-    .get();
-
-  if (certificate.exists) {
-    // Check to whom the certificate was issued
-    const issuedTo = certificateAdmin.data()?.issuedTo as {
-      toPayer: boolean;
-      toNonSubscriber: boolean;
-      toNonPayer: boolean;
-      toList: string[];
-    };
-
-    // If the certificate was issued to the same people, return error
     if (
-      issuedTo.toPayer === data.certificateData.issuedTo.toPayer &&
-      issuedTo.toNonSubscriber === data.certificateData.issuedTo.toNonSubscriber &&
-      issuedTo.toNonPayer === data.certificateData.issuedTo.toNonPayer
+      majorEventData?.tasks &&
+      majorEventData.tasks.certificateID &&
+      majorEventData?.tasks?.certificateID !== data.certificateData.certificateID
     ) {
-      // If not resuming a certificate, return error
-      if (!majorEventData?.tasks) {
-        throw new HttpsError('already-exists', 'Certificate already exists.');
-      }
+      throw new HttpsError(
+        'already-exists',
+        `Certificate '${majorEventData?.tasks?.certificateID}' is already being issued.`
+      );
     }
 
-    // If certificate is issuing to person already on list, return error
-    if (issuedTo.toList.length > 0) {
-      for (const newUid of data.certificateData.issuedTo.toList) {
-        if (issuedTo.toList.includes(newUid)) {
-          throw new HttpsError('already-exists', `Certificate already exists to ${newUid}.`);
-        }
-      }
-    }
-
-    if (!majorEventData?.tasks) {
-      // If certificate is issuing to new people, add them to the list
-      await certificateAdmin.ref.update({
-        issuedTo: {
-          toPayer: data.certificateData.issuedTo.toPayer,
-          toNonSubscriber: data.certificateData.issuedTo.toNonSubscriber,
-          toNonPayer: data.certificateData.issuedTo.toNonPayer,
-          toList: FieldValue.arrayUnion(...data.certificateData.issuedTo.toList),
-        },
-      });
-    }
-  }
-
-  // If certificate doesn't exist, create it
-  else {
-    await db.doc(`certificates/${majorEventID}`).set({
-      null: null,
-    });
-
-    await certificate.ref.set({
-      certificateName: data.certificateData.certificateName,
-      certificateTemplate: data.certificateData.certificateTemplate,
-      certificateContent: data.certificateData.content,
-      eventType: data.certificateData.event,
-      participationType: data.certificateData.participation,
-      extraText: data.certificateData.extraText,
-    });
-
-    certificateAdmin.ref.set({
-      issuedTo: {
-        toPayer: data.certificateData.issuedTo.toPayer,
-        toNonSubscriber: data.certificateData.issuedTo.toNonSubscriber,
-        toNonPayer: data.certificateData.issuedTo.toNonPayer,
-        toList: data.certificateData.issuedTo.toList,
-      },
-      firstIssuedOn: FieldValue.serverTimestamp(),
-      firstIssuedBy: context.auth.uid,
-    });
-  }
-
-  const eventInfoCache: EventCacheObject = {};
-
-  majorEvent.data()?.events.forEach((eventID: string) => {
-    db.doc(`events/${eventID}`)
-      .get()
-      .then((event) => {
-        if (event.exists) {
-          const data = event.data();
-          if (data) {
-            const eventInfo = {
-              eventName: data.name,
-              creditHours: data.creditHours,
-              eventStartDate: data.eventStartDate,
-              eventType: data.eventType,
-              eventGroup: data.eventGroup,
-            };
-            eventInfoCache[eventID] = eventInfo;
-          }
-        }
-      });
-  });
-
-  let iStored = 0;
-  let failed = [];
-
-  if (majorEventData.currentTask) {
-    deleteCollection(db, `certificates/${majorEventID}/${majorEventData.currentTask.documentID}`, 10);
-    await db
-      .doc(
-        `users/${majorEventData.currentTask.uid}/certificates/majorEvents/${majorEventID}/${majorEventData.currentTask.documentID}`
-      )
-      .delete();
-    iStored = majorEventData.currentTask.index;
-    failed = majorEventData.currentTaskFailedList;
-    await db.doc(`certificates/${majorEventID}/${majorEventData.currentTask.documentID}`).delete();
-  }
-
-  if (data.certificateData.issuedTo.toPayer) {
-    const subscriptionList = await db
-      .collection(`majorEvents/${majorEventID}/subscriptions`)
-      .where('payment.status', '==', 2)
+    const certificate = await db
+      .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}`)
       .get();
 
-    for (let i = iStored; i < subscriptionList.docs.length; i++) {
-      const attendance = subscriptionList.docs[i];
-      const uid = attendance.id;
-      const documentID = db.collection('dummy').doc().id;
-      majorEvent.ref.set(
-        {
-          currentTask: {
-            task: 'Issuing certificate',
-            uid: uid,
-            documentID: documentID,
-            index: i,
-            certificateID: data.certificateData.certificateID,
+    const certificateAdmin = await db
+      .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`)
+      .get();
+
+    if (certificate.exists) {
+      // Check to whom the certificate was issued
+      const issuedTo = certificateAdmin.data()?.issuedTo as {
+        toPayer: boolean;
+        toNonSubscriber: boolean;
+        toNonPayer: boolean;
+        toList: string[];
+      };
+
+      // If the certificate was issued to the same people, return error
+      if (
+        issuedTo.toPayer === data.certificateData.issuedTo.toPayer &&
+        issuedTo.toNonSubscriber === data.certificateData.issuedTo.toNonSubscriber &&
+        issuedTo.toNonPayer === data.certificateData.issuedTo.toNonPayer
+      ) {
+        // If not resuming a certificate, return error
+        if (!majorEventData?.tasks) {
+          throw new HttpsError('already-exists', 'Certificate already exists.');
+        }
+      }
+
+      // If certificate is issuing to person already on list, return error
+      if (issuedTo.toList.length > 0) {
+        for (const newUid of data.certificateData.issuedTo.toList) {
+          if (issuedTo.toList.includes(newUid)) {
+            throw new HttpsError('already-exists', `Certificate already exists to ${newUid}.`);
+          }
+        }
+      }
+
+      if (!majorEventData?.tasks) {
+        // If certificate is issuing to new people, add them to the list
+        await certificateAdmin.ref.update({
+          issuedTo: {
+            toPayer: data.certificateData.issuedTo.toPayer,
+            toNonSubscriber: data.certificateData.issuedTo.toNonSubscriber,
+            toNonPayer: data.certificateData.issuedTo.toNonPayer,
+            toList: FieldValue.arrayUnion(...data.certificateData.issuedTo.toList),
           },
-        },
-        { merge: true }
-      );
-      const result = await issueCertificate(data.certificateData, uid, majorEventID, context.auth.uid, documentID);
-      if (!result.success) {
-        failed.push({ uid: uid, error: result.message });
+        });
+      }
+    }
+
+    // If certificate doesn't exist, create it
+    else {
+      createCertificate(db, majorEventID, certificate, data, certificateAdmin, context);
+    }
+
+    let indexStored = 0;
+    let previousTaskType = undefined;
+    let failed = [];
+
+    // If previous task was issuing certificates, delete unfinished certificates
+    if (majorEventData.currentTask) {
+      deleteCollection(db, `certificates/${majorEventID}/${majorEventData.currentTask.documentID}`, 10);
+      await db
+        .doc(
+          `users/${majorEventData.currentTask.uid}/certificates/majorEvents/${majorEventID}/${majorEventData.currentTask.documentID}`
+        )
+        .delete();
+      indexStored = majorEventData.currentTask.index;
+      previousTaskType = majorEventData.currentTask.task;
+      failed = majorEventData.currentTaskFailedList;
+      await db.doc(`certificates/${majorEventID}/${majorEventData.currentTask.documentID}`).delete();
+    }
+
+    if (data.certificateData.issuedTo.toPayer) {
+      const subscriptionList = await db
+        .collection(`majorEvents/${majorEventID}/subscriptions`)
+        .where('payment.status', '==', 2)
+        .get();
+
+      for (let i = indexStored; i < subscriptionList.docs.length; i++) {
+        const attendance = subscriptionList.docs[i];
+        const uid = attendance.id;
+        const documentID = db.collection('dummy').doc().id;
         majorEvent.ref.set(
           {
-            currentTaskFailedList: FieldValue.arrayUnion({ uid: uid, error: result.message }),
+            currentTask: {
+              task: 'toPayer',
+              taskDescription: 'Issuing certificates to payers',
+              uid: uid,
+              documentID: documentID,
+              index: i,
+              certificateID: data.certificateData.certificateID,
+            },
           },
           { merge: true }
         );
+
+        const result = await issueCertificate(data.certificateData, uid, majorEventID, context.auth.uid, documentID);
+        if (!result.success) {
+          failed.push({ uid: uid, error: result.message });
+          majorEvent.ref.set(
+            {
+              currentTaskFailedList: FieldValue.arrayUnion({ uid: uid, error: result.message }),
+            },
+            { merge: true }
+          );
+        }
       }
     }
-  }
 
-  majorEvent.ref.set(
-    {
-      currentTask: FieldValue.delete(),
-      currentTaskFailedList: FieldValue.delete(),
-    },
-    { merge: true }
-  );
-
-  if (failed.length > 0) {
-    // Store failed in database
-    await db.doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`).set(
+    // Task finished, clear currentTask
+    majorEvent.ref.set(
       {
-        failed: failed,
+        currentTask: FieldValue.delete(),
+        currentTaskFailedList: FieldValue.delete(),
       },
       { merge: true }
     );
 
+    // If failed is not empty, store failed in database
+    if (failed.length > 0) {
+      await db.doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`).set(
+        {
+          failed: failed,
+        },
+        { merge: true }
+      );
+
+      return {
+        success: false,
+        message: 'Some certificates were not issued.',
+        data: failed,
+      };
+    }
+
     return {
-      success: false,
-      message: 'Some certificates were not issued.',
-      data: failed,
+      success: true,
+      message: 'Certificates issued successfully.',
     };
   }
-
-  return {
-    success: true,
-    message: 'Certificates issued successfully.',
-  };
-});
+);
 
 const issueCertificate = async (
   certificateData: CertificateData,
@@ -393,6 +361,65 @@ interface CertificateData {
     toList: string[];
   };
 }
+
+// Unused
+const getEventData = (majorEvent: DocumentSnapshot, db: Firestore): EventCacheObject => {
+  const eventInfoCache: EventCacheObject = {};
+  majorEvent.data()?.events.forEach(async (eventID: string) => {
+    await db
+      .doc(`events/${eventID}`)
+      .get()
+      .then((event) => {
+        if (event.exists) {
+          const data = event.data();
+          if (data) {
+            const eventInfo = {
+              eventName: data.name,
+              creditHours: data.creditHours,
+              eventStartDate: data.eventStartDate,
+              eventType: data.eventType,
+              eventGroup: data.eventGroup,
+            };
+            eventInfoCache[eventID] = eventInfo;
+          }
+        }
+      });
+  });
+  return eventInfoCache;
+};
+
+const createCertificate = async (
+  db: Firestore,
+  majorEventID: string,
+  certificate: DocumentSnapshot,
+  data: DocumentData,
+  certificateAdmin: DocumentSnapshot,
+  context: CallableRequest
+): Promise<void> => {
+  await db.doc(`certificates/${majorEventID}`).set({
+    null: null,
+  });
+
+  await certificate.ref.set({
+    certificateName: data.certificateData.certificateName,
+    certificateTemplate: data.certificateData.certificateTemplate,
+    certificateContent: data.certificateData.content,
+    eventType: data.certificateData.event,
+    participationType: data.certificateData.participation,
+    extraText: data.certificateData.extraText,
+  });
+
+  certificateAdmin.ref.set({
+    issuedTo: {
+      toPayer: data.certificateData.issuedTo.toPayer,
+      toNonSubscriber: data.certificateData.issuedTo.toNonSubscriber,
+      toNonPayer: data.certificateData.issuedTo.toNonPayer,
+      toList: data.certificateData.issuedTo.toList,
+    },
+    firstIssuedOn: FieldValue.serverTimestamp(),
+    firstIssuedBy: context.auth!.uid,
+  });
+};
 
 interface EventCacheObject {
   [eventID: string]: EventCache;
