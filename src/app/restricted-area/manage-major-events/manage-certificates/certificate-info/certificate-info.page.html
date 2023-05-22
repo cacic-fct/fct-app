@@ -1,0 +1,85 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="area-restrita/gerenciar-grandes-eventos/{{eventID}}/gerenciar-certificados">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalhes do certificado</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ng-container *ngIf="docData$ | async as certificate">
+    <div class="ion-padding">
+      <h1>{{ certificate.certificateName }}</h1>
+      <p>{{ certificate.id }}</p>
+
+      <ion-button>
+        <ion-icon name="list-outline" slot="start"></ion-icon>
+        <p slot="end">Visualizar emissões</p>
+      </ion-button>
+
+      <ion-button disabled>
+        <ion-icon name="pencil-outline" slot="start"></ion-icon>
+        <p slot="end">Editar certificado</p>
+      </ion-button>
+    </div>
+
+    <ion-card>
+      <ion-card-header> <ion-card-title>Informações gerais</ion-card-title></ion-card-header>
+
+      <ion-card-content>
+        <p><b>Modelo:</b> {{ certificate.certificateTemplate }}</p>
+
+        <ng-container *ngIf="certificate.certificateContent.type === 'default'; else contentElse">
+          <p><b>Conteúdo:</b> Padrão - Eventos com data e carga-horária</p>
+        </ng-container>
+
+        <ng-template #contentElse>
+          <p><b>Personalizado:</b> {{ certificate.certificateContent.custom }}</p>
+        </ng-template>
+
+        <p><b>Tipo do evento:</b> {{ certificate.eventType.type }}</p>
+        <p *ngIf="certificate.eventType.custom">{{ certificate.eventType.custom }}</p>
+
+        <p><b>Tipo da participação:</b> {{ certificate.participationType.type }}</p>
+        <p *ngIf="certificate.participationType.custom">{{ certificate.participationType.custom }}</p>
+
+        <p><b>Texto extra:</b> {{ certificate.extraText }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="docAdminData$ | async as adminData ">
+      <ion-card-header>
+        <ion-card-title>Informações de admin</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          <b>Data da primeira emissão:</b> {{ dateService.getDateFromTimestamp(adminData.firstIssuedOn) | date:
+          'dd/MM/yyyy - HH:mm' }}
+        </p>
+
+        <p><b>Responsável pela primeira emissão:</b> {{ adminData.firstIssuedBy }}</p>
+
+        <p>
+          <b>Emitido para:</b><br />
+          <ng-container *ngIf="adminData.issueTo.toList"> <br /></ng-container>
+          <ng-container *ngIf="adminData.issueTo.toPayer">Pagantes <br /></ng-container>
+          <ng-container *ngIf="adminData.issueTo.toNonPayer">Não pagantes <br /></ng-container>
+          <ng-container *ngIf="adminData.issueTo.toNonSubscriber">Não inscritos</ng-container>
+        </p>
+
+        <p>
+          <b>Anotações:</b><br />
+          <ng-container>{{ adminData.extraInfo }}</ng-container>
+        </p>
+
+        <ng-container *ngIf="adminData.failed">
+          <h3>Emissão falhou para</h3>
+          <p *ngFor="let failed of adminData.failed">{{ failed.uid + ' - ' + failed.error }}</p>
+        </ng-container>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+</ion-content>
