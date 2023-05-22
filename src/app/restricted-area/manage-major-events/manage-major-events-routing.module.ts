@@ -13,12 +13,12 @@ const routes: Routes = [
     loadChildren: () => import('./add-major-event/add-major-event.module').then((m) => m.AddMajorEventPageModule),
   },
   {
-    path: 'validar-comprovante/:eventId',
+    path: ':eventId/validar-comprovante',
     title: 'Validar comprovante',
     loadChildren: () => import('./validate-receipt/validate-receipt.module').then((m) => m.ValidateReceiptPageModule),
   },
   {
-    path: 'listar-inscritos/:eventID',
+    path: ':eventID/listar-inscritos',
     title: 'Listar inscritos',
     loadChildren: () =>
       import('src/app/restricted-area/manage-major-events/list-subscriptions/list-subscriptions.module').then(
@@ -26,13 +26,9 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'emitir-certificados/:eventID',
+    path: ':eventID/gerenciar-certificados',
     loadChildren: () =>
-      import('./issue-certificate/issue-certificate.module').then((m) => m.IssueCertificatePageModule),
-  },
-  {
-    path: 'emitir-certificados',
-    redirectTo: '',
+      import('./manage-certificates/manage-certificates.module').then((m) => m.ManageCertificatesPageModule),
   },
 ];
 

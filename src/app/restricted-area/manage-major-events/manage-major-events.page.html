@@ -48,21 +48,21 @@
                   </ion-button>
                 </ion-row> -->
                 <ion-row>
-                  <ion-button fill="clear" [routerLink]="['listar-inscritos', item.id]">
+                  <ion-button fill="clear" [routerLink]="[item.id, 'listar-inscritos']">
                     <ion-icon name="people-outline" slot="start"></ion-icon>
                     <p slot="end">Gerenciar inscritos</p>
                   </ion-button>
                 </ion-row>
                 <ion-row>
-                  <ion-button fill="clear" [routerLink]="['validar-comprovante', item.id]">
+                  <ion-button fill="clear" [routerLink]="[item.id, 'validar-comprovante']">
                     <ion-icon name="wallet-outline" slot="start"></ion-icon>
                     <p slot="end" class="ion-text-wrap">Validar comprovantes</p>
                   </ion-button>
                 </ion-row>
                 <ion-row>
-                  <ion-button fill="clear" [routerLink]="['emitir-certificados', item.id]">
+                  <ion-button fill="clear" [routerLink]="[item.id, 'gerenciar-certificados']">
                     <ion-icon name="document-text-outline" slot="start"></ion-icon>
-                    <p slot="end" class="ion-text-wrap">Emitir certificados</p>
+                    <p slot="end" class="ion-text-wrap">Gerenciar certificados</p>
                   </ion-button>
                 </ion-row>
               </ion-col>
