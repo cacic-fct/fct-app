@@ -1,0 +1,35 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="area-restrita/gerenciar-grandes-eventos/{{eventID}}/gerenciar-certificados">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>Gerenciar certificados</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button [routerLink]="'emitir'">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ng-container *ngIf="certificates$ | async as certificates">
+    <ion-item *ngFor="let certificate of certificates" button detail="true" [routerLink]="['detalhes', certificate.id]">
+      <ion-label>
+        <h3>{{certificate.certificateName}}</h3>
+        <p>{{certificate.id}}</p>
+      </ion-label>
+    </ion-item>
+  </ng-container>
+</ion-content>
+
+<swal
+  #swalNotFound
+  title="Evento não encontrado"
+  icon="error"
+  [heightAuto]="false"
+  [showCancelButton]="false"
+  [showCloseButton]="false"
+  [showConfirmButton]="false">
+</swal>
