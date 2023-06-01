@@ -1,5 +1,3 @@
-// @ts-strict-ignore
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Component, inject, Input, OnInit } from '@angular/core';
 
 import {
@@ -13,7 +11,7 @@ import {
 
 import { WindowService } from '../../shared/services/window.service';
 
-import { timer, take, interval, Subscription } from 'rxjs';
+import { timer, take, interval, Subscription, Observable } from 'rxjs';
 
 import { ModalController } from '@ionic/angular';
 
@@ -24,43 +22,54 @@ import { Mailto, MailtoService } from 'src/app/shared/services/mailto.service';
 import { add } from 'date-fns';
 import { trace } from '@angular/fire/compat/performance';
 
+import { Firestore, collection, doc, docData } from '@angular/fire/firestore';
+
 @Component({
   selector: 'app-verify-phone',
   templateUrl: './verify-phone.page.html',
   styleUrls: ['./verify-phone.page.scss'],
 })
 export class VerifyPhonePage implements OnInit {
+  @Input() phone!: string;
+
   private auth: Auth = inject(Auth);
   authState$ = authState(this.auth);
 
-  verificationCode: string;
-  @Input() phone: string;
-  windowRef: any;
-  timer: any;
+  private firestore: Firestore = inject(Firestore);
+
+  verificationCode: string | undefined;
+  windowRef: Window &
+    typeof globalThis & {
+      recaptchaVerifier: RecaptchaVerifier;
+      canExecuteAgainOn: Date;
+      confirmationResult: any;
+      lastExecutionPhone: string;
+    };
   cooldown: boolean = false;
   attempts: number = 0;
-  lastVerificationCode: string;
+  lastVerificationCode: string | undefined;
   invalidCode: boolean = false;
   updatePhone: boolean = false;
   buttonEnabled: boolean = false;
   phoneAlreadyRegistered: boolean = false;
 
-  timeDifference: number;
-  countdownSeconds: number;
-  countdownMinutes: number;
-  countdown: Subscription;
+  timeDifference: number | undefined;
+  countdownSeconds: number | undefined;
+  countdownMinutes: number | undefined;
+  countdown: Subscription | undefined;
 
-  timerSubscription: Subscription;
+  timerSubscription: Subscription | undefined;
 
   constructor(
-    public afs: AngularFirestore,
     private win: WindowService,
     public modalController: ModalController,
     private mailtoService: MailtoService
-  ) {}
+  ) {
+    // @ts-ignore
+    this.windowRef = this.win.windowRef;
+  }
 
   ngOnInit() {
-    this.windowRef = this.win.windowRef;
     this.linkOrUpdatePhone();
   }
 
@@ -75,19 +84,22 @@ export class VerifyPhonePage implements OnInit {
     this.setTimer();
 
     this.authState$.pipe(take(1), trace('auth')).subscribe((userState) => {
-      this.afs
-        .collection('users')
-        .doc<User>(userState.uid)
-        .valueChanges()
-        .pipe(take(1), trace('firestore'))
-        .subscribe((user) => {
-          if (user.phone) {
-            this.updatePhone = true;
-            this.phoneUpdate(this.phone);
-          } else {
-            this.phoneLink(this.phone);
-          }
-        });
+      if (!userState) {
+        return;
+      }
+
+      const usersColRef = collection(this.firestore, 'users');
+      const userDataDocRef = doc(usersColRef, userState.uid);
+      const userDataDoc = docData(userDataDocRef) as Observable<User>;
+
+      userDataDoc.pipe(take(1), trace('firestore')).subscribe((user) => {
+        if (user.phone) {
+          this.updatePhone = true;
+          this.phoneUpdate(this.phone);
+        } else {
+          this.phoneLink(this.phone);
+        }
+      });
     });
   }
 
@@ -119,7 +131,10 @@ export class VerifyPhonePage implements OnInit {
           },
           this.auth
         );
-        this.countdown.unsubscribe();
+
+        if (this.countdown) {
+          this.countdown.unsubscribe();
+        }
       });
   }
 
@@ -149,7 +164,6 @@ export class VerifyPhonePage implements OnInit {
           .catch((error) => {
             // Error SMS not sent
             console.error(error);
-            this.windowRef.lastExecution = null;
             this.modalController.dismiss(null);
           });
       }
@@ -180,10 +194,14 @@ export class VerifyPhonePage implements OnInit {
       return;
     }
 
-    if (this.updatePhone) {
+    if (this.updatePhone && this.verificationCode) {
       let phoneCredential = PhoneAuthProvider.credential(this.windowRef.confirmationResult, this.verificationCode);
 
       this.authState$.pipe(take(1)).subscribe((user) => {
+        if (!user) {
+          return;
+        }
+
         updatePhoneNumber(user, phoneCredential);
 
         updatePhoneNumber(user, phoneCredential)
@@ -210,7 +228,7 @@ export class VerifyPhonePage implements OnInit {
           // User signed in successfully.
           this.modalController.dismiss({ data: true });
         })
-        .catch((error) => {
+        .catch((error: any) => {
           console.error(error);
           // User couldn't sign in
           if (error.code === 'auth/invalid-verification-code') {
@@ -239,13 +257,13 @@ export class VerifyPhonePage implements OnInit {
     this.allocateTimeUnits(this.timeDifference);
   }
 
-  private allocateTimeUnits(timeDifference) {
+  private allocateTimeUnits(timeDifference: number) {
     this.countdownSeconds = Math.floor((timeDifference / 1000) % 60);
     this.countdownMinutes = Math.floor((timeDifference / (1000 * 60)) % 60);
   }
 
   mailto(): void {
-    const userData = JSON.parse(localStorage.getItem('user'));
+    const userData = JSON.parse(localStorage.getItem('user')!);
     const mailto: Mailto = {
       receiver: 'cacic.fct@gmail.com',
       subject: '[FCT-App] Celular já registrado',
