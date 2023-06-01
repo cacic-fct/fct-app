@@ -1,17 +1,26 @@
 // @ts-strict-ignore
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { DateService } from '../../../../shared/services/date.service';
+import { Component, Input, OnChanges, OnInit, inject } from '@angular/core';
+import { DateService } from 'src/app/shared/services/date.service';
 
 import { startOfDay, startOfWeek, sub } from 'date-fns';
 
 import { ToastController } from '@ionic/angular';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 
 import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  query,
+  where,
+  orderBy,
+  DocumentData,
+  Query,
+} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-calendar-list-view',
@@ -19,6 +28,8 @@ import { trace } from '@angular/fire/compat/performance';
   styleUrls: ['./calendar-list-view.component.scss'],
 })
 export class CalendarListViewComponent implements OnInit, OnChanges {
+  private firestore: Firestore = inject(Firestore);
+
   @Input() filter: {
     courses: Array<string>;
   };
@@ -34,31 +45,25 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
 
   baseDate: Date = startOfDay(new Date());
 
-  constructor(
-    private afs: AngularFirestore,
-    private toastController: ToastController,
-    public dateService: DateService
-  ) {}
+  constructor(private toastController: ToastController, public dateService: DateService) {}
 
   ngOnInit() {
     this.dateFilter$.next(this.baseDate);
 
     this.items$ = combineLatest([this.courseFilter$, this.dateFilter$]).pipe(
       switchMap(([filter, date]) => {
-        return this.afs
-          .collection<EventItem>('events', (ref) => {
-            let query: any = ref;
-            if (date) {
-              query = query.where('eventStartDate', '>=', this.baseDate);
-            }
-            if (filter['courses'].length > 0) {
-              query = query.where('course', 'in', filter['courses']);
-            }
+        const collectionRef = collection(this.firestore, 'events');
+        let q: Query<DocumentData>;
 
-            return query.orderBy('eventStartDate', 'asc');
-          })
-          .valueChanges({ idField: 'id' })
-          .pipe(trace('firestore'));
+        if (date) {
+          q = query(collectionRef, where('eventStartDate', '>=', this.baseDate), orderBy('eventStartDate', 'asc'));
+        }
+
+        if (filter['courses'].length > 0) {
+          q = query(collectionRef, where('course', 'in', filter['courses']));
+        }
+
+        return collectionData(q, { idField: 'id' }).pipe(trace('firestore')) as Observable<EventItem[]>;
       })
     );
   }
