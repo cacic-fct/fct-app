@@ -6,8 +6,12 @@ import { CertificateInfoPage } from './certificate-info.page';
 const routes: Routes = [
   {
     path: '',
-    component: CertificateInfoPage
-  }
+    component: CertificateInfoPage,
+  },
+  {
+    path: 'listar-emitidos',
+    loadChildren: () => import('./list-issued/list-issued.module').then((m) => m.ListIssuedPageModule),
+  },
 ];
 
 @NgModule({
