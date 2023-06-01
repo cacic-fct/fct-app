@@ -62,13 +62,13 @@
 
         <p><b>Responsável pela primeira emissão:</b> {{ adminData.firstIssuedBy }}</p>
 
-        <p>
-          <b>Emitido para:</b><br />
-          <ng-container *ngIf="adminData.issueTo.toList"> <br /></ng-container>
-          <ng-container *ngIf="adminData.issueTo.toPayer">Pagantes <br /></ng-container>
-          <ng-container *ngIf="adminData.issueTo.toNonPayer">Não pagantes <br /></ng-container>
-          <ng-container *ngIf="adminData.issueTo.toNonSubscriber">Não inscritos</ng-container>
-        </p>
+        <b>Emitido para:</b><br />
+        <ul>
+          <li *ngIf="adminData.issuedTo.toList.length !== 0">{{adminData.issuedTo.toList}}</li>
+          <li *ngIf="adminData.issuedTo.toPayer">Pagantes</li>
+          <li *ngIf="adminData.issuedTo.toNonPayer">Não pagantes</li>
+          <li *ngIf="adminData.issuedTo.toNonSubscriber">Não inscritos</li>
+        </ul>
 
         <p>
           <b>Anotações:</b><br />

@@ -491,7 +491,7 @@ export interface CertificateAdminData {
 
   firstIssuedBy: string;
   firstIssuedOn: Timestamp;
-  issueTo: {
+  issuedTo: {
     toList: string[];
     toNonPayer: boolean;
     toNonSubscriber: boolean;
