@@ -12,7 +12,7 @@
   <ng-container *ngIf="docData$ | async as certificate">
     <div class="ion-padding">
       <h1>{{ certificate.certificateName }}</h1>
-      <p>{{ certificate.id }}</p>
+      <p><ion-text color="medium">ID: {{ certificate.id }}</ion-text></p>
 
       <ion-button>
         <ion-icon name="list-outline" slot="start"></ion-icon>
@@ -29,20 +29,15 @@
       <ion-card-header> <ion-card-title>Informações gerais</ion-card-title></ion-card-header>
 
       <ion-card-content>
-        <p><b>Modelo:</b> {{ certificate.certificateTemplate }}</p>
+        <p><b>Modelo:</b> {{ certificateTemplates[certificate.certificateTemplate].displayName }}</p>
 
-        <ng-container *ngIf="certificate.certificateContent.type === 'default'; else contentElse">
-          <p><b>Conteúdo:</b> Padrão - Eventos com data e carga-horária</p>
-        </ng-container>
+        <p><b>Conteúdo:</b> {{ contentTypes.default }}</p>
+        <p *ngIf="certificate.certificateContent.custom">{{ certificate.certificateContent.custom }}</p>
 
-        <ng-template #contentElse>
-          <p><b>Personalizado:</b> {{ certificate.certificateContent.custom }}</p>
-        </ng-template>
-
-        <p><b>Tipo do evento:</b> {{ certificate.eventType.type }}</p>
+        <p><b>Tipo do evento:</b> {{ eventTypes[certificate.eventType.type] }}</p>
         <p *ngIf="certificate.eventType.custom">{{ certificate.eventType.custom }}</p>
 
-        <p><b>Tipo da participação:</b> {{ certificate.participationType.type }}</p>
+        <p><b>Tipo da participação:</b> {{ participationTypes[certificate.participationType.type] }}</p>
         <p *ngIf="certificate.participationType.custom">{{ certificate.participationType.custom }}</p>
 
         <p><b>Texto extra:</b> {{ certificate.extraText }}</p>
@@ -76,8 +71,10 @@
         </p>
 
         <ng-container *ngIf="adminData.failed">
-          <h3>Emissão falhou para</h3>
-          <p *ngFor="let failed of adminData.failed">{{ failed.uid + ' - ' + failed.error }}</p>
+          <b>Emissão falhou para:</b>
+          <ul>
+            <li *ngFor="let failed of adminData.failed">{{ failed.uid + ' - ' + failed.error }}</li>
+          </ul>
         </ng-container>
       </ion-card-content>
     </ion-card>

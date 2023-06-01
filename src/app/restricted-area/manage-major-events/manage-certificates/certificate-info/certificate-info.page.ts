@@ -4,6 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CertificateAdminData, CertificateStoreData } from 'src/app/shared/services/certificates.service';
 import { DateService } from 'src/app/shared/services/date.service';
+import {
+  certificateTemplates,
+  eventTypes,
+  participationTypes,
+  contentTypes,
+} from 'src/app/shared/services/certificates.service';
 
 @Component({
   selector: 'app-certificate-info',
@@ -19,6 +25,11 @@ export class CertificateInfoPage implements OnInit {
 
   docAdminRef: DocumentReference<DocumentData>;
   docAdminData$: Observable<CertificateAdminData>;
+
+  certificateTemplates = certificateTemplates;
+  eventTypes = eventTypes;
+  participationTypes = participationTypes;
+  contentTypes = contentTypes;
 
   constructor(private route: ActivatedRoute, private router: Router, public dateService: DateService) {
     this.eventID = this.route.snapshot.paramMap.get('eventID');
