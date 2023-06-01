@@ -11,6 +11,8 @@ import { Template, generate as PDFGenerate } from '@pdfme/generator';
 import { HttpClient } from '@angular/common/http';
 import { ptBR } from 'date-fns/locale';
 
+import { base32Decode, base32Encode } from '@ctrl/ts-base32';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,8 +24,10 @@ export class CertificateService {
     certificateStoreData: CertificateStoreData,
     certificateUserData: UserCertificateDocument
   ) {
-    if (!certificateUserData.id || !certificateStoreData.id) {
+    if (!certificateUserData || !certificateStoreData) {
       throw new Error('Request is malformed');
+    } else if (!certificateUserData.id || !certificateStoreData.id) {
+      throw new Error('Request is malformed: id is missing');
     }
 
     let pdfJson: Observable<Object>;
@@ -39,7 +43,7 @@ export class CertificateService {
     }
 
     const certificateData$ = this.afs
-      .doc<CertificateDocPublic>(`/certificates/${eventID}/${certificateUserData.id}/public`)
+      .doc<CertificateDocPublic>(`/certificates/${eventID}/${certificateStoreData.id}/${certificateUserData.id}`)
       .get();
 
     certificateData$
@@ -47,7 +51,7 @@ export class CertificateService {
         mergeMap(() => {
           const pdfJson$ = pdfJson.pipe(take(1));
           const majorEvent$ = this.afs.doc<MajorEventItem>(`majorEvents/${eventID}`).get().pipe(take(1));
-          const content$ = this.getCertificateContent(eventID, certificateUserData.id!);
+          const content$ = this.getCertificateContent(eventID, certificateStoreData.id!, certificateUserData.id!);
           const InterRegular$ = this.http
             .get('https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-regular.woff', {
               responseType: 'arraybuffer',
@@ -104,7 +108,11 @@ export class CertificateService {
             break;
         }
 
-        const verificationURL = `https://fct-pp.web.app/certificado/verificar/${eventID}-${certificateUserData.id}`;
+        const verificationURL = `https://fct-pp.web.app/certificado/verificar/${encodeCertificateCode(
+          eventID,
+          certificateStoreData.id!,
+          certificateUserData.id!
+        )}`;
 
         const majorEventData = majorEvent.data();
 
@@ -145,9 +153,11 @@ export class CertificateService {
       });
   }
 
-  getCertificateContent(eventID: string, certificateID: string): Observable<string> {
+  getCertificateContent(eventID: string, certificateID: string, certificateDoc: string): Observable<string> {
     // Get events user attended from /certificates/{eventID}/{certificateID}
-    const certificate$ = this.afs.doc<CertificateDocPublic>(`certificates/${eventID}/${certificateID}/public`).get();
+    const certificate$ = this.afs
+      .doc<CertificateDocPublic>(`certificates/${eventID}/${certificateID}/${certificateDoc}`)
+      .get();
 
     return certificate$.pipe(
       take(1),
@@ -382,6 +392,29 @@ function formatTimestamp(date: Timestamp): string {
 interface CertificateOptionsTypes {
   custom: string;
   [key: string]: string;
+}
+
+function encodeCertificateCode(eventID: string, certificateID: string, certificateDoc: string): string {
+  const encoded = base32Encode(Buffer.from(`${eventID}#${certificateID}#${certificateDoc}`));
+
+  const encodedWithDashes = encoded
+    .replace(/=/g, '')
+    .replace(/(.{4})/g, '$1-')
+    .replace(/-$/, '');
+
+  return encodedWithDashes;
+}
+
+export function decodeCertificateCode(base32: string) {
+  const base32NoDashes = base32.replace(/-/g, '');
+  const decoded = Buffer.from(base32Decode(base32NoDashes)).toString();
+  const [eventID, certificateID, certificateDoc] = decoded.split('#');
+
+  return {
+    eventID,
+    certificateID,
+    certificateDoc,
+  };
 }
 
 export const participationTypes: CertificateOptionsTypes = {
