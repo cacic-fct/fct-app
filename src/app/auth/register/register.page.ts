@@ -4,25 +4,35 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 
 import { Router } from '@angular/router';
 
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { AlertController, ToastController } from '@ionic/angular';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
 import { Auth, RecaptchaVerifier } from '@angular/fire/auth';
 
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
-import { GlobalConstantsService } from '../../shared/services/global-constants.service';
+import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
 
 import { trace } from '@angular/fire/compat/performance';
 
-import { Mailto, MailtoService } from '../../shared/services/mailto.service';
+import { Mailto, MailtoService } from 'src/app/shared/services/mailto.service';
 
-import { take } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
-import { WindowService } from '../../shared/services/window.service';
+import { WindowService } from 'src/app/shared/services/window.service';
+
+import {
+  Firestore,
+  collection,
+  doc,
+  docData,
+  CollectionReference,
+  DocumentData,
+  DocumentReference,
+  updateDoc,
+} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-page-register',
@@ -30,6 +40,8 @@ import { WindowService } from '../../shared/services/window.service';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
+  private firestore: Firestore = inject(Firestore);
+
   @ViewChild('mySwal')
   private mySwal: SwalComponent;
   windowRef: any;
@@ -42,11 +54,14 @@ export class RegisterPage implements OnInit {
   isUnesp: boolean = false;
   isUndergraduate: boolean = false;
 
+  eventsColRef: CollectionReference<DocumentData>;
+  userDataDocRef: DocumentReference<User>;
+  userDataDoc: Observable<User>;
+
   constructor(
     public authService: AuthService,
     public alertController: AlertController,
     public formBuilder: FormBuilder,
-    public afs: AngularFirestore,
     public router: Router,
     private mailtoService: MailtoService,
     private win: WindowService,
@@ -61,35 +76,34 @@ export class RegisterPage implements OnInit {
       fullName: ['', this.fullNameValidator],
       associateStatus: [''],
     });
+
+    this.eventsColRef = collection(this.firestore, 'events');
+    this.userDataDocRef = doc(this.eventsColRef, this.userData.uid);
+    this.userDataDoc = docData(this.userDataDocRef) as Observable<User>;
   }
 
   ngOnInit() {
-    this.afs
-      .collection('users')
-      .doc<User>(this.userData.uid)
-      .valueChanges()
-      .pipe(take(1), trace('firestore'))
-      .subscribe((user) => {
-        if (user.email.includes('@unesp.br')) {
-          this.isUnesp = true;
-          this.dataForm.controls.associateStatus.addValidators([Validators.required]);
-          this.dataForm.controls.associateStatus.setValue(user.associateStatus);
-          if (user.associateStatus === 'undergraduate') {
-            this.isUndergraduate = true;
+    this.userDataDoc.pipe(take(1), trace('firestore')).subscribe((user) => {
+      if (user.email.includes('@unesp.br')) {
+        this.isUnesp = true;
+        this.dataForm.controls.associateStatus.addValidators([Validators.required]);
+        this.dataForm.controls.associateStatus.setValue(user.associateStatus);
+        if (user.associateStatus === 'undergraduate') {
+          this.isUndergraduate = true;
 
-            this.dataForm.controls.academicID.setValue(user.academicID);
-            this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
-          }
-          this.dataForm.controls.fullName.updateValueAndValidity({ onlySelf: true });
-        } else {
-          this.dataForm.controls.fullName.setValue(user.fullName);
+          this.dataForm.controls.academicID.setValue(user.academicID);
+          this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
         }
-        this.dataForm.controls.phone.setValue(user.phone);
-        if (user.cpf) {
-          this.dataForm.controls.cpf.setValue(user.cpf);
-          this.dataForm.controls.cpf.disable();
-        }
-      });
+        this.dataForm.controls.fullName.updateValueAndValidity({ onlySelf: true });
+      } else {
+        this.dataForm.controls.fullName.setValue(user.fullName);
+      }
+      this.dataForm.controls.phone.setValue(user.phone);
+      if (user.cpf) {
+        this.dataForm.controls.cpf.setValue(user.cpf);
+        this.dataForm.controls.cpf.disable();
+      }
+    });
 
     this.windowRef = this.win.windowRef;
     this.windowRef.recaptchaVerifier = new RecaptchaVerifier(
@@ -106,26 +120,20 @@ export class RegisterPage implements OnInit {
       return;
     }
 
-    this.afs
-      .collection('users')
-      .doc<User>(this.userData.uid)
-      .get()
-      .pipe(take(1))
-      .subscribe((userData) => {
-        const user = userData.data();
-        if (user.phone && user.phone === this.dataForm.value.phone) {
+    this.userDataDoc.pipe(take(1)).subscribe((user) => {
+      if (user.phone && user.phone === this.dataForm.value.phone) {
+        this.submitUserData(user);
+        return;
+      }
+
+      this.authService.verifyPhoneModal(this.dataForm.value.phone).then((response) => {
+        if (response) {
           this.submitUserData(user);
           return;
         }
-
-        this.authService.verifyPhoneModal(this.dataForm.value.phone).then((response) => {
-          if (response) {
-            this.submitUserData(user);
-            return;
-          }
-          this.toastError('1');
-        });
+        this.toastError('1');
       });
+    });
   }
 
   submitUserData(user: User) {
@@ -133,7 +141,8 @@ export class RegisterPage implements OnInit {
       this.toastError('2');
     }
 
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+    const userColRef = collection(this.firestore, 'users');
+    const userRef: DocumentReference<User> = doc(userColRef, user.uid);
     const userData: User = {
       fullName: this.isUnesp ? this.userData.displayName : this.dataForm.value.fullName,
       associateStatus: this.isUnesp ? this.dataForm.value.associateStatus : 'external',
@@ -143,8 +152,8 @@ export class RegisterPage implements OnInit {
       cpf: this.dataForm.value.cpf,
     };
     this.toastSubmitting();
-    userRef
-      .update(userData)
+
+    updateDoc(userRef, userData)
       .then(() => {
         this.mySwal.fire();
         // Fake delay to let animation finish
