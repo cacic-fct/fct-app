@@ -401,7 +401,7 @@ export const eventTypes: CertificateOptionsTypes = {
 
 export const contentTypes: CertificateOptionsTypes = {
   custom: 'Personalizado',
-  default: 'Atividades realizadas (padrão)',
+  default: 'Atividades realizadas com data e carga-horária (padrão)',
 };
 
 export const certificateTemplates = {
