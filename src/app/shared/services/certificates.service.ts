@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { ptBR } from 'date-fns/locale';
 
 import { base32Decode, base32Encode } from '@ctrl/ts-base32';
+import { Buffer } from 'buffer';
 
 @Injectable({
   providedIn: 'root',
@@ -108,11 +109,9 @@ export class CertificateService {
             break;
         }
 
-        const verificationURL = `https://fct-pp.web.app/certificado/verificar/${encodeCertificateCode(
-          eventID,
-          certificateStoreData.id!,
-          certificateUserData.id!
-        )}`;
+        const encodedString: string = encodeCertificateCode(eventID, certificateStoreData.id!, certificateUserData.id!);
+
+        const verificationURL = `https://fct-pp.web.app/certificado/verificar/\n${encodedString}`;
 
         const majorEventData = majorEvent.data();
 
@@ -315,7 +314,7 @@ function generateContent(
       // const userTimezoneOffset = new Date().getTimezoneOffset() / 60;
       // const userTimezoneOffsetString = `${userTimezoneOffset > 0 ? '-' : '+'}${Math.abs(userTimezoneOffset)}`;
 
-      content += `\nDatas em formato "dia/mês/ano".`;
+      content += `\nObservações:\nDatas em formato "dia/mês/ano".`;
 
       return content;
     })
