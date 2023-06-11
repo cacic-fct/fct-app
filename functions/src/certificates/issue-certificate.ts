@@ -52,7 +52,7 @@ exports.issueMajorEventCertificate = onCall(
       .get();
 
     const certificateAdmin = await db
-      .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`)
+      .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/certificateDataAdmin/data`)
       .get();
 
     if (certificate.exists) {
@@ -207,12 +207,14 @@ exports.issueMajorEventCertificate = onCall(
 
     if (failed.length > 0) {
       // Store failed in database
-      await db.doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/admin/data`).set(
-        {
-          failed: failed,
-        },
-        { merge: true }
-      );
+      await db
+        .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/certificateDataAdmin/data`)
+        .set(
+          {
+            failed: failed,
+          },
+          { merge: true }
+        );
 
       return {
         success: false,
@@ -311,14 +313,18 @@ const issueCertificate = async (
       uid: userUID,
     });
 
-    await db.doc(`certificates/${eventID}/${certificateData.certificateID}/${documentID}/private/data`).set({
-      document: userData.cpf,
-    });
+    await db
+      .doc(`certificates/${eventID}/${certificateData.certificateID}/${documentID}/userCertificateDocPrivate/data`)
+      .set({
+        document: userData.cpf,
+      });
 
-    await db.doc(`certificates/${eventID}/${certificateData.certificateID}/${documentID}/admin/data`).set({
-      actualIssueDate: FieldValue.serverTimestamp(),
-      issuedBy: adminUID,
-    });
+    await db
+      .doc(`certificates/${eventID}/${certificateData.certificateID}/${documentID}/userCertificateDocAdmin/data`)
+      .set({
+        actualIssueDate: FieldValue.serverTimestamp(),
+        issuedBy: adminUID,
+      });
 
     await db.doc(`users/${userUID}/certificates/majorEvents`).set({
       null: null,
