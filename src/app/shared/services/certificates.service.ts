@@ -465,7 +465,7 @@ export interface CertificateDocPublic {
 }
 
 export interface UserCertificateDocument {
-  publicReference: DocumentReference;
+  certificateReference: DocumentReference;
   certificateID: string;
   id?: string;
 }

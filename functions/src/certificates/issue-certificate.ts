@@ -325,7 +325,7 @@ const issueCertificate = async (
     });
 
     await db.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${documentID}`).set({
-      publicReference: db.doc(`certificates/${eventID}/${certificateData.certificateID}/${documentID}`),
+      certificateReference: db.doc(`certificates/${eventID}/${certificateData.certificateID}/${documentID}`),
       certificateID: certificateData.certificateID,
       certificateDoc: documentID,
     });
