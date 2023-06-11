@@ -111,7 +111,8 @@ export class CertificateService {
 
         const encodedString: string = encodeCertificateCode(eventID, certificateStoreData.id!, certificateUserData.id!);
 
-        const verificationURL = `https://fct-pp.web.app/certificado/verificar/\n${encodedString}`;
+        const verificationURLQR = `https://fct-pp.web.app/certificado/verificar/${encodedString}`;
+        const verificationURLString = `https://fct-pp.web.app/certificado/verificar/\n${encodedString}`;
 
         const majorEventData = majorEvent.data();
 
@@ -133,9 +134,9 @@ export class CertificateService {
           participation_type:
             certificateStoreData.participationType.custom ||
             participationTypes[certificateStoreData.participationType.type],
-          url: verificationURL,
-          qrcode: verificationURL,
-          qrcode2: verificationURL,
+          url: verificationURLString,
+          qrcode: verificationURLQR,
+          qrcode2: verificationURLQR,
           content: content,
         };
 
