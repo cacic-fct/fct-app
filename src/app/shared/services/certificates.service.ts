@@ -11,7 +11,6 @@ import { Template, generate as PDFGenerate } from '@pdfme/generator';
 import { HttpClient } from '@angular/common/http';
 import { ptBR } from 'date-fns/locale';
 
-import { base32Decode, base32Encode } from '@ctrl/ts-base32';
 import { Buffer } from 'buffer';
 
 @Injectable({
@@ -395,7 +394,7 @@ interface CertificateOptionsTypes {
 }
 
 function encodeCertificateCode(eventID: string, certificateID: string, certificateDoc: string): string {
-  const encoded = base32Encode(Buffer.from(`${eventID}#${certificateID}#${certificateDoc}`));
+  const encoded = Buffer.from(`${eventID}#${certificateID}#${certificateDoc}`).toString('base64');
 
   const encodedWithDashes = encoded
     .replace(/=/g, '')
@@ -405,9 +404,9 @@ function encodeCertificateCode(eventID: string, certificateID: string, certifica
   return encodedWithDashes;
 }
 
-export function decodeCertificateCode(base32: string) {
-  const base32NoDashes = base32.replace(/-/g, '');
-  const decoded = Buffer.from(base32Decode(base32NoDashes)).toString();
+export function decodeCertificateCode(base64: string) {
+  const base64NoDashes = base64.replace(/-/g, '');
+  const decoded = Buffer.from(base64NoDashes, 'base64').toString('ascii');
   const [eventID, certificateID, certificateDoc] = decoded.split('#');
 
   return {
