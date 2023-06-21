@@ -48,11 +48,13 @@ exports.issueMajorEventCertificate = onCall(
     }
 
     const certificate = await db
-      .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}`)
+      .doc(`majorEvents/${majorEventID}/majorEventCertificates/${data.certificateData.certificateID}`)
       .get();
 
     const certificateAdmin = await db
-      .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/certificateDataAdmin/data`)
+      .doc(
+        `majorEvents/${majorEventID}/majorEventCertificates/${data.certificateData.certificateID}/certificateDataAdmin/data`
+      )
       .get();
 
     if (certificate.exists) {
@@ -154,7 +156,7 @@ exports.issueMajorEventCertificate = onCall(
       deleteCollection(db, `certificates/${majorEventID}/${majorEventData.currentTask.documentID}`, 10);
       await db
         .doc(
-          `users/${majorEventData.currentTask.uid}/certificates/majorEvents/${majorEventID}/${majorEventData.currentTask.documentID}`
+          `users/${majorEventData.currentTask.uid}/userCertificates/majorEvents/${majorEventID}/${majorEventData.currentTask.documentID}`
         )
         .delete();
       iStored = majorEventData.currentTask.index;
@@ -208,7 +210,9 @@ exports.issueMajorEventCertificate = onCall(
     if (failed.length > 0) {
       // Store failed in database
       await db
-        .doc(`majorEvents/${majorEventID}/certificates/${data.certificateData.certificateID}/certificateDataAdmin/data`)
+        .doc(
+          `majorEvents/${majorEventID}/majorEventCertificates/${data.certificateData.certificateID}/certificateDataAdmin/data`
+        )
         .set(
           {
             failed: failed,
@@ -251,7 +255,7 @@ const issueCertificate = async (
 
   // Check if user already has certificate with same ID
   const certificate = await db
-    .doc(`users/${userUID}/certificates/majorEvents/${eventID}/${certificateData.certificateID}`)
+    .doc(`users/${userUID}/userCertificates/majorEvents/${eventID}/${certificateData.certificateID}`)
     .get();
 
   if (certificate.exists) {
@@ -326,11 +330,11 @@ const issueCertificate = async (
         issuedBy: adminUID,
       });
 
-    await db.doc(`users/${userUID}/certificates/majorEvents`).set({
+    await db.doc(`users/${userUID}/userCertificates/majorEvents`).set({
       null: null,
     });
 
-    await db.doc(`users/${userUID}/certificates/majorEvents/${eventID}/${documentID}`).set({
+    await db.doc(`users/${userUID}/userCertificates/majorEvents/${eventID}/${documentID}`).set({
       certificateReference: db.doc(`certificates/${eventID}/${certificateData.certificateID}/${documentID}`),
       certificateID: certificateData.certificateID,
       certificateDoc: documentID,

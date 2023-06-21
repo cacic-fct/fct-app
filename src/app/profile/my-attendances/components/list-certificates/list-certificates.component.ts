@@ -40,7 +40,10 @@ export class ListCertificatesComponent implements OnInit {
       filterNullish(),
       map((user) => {
         this.userID = user.uid;
-        const colRef = collection(this.firestore, `/users/${user.uid}/certificates/majorEvents/${this.majorEventID}`);
+        const colRef = collection(
+          this.firestore,
+          `/users/${user.uid}/userCertificates/majorEvents/${this.majorEventID}`
+        );
         const col$ = collectionData(colRef, { idField: 'id' }) as Observable<UserCertificateDocument[]>;
 
         return col$.pipe(
@@ -49,7 +52,7 @@ export class ListCertificatesComponent implements OnInit {
             certificates.map((certificate) => {
               const docRef = doc(
                 this.firestore,
-                `/majorEvents/${this.majorEventID}/certificates/${certificate.certificateID}`
+                `/majorEvents/${this.majorEventID}/majorEventCertificates/${certificate.certificateID}`
               );
               const docData$ = docData(docRef, { idField: 'id' }) as Observable<CertificateStoreData>;
 
