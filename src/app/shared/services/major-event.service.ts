@@ -22,6 +22,19 @@ export class MajorEventsService {
       })
       .valueChanges({ idField: 'id' });
   }
+
+  getCurrentAndFutureMajorEvents(): Observable<MajorEventItem[]> {
+    const date = Date.now();
+    return this.afs
+      .collection<MajorEventItem>('majorEvents', (ref) => {
+        let query: any = ref;
+        query = query.where('eventEndDate', '>=', startOfDay(date));
+        // TODO: Order by eventStartDate
+        return query.orderBy('eventEndDate', 'asc');
+        return query;
+      })
+      .valueChanges({ idField: 'id' });
+  }
 }
 
 export interface MajorEventItem {
