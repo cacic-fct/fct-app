@@ -15,7 +15,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable, take } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallable, HttpsCallableResult } from '@angular/fire/functions';
 
 @Component({
   selector: 'app-issue-certificate',
@@ -264,8 +264,31 @@ export class IssueCertificatePage implements OnInit {
         };
 
         const issueData = httpsCallable(this.functions, 'certificates-issueMajorEventCertificate');
-        issueData(payload).then((response) => {
-          console.log(response);
+        issueData(payload).then((response: HttpsCallableResult<any>) => {
+          const responseData: { success: boolean; data: string; message: string } = response.data;
+
+          if (responseData.success) {
+            console.log(response);
+            const alert = this.alertController.create({
+              header: 'Certificados emitidos com sucesso',
+              buttons: ['OK'],
+            });
+
+            alert.then((alert) => {
+              alert.present();
+            });
+          } else {
+            console.error(response);
+            const alert = this.alertController.create({
+              header: 'Erro ao emitir certificados',
+              message: 'Confira o log para mais informações: ' + response.data.error,
+              buttons: ['OK'],
+            });
+
+            alert.then((alert) => {
+              alert.present();
+            });
+          }
         });
       });
     });

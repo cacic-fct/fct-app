@@ -59,8 +59,6 @@ export class SubscribePage implements OnInit {
 
   dataForm: FormGroup;
 
-  groupInSelection: boolean = false;
-
   eventsSelected: { [key: string]: EventItem[] } = {
     minicurso: [],
     palestra: [],
@@ -200,18 +198,29 @@ export class SubscribePage implements OnInit {
                   .doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
                   .get()
                   .subscribe((document) => {
-                    /* Autoselects and disabled palestras
-                    Used during SECOMPP22 when palestras were mandatory
-                     if (eventItem.eventType === 'palestra') {
+                    // Autoselects and disabled palestras
+                    // Used during SECOMPP22 when palestras were mandatory
+                    if (eventItem.eventType === 'palestra') {
                       this.dataForm.get(eventItem.id).setValue(true);
+                      this.pushEvent(eventItem.id);
                       this.dataForm.get(eventItem.id).disable();
-                    }*/
-                    ///
+                    }
 
                     if (document.exists) {
+                      this.alreadySubscribed.fire();
+                      this.router.navigate(['/eventos'], { replaceUrl: true });
+
+                      // TODO: Subscription editing is bugged, fix me
+                      setTimeout(() => {
+                        this.alreadySubscribed.close();
+                      }, 1000);
+                      return;
+                      //
+
                       const subscription = document.data() as MajorEventSubscription;
                       if (subscription.subscribedToEvents.includes(eventItem.id) && eventItem.slotsAvailable > 0) {
                         this.dataForm.get(eventItem.id).setValue(true);
+                        this.pushEvent(eventItem.id);
                       } else {
                         this.dataForm.get(eventItem.id).setValue(false);
                       }
@@ -245,13 +254,31 @@ export class SubscribePage implements OnInit {
     });
   }
 
+  pushEvent(eventFromGroup: string) {
+    const eventItem = this.eventSchedule.find((event) => event.id === eventFromGroup);
+    // Check if event is already in array
+    if (this.eventsSelected[eventItem.eventType].some((e) => e.id === eventItem.id)) {
+      return;
+    }
+    this.eventsSelected[eventItem.eventType].push(eventItem);
+  }
+
+  filterEvent(eventFromGroup: string) {
+    const eventItem = this.eventSchedule.find((event) => event.id === eventFromGroup);
+    this.eventsSelected[eventItem.eventType] = this.eventsSelected[eventItem.eventType].filter(
+      (event) => event.id !== eventItem.id
+    );
+  }
+
   countCheckeds(e: any, event: EventItem) {
     const checked: boolean = e.currentTarget.checked;
     const name: string = e.currentTarget.name;
 
     if (checked) {
+      // TODO: Não funciona mais em grupo de eventos por conta da alteração do Ionic
       if (event.slotsAvailable <= 0) {
         this.dataForm.get(event.id).setValue(false);
+        this.filterEvent(event.id);
         this.dataForm.get(event.id).disable();
         return;
       }
@@ -266,8 +293,7 @@ export class SubscribePage implements OnInit {
             return;
           }
 
-          if (!this.groupInSelection && event.eventGroup?.groupEventIDs) {
-            this.groupInSelection = true;
+          if (event.eventGroup?.groupEventIDs) {
             event.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
               if (eventFromGroup === event.id) {
                 return;
@@ -275,8 +301,8 @@ export class SubscribePage implements OnInit {
 
               this.eventGroupMinicursoCount++;
               this.dataForm.get(eventFromGroup).setValue(true);
+              this.pushEvent(eventFromGroup);
             });
-            this.groupInSelection = false;
           }
 
           return;
@@ -304,8 +330,7 @@ export class SubscribePage implements OnInit {
           case 'minicurso':
             this.eventsSelected['minicurso'] = this.eventsSelected['minicurso'].filter((e) => e.id !== event.id);
 
-            if (!this.groupInSelection && event.eventGroup?.groupEventIDs) {
-              this.groupInSelection = true;
+            if (event.eventGroup?.groupEventIDs) {
               event.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
                 if (eventFromGroup === event.id) {
                   return;
@@ -313,8 +338,8 @@ export class SubscribePage implements OnInit {
 
                 this.eventGroupMinicursoCount--;
                 this.dataForm.get(eventFromGroup).setValue(false);
+                this.filterEvent(eventFromGroup);
               });
-              this.groupInSelection = false;
             }
             return;
 
@@ -628,18 +653,18 @@ export class SubscribePage implements OnInit {
         // If event overlaps, enable it
 
         /* Keeps event disabled if it's a palestra.
-         Used during SECOMPP22 where palestras were mandatory
-         if (this.eventSchedule[i].eventType !== 'palestra') { */
-        if (this.eventSchedule[i].slotsAvailable > 0) {
-          if (this.eventSchedule[i].eventGroup?.groupEventIDs) {
-            this.eventSchedule[i].eventGroup.groupEventIDs.forEach((event) => {
-              this.dataForm.get(event).enable();
-            });
-          } else {
-            this.dataForm.get(this.eventSchedule[i].id).enable();
+         Used during SECOMPP22 where palestras were mandatory*/
+        if (this.eventSchedule[i].eventType !== 'palestra') {
+          if (this.eventSchedule[i].slotsAvailable > 0) {
+            if (this.eventSchedule[i].eventGroup?.groupEventIDs) {
+              this.eventSchedule[i].eventGroup.groupEventIDs.forEach((event) => {
+                this.dataForm.get(event).enable();
+              });
+            } else {
+              this.dataForm.get(this.eventSchedule[i].id).enable();
+            }
           }
         }
-        // }
       }
 
       // For every event before eventIdex

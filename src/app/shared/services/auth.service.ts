@@ -14,7 +14,6 @@ import {
   User as UserAuth,
   getIdTokenResult,
   AuthProvider,
-  PhoneAuthProvider,
   signInWithPopup,
   linkWithPopup,
 } from '@angular/fire/auth';
@@ -24,12 +23,10 @@ import { ModalController, ToastController } from '@ionic/angular';
 import { GlobalConstantsService } from './global-constants.service';
 import { take, Observable, map, switchMap } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
-import { VerifyPhonePage } from 'src/app/auth/verify-phone/verify-phone.page';
 
-import { unlink } from 'firebase/auth';
 import { getStringChanges, RemoteConfig, getBooleanChanges } from '@angular/fire/remote-config';
 import { arrayRemove } from '@angular/fire/firestore';
-import { gte as versionGreaterThan } from 'semver';
+import { gt as versionGreaterThan } from 'semver';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 
 @Injectable({
@@ -64,7 +61,6 @@ export class AuthService {
         getStringChanges(this.remoteConfig, 'professors').subscribe((professors) => {
           if (professors) {
             const professorsList: string[] = JSON.parse(professors);
-
             // Check if user email matches a professor email.
             // Professors are exempt from the register prompt
             if (professorsList.includes(user.email)) {
@@ -82,52 +78,51 @@ export class AuthService {
                   });
 
                   const addProfessor = httpsCallable(this.functions, 'claims-addProfessorRole');
-                  addProfessor({ email: user.email }).then((res) => {
-                    console.log(res);
+                  addProfessor({ email: user.email }).catch((error) => {
+                    console.error(error);
                   });
                 }
               });
             }
-          } else {
-            // Not a professor or remote config not loaded yet
-            this.CompareUserdataVersion(this.userData)
-              .pipe(take(1))
-              .subscribe((response) => {
-                if (response) {
-                  return;
-                }
-                this.afs
-                  .collection('users')
-                  .doc<User>(this.userData.uid)
-                  .valueChanges()
-                  .pipe(take(1))
-                  .subscribe((user) => {
-                    if (user.pending?.onlineAttendance) {
-                      user.pending.onlineAttendance.forEach((eventID) => {
-                        this.afs
-                          .collection('events')
-                          .doc<EventItem>(eventID)
-                          .valueChanges({ idField: 'id' })
-                          .pipe(take(1))
-                          .subscribe((eventData) => {
-                            if (eventData.attendanceCollectionStart && !eventData.attendanceCollectionEnd) {
-                              this.router.navigate(['/confirmar-presenca', eventID]);
-                            } else if (eventData.attendanceCollectionEnd) {
-                              this.afs
-                                .collection('users')
-                                .doc<User>(this.userData.uid)
-                                .update({
-                                  // @ts-ignore
-                                  pending: { onlineAttendance: arrayRemove(eventID) },
-                                });
-                            }
-                          });
-                      });
-                    }
-                  });
-              });
           }
         });
+
+        this.CompareUserdataVersion(this.userData)
+          .pipe(take(1))
+          .subscribe((response) => {
+            if (response) {
+              return;
+            }
+            this.afs
+              .collection('users')
+              .doc<User>(this.userData.uid)
+              .valueChanges()
+              .pipe(take(1))
+              .subscribe((user) => {
+                if (user.pending?.onlineAttendance) {
+                  user.pending.onlineAttendance.forEach((eventID) => {
+                    this.afs
+                      .collection('events')
+                      .doc<EventItem>(eventID)
+                      .valueChanges({ idField: 'id' })
+                      .pipe(take(1))
+                      .subscribe((eventData) => {
+                        if (eventData.attendanceCollectionStart && !eventData.attendanceCollectionEnd) {
+                          this.router.navigate(['/confirmar-presenca', eventID]);
+                        } else if (eventData.attendanceCollectionEnd) {
+                          this.afs
+                            .collection('users')
+                            .doc<User>(this.userData.uid)
+                            .update({
+                              // @ts-ignore
+                              pending: { onlineAttendance: arrayRemove(eventID) },
+                            });
+                        }
+                      });
+                  });
+                }
+              });
+          });
       } else {
         localStorage.removeItem('user');
       }
@@ -197,7 +192,7 @@ export class AuthService {
     } catch (error) {
       console.error('Link profile failed');
       console.error(error);
-      this.toastLoginFailed();
+      this.toastAccountLinkFailed(error);
     }
   }
 
@@ -205,6 +200,30 @@ export class AuthService {
     const toast = await this.toastController.create({
       header: 'Ocorreu um erro no seu login',
       message: 'Verifique a sua conexão e tente novamente.',
+      icon: 'close-circle',
+      position: 'bottom',
+      duration: 5000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+    toast.present();
+  }
+
+  async toastAccountLinkFailed(error: any) {
+    let header: string;
+    let message: string;
+    if (error.code === 'auth/credential-already-in-use') {
+      header = 'Esta conta já está vinculada a um usuário';
+      message = 'Por favor, tente novamente com outra conta.';
+    }
+    const toast = await this.toastController.create({
+      header: header || 'Ocorreu um erro ao vincular sua conta',
+      message: message || 'Verifique a sua conexão e tente novamente.',
       icon: 'close-circle',
       position: 'bottom',
       duration: 5000,
@@ -268,35 +287,6 @@ export class AuthService {
     );
   }
 
-  async verifyPhoneModal(phone: string): Promise<boolean> {
-    const modal = await this.modalController.create({
-      component: VerifyPhonePage,
-      componentProps: {
-        phone: phone,
-      },
-      backdropDismiss: false,
-      keyboardClose: false,
-    });
-
-    await modal.present();
-
-    return modal.onDidDismiss().then((response) => {
-      const data = response.data;
-      if (data) {
-        return new Promise<boolean>((resolve) => {
-          resolve(true);
-        });
-      }
-      return new Promise<boolean>((resolve) => {
-        resolve(false);
-      });
-    });
-  }
-
-  async phoneUnlink() {
-    unlink(this.userData, PhoneAuthProvider.PROVIDER_ID);
-  }
-
   async getUserUid(manualInput: string): Promise<StringDataReturnType> {
     // Remove spaces from the string
     manualInput = manualInput.replace(/\s/g, '');
@@ -326,4 +316,36 @@ export class AuthService {
 
     return (await getUserUid({ string: manualInput })).data as StringDataReturnType;
   }
+
+  /* UNUSED */
+  /*
+   async verifyPhoneModal(phone: string): Promise<boolean> {
+    const modal = await this.modalController.create({
+      component: VerifyPhonePage,
+      componentProps: {
+        phone: phone,
+      },
+      backdropDismiss: false,
+      keyboardClose: false,
+    });
+
+    await modal.present();
+
+    return modal.onDidDismiss().then((response) => {
+      const data = response.data;
+      if (data) {
+        return new Promise<boolean>((resolve) => {
+          resolve(true);
+        });
+      }
+      return new Promise<boolean>((resolve) => {
+        resolve(false);
+      });
+    });
+  }
+
+  async phoneUnlink() {
+    unlink(this.userData, PhoneAuthProvider.PROVIDER_ID);
+  }
+*/
 }

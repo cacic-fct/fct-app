@@ -7,7 +7,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import localePt from '@angular/common/locales/pt';
 registerLocaleData(localePt);
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicModule, IonicRouteStrategy, isPlatform } from '@ionic/angular';
 
 // AngularFire
 import { initializeApp, provideFirebaseApp, getApp } from '@angular/fire/app';
@@ -17,7 +17,13 @@ import { getStorage, provideStorage, connectStorageEmulator } from '@angular/fir
 import { provideAppCheck, initializeAppCheck, ReCaptchaV3Provider } from '@angular/fire/app-check';
 import { connectAuthEmulator, getAuth, provideAuth, useDeviceLanguage } from '@angular/fire/auth';
 import { provideAnalytics, getAnalytics, logEvent } from '@angular/fire/analytics';
-import { provideFirestore, initializeFirestore, connectFirestoreEmulator } from '@angular/fire/firestore';
+import {
+  provideFirestore,
+  initializeFirestore,
+  connectFirestoreEmulator,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+} from '@angular/fire/firestore';
 
 import { AngularFirePerformanceModule, PerformanceMonitoringService } from '@angular/fire/compat/performance';
 import { AngularFireModule } from '@angular/fire/compat';
@@ -47,7 +53,9 @@ import { MarkdownModule } from 'ngx-markdown';
       registrationStrategy: 'registerImmediately',
     }),
     HttpClientModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot({
+      backButtonText: isPlatform('ios') ? 'Voltar' : undefined,
+    }),
 
     // Other modules
     MarkdownModule.forRoot({ loader: HttpClient }),
@@ -136,6 +144,7 @@ import { MarkdownModule } from 'ngx-markdown';
     provideFirestore(() => {
       const firestore = initializeFirestore(getApp(), {
         ignoreUndefinedProperties: true,
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
       });
 
       if (environment.useEmulators) {
