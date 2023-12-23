@@ -21,14 +21,28 @@ import {
   IonButton,
   IonIcon,
   IonProgressBar,
+  IonRouterLink,
 } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-major-events-display',
   templateUrl: 'major-events-display.page.html',
   styleUrls: ['major-events-display.page.scss'],
   standalone: true,
-  imports: [AsyncPipe, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonButton, IonIcon, IonProgressBar],
+  imports: [
+    AsyncPipe,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonCard,
+    IonButton,
+    IonIcon,
+    IonProgressBar,
+    RouterLink,
+    IonRouterLink,
+  ],
 })
 export class MajorEventsDisplayPage {
   private auth: Auth = inject(Auth);

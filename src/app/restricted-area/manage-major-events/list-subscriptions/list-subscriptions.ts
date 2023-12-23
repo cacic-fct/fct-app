@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Firestore, collection, collectionData, docData, doc, query, orderBy } from '@angular/fire/firestore';
 import { trace } from '@angular/fire/compat/performance';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { fromUnixTime } from 'date-fns';
@@ -20,13 +20,14 @@ import {
   IonBackButton,
   IonContent,
   IonButton,
-  IonSpinner,
   IonItem,
   IonLabel,
   IonText,
   IonProgressBar,
   IonSpinner,
+  IonRouterLink,
 } from '@ionic/angular/standalone';
+import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 
 interface Subscription extends MajorEventSubscription {
   id: string;
@@ -40,6 +41,11 @@ interface Subscription extends MajorEventSubscription {
   styleUrls: ['./list-subscriptions.scss'],
   standalone: true,
   imports: [
+    IonRouterLink,
+    RouterLink,
+    AsyncPipe,
+    DecimalPipe,
+    DatePipe,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -52,7 +58,6 @@ interface Subscription extends MajorEventSubscription {
     IonLabel,
     IonText,
     IonProgressBar,
-    IonSpinner,
   ],
 })
 export class ListSubscriptionsPage implements OnInit {

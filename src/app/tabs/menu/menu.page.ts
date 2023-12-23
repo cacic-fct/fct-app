@@ -22,7 +22,9 @@ import {
   IonCard,
   IonItem,
   IonLabel,
+  IonRouterLink,
 } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
 
 @UntilDestroy()
 @Component({
@@ -42,6 +44,8 @@ import {
     IonCard,
     IonItem,
     IonLabel,
+    IonRouterLink,
+    RouterLink,
   ],
 })
 export class MenuPage {

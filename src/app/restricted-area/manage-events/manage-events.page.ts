@@ -1,5 +1,5 @@
 import { GroupCreationModalComponent } from './components/group-creation-modal/group-creation-modal.component';
-import { ModalController } from '@ionic/angular/standalone';
+import { IonText, ModalController } from '@ionic/angular/standalone';
 // @ts-strict-ignore
 import { GlobalConstantsService } from '../../shared/services/global-constants.service';
 import { AlertController, ToastController } from '@ionic/angular/standalone';
@@ -16,9 +16,10 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { EmojiService } from '../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import {
+  IonRouterLink,
   IonHeader,
   IonToolbar,
   IonButtons,
@@ -27,7 +28,6 @@ import {
   IonButton,
   IonIcon,
   IonContent,
-  IonItem,
   IonDatetimeButton,
   IonList,
   IonItem,
@@ -42,6 +42,8 @@ import {
   IonModal,
   IonDatetime,
 } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 interface EventItemQuery extends EventItem {
   inMajorEventName?: Observable<string>;
@@ -53,6 +55,11 @@ interface EventItemQuery extends EventItem {
   styleUrls: ['./manage-events.page.scss'],
   standalone: true,
   imports: [
+    ReactiveFormsModule,
+    AsyncPipe,
+    RouterLink,
+    IonText,
+    IonRouterLink,
     IonHeader,
     IonToolbar,
     IonButtons,

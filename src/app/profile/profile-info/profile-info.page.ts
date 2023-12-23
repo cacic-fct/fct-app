@@ -22,7 +22,10 @@ import {
   IonCardTitle,
   IonSkeletonText,
   IonButton,
+  IonRouterLink,
 } from '@ionic/angular/standalone';
+import { QrCodeModule } from 'ng-qrcode';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-profile-info',
@@ -30,6 +33,8 @@ import {
   styleUrls: ['./profile-info.page.scss'],
   standalone: true,
   imports: [
+    IonRouterLink,
+    RouterLink,
     IonHeader,
     IonToolbar,
     IonButtons,
@@ -43,6 +48,7 @@ import {
     IonSkeletonText,
     IonButton,
     AsyncPipe,
+    QrCodeModule,
   ],
 })
 export class ProfileInfoPage implements OnInit {

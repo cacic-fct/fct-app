@@ -26,7 +26,10 @@ import {
   IonButton,
   IonDatetime,
   IonDatetimeButton,
+  IonRouterLink,
 } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-manage-major-events',
@@ -34,6 +37,10 @@ import {
   styleUrls: ['./manage-major-events.page.scss'],
   standalone: true,
   imports: [
+    RouterLink,
+    IonRouterLink,
+    AsyncPipe,
+    DatePipe,
     IonHeader,
     IonToolbar,
     IonButtons,

@@ -13,7 +13,9 @@ import {
   IonCol,
   IonButton,
   IonIcon,
+  IonRouterLink,
 } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-event-card[eventSubscription]',
@@ -21,6 +23,8 @@ import {
   styleUrls: ['./event-card.component.scss'],
   standalone: true,
   imports: [
+    RouterLink,
+    IonRouterLink,
     AsyncPipe,
     DatePipe,
     IonCard,

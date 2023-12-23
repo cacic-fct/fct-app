@@ -8,7 +8,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AsyncPipe, CurrencyPipe, DecimalPipe, formatDate } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
 import { compareAsc } from 'date-fns';
 import { take, map, Observable } from 'rxjs';
 
@@ -48,8 +48,8 @@ import {
   IonButton,
   IonSpinner,
   IonSelectOption,
+  IonList,
 } from '@ionic/angular/standalone';
-
 
 @UntilDestroy()
 @Component({
@@ -78,12 +78,14 @@ import {
     IonFabButton,
     IonButton,
     IonSpinner,
-    IonSelectOption
+    IonList,
+    IonSelectOption,
     ReactiveFormsModule,
     SweetAlert2Module,
     CurrencyPipe,
     AsyncPipe,
-    DecimalPipe
+    DecimalPipe,
+    DatePipe,
   ],
 })
 export class SubscribePage implements OnInit {

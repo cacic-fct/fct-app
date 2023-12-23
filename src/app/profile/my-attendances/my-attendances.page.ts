@@ -26,12 +26,8 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonLabel,
   IonProgressBar,
-  IonModal,
   IonButton,
-  IonDatetime,
-  IonDatetimeButton,
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
@@ -39,7 +35,9 @@ import {
   IonCard,
   IonText,
   IonSpinner,
+  IonRouterLink,
 } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
 
 @UntilDestroy()
 @Component({
@@ -48,6 +46,8 @@ import {
   styleUrls: ['./my-attendances.page.scss'],
   standalone: true,
   imports: [
+    RouterLink,
+    IonRouterLink,
     IonHeader,
     IonToolbar,
     IonButtons,

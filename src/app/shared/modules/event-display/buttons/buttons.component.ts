@@ -1,6 +1,6 @@
 import { EventItem } from 'src/app/shared/services/event';
 import { DateService } from './../../../services/date.service';
-import { ToastController } from '@ionic/angular/standalone';
+import { IonRouterLink, ToastController } from '@ionic/angular/standalone';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { map, Observable, take } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -10,7 +10,10 @@ import { trace } from '@angular/fire/compat/performance';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Auth, user } from '@angular/fire/auth';
 
-import { IonButton } from '@ionic/angular/standalone';
+import { IonButton, IonIcon } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { SafePipe } from 'src/app/shared/pipes/safe.pipe';
 
 @UntilDestroy()
 /**
@@ -21,7 +24,7 @@ import { IonButton } from '@ionic/angular/standalone';
   templateUrl: './buttons.component.html',
   styleUrls: ['./buttons.component.scss'],
   standalone: true,
-  imports: [IonButton],
+  imports: [IonButton, RouterLink, IonRouterLink, IonIcon, AsyncPipe, SafePipe],
 })
 export class ButtonsComponent implements OnInit {
   @Input() eventItem!: EventItem;

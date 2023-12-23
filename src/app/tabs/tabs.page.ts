@@ -1,5 +1,4 @@
 import { IonIcon, IonLabel, IonTabs, IonTabBar, IonTabButton } from '@ionic/angular/standalone';
-import { IonLabel } from '@ionic/angular/standalone';
 import { Component, inject } from '@angular/core';
 import { getBooleanChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -35,7 +34,7 @@ export class TabsPage {
         getIdTokenResult(user).then((idTokenResult) => {
           if (idTokenResult) {
             const claims = idTokenResult.claims;
-            if (claims.role < 3000) {
+            if ((claims.role as number) < 3000) {
               this._allowRestrictedArea.next(true);
             }
           }
