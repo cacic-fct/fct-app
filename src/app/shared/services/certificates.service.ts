@@ -43,7 +43,9 @@ export class CertificateService {
     }
 
     const certificateData$ = this.afs
-      .doc<CertificateDocPublic>(`/certificates/${eventID}/${certificateStoreData.id}/${certificateUserData.id}`)
+      .doc<CertificateDocPublic>(
+        `/certificates/${eventID}/${certificateStoreData.id}/${certificateUserData.certificateDoc}`
+      )
       .get();
 
     certificateData$
@@ -51,7 +53,11 @@ export class CertificateService {
         mergeMap(() => {
           const pdfJson$ = pdfJson.pipe(take(1));
           const majorEvent$ = this.afs.doc<MajorEventItem>(`majorEvents/${eventID}`).get().pipe(take(1));
-          const content$ = this.getCertificateContent(eventID, certificateStoreData.id!, certificateUserData.id!);
+          const content$ = this.getCertificateContent(
+            eventID,
+            certificateStoreData.id!,
+            certificateUserData.certificateDoc!
+          );
           const InterRegular$ = this.http
             .get('https://cdn.jsdelivr.net/gh/cacic-fct/fonts@main/Inter/latin-ext/inter-v12-latin-ext-regular.woff', {
               responseType: 'arraybuffer',
@@ -108,7 +114,11 @@ export class CertificateService {
             break;
         }
 
-        const encodedString: string = encodeCertificateCode(eventID, certificateStoreData.id!, certificateUserData.id!);
+        const encodedString: string = encodeCertificateCode(
+          eventID,
+          certificateStoreData.id!,
+          certificateUserData.certificateDoc
+        );
 
         const verificationURLQR = `https://fct-pp.web.app/certificado/verificar/${encodedString}`;
         const verificationURLString = `https://fct-pp.web.app/certificado/verificar/\n${encodedString}`;
@@ -394,19 +404,12 @@ interface CertificateOptionsTypes {
 }
 
 function encodeCertificateCode(eventID: string, certificateID: string, certificateDoc: string): string {
-  const encoded = Buffer.from(`${eventID}#${certificateID}#${certificateDoc}`).toString('base64');
-
-  const encodedWithDashes = encoded
-    .replace(/=/g, '')
-    .replace(/(.{4})/g, '$1-')
-    .replace(/-$/, '');
-
-  return encodedWithDashes;
+  const base64 = Buffer.from(`${eventID}#${certificateID}#${certificateDoc}`).toString('base64');
+  return base64.replace(/=/g, '');
 }
 
 export function decodeCertificateCode(base64: string) {
-  const base64NoDashes = base64.replace(/-/g, '');
-  const decoded = Buffer.from(base64NoDashes, 'base64').toString('ascii');
+  const decoded = Buffer.from(base64, 'base64').toString('ascii');
   const [eventID, certificateID, certificateDoc] = decoded.split('#');
 
   return {
@@ -465,7 +468,7 @@ export interface CertificateDocPublic {
 
 export interface UserCertificateDocument {
   certificateReference: DocumentReference;
-  certificateID: string;
+  certificateDoc: string;
   id?: string;
 }
 

@@ -45,6 +45,10 @@ exports.moveCertificates = onCall(async (context): Promise<MainReturnType> => {
                 .then(async (publicDoc) => {
                   if (!publicDoc.data()) {
                     console.log('No public document found for userCertificateID', userCertificateID.id);
+                    errors.push({
+                      userCertificateID: userCertificateID.id,
+                      error: 'No public document found for userCertificateID',
+                    });
                     return;
                   }
 
@@ -55,50 +59,93 @@ exports.moveCertificates = onCall(async (context): Promise<MainReturnType> => {
                   const newUserCertificateDoc = eventIDDocument.ref.collection(certificateID).doc(userCertificateID.id);
 
                   // Move the content of the document to the userCertificate document
-                  newUserCertificateDoc.set(publicDoc.data()!);
+                  await newUserCertificateDoc.set(publicDoc.data()!);
 
                   // Get the admin document
                   await userCertificateID
                     .doc('admin')
                     .get()
-                    .then((adminDoc) => {
+                    .then(async (adminDoc) => {
                       if (!adminDoc.data()) {
                         console.log('No admin document found for userCertificateID', userCertificateID.id);
+                        errors.push({
+                          userCertificateID: userCertificateID.id,
+                          error: 'No admin document found for userCertificateID',
+                        });
                         return;
                       }
 
                       // Move the content of the document to the newUserCertificateDoc/userCertificateDocAdmin/data document
-                      newUserCertificateDoc.collection('userCertificateDocAdmin').doc('data').set(adminDoc.data()!);
+                      await newUserCertificateDoc
+                        .collection('userCertificateDocAdmin')
+                        .doc('data')
+                        .set(adminDoc.data()!);
 
                       // Delete the admin document
-                      adminDoc.ref.delete();
+                      await adminDoc.ref.delete();
                     });
 
                   // Get the private document
                   await userCertificateID
                     .doc('private')
                     .get()
-                    .then((privateDoc) => {
+                    .then(async (privateDoc) => {
                       if (!privateDoc.data()) {
                         console.log('No private document found for userCertificateID', userCertificateID.id);
+                        errors.push({
+                          userCertificateID: userCertificateID.id,
+                          error: 'No private document found for userCertificateID',
+                        });
                         return;
                       }
 
                       // Write uid field to the new userCertificate document root
-                      newUserCertificateDoc.set({ uid: privateDoc.data()!.uid as string }, { merge: true });
+                      await newUserCertificateDoc.set({ uid: privateDoc.data()!.uid as string }, { merge: true });
 
                       // Delete the uid field from the private document
-                      privateDoc.ref.update({ uid: FieldValue.delete() });
+                      await privateDoc.ref.update({ uid: FieldValue.delete() });
 
                       // Move the content of the document to the newUserCertificateDoc/userCertificateDocPrivate/data document
-                      newUserCertificateDoc.collection('userCertificateDocPrivate').doc('data').set(privateDoc.data()!);
+                      await newUserCertificateDoc
+                        .collection('userCertificateDocPrivate')
+                        .doc('data')
+                        .set(privateDoc.data()!);
+
+                      const userDoc = db.collection('users').doc(privateDoc.data()!.uid as string);
+
+                      // Move /users/{uid}/certificates/majorEvents/{eventID}/{userCertificateID}
+                      // to /users/{uid}/userCertificates/majorEvents/{eventID}/{certificateID}/{userCertificateID}
+                      await userDoc
+                        .collection('certificates')
+                        .doc('majorEvents')
+                        .collection(eventIDDocument.id)
+                        .doc(userCertificateID.id)
+                        .delete();
+
+                      await userDoc.collection('certificates').doc('majorEvents').delete();
+
+                      await userDoc.collection('userCertificates').doc('majorEvents').set({
+                        null: null,
+                      });
+
+                      await userDoc
+                        .collection('userCertificates')
+                        .doc('majorEvents')
+                        .collection(eventIDDocument.id)
+                        .doc(certificateID)
+                        .set({
+                          certificateReference: db.doc(
+                            `certificates/${eventIDDocument.id}/${certificateID}/${userCertificateID.id}`
+                          ),
+                          certificateDoc: userCertificateID.id,
+                        });
 
                       // Delete the private document
-                      privateDoc.ref.delete();
+                      await privateDoc.ref.delete();
                     });
 
                   // Delete the public document
-                  publicDoc.ref.delete();
+                  await publicDoc.ref.delete();
                 });
             } catch (error) {
               console.log(error);
@@ -135,24 +182,22 @@ exports.moveCertificates = onCall(async (context): Promise<MainReturnType> => {
                 await majorEventDocument.ref
                   .collection('majorEventCertificates')
                   .doc(certificateID.id)
-                  .set(certificateID.data()!);
+                  .set(certificateID.data());
 
                 const newDocument = majorEventDocument.ref.collection('majorEventCertificates').doc(certificateID.id);
 
                 // Rename the admin subcollection
                 await certificateID.ref
                   .collection('admin')
+                  .doc('data')
                   .get()
-                  .then((adminCollection) => {
-                    adminCollection.forEach(async (adminDoc) => {
-                      await newDocument.collection('certificateDataAdmin').doc(adminDoc.id).set(adminDoc.data()!);
-                      adminDoc.ref.delete();
-                    });
+                  .then(async (adminDoc) => {
+                    await newDocument.collection('certificateDataAdmin').doc(adminDoc.id).set(adminDoc.data()!);
+
+                    await adminDoc.ref.delete();
                   });
 
-                // Also move the certificateDataAdmin subcollection
-
-                certificateID.ref.delete();
+                await certificateID.ref.delete();
               } catch (error) {
                 console.log(error);
                 errors.push({

@@ -334,9 +334,8 @@ const issueCertificate = async (
       null: null,
     });
 
-    await db.doc(`users/${userUID}/userCertificates/majorEvents/${eventID}/${documentID}`).set({
+    await db.doc(`users/${userUID}/userCertificates/majorEvents/${eventID}/${certificateData.certificateID}`).set({
       certificateReference: db.doc(`certificates/${eventID}/${certificateData.certificateID}/${documentID}`),
-      certificateID: certificateData.certificateID,
       certificateDoc: documentID,
     });
   } catch (error) {

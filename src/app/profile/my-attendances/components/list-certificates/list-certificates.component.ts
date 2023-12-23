@@ -52,7 +52,7 @@ export class ListCertificatesComponent implements OnInit {
             certificates.map((certificate) => {
               const docRef = doc(
                 this.firestore,
-                `/majorEvents/${this.majorEventID}/majorEventCertificates/${certificate.certificateID}`
+                `/majorEvents/${this.majorEventID}/majorEventCertificates/${certificate.id}`
               );
               const docData$ = docData(docRef, { idField: 'id' }) as Observable<CertificateStoreData>;
 
