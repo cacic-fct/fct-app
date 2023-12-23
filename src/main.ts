@@ -1,5 +1,4 @@
 import { enableProdMode, LOCALE_ID, isDevMode, importProvidersFrom } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { RouteReuseStrategy, provideRouter, withComponentInputBinding, withPreloading } from '@angular/router';
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
@@ -33,13 +32,6 @@ import {
 import { IonicRouteStrategy, isPlatform, provideIonicAngular } from '@ionic/angular/standalone';
 import { PerformanceMonitoringService, AngularFirePerformanceModule } from '@angular/fire/compat/performance';
 import { PreloadingStrategyService } from 'src/app/shared/services/routing/preloading-strategy.service';
-
-const provider = new ReCaptchaV3Provider(environment.recaptcha3SiteKey);
-const functions = getFunctions(getApp(), 'southamerica-east1');
-const firestore = initializeFirestore(getApp(), {
-  ignoreUndefinedProperties: true,
-  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-});
 
 if (environment.production) {
   enableProdMode();
