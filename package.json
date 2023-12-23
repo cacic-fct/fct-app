@@ -25,6 +25,7 @@
     "@ionic/angular-server": "^7.0.10",
     "@ngneat/until-destroy": "^9.2.3",
     "@pdfme/generator": "^1.1.10",
+    "@sweetalert2/ngx-sweetalert2": "^12.2.0",
     "@types/twemoji-parser": "^13.1.1",
     "@zxing/ngx-scanner": "^17.0.0",
     "buffer": "^6.0.3",
@@ -33,7 +34,6 @@
     "ng-qrcode": "^17.0.0",
     "ngx-image-compress": "^15.1.5",
     "ngx-markdown": "^17.0.0",
-    "ngx-sweetalert2-repository": "github:kjra1707/ngx-sweetalert2",
     "ol": "^7.3.0",
     "rxjs": "~7.8.1",
     "semver": "^7.5.1",
@@ -79,8 +79,8 @@
   "description": "An Ionic project",
   "overrides": {
     "@sweetalert2/ngx-sweetalert2": {
-      "@angular/core": "^16.0.0",
-      "@angular/common": "^16.0.0"
+      "@angular/core": "^17.0.0",
+      "@angular/common": "^17.0.0"
     }
   }
 }
