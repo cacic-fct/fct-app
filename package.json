@@ -24,7 +24,7 @@
     "@ionic/angular": "^7.6.2",
     "@ionic/angular-server": "^7.6.2",
     "@ngneat/until-destroy": "^10.0.0",
-    "@pdfme/generator": "^1.2.0",
+    "@pdfme/generator": "^3.1.5",
     "@sweetalert2/ngx-sweetalert2": "^12.2.0",
     "@types/twemoji-parser": "^13.1.4",
     "@zxing/ngx-scanner": "^17.0.0",
