@@ -66,7 +66,7 @@ export class ListSubscriptionsPage implements OnInit {
     public courses: CoursesService,
     public dateService: DateService
   ) {
-    this.eventID = this.route.snapshot.params.eventID;
+    this.eventID = this.route.snapshot.params['eventID'];
     this.afs
       .collection('events')
       .doc(this.eventID)

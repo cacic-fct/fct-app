@@ -38,6 +38,7 @@ import {
   IonRouterLink,
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
+import { EventCardDisplayMainPageComponent } from 'src/app/profile/my-attendances/components/event-card-display-main-page/event-card-display-main-page.component';
 
 @UntilDestroy()
 @Component({
@@ -71,6 +72,7 @@ import { RouterLink } from '@angular/router';
     CurrencyPipe,
     DatePipe,
     AsyncPipe,
+    EventCardDisplayMainPageComponent,
   ],
 })
 export class MyAttendancesPage implements OnInit {

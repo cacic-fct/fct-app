@@ -111,22 +111,22 @@ export class RegisterPage implements OnInit {
       .subscribe((user) => {
         if (user.email.includes('@unesp.br')) {
           this.isUnesp = true;
-          this.dataForm.controls.associateStatus.addValidators([Validators.required]);
-          this.dataForm.controls.associateStatus.setValue(user.associateStatus);
+          this.dataForm.controls['associateStatus'].addValidators([Validators.required]);
+          this.dataForm.controls['associateStatus'].setValue(user.associateStatus);
           if (user.associateStatus === 'undergraduate') {
             this.isUndergraduate = true;
 
-            this.dataForm.controls.academicID.setValue(user.academicID);
-            this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
+            this.dataForm.controls['academicID'].setValue(user.academicID);
+            this.dataForm.controls['academicID'].updateValueAndValidity({ onlySelf: true });
           }
-          this.dataForm.controls.fullName.updateValueAndValidity({ onlySelf: true });
+          this.dataForm.controls['fullName'].updateValueAndValidity({ onlySelf: true });
         } else {
-          this.dataForm.controls.fullName.setValue(user.fullName);
+          this.dataForm.controls['fullName'].setValue(user.fullName);
         }
-        this.dataForm.controls.phone.setValue(user.phone);
+        this.dataForm.controls['phone'].setValue(user.phone);
         if (user.cpf) {
-          this.dataForm.controls.cpf.setValue(user.cpf);
-          this.dataForm.controls.cpf.disable();
+          this.dataForm.controls['cpf'].setValue(user.cpf);
+          this.dataForm.controls['cpf'].disable();
         }
       });
 
@@ -228,7 +228,7 @@ export class RegisterPage implements OnInit {
     phoneNumber = phoneNumber.replace(/\D/g, '');
     phoneNumber = phoneNumber.replace(/^(\d{2})(\d)/g, '$1 $2');
     phoneNumber = phoneNumber.replace(/(\d)(\d{4})$/, '$1-$2');
-    this.dataForm.controls.phone.setValue(phoneNumber);
+    this.dataForm.controls['phone'].setValue(phoneNumber);
   }
 
   formatCPF() {
@@ -241,7 +241,7 @@ export class RegisterPage implements OnInit {
     cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
     cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
     cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    this.dataForm.controls.cpf.setValue(cpf);
+    this.dataForm.controls['cpf'].setValue(cpf);
   }
 
   fullNameValidator = (control: AbstractControl): ValidationErrors | null => {
@@ -325,13 +325,13 @@ export class RegisterPage implements OnInit {
   selectionChange(event) {
     if (event.target.value === 'undergraduate') {
       this.isUndergraduate = true;
-      this.dataForm.controls.academicID.setValidators([Validators.required, Validators.pattern('^[0-9]{9}$')]);
-      this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
+      this.dataForm.controls['academicID'].setValidators([Validators.required, Validators.pattern('^[0-9]{9}$')]);
+      this.dataForm.controls['academicID'].updateValueAndValidity({ onlySelf: true });
     } else {
       this.isUndergraduate = false;
-      this.dataForm.controls.academicID.setValue('');
-      this.dataForm.controls.academicID.clearValidators();
-      this.dataForm.controls.academicID.updateValueAndValidity({ onlySelf: true });
+      this.dataForm.controls['academicID'].setValue('');
+      this.dataForm.controls['academicID'].clearValidators();
+      this.dataForm.controls['academicID'].updateValueAndValidity({ onlySelf: true });
     }
   }
 }

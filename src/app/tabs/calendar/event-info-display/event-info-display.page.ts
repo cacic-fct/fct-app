@@ -48,7 +48,7 @@ export class EventInfoDisplayPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.eventID = this.route.snapshot.params.eventID;
+    this.eventID = this.route.snapshot.params['eventID'];
     this.item$ = this.afs
       .doc<EventItem>(`events/${this.eventID}`)
       .valueChanges({ idField: 'id' })

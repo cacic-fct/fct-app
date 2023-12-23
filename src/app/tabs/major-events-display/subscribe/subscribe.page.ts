@@ -20,7 +20,7 @@ import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { trace } from '@angular/fire/compat/performance';
 
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { serverTimestamp } from '@angular/fire/firestore';
 import { EmojiService } from 'src/app/shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
@@ -86,6 +86,7 @@ import {
     AsyncPipe,
     DecimalPipe,
     DatePipe,
+    FormsModule,
   ],
 })
 export class SubscribePage implements OnInit {
@@ -126,22 +127,24 @@ export class SubscribePage implements OnInit {
 
   paymentStatus: number;
 
-  majorEventID = this.route.snapshot.params.eventID;
+  majorEventID: string;
 
   eventSchedule: EventItem[] = [];
   isEventScheduleBeingChecked: boolean = false;
 
   constructor(
+    private route: ActivatedRoute,
     public afs: AngularFirestore,
     private router: Router,
-    private route: ActivatedRoute,
     private modalController: ModalController,
     private toastController: ToastController,
     public enrollmentTypes: EnrollmentTypesService,
     private formBuilder: FormBuilder,
     public emojiService: EmojiService,
     public dateService: DateService
-  ) {}
+  ) {
+    this.majorEventID = this.route.snapshot.params['eventID'];
+  }
 
   ngOnInit() {
     this.user$.pipe(take(1)).subscribe((user) => {
@@ -611,8 +614,8 @@ export class SubscribePage implements OnInit {
       componentProps: {
         majorEvent$: this.majorEvent$,
         eventsSelected: eventsSelected,
-        minicursosCount: this.eventsSelected.minicurso.length - this.eventGroupMinicursoCount,
-        palestrasCount: this.eventsSelected.palestra.length,
+        minicursosCount: this.eventsSelected['minicurso'].length - this.eventGroupMinicursoCount,
+        palestrasCount: this.eventsSelected['palestra'].length,
         subscriptionType: this.opSelected,
       },
       showBackdrop: true,

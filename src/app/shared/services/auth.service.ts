@@ -68,7 +68,7 @@ export class AuthService {
                 const claims = idTokenResult.claims;
 
                 // If role is not set, set it to professor (3000)
-                if (!claims.role || (claims.role as number) < 3000) {
+                if (!claims['role'] || (claims['role'] as number) < 3000) {
                   const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
                   const userData: User = {
                     associateStatus: 'professor',
@@ -282,6 +282,7 @@ export class AuthService {
               })
             );
         }
+        return null;
       }),
       switchMap((value) => value)
     );

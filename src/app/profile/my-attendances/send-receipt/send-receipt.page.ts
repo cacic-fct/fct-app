@@ -109,7 +109,7 @@ export class SendReceiptPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.eventID = this.route.snapshot.params.eventID;
+    this.eventID = this.route.snapshot.params['eventID'];
 
     // If eventID is not valid, redirect
     this.afs

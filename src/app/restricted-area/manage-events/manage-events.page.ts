@@ -16,7 +16,7 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { EmojiService } from '../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {
   IonRouterLink,
@@ -43,7 +43,7 @@ import {
   IonDatetime,
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 interface EventItemQuery extends EventItem {
   inMajorEventName?: Observable<string>;
@@ -82,6 +82,8 @@ interface EventItemQuery extends EventItem {
     IonPopover,
     IonModal,
     IonDatetime,
+    FormsModule,
+    DatePipe,
   ],
 })
 export class PageManageEvents implements OnInit {

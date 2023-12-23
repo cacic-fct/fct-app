@@ -75,7 +75,7 @@ export class ProfileInfoPage implements OnInit {
     this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
       if (user) {
         getIdTokenResult(user).then((idTokenResult) => {
-          if (idTokenResult.claims.role === 3000) {
+          if (idTokenResult.claims['role'] === 3000) {
             this._isProfessor.next(true);
           }
         });

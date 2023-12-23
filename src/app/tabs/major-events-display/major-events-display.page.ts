@@ -24,6 +24,10 @@ import {
   IonRouterLink,
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
+import { HeaderComponent } from 'src/app/shared/modules/major-event-display/header/header.component';
+import { DescriptionComponent } from 'src/app/shared/modules/major-event-display/description/description.component';
+import { DateComponent } from 'src/app/shared/modules/major-event-display/date/date.component';
+import { PriceComponent } from 'src/app/shared/modules/major-event-display/price/price.component';
 
 @Component({
   selector: 'app-major-events-display',
@@ -42,6 +46,10 @@ import { RouterLink } from '@angular/router';
     IonProgressBar,
     RouterLink,
     IonRouterLink,
+    HeaderComponent,
+    DescriptionComponent,
+    DateComponent,
+    PriceComponent,
   ],
 })
 export class MajorEventsDisplayPage {

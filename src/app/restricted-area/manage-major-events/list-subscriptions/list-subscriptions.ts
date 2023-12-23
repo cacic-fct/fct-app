@@ -79,7 +79,7 @@ export class ListSubscriptionsPage implements OnInit {
     public courses: CoursesService,
     public dateService: DateService
   ) {
-    this.eventID = this.route.snapshot.params.eventID;
+    this.eventID = this.route.snapshot.params['eventID'];
 
     const docRef = doc(this.firestore, 'majorEvents', this.eventID);
     this.event$ = docData(docRef) as Observable<MajorEventItem>;

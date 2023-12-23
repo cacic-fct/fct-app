@@ -34,7 +34,7 @@ export class TabsPage {
         getIdTokenResult(user).then((idTokenResult) => {
           if (idTokenResult) {
             const claims = idTokenResult.claims;
-            if ((claims.role as number) < 3000) {
+            if ((claims['role'] as number) < 3000) {
               this._allowRestrictedArea.next(true);
             }
           }

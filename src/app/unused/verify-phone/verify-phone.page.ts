@@ -42,6 +42,7 @@ import {
   IonText,
   IonTitle,
 } from '@ionic/angular/standalone';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-verify-phone',
@@ -64,6 +65,7 @@ import {
     IonInput,
     IonText,
     IonTitle,
+    FormsModule,
   ],
 })
 export class VerifyPhonePage implements OnInit {
@@ -149,13 +151,9 @@ export class VerifyPhonePage implements OnInit {
       .pipe(take(1))
       .subscribe(() => {
         this.cooldown = false;
-        this.windowRef.recaptchaVerifier = new RecaptchaVerifier(
-          'resend-sms',
-          {
-            size: 'invisible',
-          },
-          this.auth
-        );
+        this.windowRef.recaptchaVerifier = new RecaptchaVerifier(this.auth, 'resend-sms', {
+          size: 'invisible',
+        });
         this.countdown.unsubscribe();
       });
   }

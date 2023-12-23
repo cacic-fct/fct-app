@@ -30,6 +30,7 @@ import {
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-manage-major-events',
@@ -59,6 +60,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
     IonButton,
     IonDatetime,
     IonDatetimeButton,
+    FormsModule,
   ],
 })
 export class ManageMajorEventsPage implements OnInit {

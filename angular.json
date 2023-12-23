@@ -35,10 +35,10 @@
                             "src/global.scss"
                         ],
                         "scripts": [],
-                        "aot": false,
+                        "aot": true,
                         "extractLicenses": true,
                         "sourceMap": true,
-                        "optimization": false,
+                        "optimization": true,
                         "namedChunks": true,
                         "serviceWorker": "ngsw-config.json"
                     },

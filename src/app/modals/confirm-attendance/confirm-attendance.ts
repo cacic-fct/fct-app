@@ -88,7 +88,7 @@ export class ConfirmAttendancePage {
     private router: Router,
     private toastController: ToastController
   ) {
-    this.eventID = this.route.snapshot.params.eventID;
+    this.eventID = this.route.snapshot.params['eventID'];
     this.dataForm = this.formBuilder.group({
       code: ['', [Validators.required, this.codeValidator]],
     });
@@ -250,7 +250,7 @@ export class ConfirmAttendancePage {
             .valueChanges()
             .pipe(take(1), trace('firestore'))
             .subscribe((subscriptionItem) => {
-              if (subscriptionItem?.payment.status == 2) {
+              if (subscriptionItem['payment'].status == 2) {
                 // Escrevendo na coleção 'attendance'
                 this.eventRef.collection('attendance').doc(userID).set({
                   // @ts-ignore
