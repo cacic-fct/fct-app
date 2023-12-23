@@ -11,9 +11,10 @@ import { DateService } from 'src/app/shared/services/date.service';
 import { user, Auth } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-major-events-display',
-  templateUrl: 'major-events-display.page.html',
-  styleUrls: ['major-events-display.page.scss'],
+    selector: 'app-major-events-display',
+    templateUrl: 'major-events-display.page.html',
+    styleUrls: ['major-events-display.page.scss'],
+    standalone: true,
 })
 export class MajorEventsDisplayPage {
   private auth: Auth = inject(Auth);

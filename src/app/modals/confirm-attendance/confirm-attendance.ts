@@ -19,9 +19,10 @@ interface EventInfo {
 
 @UntilDestroy()
 @Component({
-  selector: 'app-confirm-attendance',
-  templateUrl: './confirm-attendance.html',
-  styleUrls: ['./confirm-attendance.scss'],
+    selector: 'app-confirm-attendance',
+    templateUrl: './confirm-attendance.html',
+    styleUrls: ['./confirm-attendance.scss'],
+    standalone: true,
 })
 export class ConfirmAttendancePage {
   eventID: string;

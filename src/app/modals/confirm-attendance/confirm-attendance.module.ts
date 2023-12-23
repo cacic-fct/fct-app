@@ -7,14 +7,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  declarations: [ConfirmAttendancePage],
-  imports: [
-    CommonModule,
-    IonicModule,
-    ConfirmAttendancePageRoutingModule,
-    ReactiveFormsModule,
-    FormsModule,
-    SweetAlert2Module,
-  ],
+    imports: [
+        CommonModule,
+        IonicModule,
+        ConfirmAttendancePageRoutingModule,
+        ReactiveFormsModule,
+        FormsModule,
+        SweetAlert2Module,
+        ConfirmAttendancePage,
+    ],
 })
 export class ConfirmAttendancePageModule {}

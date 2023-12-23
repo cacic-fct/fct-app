@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-manual-sobre-fct',
-  templateUrl: './manual-sobre-fct.component.html',
-  styleUrls: ['./manual-sobre-fct.component.scss', '../../manual.page.scss'],
+    selector: 'app-manual-sobre-fct',
+    templateUrl: './manual-sobre-fct.component.html',
+    styleUrls: ['./manual-sobre-fct.component.scss', '../../manual.page.scss'],
+    standalone: true,
 })
 export class ManualSobreFctComponent implements OnInit {
   timelineDescription =

@@ -8,13 +8,13 @@ import { MenuPage } from './menu.page';
 import { MenuPageRoutingModule } from './menu-routing.module';
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    RouterModule.forChild([{ path: '', component: MenuPage }]),
-    MenuPageRoutingModule,
-  ],
-  declarations: [MenuPage],
+    imports: [
+        IonicModule,
+        CommonModule,
+        FormsModule,
+        RouterModule.forChild([{ path: '', component: MenuPage }]),
+        MenuPageRoutingModule,
+        MenuPage,
+    ],
 })
 export class MenuPageModule {}

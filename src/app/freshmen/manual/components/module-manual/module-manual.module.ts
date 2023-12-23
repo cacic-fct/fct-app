@@ -14,24 +14,21 @@ import { MarkdownModule } from 'ngx-markdown';
 import { IonicModule } from '@ionic/angular';
 
 @NgModule({
-  declarations: [
-    ManualAuxiliosComponent,
-    ManualIntroducaoComponent,
-    ManualSobreFctComponent,
-    ManualMovimentoEstudantilComponent,
-    ManualGlossarioComponent,
-    ManualMapaComponent,
-    ManualPresidentePrudenteComponent,
-  ],
-  imports: [CommonModule, MarkdownModule.forChild(), IonicModule],
-  exports: [
-    ManualAuxiliosComponent,
-    ManualIntroducaoComponent,
-    ManualSobreFctComponent,
-    ManualMovimentoEstudantilComponent,
-    ManualGlossarioComponent,
-    ManualMapaComponent,
-    ManualPresidentePrudenteComponent,
-  ],
+    imports: [CommonModule, MarkdownModule.forChild(), IonicModule, ManualAuxiliosComponent,
+        ManualIntroducaoComponent,
+        ManualSobreFctComponent,
+        ManualMovimentoEstudantilComponent,
+        ManualGlossarioComponent,
+        ManualMapaComponent,
+        ManualPresidentePrudenteComponent],
+    exports: [
+        ManualAuxiliosComponent,
+        ManualIntroducaoComponent,
+        ManualSobreFctComponent,
+        ManualMovimentoEstudantilComponent,
+        ManualGlossarioComponent,
+        ManualMapaComponent,
+        ManualPresidentePrudenteComponent,
+    ],
 })
 export class ModuleManualModule {}

@@ -18,9 +18,10 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { Functions, httpsCallable, HttpsCallableResult } from '@angular/fire/functions';
 
 @Component({
-  selector: 'app-issue-certificate',
-  templateUrl: './issue-certificate.page.html',
-  styleUrls: ['./issue-certificate.page.scss'],
+    selector: 'app-issue-certificate',
+    templateUrl: './issue-certificate.page.html',
+    styleUrls: ['./issue-certificate.page.scss'],
+    standalone: true,
 })
 export class IssueCertificatePage implements OnInit {
   private functions: Functions = inject(Functions);

@@ -15,9 +15,10 @@ import { Auth, user } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-subscribe',
-  templateUrl: './my-attendances.page.html',
-  styleUrls: ['./my-attendances.page.scss'],
+    selector: 'app-subscribe',
+    templateUrl: './my-attendances.page.html',
+    styleUrls: ['./my-attendances.page.scss'],
+    standalone: true,
 })
 export class MyAttendancesPage implements OnInit {
   private auth: Auth = inject(Auth);

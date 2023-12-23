@@ -12,15 +12,15 @@ import { MajorEventDisplayModule } from '../../../shared/modules/major-event-dis
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    IonicModule,
-    AddMajorEventPageRoutingModule,
-    SweetAlert2Module,
-    MajorEventDisplayModule,
-  ],
-  declarations: [AddMajorEventPage, ConfirmModalComponent],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule,
+        AddMajorEventPageRoutingModule,
+        SweetAlert2Module,
+        MajorEventDisplayModule,
+        AddMajorEventPage, ConfirmModalComponent,
+    ],
 })
 export class AddMajorEventPageModule {}

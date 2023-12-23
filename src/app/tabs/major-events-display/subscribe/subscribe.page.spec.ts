@@ -9,9 +9,8 @@ describe('SubscribePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SubscribePage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), SubscribePage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(SubscribePage);
     component = fixture.componentInstance;

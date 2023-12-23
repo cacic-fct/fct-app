@@ -6,9 +6,10 @@ import { CertificateDocPublic } from 'src/app/shared/services/certificates.servi
 import { decodeCertificateCode } from 'src/app/shared/services/certificates.service';
 
 @Component({
-  selector: 'app-validate-certificate',
-  templateUrl: './validate-certificate.page.html',
-  styleUrls: ['./validate-certificate.page.scss'],
+    selector: 'app-validate-certificate',
+    templateUrl: './validate-certificate.page.html',
+    styleUrls: ['./validate-certificate.page.scss'],
+    standalone: true,
 })
 export class ValidateCertificatePage implements OnInit {
   param: string;

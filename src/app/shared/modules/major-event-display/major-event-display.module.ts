@@ -7,8 +7,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 
 @NgModule({
-  declarations: [HeaderComponent, DescriptionComponent, DateComponent, PriceComponent],
-  imports: [CommonModule, IonicModule],
-  exports: [HeaderComponent, DescriptionComponent, DateComponent, PriceComponent],
+    imports: [CommonModule, IonicModule, HeaderComponent, DescriptionComponent, DateComponent, PriceComponent],
+    exports: [HeaderComponent, DescriptionComponent, DateComponent, PriceComponent],
 })
 export class MajorEventDisplayModule {}

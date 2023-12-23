@@ -9,9 +9,8 @@ describe('ListCertificatesComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListCertificatesComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ListCertificatesComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ListCertificatesComponent);
     component = fixture.componentInstance;

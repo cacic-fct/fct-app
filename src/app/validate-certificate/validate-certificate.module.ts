@@ -9,12 +9,12 @@ import { ValidateCertificatePageRoutingModule } from './validate-certificate-rou
 import { ValidateCertificatePage } from './validate-certificate.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ValidateCertificatePageRoutingModule
-  ],
-  declarations: [ValidateCertificatePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ValidateCertificatePageRoutingModule,
+        ValidateCertificatePage
+    ]
 })
 export class ValidateCertificatePageModule {}

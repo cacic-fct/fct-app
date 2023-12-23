@@ -9,7 +9,6 @@ import { ManageSubscriptionPageRoutingModule } from './manage-subscription-routi
 import { ManageSubscriptionPage } from './manage-subscription.page';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ManageSubscriptionPageRoutingModule],
-  declarations: [ManageSubscriptionPage],
+    imports: [CommonModule, FormsModule, IonicModule, ManageSubscriptionPageRoutingModule, ManageSubscriptionPage],
 })
 export class ManageSubscriptionPageModule {}

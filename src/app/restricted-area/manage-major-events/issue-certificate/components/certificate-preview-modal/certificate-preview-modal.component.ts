@@ -8,9 +8,10 @@ import {
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-certificate-preview-modal',
-  templateUrl: './certificate-preview-modal.component.html',
-  styleUrls: ['./certificate-preview-modal.component.scss'],
+    selector: 'app-certificate-preview-modal',
+    templateUrl: './certificate-preview-modal.component.html',
+    styleUrls: ['./certificate-preview-modal.component.scss'],
+    standalone: true,
 })
 export class CertificatePreviewModalComponent implements OnInit {
   @Input() certificateData!: CertificateTemplateData;

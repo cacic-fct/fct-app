@@ -8,9 +8,10 @@ import { StringManagementService } from '../../../../shared/services/string-mana
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
-  selector: 'app-confirm-modal',
-  templateUrl: './confirm-modal.page.html',
-  styleUrls: ['./confirm-modal.page.scss'],
+    selector: 'app-confirm-modal',
+    templateUrl: './confirm-modal.page.html',
+    styleUrls: ['./confirm-modal.page.scss'],
+    standalone: true,
 })
 export class ConfirmModalPage implements OnInit {
   @Input() dataForm: FormGroup<any>;

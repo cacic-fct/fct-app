@@ -12,9 +12,10 @@ import { Auth, authState, user, User } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'menu.page.html',
-  styleUrls: ['menu.page.scss'],
+    selector: 'app-tab3',
+    templateUrl: 'menu.page.html',
+    styleUrls: ['menu.page.scss'],
+    standalone: true,
 })
 export class MenuPage {
   private auth: Auth = inject(Auth);

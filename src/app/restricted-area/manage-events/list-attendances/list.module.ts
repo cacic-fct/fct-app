@@ -10,13 +10,13 @@ import { ListPage } from './list.page';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ListPageRoutingModule,
-    SweetAlert2Module
-  ],
-  declarations: [ListPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ListPageRoutingModule,
+        SweetAlert2Module,
+        ListPage
+    ]
 })
 export class ListPageModule {}

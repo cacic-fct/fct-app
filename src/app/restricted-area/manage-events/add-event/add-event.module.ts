@@ -9,15 +9,15 @@ import { SafeModule } from 'src/app/shared/pipes/safe.module';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    IonicModule,
-    AddEventPageRoutingModule,
-    SafeModule,
-    SweetAlert2Module,
-  ],
-  declarations: [AddEventPage, ConfirmModalPage],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule,
+        AddEventPageRoutingModule,
+        SafeModule,
+        SweetAlert2Module,
+        AddEventPage, ConfirmModalPage,
+    ],
 })
 export class AddEventPageModule {}

@@ -8,9 +8,10 @@ import { EmojiService } from '../../../../shared/services/emoji.service';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-group-creation-modal',
-  templateUrl: './group-creation-modal.component.html',
-  styleUrls: ['./group-creation-modal.component.scss'],
+    selector: 'app-group-creation-modal',
+    templateUrl: './group-creation-modal.component.html',
+    styleUrls: ['./group-creation-modal.component.scss'],
+    standalone: true,
 })
 export class GroupCreationModalComponent implements OnInit {
   @Input() eventGroup!: Array<{

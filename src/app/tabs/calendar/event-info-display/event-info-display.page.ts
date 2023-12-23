@@ -15,9 +15,10 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Analytics, logEvent } from '@angular/fire/analytics';
 
 @Component({
-  selector: 'app-event-info-display',
-  templateUrl: './event-info-display.page.html',
-  styleUrls: ['./event-info-display.page.scss'],
+    selector: 'app-event-info-display',
+    templateUrl: './event-info-display.page.html',
+    styleUrls: ['./event-info-display.page.scss'],
+    standalone: true,
 })
 export class EventInfoDisplayPage implements OnInit {
   private analytics: Analytics = inject(Analytics);

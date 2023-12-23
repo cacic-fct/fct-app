@@ -9,9 +9,8 @@ describe('ManualMapaComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManualMapaComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ManualMapaComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ManualMapaComponent);
     component = fixture.componentInstance;

@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  declarations: [ListSubscriptionsPage],
-  imports: [CommonModule, IonicModule, SweetAlert2Module, ListSubscriptionsPageRoutingModule],
+    imports: [CommonModule, IonicModule, SweetAlert2Module, ListSubscriptionsPageRoutingModule, ListSubscriptionsPage],
 })
 export class ListSubscriptionsPageModule {}

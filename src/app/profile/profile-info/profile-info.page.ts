@@ -9,9 +9,10 @@ import { User } from 'src/app/shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
 
 @Component({
-  selector: 'app-profile-info',
-  templateUrl: './profile-info.page.html',
-  styleUrls: ['./profile-info.page.scss'],
+    selector: 'app-profile-info',
+    templateUrl: './profile-info.page.html',
+    styleUrls: ['./profile-info.page.scss'],
+    standalone: true,
 })
 export class ProfileInfoPage implements OnInit {
   private auth: Auth = inject(Auth);

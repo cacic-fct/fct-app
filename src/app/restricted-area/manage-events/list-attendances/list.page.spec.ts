@@ -9,9 +9,8 @@ describe('ListPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListPage ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ListPage]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ListPage);
     component = fixture.componentInstance;

@@ -28,9 +28,10 @@ import { Auth, user } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-subscribe',
-  templateUrl: 'subscribe.page.html',
-  styleUrls: ['subscribe.page.scss'],
+    selector: 'app-subscribe',
+    templateUrl: 'subscribe.page.html',
+    styleUrls: ['subscribe.page.scss'],
+    standalone: true,
 })
 export class SubscribePage implements OnInit {
   @ViewChild('successSwal')

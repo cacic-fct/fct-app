@@ -15,9 +15,10 @@ import { AlertController } from '@ionic/angular';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-manage-subscription',
-  templateUrl: './manage-subscription.page.html',
-  styleUrls: ['./manage-subscription.page.scss'],
+    selector: 'app-manage-subscription',
+    templateUrl: './manage-subscription.page.html',
+    styleUrls: ['./manage-subscription.page.scss'],
+    standalone: true,
 })
 export class ManageSubscriptionPage {
   private auth: Auth = inject(Auth);

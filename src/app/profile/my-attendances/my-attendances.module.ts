@@ -13,7 +13,6 @@ import { EventCardComponent } from './components/event-card/event-card.component
 import { EventCardDisplayMainPageComponent } from './components/event-card-display-main-page/event-card-display-main-page.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, MyAttendancesPageRoutingModule],
-  declarations: [MyAttendancesPage, EventCardComponent, EventCardDisplayMainPageComponent, ListCertificatesComponent],
+    imports: [CommonModule, FormsModule, IonicModule, MyAttendancesPageRoutingModule, MyAttendancesPage, EventCardComponent, EventCardDisplayMainPageComponent, ListCertificatesComponent],
 })
 export class MyAttendancesPageModule {}

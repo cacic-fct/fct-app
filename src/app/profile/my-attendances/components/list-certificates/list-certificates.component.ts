@@ -13,9 +13,10 @@ import { Analytics, logEvent } from '@angular/fire/analytics';
 import { Firestore, collection, collectionData, doc, docData } from '@angular/fire/firestore';
 
 @Component({
-  selector: 'app-list-certificates',
-  templateUrl: './list-certificates.component.html',
-  styleUrls: ['./list-certificates.component.scss'],
+    selector: 'app-list-certificates',
+    templateUrl: './list-certificates.component.html',
+    styleUrls: ['./list-certificates.component.scss'],
+    standalone: true,
 })
 export class ListCertificatesComponent implements OnInit {
   private auth: Auth = inject(Auth);

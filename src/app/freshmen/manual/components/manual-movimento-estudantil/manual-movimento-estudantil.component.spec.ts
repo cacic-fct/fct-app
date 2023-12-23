@@ -9,9 +9,8 @@ describe('ManualMovimentoEstudantilComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManualMovimentoEstudantilComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ManualMovimentoEstudantilComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ManualMovimentoEstudantilComponent);
     component = fixture.componentInstance;

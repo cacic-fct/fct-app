@@ -10,9 +10,10 @@ import { DateService } from 'src/app/shared/services/date.service';
  * Requires the eventItem input to be passed in.
  */
 @Component({
-  selector: 'app-event-item-list[eventItem]',
-  templateUrl: './item-list.component.html',
-  styleUrls: ['./item-list.component.scss'],
+    selector: 'app-event-item-list[eventItem]',
+    templateUrl: './item-list.component.html',
+    styleUrls: ['./item-list.component.scss'],
+    standalone: true,
 })
 export class ItemListComponent implements OnInit {
   courses = CoursesService.courses;

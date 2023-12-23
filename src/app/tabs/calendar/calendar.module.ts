@@ -11,7 +11,6 @@ import { ItemListComponent } from './components/item-list/item-list.component';
 import { ItemListViewComponent } from './components/item-list-view/item-list.component';
 
 @NgModule({
-  imports: [IonicModule, CommonModule, FormsModule, CalendarPageRoutingModule],
-  declarations: [CalendarPage, ItemListComponent, CalendarListViewComponent, FilterModalPage, ItemListViewComponent],
+    imports: [IonicModule, CommonModule, FormsModule, CalendarPageRoutingModule, CalendarPage, ItemListComponent, CalendarListViewComponent, FilterModalPage, ItemListViewComponent],
 })
 export class CalendarPageModule {}

@@ -5,9 +5,10 @@ import { ModalController } from '@ionic/angular';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
 @Component({
-  selector: 'app-filter-modal',
-  templateUrl: './filter-modal.page.html',
-  styleUrls: ['./filter-modal.page.scss'],
+    selector: 'app-filter-modal',
+    templateUrl: './filter-modal.page.html',
+    styleUrls: ['./filter-modal.page.scss'],
+    standalone: true,
 })
 export class FilterModalPage implements OnInit, AfterViewInit {
   courses = CoursesService.courses;

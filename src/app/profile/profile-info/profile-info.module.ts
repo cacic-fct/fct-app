@@ -11,7 +11,6 @@ import { ProfileInfoPage } from './profile-info.page';
 import { QrCodeModule } from 'ng-qrcode';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ProfileInfoPageRoutingModule, QrCodeModule],
-  declarations: [ProfileInfoPage],
+    imports: [CommonModule, FormsModule, IonicModule, ProfileInfoPageRoutingModule, QrCodeModule, ProfileInfoPage],
 })
 export class ProfileInfoPageModule {}

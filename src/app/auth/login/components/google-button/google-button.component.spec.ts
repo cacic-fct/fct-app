@@ -9,9 +9,8 @@ describe('GoogleButtonComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ GoogleButtonComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), GoogleButtonComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(GoogleButtonComponent);
     component = fixture.componentInstance;

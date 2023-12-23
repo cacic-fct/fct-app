@@ -18,9 +18,10 @@ import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-more-info',
-  templateUrl: './more-info.page.html',
-  styleUrls: ['./more-info.page.scss'],
+    selector: 'app-more-info',
+    templateUrl: './more-info.page.html',
+    styleUrls: ['./more-info.page.scss'],
+    standalone: true,
 })
 export class MoreInfoPage implements OnInit {
   private auth: Auth = inject(Auth);

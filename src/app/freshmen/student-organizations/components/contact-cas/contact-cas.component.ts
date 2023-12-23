@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-contact-cas',
-  templateUrl: './contact-cas.component.html',
-  styleUrls: ['./contact-cas.component.scss'],
+    selector: 'app-contact-cas',
+    templateUrl: './contact-cas.component.html',
+    styleUrls: ['./contact-cas.component.scss'],
+    standalone: true,
 })
 export class ContactCasComponent implements OnInit {
   contacts: any = [

@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafePipe } from './safe.pipe';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [SafePipe],
-  exports: [SafePipe],
+    imports: [CommonModule, SafePipe],
+    exports: [SafePipe],
 })
 export class SafeModule {}

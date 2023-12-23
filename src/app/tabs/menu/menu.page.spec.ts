@@ -9,9 +9,8 @@ describe('TabInfoPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [MenuPage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), MenuPage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(MenuPage);
     component = fixture.componentInstance;

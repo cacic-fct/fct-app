@@ -3,12 +3,12 @@ import { BarcodeFormat } from '@zxing/library';
 import { BehaviorSubject, take, map, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ToastController, IonicModule } from '@ionic/angular';
 import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { trace } from '@angular/fire/compat/performance';
 import { EventItem } from 'src/app/shared/services/event';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -16,6 +16,9 @@ import { serverTimestamp } from '@angular/fire/firestore';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
+import { FormsModule } from '@angular/forms';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { NgIf, NgFor, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
 
 interface Attendance {
   user: Observable<User | undefined>;
@@ -25,9 +28,21 @@ interface Attendance {
 
 @UntilDestroy()
 @Component({
-  selector: 'app-scanner',
-  templateUrl: './scanner.page.html',
-  styleUrls: ['./scanner.page.scss'],
+    selector: 'app-scanner',
+    templateUrl: './scanner.page.html',
+    styleUrls: ['./scanner.page.scss'],
+    standalone: true,
+    imports: [
+        IonicModule,
+        NgIf,
+        ZXingScannerModule,
+        FormsModule,
+        NgFor,
+        SweetAlert2Module,
+        AsyncPipe,
+        DecimalPipe,
+        DatePipe,
+    ],
 })
 export class ScannerPage implements OnInit {
   @Input('manualInput') manualInput!: string;

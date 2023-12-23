@@ -16,9 +16,10 @@ import { EventItem } from '../../../services/event';
  * Requires the eventItem input to be passed in.
  */
 @Component({
-  selector: 'app-event-display-map[eventItem]',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
+    selector: 'app-event-display-map[eventItem]',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.scss'],
+    standalone: true,
 })
 export class MapComponent implements OnInit {
   map: Map | undefined | null;

@@ -13,9 +13,10 @@ import { EmojiService } from '../../../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
-  selector: 'app-confirm-modal',
-  templateUrl: './confirm-modal.component.html',
-  styleUrls: ['./confirm-modal.component.scss'],
+    selector: 'app-confirm-modal',
+    templateUrl: './confirm-modal.component.html',
+    styleUrls: ['./confirm-modal.component.scss'],
+    standalone: true,
 })
 export class ConfirmModalComponent implements OnInit {
   @Input() majorEvent$: Observable<MajorEventItem>;

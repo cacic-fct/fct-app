@@ -9,9 +9,9 @@ describe('PageImpersonatePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageImpersonatePage ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    declarations: [PageImpersonatePage],
+    imports: [IonicModule.forRoot()]
+}).compileComponents();
 
     fixture = TestBed.createComponent(PageImpersonatePage);
     component = fixture.componentInstance;

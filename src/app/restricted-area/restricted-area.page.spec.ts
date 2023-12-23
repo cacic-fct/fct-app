@@ -9,9 +9,8 @@ describe('RestrictedAreaPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RestrictedAreaPage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), RestrictedAreaPage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(RestrictedAreaPage);
     component = fixture.componentInstance;

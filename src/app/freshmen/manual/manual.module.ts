@@ -13,14 +13,14 @@ import { MarkdownModule } from 'ngx-markdown';
 import { ModuleManualModule } from './components/module-manual/module-manual.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ManualPageRoutingModule,
-    MarkdownModule.forChild(),
-    ModuleManualModule,
-  ],
-  declarations: [ManualPage],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ManualPageRoutingModule,
+        MarkdownModule.forChild(),
+        ModuleManualModule,
+        ManualPage,
+    ],
 })
 export class ManualPageModule {}

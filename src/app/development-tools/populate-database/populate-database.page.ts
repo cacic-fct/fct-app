@@ -7,9 +7,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @UntilDestroy()
 @Component({
-  selector: 'app-populate-database',
-  templateUrl: './populate-database.page.html',
-  styleUrls: ['./populate-database.page.scss'],
+    selector: 'app-populate-database',
+    templateUrl: './populate-database.page.html',
+    styleUrls: ['./populate-database.page.scss'],
+    standalone: true,
 })
 export class PopulateDatabasePage implements OnInit {
   private functions: Functions = inject(Functions);

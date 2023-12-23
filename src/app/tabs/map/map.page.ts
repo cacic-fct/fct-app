@@ -5,13 +5,16 @@ import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { useGeographic } from 'ol/proj';
 import { Control, defaults as defaultControls } from 'ol/control';
+import { IonicModule } from '@ionic/angular';
 
 useGeographic();
 
 @Component({
-  selector: 'app-map',
-  templateUrl: 'map.page.html',
-  styleUrls: ['map.page.scss'],
+    selector: 'app-map',
+    templateUrl: 'map.page.html',
+    styleUrls: ['map.page.scss'],
+    standalone: true,
+    imports: [IonicModule],
 })
 export class MapPage implements AfterViewInit {
   map: Map | undefined | null;

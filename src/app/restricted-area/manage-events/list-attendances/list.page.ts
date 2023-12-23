@@ -20,9 +20,10 @@ interface Attendance {
 
 @UntilDestroy()
 @Component({
-  selector: 'app-list',
-  templateUrl: './list.page.html',
-  styleUrls: ['./list.page.scss'],
+    selector: 'app-list',
+    templateUrl: './list.page.html',
+    styleUrls: ['./list.page.scss'],
+    standalone: true,
 })
 export class ListPage implements OnInit {
   @ViewChild('mySwal')

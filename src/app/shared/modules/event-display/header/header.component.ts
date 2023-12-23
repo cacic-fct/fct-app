@@ -13,9 +13,10 @@ import { EventItem } from '../../../services/event';
  * Requires the eventItem input to be passed in.
  */
 @Component({
-  selector: 'app-event-display-header[eventItem]',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+    selector: 'app-event-display-header[eventItem]',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    standalone: true,
 })
 export class HeaderComponent implements OnInit {
   @Input() eventItem!: EventItem;

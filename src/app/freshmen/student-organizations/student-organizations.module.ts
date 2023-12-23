@@ -11,7 +11,6 @@ import { ContactCasComponent } from './components/contact-cas/contact-cas.compon
 import { ContactEjsComponent } from './components/contact-ejs/contact-ejs.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, StudentOrganizationsPageRoutingModule],
-  declarations: [StudentOrganizationsPage, ContactCasComponent, ContactEjsComponent],
+    imports: [CommonModule, FormsModule, IonicModule, StudentOrganizationsPageRoutingModule, StudentOrganizationsPage, ContactCasComponent, ContactEjsComponent],
 })
 export class StudentOrganizationsPageModule {}

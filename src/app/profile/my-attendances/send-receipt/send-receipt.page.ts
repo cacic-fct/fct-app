@@ -22,9 +22,10 @@ import { Auth, user } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-send-receipt',
-  templateUrl: './send-receipt.page.html',
-  styleUrls: ['./send-receipt.page.scss'],
+    selector: 'app-send-receipt',
+    templateUrl: './send-receipt.page.html',
+    styleUrls: ['./send-receipt.page.scss'],
+    standalone: true,
 })
 export class SendReceiptPage implements OnInit {
   @ViewChild('eventNotFound')

@@ -6,11 +6,28 @@ import OSM from 'ol/source/OSM';
 import { useGeographic } from 'ol/proj';
 
 import { MarkerService } from './components/manual-mapa/marker.service';
+import { ManualGlossarioComponent } from './components/manual-glossario/manual-glossario.component';
+import { ManualPresidentePrudenteComponent } from './components/manual-presidente-prudente/manual-presidente-prudente.component';
+import { ManualAuxiliosComponent } from './components/manual-auxilios/manual-auxilios.component';
+import { ManualMovimentoEstudantilComponent } from './components/manual-movimento-estudantil/manual-movimento-estudantil.component';
+import { ManualSobreFctComponent } from './components/manual-sobre-fct/manual-sobre-fct.component';
+import { ManualIntroducaoComponent } from './components/manual-introducao/manual-introducao.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-manual',
-  templateUrl: './manual.page.html',
-  styleUrls: ['./manual.page.scss'],
+    selector: 'app-manual',
+    templateUrl: './manual.page.html',
+    styleUrls: ['./manual.page.scss'],
+    standalone: true,
+    imports: [
+        IonicModule,
+        ManualIntroducaoComponent,
+        ManualSobreFctComponent,
+        ManualMovimentoEstudantilComponent,
+        ManualAuxiliosComponent,
+        ManualPresidentePrudenteComponent,
+        ManualGlossarioComponent,
+    ],
 })
 export class ManualPage implements AfterViewInit {
   map: Map | undefined | null;

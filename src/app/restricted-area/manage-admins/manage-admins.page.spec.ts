@@ -9,9 +9,8 @@ describe('ManageAdminsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ManageAdminsPage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ManageAdminsPage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ManageAdminsPage);
     component = fixture.componentInstance;

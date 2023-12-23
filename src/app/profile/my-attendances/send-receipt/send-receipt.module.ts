@@ -10,7 +10,6 @@ import { SendReceiptPage } from './send-receipt.page';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, SendReceiptPageRoutingModule, SweetAlert2Module],
-  declarations: [SendReceiptPage],
+    imports: [CommonModule, FormsModule, IonicModule, SendReceiptPageRoutingModule, SweetAlert2Module, SendReceiptPage],
 })
 export class SendReceiptPageModule {}

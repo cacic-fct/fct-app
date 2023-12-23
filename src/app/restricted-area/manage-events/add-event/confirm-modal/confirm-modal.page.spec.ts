@@ -8,9 +8,8 @@ describe('ConfirmModalPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ConfirmModalPage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ConfirmModalPage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmModalPage);
     component = fixture.componentInstance;

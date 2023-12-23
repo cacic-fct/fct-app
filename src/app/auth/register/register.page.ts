@@ -25,9 +25,10 @@ import { take } from 'rxjs';
 import { WindowService } from '../../shared/services/window.service';
 
 @Component({
-  selector: 'app-page-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
+    selector: 'app-page-register',
+    templateUrl: './register.page.html',
+    styleUrls: ['./register.page.scss'],
+    standalone: true,
 })
 export class RegisterPage implements OnInit {
   @ViewChild('mySwal')

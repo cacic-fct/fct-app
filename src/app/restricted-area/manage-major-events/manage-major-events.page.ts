@@ -9,9 +9,10 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
-  selector: 'app-manage-major-events',
-  templateUrl: './manage-major-events.page.html',
-  styleUrls: ['./manage-major-events.page.scss'],
+    selector: 'app-manage-major-events',
+    templateUrl: './manage-major-events.page.html',
+    styleUrls: ['./manage-major-events.page.scss'],
+    standalone: true,
 })
 export class ManageMajorEventsPage implements OnInit {
   today: Date = new Date();

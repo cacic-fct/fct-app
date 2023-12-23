@@ -7,9 +7,10 @@ import { EmojiService } from '../../../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
-  selector: 'app-event-list[eventInput]',
-  templateUrl: './event-list.component.html',
-  styleUrls: ['./event-list.component.scss'],
+    selector: 'app-event-list[eventInput]',
+    templateUrl: './event-list.component.html',
+    styleUrls: ['./event-list.component.scss'],
+    standalone: true,
 })
 export class EventListComponent implements OnInit {
   @Input() eventInput!: Observable<EventItem[]>;

@@ -9,9 +9,8 @@ describe('EventCardDisplayMainPageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EventCardDisplayMainPageComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), EventCardDisplayMainPageComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(EventCardDisplayMainPageComponent);
     component = fixture.componentInstance;

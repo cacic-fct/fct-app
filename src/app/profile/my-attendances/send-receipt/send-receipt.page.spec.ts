@@ -9,9 +9,8 @@ describe('SendReceiptPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SendReceiptPage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), SendReceiptPage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(SendReceiptPage);
     component = fixture.componentInstance;

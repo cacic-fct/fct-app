@@ -7,14 +7,14 @@ import { ValidateReceiptPage } from './validate-receipt.page';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    IonicModule,
-    ValidateReceiptPageRoutingModule,
-    SweetAlert2Module,
-  ],
-  declarations: [ValidateReceiptPage],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule,
+        ValidateReceiptPageRoutingModule,
+        SweetAlert2Module,
+        ValidateReceiptPage,
+    ],
 })
 export class ValidateReceiptPageModule {}

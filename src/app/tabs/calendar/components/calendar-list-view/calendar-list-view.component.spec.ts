@@ -9,9 +9,8 @@ describe('CalendarListViewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CalendarListViewComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), CalendarListViewComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(CalendarListViewComponent);
     component = fixture.componentInstance;

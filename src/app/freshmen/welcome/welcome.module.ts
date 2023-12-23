@@ -14,7 +14,6 @@ import { StepsAccordionComponent } from './components/steps-accordion/steps-acco
 import { FaqAccordionComponent } from './components/faq-accordion/faq-accordion.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, WelcomePageRoutingModule, MarkdownModule.forChild()],
-  declarations: [WelcomePage, StepsAccordionComponent, FaqAccordionComponent],
+    imports: [CommonModule, FormsModule, IonicModule, WelcomePageRoutingModule, MarkdownModule.forChild(), WelcomePage, StepsAccordionComponent, FaqAccordionComponent],
 })
 export class WelcomePageModule {}

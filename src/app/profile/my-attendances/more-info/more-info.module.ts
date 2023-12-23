@@ -12,7 +12,6 @@ import { EventListComponent } from './event-list/event-list.component';
 import { MajorEventDisplayModule } from '../../../shared/modules/major-event-display/major-event-display.module';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, MoreInfoPageRoutingModule, MajorEventDisplayModule],
-  declarations: [MoreInfoPage, EventListComponent],
+    imports: [CommonModule, FormsModule, IonicModule, MoreInfoPageRoutingModule, MajorEventDisplayModule, MoreInfoPage, EventListComponent],
 })
 export class MoreInfoPageModule {}

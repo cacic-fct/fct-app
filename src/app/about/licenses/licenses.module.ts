@@ -13,7 +13,6 @@ import { MarkdownModule } from 'ngx-markdown';
 import { DisplayLicensesComponent } from './display-licenses/display-licenses.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, PageLegalPageRoutingModule, MarkdownModule.forChild()],
-  declarations: [LicensesPage, DisplayLicensesComponent],
+    imports: [CommonModule, FormsModule, IonicModule, PageLegalPageRoutingModule, MarkdownModule.forChild(), LicensesPage, DisplayLicensesComponent],
 })
 export class PageLegalPageModule {}

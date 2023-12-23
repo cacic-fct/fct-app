@@ -23,9 +23,10 @@ interface EventItemQuery extends EventItem {
 }
 
 @Component({
-  selector: 'app-manage-events',
-  templateUrl: './manage-events.page.html',
-  styleUrls: ['./manage-events.page.scss'],
+    selector: 'app-manage-events',
+    templateUrl: './manage-events.page.html',
+    styleUrls: ['./manage-events.page.scss'],
+    standalone: true,
 })
 export class PageManageEvents implements OnInit {
   groupUnderSelection: boolean = false;

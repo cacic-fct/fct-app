@@ -7,7 +7,6 @@ import { MapPage } from './map.page';
 import { MapPageRoutingModule } from './map-routing.module';
 
 @NgModule({
-  imports: [IonicModule, CommonModule, FormsModule, MapPageRoutingModule],
-  declarations: [MapPage],
+    imports: [IonicModule, CommonModule, FormsModule, MapPageRoutingModule, MapPage],
 })
 export class MapPageModule {}

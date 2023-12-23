@@ -47,124 +47,104 @@ import { MarkdownModule } from 'ngx-markdown';
 import { UpdateModalComponent } from './shared/services/service-worker/update-modal/update-modal.component';
 
 @NgModule({
-  declarations: [AppComponent, UpdateModalComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      registrationStrategy: 'registerImmediately',
-    }),
-    HttpClientModule,
-    IonicModule.forRoot({
-      backButtonText: isPlatform('ios') ? 'Voltar' : undefined,
-    }),
-
-    // Other modules
-    MarkdownModule.forRoot({ loader: HttpClient }),
-    SweetAlert2Module.forRoot(),
-
-    // AngularFire
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
-    AngularFirePerformanceModule,
-
-    provideAppCheck(() => {
-      const provider = new ReCaptchaV3Provider(environment.recaptcha3SiteKey);
-      return initializeAppCheck(getApp(), {
-        provider,
-        isTokenAutoRefreshEnabled: true,
-      });
-    }),
-
-    provideRemoteConfig(() => {
-      const remoteConfig = getRemoteConfig();
-
-      if (isDevMode()) {
-        remoteConfig.settings.minimumFetchIntervalMillis = 10_000;
-        remoteConfig.settings.fetchTimeoutMillis = 60_000;
-      } else {
-        remoteConfig.settings.minimumFetchIntervalMillis = 43_200_000;
-        remoteConfig.settings.fetchTimeoutMillis = 60_000;
-      }
-
-      remoteConfig.defaultConfig = {
-        calendarItemViewDefault: true,
-        mapTabEnabled: true,
-        manualTabEnabled: false,
-        eventsTabEnabled: true,
-        registerPrompt: true,
-      };
-
-      fetchAndActivate(remoteConfig).catch((err) => {
-        console.error(err);
-      });
-
-      return remoteConfig;
-    }),
-
-    provideAuth(() => {
-      const auth = getAuth();
-
-      useDeviceLanguage(auth);
-
-      if (environment.useEmulators) {
-        connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-      }
-      return auth;
-    }),
-
-    provideAnalytics(() => {
-      const analytics = getAnalytics();
-
-      logEvent(analytics, 'app_version', {
-        app_name: GlobalConstantsService.appName,
-        app_version: GlobalConstantsService.appVersion,
-      });
-
-      return analytics;
-    }),
-
-    provideStorage(() => {
-      const storage = getStorage();
-
-      if (environment.useEmulators) {
-        connectStorageEmulator(storage, 'localhost', 9199);
-      }
-
-      return storage;
-    }),
-
-    provideFunctions(() => {
-      const functions = getFunctions(getApp(), 'southamerica-east1');
-      if (environment.useEmulators) {
-        connectFunctionsEmulator(functions, 'localhost', 5001);
-      }
-      return functions;
-    }),
-
-    provideFirestore(() => {
-      const firestore = initializeFirestore(getApp(), {
-        ignoreUndefinedProperties: true,
-        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-      });
-
-      if (environment.useEmulators) {
-        connectFirestoreEmulator(firestore, 'localhost', 8081);
-      }
-
-      return firestore;
-    }),
-
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-  ],
-  providers: [
-    PerformanceMonitoringService,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: LOCALE_ID, useValue: 'pt-BR' },
-    { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true, merge: true } },
-    { provide: USE_FIRESTORE_EMULATOR, useValue: environment.useEmulators ? ['localhost', 8081] : undefined },
-  ],
-  bootstrap: [AppComponent],
+    declarations: [AppComponent],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: environment.production,
+            registrationStrategy: 'registerImmediately',
+        }),
+        HttpClientModule,
+        IonicModule.forRoot({
+            backButtonText: isPlatform('ios') ? 'Voltar' : undefined,
+        }),
+        // Other modules
+        MarkdownModule.forRoot({ loader: HttpClient }),
+        SweetAlert2Module.forRoot(),
+        // AngularFire
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
+        AngularFirePerformanceModule,
+        provideAppCheck(() => {
+            const provider = new ReCaptchaV3Provider(environment.recaptcha3SiteKey);
+            return initializeAppCheck(getApp(), {
+                provider,
+                isTokenAutoRefreshEnabled: true,
+            });
+        }),
+        provideRemoteConfig(() => {
+            const remoteConfig = getRemoteConfig();
+            if (isDevMode()) {
+                remoteConfig.settings.minimumFetchIntervalMillis = 10000;
+                remoteConfig.settings.fetchTimeoutMillis = 60000;
+            }
+            else {
+                remoteConfig.settings.minimumFetchIntervalMillis = 43200000;
+                remoteConfig.settings.fetchTimeoutMillis = 60000;
+            }
+            remoteConfig.defaultConfig = {
+                calendarItemViewDefault: true,
+                mapTabEnabled: true,
+                manualTabEnabled: false,
+                eventsTabEnabled: true,
+                registerPrompt: true,
+            };
+            fetchAndActivate(remoteConfig).catch((err) => {
+                console.error(err);
+            });
+            return remoteConfig;
+        }),
+        provideAuth(() => {
+            const auth = getAuth();
+            useDeviceLanguage(auth);
+            if (environment.useEmulators) {
+                connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+            }
+            return auth;
+        }),
+        provideAnalytics(() => {
+            const analytics = getAnalytics();
+            logEvent(analytics, 'app_version', {
+                app_name: GlobalConstantsService.appName,
+                app_version: GlobalConstantsService.appVersion,
+            });
+            return analytics;
+        }),
+        provideStorage(() => {
+            const storage = getStorage();
+            if (environment.useEmulators) {
+                connectStorageEmulator(storage, 'localhost', 9199);
+            }
+            return storage;
+        }),
+        provideFunctions(() => {
+            const functions = getFunctions(getApp(), 'southamerica-east1');
+            if (environment.useEmulators) {
+                connectFunctionsEmulator(functions, 'localhost', 5001);
+            }
+            return functions;
+        }),
+        provideFirestore(() => {
+            const firestore = initializeFirestore(getApp(), {
+                ignoreUndefinedProperties: true,
+                localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+            });
+            if (environment.useEmulators) {
+                connectFirestoreEmulator(firestore, 'localhost', 8081);
+            }
+            return firestore;
+        }),
+        provideFirebaseApp(() => initializeApp(environment.firebase)),
+        UpdateModalComponent,
+    ],
+    providers: [
+        PerformanceMonitoringService,
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+        { provide: LOCALE_ID, useValue: 'pt-BR' },
+        { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true, merge: true } },
+        { provide: USE_FIRESTORE_EMULATOR, useValue: environment.useEmulators ? ['localhost', 8081] : undefined },
+    ],
+    bootstrap: [AppComponent],
 })
 export class AppModule {}

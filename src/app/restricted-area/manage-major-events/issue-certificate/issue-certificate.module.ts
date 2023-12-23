@@ -11,14 +11,14 @@ import { IssueCertificatePage } from './issue-certificate.page';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    IonicModule,
-    IssueCertificatePageRoutingModule,
-    SweetAlert2Module,
-  ],
-  declarations: [IssueCertificatePage, CertificatePreviewModalComponent],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        IonicModule,
+        IssueCertificatePageRoutingModule,
+        SweetAlert2Module,
+        IssueCertificatePage, CertificatePreviewModalComponent,
+    ],
 })
 export class IssueCertificatePageModule {}

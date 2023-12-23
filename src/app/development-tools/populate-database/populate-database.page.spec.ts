@@ -9,9 +9,8 @@ describe('PopulateDatabasePage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PopulateDatabasePage ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), PopulateDatabasePage]
+}).compileComponents();
 
     fixture = TestBed.createComponent(PopulateDatabasePage);
     component = fixture.componentInstance;

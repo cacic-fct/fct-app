@@ -8,9 +8,8 @@ describe('ListSubscriptionsPageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ListSubscriptionsPage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ListSubscriptionsPage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ListSubscriptionsPage);
     component = fixture.componentInstance;

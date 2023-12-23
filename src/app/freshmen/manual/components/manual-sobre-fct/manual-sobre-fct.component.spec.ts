@@ -9,9 +9,8 @@ describe('ManualSobreFctComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManualSobreFctComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ManualSobreFctComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ManualSobreFctComponent);
     component = fixture.componentInstance;

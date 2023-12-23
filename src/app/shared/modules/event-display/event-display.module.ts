@@ -11,8 +11,7 @@ import { RouterModule } from '@angular/router';
 import { SafeModule } from '../../pipes/safe.module';
 
 @NgModule({
-  declarations: [HeaderComponent, DescriptionComponent, ButtonsComponent, MapComponent],
-  imports: [CommonModule, IonicModule, RouterModule, SafeModule],
-  exports: [HeaderComponent, DescriptionComponent, ButtonsComponent, MapComponent],
+    imports: [CommonModule, IonicModule, RouterModule, SafeModule, HeaderComponent, DescriptionComponent, ButtonsComponent, MapComponent],
+    exports: [HeaderComponent, DescriptionComponent, ButtonsComponent, MapComponent],
 })
 export class EventDisplayModule {}

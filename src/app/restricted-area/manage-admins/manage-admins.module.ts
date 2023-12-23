@@ -9,7 +9,6 @@ import { ManageAdminsPageRoutingModule } from './manage-admins-routing.module';
 import { ManageAdminsPage } from './manage-admins.page';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, ManageAdminsPageRoutingModule],
-  declarations: [ManageAdminsPage],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, ManageAdminsPageRoutingModule, ManageAdminsPage],
 })
 export class ManageAdminsPageModule {}

@@ -9,7 +9,6 @@ import { RestrictedAreaPageRoutingModule } from './restricted-area-routing.modul
 import { RestrictedAreaPage } from './restricted-area.page';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, RestrictedAreaPageRoutingModule],
-  declarations: [RestrictedAreaPage],
+    imports: [CommonModule, FormsModule, IonicModule, RestrictedAreaPageRoutingModule, RestrictedAreaPage],
 })
 export class RestrictedAreaPageModule {}

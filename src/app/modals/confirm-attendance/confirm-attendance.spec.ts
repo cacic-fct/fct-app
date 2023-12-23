@@ -9,9 +9,8 @@ describe('ConfirmAttendancePageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ConfirmAttendancePage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ConfirmAttendancePage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmAttendancePage);
     component = fixture.componentInstance;

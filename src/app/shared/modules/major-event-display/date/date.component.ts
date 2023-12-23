@@ -6,9 +6,10 @@ import { MajorEventItem } from 'src/app/shared/services/major-event.service';
  * Requires the majorEventItem input to be passed in.
  */
 @Component({
-  selector: 'app-major-event-display-date[majorEventItem]',
-  templateUrl: './date.component.html',
-  styleUrls: ['./date.component.scss', '../major-event-display.scss'],
+    selector: 'app-major-event-display-date[majorEventItem]',
+    templateUrl: './date.component.html',
+    styleUrls: ['./date.component.scss', '../major-event-display.scss'],
+    standalone: true,
 })
 export class DateComponent implements OnInit {
   @Input() majorEventItem!: MajorEventItem;

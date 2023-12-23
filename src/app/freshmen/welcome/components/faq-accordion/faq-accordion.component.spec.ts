@@ -9,9 +9,8 @@ describe('FaqAccordionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ FaqAccordionComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), FaqAccordionComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(FaqAccordionComponent);
     component = fixture.componentInstance;

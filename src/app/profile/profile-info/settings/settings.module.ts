@@ -9,7 +9,6 @@ import { SettingsPageRoutingModule } from './settings-routing.module';
 import { SettingsPage } from './settings.page';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, SettingsPageRoutingModule],
-  declarations: [SettingsPage],
+    imports: [CommonModule, FormsModule, IonicModule, SettingsPageRoutingModule, SettingsPage],
 })
 export class SettingsPageModule {}

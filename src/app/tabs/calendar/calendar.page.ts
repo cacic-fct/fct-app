@@ -15,9 +15,10 @@ import { trace } from '@angular/fire/compat/performance';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @UntilDestroy()
 @Component({
-  selector: 'app-calendar',
-  templateUrl: 'calendar.page.html',
-  styleUrls: ['calendar.page.scss'],
+    selector: 'app-calendar',
+    templateUrl: 'calendar.page.html',
+    styleUrls: ['calendar.page.scss'],
+    standalone: true,
 })
 export class CalendarPage {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);

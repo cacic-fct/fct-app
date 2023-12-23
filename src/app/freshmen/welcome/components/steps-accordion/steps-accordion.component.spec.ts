@@ -9,9 +9,8 @@ describe('StepsAccordionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ StepsAccordionComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), StepsAccordionComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(StepsAccordionComponent);
     component = fixture.componentInstance;

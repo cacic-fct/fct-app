@@ -9,14 +9,14 @@ import { MajorEventDisplayModule } from '../../shared/modules/major-event-displa
 import { MajorEventsDisplayPageRoutingModule } from './major-events-display-routing.module';
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    RouterModule.forChild([{ path: '', component: MajorEventsDisplayPage }]),
-    MajorEventsDisplayPageRoutingModule,
-    MajorEventDisplayModule,
-  ],
-  declarations: [MajorEventsDisplayPage],
+    imports: [
+        IonicModule,
+        CommonModule,
+        FormsModule,
+        RouterModule.forChild([{ path: '', component: MajorEventsDisplayPage }]),
+        MajorEventsDisplayPageRoutingModule,
+        MajorEventDisplayModule,
+        MajorEventsDisplayPage,
+    ],
 })
 export class MajorEventsDisplayPageModule {}

@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-support',
-  templateUrl: './support.page.html',
-  styleUrls: ['./support.page.scss'],
+    selector: 'app-support',
+    templateUrl: './support.page.html',
+    styleUrls: ['./support.page.scss'],
+    standalone: true,
 })
 export class SupportPage implements OnInit {
   serviceWorkerActive: boolean = false;

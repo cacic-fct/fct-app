@@ -17,9 +17,10 @@ import { serverTimestamp } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-add-major-event',
-  templateUrl: './add-major-event.page.html',
-  styleUrls: ['./add-major-event.page.scss'],
+    selector: 'app-add-major-event',
+    templateUrl: './add-major-event.page.html',
+    styleUrls: ['./add-major-event.page.scss'],
+    standalone: true,
 })
 export class AddMajorEventPage implements OnInit {
   @ViewChild('successSwal') private successSwal: SwalComponent;

@@ -4,9 +4,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, retry, throwError } from 'rxjs';
 
 @Component({
-  selector: 'app-display-licenses',
-  templateUrl: './display-licenses.component.html',
-  styleUrls: ['./display-licenses.component.scss'],
+    selector: 'app-display-licenses',
+    templateUrl: './display-licenses.component.html',
+    styleUrls: ['./display-licenses.component.scss'],
+    standalone: true,
 })
 export class DisplayLicensesComponent {
   licenses: Observable<string>;

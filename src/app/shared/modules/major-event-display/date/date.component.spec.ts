@@ -9,9 +9,8 @@ describe('DateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DateComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), DateComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(DateComponent);
     component = fixture.componentInstance;

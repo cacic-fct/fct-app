@@ -7,9 +7,10 @@ import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { Timestamp } from '@firebase/firestore';
 
 @Component({
-  selector: 'app-confirm-modal[dataForm][isEventPaid]',
-  templateUrl: './confirm-modal.component.html',
-  styleUrls: ['./confirm-modal.component.scss'],
+    selector: 'app-confirm-modal[dataForm][isEventPaid]',
+    templateUrl: './confirm-modal.component.html',
+    styleUrls: ['./confirm-modal.component.scss'],
+    standalone: true,
 })
 export class ConfirmModalComponent implements OnInit {
   @Input() dataForm!: FormGroup<any>;

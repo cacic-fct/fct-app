@@ -9,9 +9,8 @@ describe('PageListMajorEventsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ManageMajorEventsPage],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ManageMajorEventsPage],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ManageMajorEventsPage);
     component = fixture.componentInstance;

@@ -9,9 +9,10 @@ import { Firestore, docData, doc } from '@angular/fire/firestore';
 import { map, Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-manage-admins',
-  templateUrl: './manage-admins.page.html',
-  styleUrls: ['./manage-admins.page.scss'],
+    selector: 'app-manage-admins',
+    templateUrl: './manage-admins.page.html',
+    styleUrls: ['./manage-admins.page.scss'],
+    standalone: true,
 })
 export class ManageAdminsPage implements OnInit {
   private firestore: Firestore = inject(Firestore);

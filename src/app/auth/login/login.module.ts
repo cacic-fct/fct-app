@@ -10,7 +10,6 @@ import { LoginPage } from './login.page';
 import { GoogleButtonComponent } from './components/google-button/google-button.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, LoginPageRoutingModule],
-  declarations: [LoginPage, GoogleButtonComponent],
+    imports: [CommonModule, FormsModule, IonicModule, LoginPageRoutingModule, LoginPage, GoogleButtonComponent],
 })
 export class LoginPageModule {}

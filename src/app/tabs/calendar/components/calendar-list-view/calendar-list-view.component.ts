@@ -14,9 +14,10 @@ import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
 
 @Component({
-  selector: 'app-calendar-list-view',
-  templateUrl: './calendar-list-view.component.html',
-  styleUrls: ['./calendar-list-view.component.scss'],
+    selector: 'app-calendar-list-view',
+    templateUrl: './calendar-list-view.component.html',
+    styleUrls: ['./calendar-list-view.component.scss'],
+    standalone: true,
 })
 export class CalendarListViewComponent implements OnInit, OnChanges {
   @Input() filter: {

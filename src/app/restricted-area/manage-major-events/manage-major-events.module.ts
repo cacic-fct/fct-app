@@ -9,7 +9,6 @@ import { ManageMajorEventsPageRoutingModule } from './manage-major-events-routin
 import { ManageMajorEventsPage } from './manage-major-events.page';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ManageMajorEventsPageRoutingModule],
-  declarations: [ManageMajorEventsPage],
+    imports: [CommonModule, FormsModule, IonicModule, ManageMajorEventsPageRoutingModule, ManageMajorEventsPage],
 })
 export class ManageMajorEventsPageModule {}

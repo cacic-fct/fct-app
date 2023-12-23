@@ -9,9 +9,8 @@ describe('CertificatePreviewModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CertificatePreviewModalComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), CertificatePreviewModalComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(CertificatePreviewModalComponent);
     component = fixture.componentInstance;

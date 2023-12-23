@@ -18,9 +18,10 @@ interface Subscription {
 }
 @UntilDestroy()
 @Component({
-  selector: 'app-list-subscriptions',
-  templateUrl: './list-subscriptions.html',
-  styleUrls: ['./list-subscriptions.scss'],
+    selector: 'app-list-subscriptions',
+    templateUrl: './list-subscriptions.html',
+    styleUrls: ['./list-subscriptions.scss'],
+    standalone: true,
 })
 export class ListSubscriptionsPage implements OnInit {
   @ViewChild('mySwal')

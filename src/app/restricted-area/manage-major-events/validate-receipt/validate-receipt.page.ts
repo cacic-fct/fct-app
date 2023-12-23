@@ -22,9 +22,10 @@ import { getDownloadURL } from '@angular/fire/storage';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-validate-receipt',
-  templateUrl: './validate-receipt.page.html',
-  styleUrls: ['./validate-receipt.page.scss'],
+    selector: 'app-validate-receipt',
+    templateUrl: './validate-receipt.page.html',
+    styleUrls: ['./validate-receipt.page.scss'],
+    standalone: true,
 })
 export class ValidateReceiptPage implements OnInit {
   private auth: Auth = inject(Auth);

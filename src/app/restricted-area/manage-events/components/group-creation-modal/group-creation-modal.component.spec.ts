@@ -9,9 +9,8 @@ describe('GroupCreationModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ GroupCreationModalComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), GroupCreationModalComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(GroupCreationModalComponent);
     component = fixture.componentInstance;

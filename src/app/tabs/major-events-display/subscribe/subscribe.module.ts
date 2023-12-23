@@ -11,15 +11,15 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { EventDisplayModule } from '../../../shared/modules/event-display/event-display.module';
 
 @NgModule({
-  declarations: [SubscribePage, ConfirmModalComponent, InfoModalComponent],
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SubscribePageRoutingModule,
-    SweetAlert2Module,
-    EventDisplayModule,
-  ],
+    imports: [
+        IonicModule,
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SubscribePageRoutingModule,
+        SweetAlert2Module,
+        EventDisplayModule,
+        SubscribePage, ConfirmModalComponent, InfoModalComponent,
+    ],
 })
 export class SubscribePageModule {}

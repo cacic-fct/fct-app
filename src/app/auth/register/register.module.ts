@@ -11,7 +11,6 @@ import { RegisterPage } from './register.page';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, RegisterPageRoutingModule, SweetAlert2Module],
-  declarations: [RegisterPage],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule, RegisterPageRoutingModule, SweetAlert2Module, RegisterPage],
 })
 export class RegisterPageModule {}

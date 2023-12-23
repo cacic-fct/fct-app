@@ -9,12 +9,12 @@ import { DevelopmentToolsPageRoutingModule } from './development-tools-routing.m
 import { DevelopmentToolsPage } from './development-tools.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    DevelopmentToolsPageRoutingModule
-  ],
-  declarations: [DevelopmentToolsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        DevelopmentToolsPageRoutingModule,
+        DevelopmentToolsPage
+    ]
 })
 export class DevelopmentToolsPageModule {}

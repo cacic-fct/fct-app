@@ -9,9 +9,8 @@ describe('ItemListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ItemListViewComponent],
-      imports: [IonicModule.forRoot()],
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ItemListViewComponent],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ItemListViewComponent);
     component = fixture.componentInstance;

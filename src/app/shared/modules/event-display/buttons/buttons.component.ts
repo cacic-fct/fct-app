@@ -15,9 +15,10 @@ import { Auth, user } from '@angular/fire/auth';
  * Requires the eventItem input to be passed in.
  */
 @Component({
-  selector: 'app-event-display-buttons[eventItem]',
-  templateUrl: './buttons.component.html',
-  styleUrls: ['./buttons.component.scss'],
+    selector: 'app-event-display-buttons[eventItem]',
+    templateUrl: './buttons.component.html',
+    styleUrls: ['./buttons.component.scss'],
+    standalone: true,
 })
 export class ButtonsComponent implements OnInit {
   @Input() eventItem!: EventItem;

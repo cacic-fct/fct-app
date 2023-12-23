@@ -9,9 +9,8 @@ describe('ContactEjsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContactEjsComponent ],
-      imports: [IonicModule.forRoot()]
-    }).compileComponents();
+    imports: [IonicModule.forRoot(), ContactEjsComponent]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ContactEjsComponent);
     component = fixture.componentInstance;

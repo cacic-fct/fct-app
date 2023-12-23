@@ -8,9 +8,10 @@ import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-tabs',
-  templateUrl: 'tabs.page.html',
-  styleUrls: ['tabs.page.scss'],
+    selector: 'app-tabs',
+    templateUrl: 'tabs.page.html',
+    styleUrls: ['tabs.page.scss'],
+    standalone: true,
 })
 export class TabsPage {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
