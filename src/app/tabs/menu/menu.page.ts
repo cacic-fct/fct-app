@@ -10,12 +10,26 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { environment } from 'src/environments/environment';
 import { Auth, authState, user, User } from '@angular/fire/auth';
 
+import {
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonTitle,
+  IonContent,
+  IonCard,
+  IonItem,
+  IonLabel,
+} from '@ionic/angular/standalone';
+
 @UntilDestroy()
 @Component({
-    selector: 'app-tab3',
-    templateUrl: 'menu.page.html',
-    styleUrls: ['menu.page.scss'],
-    standalone: true,
+  selector: 'app-tab3',
+  templateUrl: 'menu.page.html',
+  styleUrls: ['menu.page.scss'],
+  standalone: true,
+  imports: [IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonTitle, IonContent, IonCard, IonItem, IonLabel],
 })
 export class MenuPage {
   private auth: Auth = inject(Auth);

@@ -8,11 +8,40 @@ import { take, Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
 
+import {
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonTitle,
+  IonIcon,
+  IonContent,
+  IonCard,
+  IonAvatar,
+  IonCardTitle,
+  IonSkeletonText,
+  IonButton,
+} from '@ionic/angular/standalone';
+
 @Component({
-    selector: 'app-profile-info',
-    templateUrl: './profile-info.page.html',
-    styleUrls: ['./profile-info.page.scss'],
-    standalone: true,
+  selector: 'app-profile-info',
+  templateUrl: './profile-info.page.html',
+  styleUrls: ['./profile-info.page.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonTitle,
+    IonIcon,
+    IonContent,
+    IonCard,
+    IonAvatar,
+    IonCardTitle,
+    IonSkeletonText,
+    IonButton,
+  ],
 })
 export class ProfileInfoPage implements OnInit {
   private auth: Auth = inject(Auth);

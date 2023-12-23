@@ -12,6 +12,22 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { MajorEventSubscription, MajorEventItem } from '../../../shared/services/major-event.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonBackButton,
+  IonContent,
+  IonButton,
+  IonSpinner,
+  IonItem,
+  IonLabel,
+  IonText,
+  IonProgressBar,
+  IonSpinner,
+} from '@ionic/angular/standalone';
+
 interface Subscription extends MajorEventSubscription {
   id: string;
   time: Timestamp;
@@ -19,10 +35,25 @@ interface Subscription extends MajorEventSubscription {
 }
 @UntilDestroy()
 @Component({
-    selector: 'app-list-subscriptions',
-    templateUrl: './list-subscriptions.html',
-    styleUrls: ['./list-subscriptions.scss'],
-    standalone: true,
+  selector: 'app-list-subscriptions',
+  templateUrl: './list-subscriptions.html',
+  styleUrls: ['./list-subscriptions.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonBackButton,
+    IonContent,
+    IonButton,
+    IonSpinner,
+    IonItem,
+    IonLabel,
+    IonText,
+    IonProgressBar,
+    IonSpinner,
+  ],
 })
 export class ListSubscriptionsPage implements OnInit {
   @ViewChild('mySwal')

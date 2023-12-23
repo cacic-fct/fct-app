@@ -14,11 +14,14 @@ import { trace } from '@angular/fire/compat/performance';
 import { EmojiService } from '../../../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
+import { IonList, IonProgressBar } from '@ionic/angular/standalone';
+
 @Component({
-    selector: 'app-item-list',
-    templateUrl: './item-list.component.html',
-    styleUrls: ['./item-list.component.scss'],
-    standalone: true,
+  selector: 'app-item-list',
+  templateUrl: './item-list.component.html',
+  styleUrls: ['./item-list.component.scss'],
+  standalone: true,
+  imports: [IonList, IonProgressBar],
 })
 export class ItemListViewComponent implements OnInit, OnChanges {
   courses = CoursesService.courses;

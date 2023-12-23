@@ -6,11 +6,14 @@ import { EventItem } from 'src/app/shared/services/event';
 import { EmojiService } from '../../../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
+import { IonItemDivider, IonLabel, IonList, IonItem, IonSpinner } from '@ionic/angular/standalone';
+
 @Component({
-    selector: 'app-event-list[eventInput]',
-    templateUrl: './event-list.component.html',
-    styleUrls: ['./event-list.component.scss'],
-    standalone: true,
+  selector: 'app-event-list[eventInput]',
+  templateUrl: './event-list.component.html',
+  styleUrls: ['./event-list.component.scss'],
+  standalone: true,
+  imports: [IonItemDivider, IonLabel, IonList, IonItem, IonLabel, IonSpinner],
 })
 export class EventListComponent implements OnInit {
   @Input() eventInput!: Observable<EventItem[]>;

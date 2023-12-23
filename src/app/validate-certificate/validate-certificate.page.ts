@@ -5,11 +5,36 @@ import { Observable } from 'rxjs';
 import { CertificateDocPublic } from 'src/app/shared/services/certificates.service';
 import { decodeCertificateCode } from 'src/app/shared/services/certificates.service';
 
+import {
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonTitle,
+  IonContent,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+} from '@ionic/angular/standalone';
+
 @Component({
-    selector: 'app-validate-certificate',
-    templateUrl: './validate-certificate.page.html',
-    styleUrls: ['./validate-certificate.page.scss'],
-    standalone: true,
+  selector: 'app-validate-certificate',
+  templateUrl: './validate-certificate.page.html',
+  styleUrls: ['./validate-certificate.page.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonTitle,
+    IonContent,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+  ],
 })
 export class ValidateCertificatePage implements OnInit {
   param: string;

@@ -11,6 +11,20 @@ import { User } from 'src/app/shared/services/user';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonBackButton,
+  IonContent,
+  IonButton,
+  IonItem,
+  IonLabel,
+  IonText,
+  IonProgressBar,
+} from '@ionic/angular/standalone';
+
 interface Subscription {
   id: string;
   time: Timestamp;
@@ -18,10 +32,23 @@ interface Subscription {
 }
 @UntilDestroy()
 @Component({
-    selector: 'app-list-subscriptions',
-    templateUrl: './list-subscriptions.html',
-    styleUrls: ['./list-subscriptions.scss'],
-    standalone: true,
+  selector: 'app-list-subscriptions',
+  templateUrl: './list-subscriptions.html',
+  styleUrls: ['./list-subscriptions.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonBackButton,
+    IonContent,
+    IonButton,
+    IonItem,
+    IonLabel,
+    IonText,
+    IonProgressBar,
+  ],
 })
 export class ListSubscriptionsPage implements OnInit {
   @ViewChild('mySwal')

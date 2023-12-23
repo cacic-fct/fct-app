@@ -13,99 +13,111 @@ import { formatDate } from '@angular/common';
 import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
 
+import {
+  IonContent,
+  IonList,
+  IonButton,
+  IonLabel,
+  IonListHeader,
+  IonItemDivider,
+  IonProgressBar,
+  IonSkeletonText,
+} from '@ionic/angular/standalone';
+
 @Component({
-    selector: 'app-calendar-list-view',
-    templateUrl: './calendar-list-view.component.html',
-    styleUrls: ['./calendar-list-view.component.scss'],
-    standalone: true,
+  selector: 'app-calendar-list-view',
+  templateUrl: './calendar-list-view.component.html',
+  styleUrls: ['./calendar-list-view.component.scss'],
+  standalone: true,
+  imports: [IonContent, IonList, IonButton, IonLabel, IonListHeader, IonItemDivider, IonProgressBar, IonSkeletonText],
 })
 export class CalendarListViewComponent implements OnInit, OnChanges {
-    @Input() filter: {
-        courses: Array<string>;
-    };
+  @Input() filter: {
+    courses: Array<string>;
+  };
 
-    courseFilter$: BehaviorSubject<{
-        courses: Array<string>;
-    } | null> = new BehaviorSubject(null);
-    dateFilter$: BehaviorSubject<Date | null> = new BehaviorSubject(null);
+  courseFilter$: BehaviorSubject<{
+    courses: Array<string>;
+  } | null> = new BehaviorSubject(null);
+  dateFilter$: BehaviorSubject<Date | null> = new BehaviorSubject(null);
 
-    loadOlderCount: number = 0;
+  loadOlderCount: number = 0;
 
-    items$: Observable<EventItem[]>;
+  items$: Observable<EventItem[]>;
 
-    baseDate: Date = startOfDay(new Date());
+  baseDate: Date = startOfDay(new Date());
 
-    constructor(
-        private afs: AngularFirestore,
-        private toastController: ToastController,
-        public dateService: DateService
-    ) { }
+  constructor(
+    private afs: AngularFirestore,
+    private toastController: ToastController,
+    public dateService: DateService
+  ) {}
 
-    ngOnInit() {
-        this.dateFilter$.next(this.baseDate);
+  ngOnInit() {
+    this.dateFilter$.next(this.baseDate);
 
-        this.items$ = combineLatest([this.courseFilter$, this.dateFilter$]).pipe(
-            switchMap(([filter, date]) => {
-                return this.afs
-                    .collection<EventItem>('events', (ref) => {
-                        let query: any = ref;
-                        if (date) {
-                            query = query.where('eventStartDate', '>=', this.baseDate);
-                        }
-                        if (filter['courses'].length > 0) {
-                            query = query.where('course', 'in', filter['courses']);
-                        }
+    this.items$ = combineLatest([this.courseFilter$, this.dateFilter$]).pipe(
+      switchMap(([filter, date]) => {
+        return this.afs
+          .collection<EventItem>('events', (ref) => {
+            let query: any = ref;
+            if (date) {
+              query = query.where('eventStartDate', '>=', this.baseDate);
+            }
+            if (filter['courses'].length > 0) {
+              query = query.where('course', 'in', filter['courses']);
+            }
 
-                        return query.orderBy('eventStartDate', 'asc');
-                    })
-                    .valueChanges({ idField: 'id' })
-                    .pipe(trace('firestore'));
-            })
-        );
+            return query.orderBy('eventStartDate', 'asc');
+          })
+          .valueChanges({ idField: 'id' })
+          .pipe(trace('firestore'));
+      })
+    );
+  }
+
+  ngOnChanges() {
+    this.courseFilter$.next(this.filter);
+  }
+
+  formatDate(date: Date): string {
+    let formated = formatDate(date, "EEEE, dd 'de' MMMM 'de' yyyy", 'pt-BR');
+
+    formated = formated.charAt(0).toUpperCase() + formated.slice(1);
+    return formated;
+  }
+
+  formatMonth(date: Date): string {
+    let formated = formatDate(date, "MMMM 'de' yyyy", 'pt-BR');
+
+    formated = formated.charAt(0).toUpperCase() + formated.slice(1);
+    return formated;
+  }
+
+  loadOlderEvents() {
+    if (this.loadOlderCount == 0) {
+      this.baseDate = startOfWeek(this.baseDate);
     }
 
-    ngOnChanges() {
-        this.courseFilter$.next(this.filter);
+    if (this.loadOlderCount > 3) {
+      return;
     }
 
-    formatDate(date: Date): string {
-        let formated = formatDate(date, "EEEE, dd 'de' MMMM 'de' yyyy", 'pt-BR');
+    this.loadOlderCount += 1;
+    this.presentToast();
+    this.baseDate = sub(this.baseDate, { weeks: 1 });
+    this.dateFilter$.next(this.baseDate);
+  }
 
-        formated = formated.charAt(0).toUpperCase() + formated.slice(1);
-        return formated;
-    }
-
-    formatMonth(date: Date): string {
-        let formated = formatDate(date, "MMMM 'de' yyyy", 'pt-BR');
-
-        formated = formated.charAt(0).toUpperCase() + formated.slice(1);
-        return formated;
-    }
-
-    loadOlderEvents() {
-        if (this.loadOlderCount == 0) {
-            this.baseDate = startOfWeek(this.baseDate);
-        }
-
-        if (this.loadOlderCount > 3) {
-            return;
-        }
-
-        this.loadOlderCount += 1;
-        this.presentToast();
-        this.baseDate = sub(this.baseDate, { weeks: 1 });
-        this.dateFilter$.next(this.baseDate);
-    }
-
-    async presentToast() {
-        const toast = await this.toastController.create({
-            header: 'Procurando por eventos mais antigos...',
-            message: 'De até ' + this.loadOlderCount + (this.loadOlderCount == 1 ? ' semana ' : ' semanas ') + 'atrás',
-            icon: 'search',
-            position: 'bottom',
-            duration: 1000,
-            buttons: [],
-        });
-        toast.present();
-    }
+  async presentToast() {
+    const toast = await this.toastController.create({
+      header: 'Procurando por eventos mais antigos...',
+      message: 'De até ' + this.loadOlderCount + (this.loadOlderCount == 1 ? ' semana ' : ' semanas ') + 'atrás',
+      icon: 'search',
+      position: 'bottom',
+      duration: 1000,
+      buttons: [],
+    });
+    toast.present();
+  }
 }

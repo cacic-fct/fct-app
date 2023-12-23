@@ -10,11 +10,23 @@ import { MajorEventSubscription } from 'src/app/shared/services/major-event.serv
 import { DateService } from 'src/app/shared/services/date.service';
 import { user, Auth } from '@angular/fire/auth';
 
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonCard,
+  IonButton,
+  IonIcon,
+  IonProgressBar,
+} from '@ionic/angular/standalone';
+
 @Component({
-    selector: 'app-major-events-display',
-    templateUrl: 'major-events-display.page.html',
-    styleUrls: ['major-events-display.page.scss'],
-    standalone: true,
+  selector: 'app-major-events-display',
+  templateUrl: 'major-events-display.page.html',
+  styleUrls: ['major-events-display.page.scss'],
+  standalone: true,
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonButton, IonIcon, IonProgressBar],
 })
 export class MajorEventsDisplayPage {
   private auth: Auth = inject(Auth);

@@ -12,14 +12,17 @@ import VectorSource from 'ol/source/Vector';
 
 import { EventItem } from '../../../services/event';
 
+import { IonItem, IonIcon, IonLabel } from '@ionic/angular/standalone';
+
 /**
  * Requires the eventItem input to be passed in.
  */
 @Component({
-    selector: 'app-event-display-map[eventItem]',
-    templateUrl: './map.component.html',
-    styleUrls: ['./map.component.scss'],
-    standalone: true,
+  selector: 'app-event-display-map[eventItem]',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.scss'],
+  standalone: true,
+  imports: [IonItem, IonIcon, IonLabel],
 })
 export class MapComponent implements OnInit {
   map: Map | undefined | null;

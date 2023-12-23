@@ -2,11 +2,24 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DateService } from 'src/app/shared/services/date.service';
 import { EventSubscriptionLocal } from 'src/app/profile/my-attendances/my-attendances.page';
 
+import {
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonButton,
+  IonIcon,
+} from '@ionic/angular/standalone';
+
 @Component({
-    selector: 'app-event-card[eventSubscription]',
-    templateUrl: './event-card.component.html',
-    styleUrls: ['./event-card.component.scss'],
-    standalone: true,
+  selector: 'app-event-card[eventSubscription]',
+  templateUrl: './event-card.component.html',
+  styleUrls: ['./event-card.component.scss'],
+  standalone: true,
+  imports: [IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonGrid, IonRow, IonCol, IonButton, IonIcon],
 })
 export class EventCardComponent implements OnInit {
   @Input() eventSubscription!: EventSubscriptionLocal;
