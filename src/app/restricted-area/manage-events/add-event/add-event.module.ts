@@ -5,19 +5,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { AddEventPageRoutingModule } from './add-event-routing.module';
 import { AddEventPage } from './add-event.page';
-import { SafeModule } from 'src/app/shared/pipes/safe.module';
+
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
     imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        IonicModule,
-        AddEventPageRoutingModule,
-        SafeModule,
-        SweetAlert2Module,
-        AddEventPage, ConfirmModalPage,
-    ],
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IonicModule,
+    AddEventPageRoutingModule,
+    SweetAlert2Module,
+    AddEventPage, ConfirmModalPage,
+],
 })
 export class AddEventPageModule {}

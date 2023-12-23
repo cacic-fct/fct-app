@@ -5,18 +5,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MajorEventsDisplayPage } from './major-events-display.page';
 
-import { MajorEventDisplayModule } from '../../shared/modules/major-event-display/major-event-display.module';
+
 import { MajorEventsDisplayPageRoutingModule } from './major-events-display-routing.module';
 
 @NgModule({
     imports: [
-        IonicModule,
-        CommonModule,
-        FormsModule,
-        RouterModule.forChild([{ path: '', component: MajorEventsDisplayPage }]),
-        MajorEventsDisplayPageRoutingModule,
-        MajorEventDisplayModule,
-        MajorEventsDisplayPage,
-    ],
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    RouterModule.forChild([{ path: '', component: MajorEventsDisplayPage }]),
+    MajorEventsDisplayPageRoutingModule,
+    MajorEventsDisplayPage,
+],
 })
 export class MajorEventsDisplayPageModule {}
