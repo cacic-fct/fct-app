@@ -28,21 +28,21 @@ interface Attendance {
 
 @UntilDestroy()
 @Component({
-    selector: 'app-scanner',
-    templateUrl: './scanner.page.html',
-    styleUrls: ['./scanner.page.scss'],
-    standalone: true,
-    imports: [
-        IonicModule,
-        NgIf,
-        ZXingScannerModule,
-        FormsModule,
-        NgFor,
-        SweetAlert2Module,
-        AsyncPipe,
-        DecimalPipe,
-        DatePipe,
-    ],
+  selector: 'app-scanner',
+  templateUrl: './scanner.page.html',
+  styleUrls: ['./scanner.page.scss'],
+  standalone: true,
+  imports: [
+    IonicModule,
+    NgIf,
+    ZXingScannerModule,
+    FormsModule,
+    NgFor,
+    SweetAlert2Module,
+    AsyncPipe,
+    DecimalPipe,
+    DatePipe,
+  ],
 })
 export class ScannerPage implements OnInit {
   @Input('manualInput') manualInput!: string;
