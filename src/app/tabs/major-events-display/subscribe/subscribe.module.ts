@@ -8,17 +8,18 @@ import { SubscribePageRoutingModule } from './subscribe-routing.module';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { InfoModalComponent } from './info-modal/info-modal.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-
+import { EventDisplayModule } from '../../../shared/modules/event-display/event-display.module';
 
 @NgModule({
     imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SubscribePageRoutingModule,
-    SweetAlert2Module,
-    SubscribePage, ConfirmModalComponent, InfoModalComponent,
-],
+        IonicModule,
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SubscribePageRoutingModule,
+        SweetAlert2Module,
+        EventDisplayModule,
+        SubscribePage, ConfirmModalComponent, InfoModalComponent,
+    ],
 })
 export class SubscribePageModule {}
