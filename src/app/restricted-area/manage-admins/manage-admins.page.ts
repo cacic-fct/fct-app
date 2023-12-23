@@ -24,7 +24,9 @@ export class ManageAdminsPage implements OnInit {
   });
 
   constructor(public toastController: ToastController, private alertController: AlertController) {
-    this.adminList$ = docData(doc(this.firestore, 'claims', 'admin')).pipe(map((doc) => doc.admins));
+    this.adminList$ = docData(doc(this.firestore, 'claims', 'admin')).pipe(map((doc) => doc.admins)) as Observable<
+      string[]
+    >;
   }
 
   ngOnInit() {}
@@ -47,17 +49,27 @@ export class ManageAdminsPage implements OnInit {
 
   addAdmin() {
     const addAdminRole = httpsCallable(this.functions, 'claims-addAdminRole');
-    addAdminRole({ email: this.addAdminForm.value.adminEmail }).then((res) => {
-      this.successToast();
-      this.addAdminForm.reset();
-    });
+    addAdminRole({ email: this.addAdminForm.value.adminEmail })
+      .then((res) => {
+        this.successToast();
+        this.addAdminForm.reset();
+      })
+      .catch((err) => {
+        this.errorToast(err);
+        console.error(err);
+      });
   }
 
   removeAdmin(adminEmail: string) {
     const removeAdminRole = httpsCallable(this.functions, 'claims-removeAdminRole');
-    removeAdminRole({ email: adminEmail }).then((res) => {
-      this.successToast();
-    });
+    removeAdminRole({ email: adminEmail })
+      .then((res) => {
+        this.successToast();
+      })
+      .catch((err) => {
+        this.errorToast(err);
+        console.error(err);
+      });
   }
 
   async removeConfirmationAlert(adminEmail: string) {
