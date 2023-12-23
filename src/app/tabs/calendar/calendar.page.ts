@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import { Router } from '@angular/router';
 import { Component, inject } from '@angular/core';
-import { KeyValue, formatDate } from '@angular/common';
+import { KeyValue, KeyValuePipe, NgClass, formatDate } from '@angular/common';
 
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
@@ -22,13 +22,28 @@ import {
 import { trace } from '@angular/fire/compat/performance';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { CalendarListViewComponent } from 'src/app/tabs/calendar/components/calendar-list-view/calendar-list-view.component';
+import { ItemListViewComponent } from 'src/app/tabs/calendar/components/item-list-view/item-list.component';
+
 @UntilDestroy()
 @Component({
   selector: 'app-calendar',
   templateUrl: 'calendar.page.html',
   styleUrls: ['calendar.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonTitle, IonContent],
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonTitle,
+    IonContent,
+    KeyValuePipe,
+    CalendarListViewComponent,
+    ItemListViewComponent,
+    NgClass,
+  ],
 })
 export class CalendarPage {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
@@ -130,6 +145,7 @@ export class CalendarPage {
       weekStartsOn: 0,
     });
     this.generateCalendarData();
+    return 0;
   }
 
   dateSelector(): void {

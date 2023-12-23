@@ -7,6 +7,7 @@ import { NavController } from '@ionic/angular/standalone';
 import { DateService } from 'src/app/shared/services/date.service';
 
 import { IonItem, IonLabel } from '@ionic/angular/standalone';
+import { DatePipe } from '@angular/common';
 
 /**
  * Requires the eventItem input to be passed in.
@@ -16,7 +17,7 @@ import { IonItem, IonLabel } from '@ionic/angular/standalone';
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.scss'],
   standalone: true,
-  imports: [IonItem, IonLabel],
+  imports: [IonItem, IonLabel, DatePipe],
 })
 export class ItemListComponent implements OnInit {
   courses = CoursesService.courses;

@@ -1,8 +1,5 @@
-// @ts-strict-ignore
-import { NgModule } from '@angular/core';
 import { canActivate } from '@angular/fire/compat/auth-guard';
-import { RouterModule, Routes } from '@angular/router';
-import { PreloadingStrategyService } from './shared/services/routing/preloading-strategy.service';
+import { Routes } from '@angular/router';
 
 import {
   DevelopmentOnlyGuard,
@@ -21,7 +18,7 @@ export const routes: Routes = [
   {
     path: '',
     data: { preload: true },
-    loadComponent: () => import('./tabs/tabs.page').then((m) => m.TabsPage),
+    loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
   },
   {
     path: 'sobre',

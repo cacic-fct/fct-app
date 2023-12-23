@@ -1,5 +1,4 @@
-// @ts-strict-ignore
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 
 import { canActivate } from '@angular/fire/compat/auth-guard';
@@ -10,11 +9,6 @@ export const routes: Routes = [
     path: '',
     component: TabsPage,
     children: [
-      {
-        path: '',
-        redirectTo: '/calendario',
-        pathMatch: 'full',
-      },
       {
         path: 'calendario',
         title: 'Calendário de eventos',
@@ -41,6 +35,11 @@ export const routes: Routes = [
         title: 'Área restrita',
         loadComponent: () => import('src/app/restricted-area/restricted-area.page').then((m) => m.RestrictedAreaPage),
         ...canActivate(caAndGreater),
+      },
+      {
+        path: '',
+        redirectTo: '/calendario',
+        pathMatch: 'full',
       },
     ],
   },

@@ -33,12 +33,20 @@ import { IonicRouteStrategy, isPlatform, provideIonicAngular } from '@ionic/angu
 import { PerformanceMonitoringService, AngularFirePerformanceModule } from '@angular/fire/compat/performance';
 import { PreloadingStrategyService } from 'src/app/shared/services/routing/preloading-strategy.service';
 
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+registerLocaleData(localePt);
+
 if (environment.production) {
   enableProdMode();
 }
 
 bootstrapApplication(AppComponent, {
   providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideIonicAngular({
+      backButtonText: isPlatform('ios') ? 'Voltar' : undefined,
+    }),
     provideRouter(routes, withPreloading(PreloadingStrategyService), withComponentInputBinding()),
     importProvidersFrom(
       BrowserModule,
@@ -53,6 +61,7 @@ bootstrapApplication(AppComponent, {
       AngularFireModule.initializeApp(environment.firebase),
       AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
       AngularFirePerformanceModule,
+      provideFirebaseApp(() => initializeApp(environment.firebase)),
       provideAppCheck(() => {
         const provider = new ReCaptchaV3Provider(environment.recaptcha3SiteKey);
         return initializeAppCheck(getApp(), {
@@ -120,17 +129,12 @@ bootstrapApplication(AppComponent, {
           connectFirestoreEmulator(firestore, 'localhost', 8081);
         }
         return firestore;
-      }),
-      provideFirebaseApp(() => initializeApp(environment.firebase))
+      })
     ),
     PerformanceMonitoringService,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true, merge: true } },
     { provide: USE_FIRESTORE_EMULATOR, useValue: environment.useEmulators ? ['localhost', 8081] : undefined },
     provideHttpClient(withInterceptorsFromDi()),
-    provideIonicAngular({
-      backButtonText: isPlatform('ios') ? 'Voltar' : undefined,
-    }),
   ],
 }).catch((err) => console.log(err));

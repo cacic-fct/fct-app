@@ -3,6 +3,7 @@ import { DateService } from 'src/app/shared/services/date.service';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 
 import { IonIcon, IonItem } from '@ionic/angular/standalone';
+import { DatePipe } from '@angular/common';
 
 /**
  * Requires the majorEventItem input to be passed in.
@@ -12,7 +13,7 @@ import { IonIcon, IonItem } from '@ionic/angular/standalone';
   templateUrl: './date.component.html',
   styleUrls: ['./date.component.scss', '../major-event-display.scss'],
   standalone: true,
-  imports: [IonIcon, IonItem],
+  imports: [IonIcon, IonItem, DatePipe],
 })
 export class DateComponent implements OnInit {
   @Input() majorEventItem!: MajorEventItem;

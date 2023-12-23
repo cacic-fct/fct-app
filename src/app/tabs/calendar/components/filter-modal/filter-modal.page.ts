@@ -1,5 +1,5 @@
 // @ts-strict-ignore
-import { KeyValue } from '@angular/common';
+import { KeyValue, KeyValuePipe } from '@angular/common';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular/standalone';
 import { CoursesService } from 'src/app/shared/services/courses.service';
@@ -25,7 +25,7 @@ import {
   standalone: true,
   imports: [
     IonHeader,
-    Iontoolbar,
+    IonToolbar,
     IonButtons,
     IonButton,
     IonTitle,
@@ -35,6 +35,7 @@ import {
     IonItem,
     IonLabel,
     IonCheckbox,
+    KeyValuePipe,
   ],
 })
 export class FilterModalPage implements OnInit, AfterViewInit {

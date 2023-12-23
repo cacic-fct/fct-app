@@ -8,7 +8,7 @@ import { startOfDay, startOfWeek, sub } from 'date-fns';
 import { ToastController } from '@ionic/angular/standalone';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
-import { formatDate } from '@angular/common';
+import { AsyncPipe, formatDate, KeyValuePipe } from '@angular/common';
 
 import { EventItem } from 'src/app/shared/services/event';
 import { trace } from '@angular/fire/compat/performance';
@@ -23,13 +23,26 @@ import {
   IonProgressBar,
   IonSkeletonText,
 } from '@ionic/angular/standalone';
+import { ItemListComponent } from 'src/app/tabs/calendar/components/item-list/item-list.component';
 
 @Component({
   selector: 'app-calendar-list-view',
   templateUrl: './calendar-list-view.component.html',
   styleUrls: ['./calendar-list-view.component.scss'],
   standalone: true,
-  imports: [IonContent, IonList, IonButton, IonLabel, IonListHeader, IonItemDivider, IonProgressBar, IonSkeletonText],
+  imports: [
+    IonContent,
+    IonList,
+    IonButton,
+    IonLabel,
+    IonListHeader,
+    IonItemDivider,
+    IonProgressBar,
+    IonSkeletonText,
+    AsyncPipe,
+    ItemListComponent,
+    KeyValuePipe,
+  ],
 })
 export class CalendarListViewComponent implements OnInit, OnChanges {
   @Input() filter: {
