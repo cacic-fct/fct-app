@@ -8,9 +8,9 @@ import { EventInfoDisplayPageRoutingModule } from './event-info-display-routing.
 
 import { EventInfoDisplayPage } from './event-info-display.page';
 
-import { EventDisplayModule } from '../../../shared/modules/event-display/event-display.module';
+
 
 @NgModule({
-    imports: [CommonModule, FormsModule, IonicModule, EventInfoDisplayPageRoutingModule, EventDisplayModule, EventInfoDisplayPage],
+    imports: [CommonModule, FormsModule, IonicModule, EventInfoDisplayPageRoutingModule, EventInfoDisplayPage],
 })
 export class EventInfoDisplayPageModule {}
