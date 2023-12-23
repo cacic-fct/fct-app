@@ -7,7 +7,9 @@ import { Observable, take, switchMap, combineLatest, map, mergeMap, forkJoin, of
 import { Injectable, isDevMode } from '@angular/core';
 import { format as formatDate } from 'date-fns';
 
-import { Template, generate as PDFGenerate } from '@pdfme/generator';
+import { generate as PDFGenerate } from '@pdfme/generator';
+import { Template } from '@pdfme/common';
+
 import { HttpClient } from '@angular/common/http';
 import { ptBR } from 'date-fns/locale';
 
