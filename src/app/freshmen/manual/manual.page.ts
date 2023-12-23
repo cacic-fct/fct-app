@@ -12,7 +12,7 @@ import { ManualAuxiliosComponent } from './components/manual-auxilios/manual-aux
 import { ManualMovimentoEstudantilComponent } from './components/manual-movimento-estudantil/manual-movimento-estudantil.component';
 import { ManualSobreFctComponent } from './components/manual-sobre-fct/manual-sobre-fct.component';
 import { ManualIntroducaoComponent } from './components/manual-introducao/manual-introducao.component';
-import { IonicModule } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonButton } from "@ionic/angular/standalone";
 
 @Component({
     selector: 'app-manual',
@@ -20,49 +20,55 @@ import { IonicModule } from '@ionic/angular';
     styleUrls: ['./manual.page.scss'],
     standalone: true,
     imports: [
-        IonicModule,
         ManualIntroducaoComponent,
         ManualSobreFctComponent,
         ManualMovimentoEstudantilComponent,
         ManualAuxiliosComponent,
         ManualPresidentePrudenteComponent,
         ManualGlossarioComponent,
+        IonHeader,
+        IonToolbar,
+        IonButtons,
+        IonBackButton,
+        IonTitle,
+        IonContent,
+        IonButton
     ],
 })
 export class ManualPage implements AfterViewInit {
-  map: Map | undefined | null;
-  constructor(private markerService: MarkerService) {}
+    map: Map | undefined | null;
+    constructor(private markerService: MarkerService) { }
 
-  ngAfterViewInit() {
-    useGeographic();
-    const rasterLayer = new TileLayer({
-      source: new OSM(),
-    });
+    ngAfterViewInit() {
+        useGeographic();
+        const rasterLayer = new TileLayer({
+            source: new OSM(),
+        });
 
-    setTimeout(() => {
-      this.map = new Map({
-        view: new View({
-          center: [-51.40775, -22.12103],
-          zoom: 15,
-          maxZoom: 19,
-          projection: 'EPSG:3857',
-        }),
-        layers: [rasterLayer],
-        target: 'ol-map-manual',
-      });
-      this.markerService.makeGroceriesMarkers(this.map);
-    }, 500);
-  }
-
-  ngOnDestroy() {
-    // Remove map on leave if it exists
-    if (this.map) {
-      this.map.setTarget(undefined);
-      this.map = null;
+        setTimeout(() => {
+            this.map = new Map({
+                view: new View({
+                    center: [-51.40775, -22.12103],
+                    zoom: 15,
+                    maxZoom: 19,
+                    projection: 'EPSG:3857',
+                }),
+                layers: [rasterLayer],
+                target: 'ol-map-manual',
+            });
+            this.markerService.makeGroceriesMarkers(this.map);
+        }, 500);
     }
-  }
 
-  reloadMap() {
-    this.map?.updateSize();
-  }
+    ngOnDestroy() {
+        // Remove map on leave if it exists
+        if (this.map) {
+            this.map.setTarget(undefined);
+            this.map = null;
+        }
+    }
+
+    reloadMap() {
+        this.map?.updateSize();
+    }
 }

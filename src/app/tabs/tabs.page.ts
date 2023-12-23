@@ -1,3 +1,5 @@
+import { IonIcon, IonLabel, IonTabs, IonTabBar, IonTabButton } from '@ionic/angular/standalone';
+import { IonLabel } from '@ionic/angular/standalone';
 import { Component, inject } from '@angular/core';
 import { getBooleanChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -8,10 +10,11 @@ import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 
 @UntilDestroy()
 @Component({
-    selector: 'app-tabs',
-    templateUrl: 'tabs.page.html',
-    styleUrls: ['tabs.page.scss'],
-    standalone: true,
+  selector: 'app-tabs',
+  templateUrl: 'tabs.page.html',
+  styleUrls: ['tabs.page.scss'],
+  standalone: true,
+  imports: [IonLabel, IonIcon, IonTabs, IonTabBar, IonTabButton],
 })
 export class TabsPage {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);

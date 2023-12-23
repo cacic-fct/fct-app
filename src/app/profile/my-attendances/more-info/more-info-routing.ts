@@ -2,7 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { MoreInfoPage } from './more-info.page';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: MoreInfoPage,
@@ -14,5 +14,3 @@ const routes: Routes = [
       import('src/app/tabs/calendar/event-info-display/event-info-display.page').then((m) => m.EventInfoDisplayPage),
   },
 ];
-
-export class MoreInfoPageRoutingModule {}

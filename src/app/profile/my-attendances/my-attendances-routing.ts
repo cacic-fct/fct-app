@@ -2,7 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { MyAttendancesPage } from './my-attendances.page';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: MyAttendancesPage,
@@ -18,5 +18,3 @@ const routes: Routes = [
     loadComponent: () => import('./more-info/more-info.page').then((m) => m.MoreInfoPage),
   },
 ];
-
-export class MyAttendancesPageRoutingModule {}

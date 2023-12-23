@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GoogleButtonComponent } from './components/google-button/google-button.component';
-import { IonicModule } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonGrid, IonRow, IonCol } from "@ionic/angular/standalone";
 
 @Component({
     selector: 'app-login',
@@ -9,13 +9,21 @@ import { IonicModule } from '@ionic/angular';
     styleUrls: ['./login.page.scss'],
     standalone: true,
     imports: [
-        IonicModule,
         GoogleButtonComponent,
         RouterLink,
+        IonHeader,
+        IonToolbar,
+        IonButtons,
+        IonBackButton,
+        IonTitle,
+        IonContent,
+        IonGrid,
+        IonRow,
+        IonCol
     ],
 })
 export class LoginPage implements OnInit {
-  constructor() {}
+    constructor() { }
 
-  ngOnInit() {}
+    ngOnInit() { }
 }

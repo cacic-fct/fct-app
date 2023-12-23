@@ -5,7 +5,7 @@ import { TabsPage } from './tabs.page';
 import { canActivate } from '@angular/fire/compat/auth-guard';
 import { caAndGreater } from '../shared/services/routing/guards.service';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: TabsPage,
@@ -45,5 +45,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-export class TabsPageRoutingModule {}

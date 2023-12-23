@@ -5,7 +5,21 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../shared/services/auth.service';
-import { AlertController, ToastController } from '@ionic/angular';
+import {
+  AlertController,
+  ToastController,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonGrid,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  IonButton,
+} from '@ionic/angular/standalone';
 
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
@@ -25,10 +39,23 @@ import { take } from 'rxjs';
 import { WindowService } from '../../shared/services/window.service';
 
 @Component({
-    selector: 'app-page-register',
-    templateUrl: './register.page.html',
-    styleUrls: ['./register.page.scss'],
-    standalone: true,
+  selector: 'app-page-register',
+  templateUrl: './register.page.html',
+  styleUrls: ['./register.page.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonGrid,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonSelect,
+    IonSelectOption,
+    IonButton,
+  ],
 })
 export class RegisterPage implements OnInit {
   @ViewChild('mySwal')

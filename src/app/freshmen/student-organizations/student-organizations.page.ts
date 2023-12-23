@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactEjsComponent } from './components/contact-ejs/contact-ejs.component';
 import { ContactCasComponent } from './components/contact-cas/contact-cas.component';
-import { IonicModule } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent } from "@ionic/angular/standalone";
 
 @Component({
     selector: 'app-student-organizations',
@@ -9,13 +9,18 @@ import { IonicModule } from '@ionic/angular';
     styleUrls: ['./student-organizations.page.scss'],
     standalone: true,
     imports: [
-        IonicModule,
         ContactCasComponent,
         ContactEjsComponent,
+        IonHeader,
+        IonToolbar,
+        IonButtons,
+        IonBackButton,
+        IonTitle,
+        IonContent
     ],
 })
 export class StudentOrganizationsPage implements OnInit {
-  constructor() {}
+    constructor() { }
 
-  ngOnInit() {}
+    ngOnInit() { }
 }

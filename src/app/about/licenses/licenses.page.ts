@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DisplayLicensesComponent } from './display-licenses/display-licenses.component';
 import { MarkdownModule } from 'ngx-markdown';
-import { IonicModule } from '@ionic/angular';
 
 @Component({
     selector: 'app-licenses',
@@ -15,7 +14,7 @@ import { IonicModule } from '@ionic/angular';
     ],
 })
 export class LicensesPage implements OnInit {
-  constructor() {}
+    constructor() { }
 
-  ngOnInit() {}
+    ngOnInit() { }
 }

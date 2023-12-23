@@ -11,7 +11,7 @@ import { Observable, map, take, combineLatest } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
-import { AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular/standalone';
 
 @UntilDestroy()
 @Component({
@@ -21,184 +21,184 @@ import { AlertController } from '@ionic/angular';
     standalone: true,
 })
 export class ManageSubscriptionPage {
-  private auth: Auth = inject(Auth);
-  user$ = user(this.auth);
+    private auth: Auth = inject(Auth);
+    user$ = user(this.auth);
 
-  subscriptionID = this.route.snapshot.paramMap.get('subscriptionID');
-  majorEventID = this.route.snapshot.paramMap.get('eventID');
+    subscriptionID = this.route.snapshot.paramMap.get('subscriptionID');
+    majorEventID = this.route.snapshot.paramMap.get('eventID');
 
-  subscription$: Observable<MajorEventSubscription | undefined>;
+    subscription$: Observable<MajorEventSubscription | undefined>;
 
-  userData$: Observable<User | undefined>;
+    userData$: Observable<User | undefined>;
 
-  eventsUserIsSubscribedTo$: Observable<(EventItem | undefined)[]> | undefined;
+    eventsUserIsSubscribedTo$: Observable<(EventItem | undefined)[]> | undefined;
 
-  eventsUserAttended: string[] = [];
-  eventsUserAttendedNotPaying: string[] = [];
+    eventsUserAttended: string[] = [];
+    eventsUserAttendedNotPaying: string[] = [];
 
-  constructor(
-    private route: ActivatedRoute,
-    private afs: AngularFirestore,
-    public dateService: DateService,
-    private alertController: AlertController
-  ) {
-    this.userData$ = this.afs.doc<User>(`users/${this.subscriptionID}`).valueChanges().pipe(untilDestroyed(this));
+    constructor(
+        private route: ActivatedRoute,
+        private afs: AngularFirestore,
+        public dateService: DateService,
+        private alertController: AlertController
+    ) {
+        this.userData$ = this.afs.doc<User>(`users/${this.subscriptionID}`).valueChanges().pipe(untilDestroyed(this));
 
-    this.subscription$ = this.afs
-      .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`)
-      .valueChanges()
-      .pipe(untilDestroyed(this));
+        this.subscription$ = this.afs
+            .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`)
+            .valueChanges()
+            .pipe(untilDestroyed(this));
 
-    this.subscription$.subscribe((data) => {
-      if (!data) {
-        return;
-      }
-
-      let tempArray: Observable<EventItem | undefined>[] = [];
-
-      data.subscribedToEvents.map((event) => {
-        tempArray.push(
-          this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' }).pipe(take(1), trace('firestore'))
-        );
-      });
-
-      let observableArrayOfEvents = combineLatest(tempArray);
-
-      observableArrayOfEvents = observableArrayOfEvents.pipe(
-        map((events) => {
-          return events.sort((a, b) => {
-            if (!a || !b) {
-              return 0;
+        this.subscription$.subscribe((data) => {
+            if (!data) {
+                return;
             }
-            return a.eventStartDate.toMillis() - b.eventStartDate.toMillis();
-          });
-        })
-      );
 
-      this.eventsUserIsSubscribedTo$ = observableArrayOfEvents;
-    });
+            let tempArray: Observable<EventItem | undefined>[] = [];
 
-    // TODO: Refactor me
-    // Get all events of this major event
-    this.afs
-      .doc<MajorEventItem>(`majorEvents/${this.majorEventID}`)
-      .get()
-      .pipe(take(1))
-      .subscribe((doc) => {
-        const data = doc.data();
+            data.subscribedToEvents.map((event) => {
+                tempArray.push(
+                    this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' }).pipe(take(1), trace('firestore'))
+                );
+            });
 
-        if (!data) {
-          return;
-        }
+            let observableArrayOfEvents = combineLatest(tempArray);
 
-        // For every event of this major event, check if user document is in the attendance collection
-        data.events.forEach((event) => {
-          this.afs
-            .doc(`events/${event}/attendance/${this.subscriptionID}`)
+            observableArrayOfEvents = observableArrayOfEvents.pipe(
+                map((events) => {
+                    return events.sort((a, b) => {
+                        if (!a || !b) {
+                            return 0;
+                        }
+                        return a.eventStartDate.toMillis() - b.eventStartDate.toMillis();
+                    });
+                })
+            );
+
+            this.eventsUserIsSubscribedTo$ = observableArrayOfEvents;
+        });
+
+        // TODO: Refactor me
+        // Get all events of this major event
+        this.afs
+            .doc<MajorEventItem>(`majorEvents/${this.majorEventID}`)
             .get()
+            .pipe(take(1))
             .subscribe((doc) => {
-              if (doc.exists) {
-                this.eventsUserAttended.push(event);
-              } else {
-                this.afs
-                  .doc(`events/${event}/non-paying-attendance/${this.subscriptionID}`)
-                  .get()
-                  .subscribe((doc) => {
-                    if (doc.exists) {
-                      this.eventsUserAttendedNotPaying.push(event);
+                const data = doc.data();
+
+                if (!data) {
+                    return;
+                }
+
+                // For every event of this major event, check if user document is in the attendance collection
+                data.events.forEach((event) => {
+                    this.afs
+                        .doc(`events/${event}/attendance/${this.subscriptionID}`)
+                        .get()
+                        .subscribe((doc) => {
+                            if (doc.exists) {
+                                this.eventsUserAttended.push(event);
+                            } else {
+                                this.afs
+                                    .doc(`events/${event}/non-paying-attendance/${this.subscriptionID}`)
+                                    .get()
+                                    .subscribe((doc) => {
+                                        if (doc.exists) {
+                                            this.eventsUserAttendedNotPaying.push(event);
+                                        }
+                                    });
+                            }
+                        });
+                });
+            });
+    }
+
+    forceSubscriptionEdit() {
+        this.user$.subscribe((user) => {
+            this.afs
+                .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`)
+                .get()
+                .pipe(take(1))
+                .subscribe((doc) => {
+                    const data = doc.data();
+
+                    if (!data || !user) {
+                        return;
                     }
-                  });
-              }
-            });
+
+                    if (data.payment.status !== 2) {
+                        return;
+                    }
+                    data.subscribedToEvents.forEach((event) => {
+                        this.afs.doc<EventItem>(`events/${event}/subscriptions/${this.subscriptionID}`).delete();
+                        this.afs.doc<EventItem>(`events/${event}`).update({
+                            // @ts-ignore
+                            slotsAvailable: increment(1),
+                            // @ts-ignore
+                            numberOfSubscriptions: increment(-1),
+                        });
+                    });
+
+                    this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`).update({
+                        'payment.status': 1,
+                        'payment.validationAuthor': user.uid,
+                        'payment.validationTime': serverTimestamp(),
+                    });
+                });
         });
-      });
-  }
+    }
 
-  forceSubscriptionEdit() {
-    this.user$.subscribe((user) => {
-      this.afs
-        .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`)
-        .get()
-        .pipe(take(1))
-        .subscribe((doc) => {
-          const data = doc.data();
+    // TODO: Add audit log
+    deleteSubscription() {
+        this.user$.subscribe((user) => {
+            this.afs
+                .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`)
+                .get()
+                .pipe(take(1))
+                .subscribe((doc) => {
+                    const data = doc.data();
 
-          if (!data || !user) {
-            return;
-          }
+                    if (!data || !user) {
+                        return;
+                    }
 
-          if (data.payment.status !== 2) {
-            return;
-          }
-          data.subscribedToEvents.forEach((event) => {
-            this.afs.doc<EventItem>(`events/${event}/subscriptions/${this.subscriptionID}`).delete();
-            this.afs.doc<EventItem>(`events/${event}`).update({
-              // @ts-ignore
-              slotsAvailable: increment(1),
-              // @ts-ignore
-              numberOfSubscriptions: increment(-1),
-            });
-          });
+                    if (data.payment.status === 2) {
+                        data.subscribedToEvents.forEach((event) => {
+                            this.afs.doc<EventItem>(`events/${event}/subscriptions/${this.subscriptionID}`).delete();
+                            this.afs.doc<EventItem>(`events/${event}`).update({
+                                // @ts-ignore
+                                slotsAvailable: increment(1),
+                                // @ts-ignore
+                                numberOfSubscriptions: increment(-1),
+                            });
+                        });
+                    }
 
-          this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`).update({
-            'payment.status': 1,
-            'payment.validationAuthor': user.uid,
-            'payment.validationTime': serverTimestamp(),
-          });
+                    this.afs.doc(`users/${this.subscriptionID}/majorEventSubscriptions/${this.majorEventID}`).delete();
+                    this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`).delete();
+                });
         });
-    });
-  }
+    }
 
-  // TODO: Add audit log
-  deleteSubscription() {
-    this.user$.subscribe((user) => {
-      this.afs
-        .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`)
-        .get()
-        .pipe(take(1))
-        .subscribe((doc) => {
-          const data = doc.data();
-
-          if (!data || !user) {
-            return;
-          }
-
-          if (data.payment.status === 2) {
-            data.subscribedToEvents.forEach((event) => {
-              this.afs.doc<EventItem>(`events/${event}/subscriptions/${this.subscriptionID}`).delete();
-              this.afs.doc<EventItem>(`events/${event}`).update({
-                // @ts-ignore
-                slotsAvailable: increment(1),
-                // @ts-ignore
-                numberOfSubscriptions: increment(-1),
-              });
-            });
-          }
-
-          this.afs.doc(`users/${this.subscriptionID}/majorEventSubscriptions/${this.majorEventID}`).delete();
-          this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${this.subscriptionID}`).delete();
+    async deleteSubscriptionAlert() {
+        const alert = await this.alertController.create({
+            header: 'Excluir inscrição',
+            message: 'Tem certeza que deseja excluir esta inscrição?',
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    role: 'cancel',
+                },
+                {
+                    text: 'Excluir',
+                    handler: () => {
+                        this.deleteSubscription();
+                    },
+                },
+            ],
         });
-    });
-  }
 
-  async deleteSubscriptionAlert() {
-    const alert = await this.alertController.create({
-      header: 'Excluir inscrição',
-      message: 'Tem certeza que deseja excluir esta inscrição?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'Excluir',
-          handler: () => {
-            this.deleteSubscription();
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-  }
+        await alert.present();
+    }
 }

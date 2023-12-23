@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { PageManageEvents } from './manage-events.page';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: PageManageEvents,
@@ -32,5 +32,3 @@ const routes: Routes = [
     loadComponent: () => import('./add-event/add-event.page').then((m) => m.AddEventPage),
   },
 ];
-
-export class PageManageEventsRoutingModule {}

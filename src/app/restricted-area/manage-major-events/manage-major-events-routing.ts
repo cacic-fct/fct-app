@@ -2,7 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ManageMajorEventsPage } from './manage-major-events.page';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: ManageMajorEventsPage,
@@ -33,5 +33,3 @@ const routes: Routes = [
     redirectTo: '',
   },
 ];
-
-export class ManageMajorEventsPageRoutingModule {}

@@ -1,23 +1,21 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
-
 import { DisplayLicensesComponent } from './display-licenses.component';
 
 describe('DisplayLicensesComponent', () => {
-  let component: DisplayLicensesComponent;
-  let fixture: ComponentFixture<DisplayLicensesComponent>;
+    let component: DisplayLicensesComponent;
+    let fixture: ComponentFixture<DisplayLicensesComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-    imports: [IonicModule.forRoot(), DisplayLicensesComponent]
-}).compileComponents();
+    beforeEach(waitForAsync(() => {
+        TestBed.configureTestingModule({
+            imports: [IonicModule.forRoot(), DisplayLicensesComponent]
+        }).compileComponents();
 
-    fixture = TestBed.createComponent(DisplayLicensesComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  }));
+        fixture = TestBed.createComponent(DisplayLicensesComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

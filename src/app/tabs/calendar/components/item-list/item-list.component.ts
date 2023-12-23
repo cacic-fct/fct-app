@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { EventItem } from '../../../../shared/services/event';
 import { EmojiService } from '../../../../shared/services/emoji.service';
 import { CoursesService } from 'src/app/shared/services/courses.service';
-import { NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular/standalone';
 
 import { DateService } from 'src/app/shared/services/date.service';
 
@@ -16,18 +16,18 @@ import { DateService } from 'src/app/shared/services/date.service';
     standalone: true,
 })
 export class ItemListComponent implements OnInit {
-  courses = CoursesService.courses;
+    courses = CoursesService.courses;
 
-  @Input()
-  eventItem!: EventItem;
+    @Input()
+    eventItem!: EventItem;
 
-  constructor(public emojiService: EmojiService, private navCtrl: NavController, public dateService: DateService) {}
+    constructor(public emojiService: EmojiService, private navCtrl: NavController, public dateService: DateService) { }
 
-  ngOnInit() {}
+    ngOnInit() { }
 
-  public openItem(item: any): void {
-    this.navCtrl.navigateForward(['calendario/evento', item.id], {
-      state: { item: item },
-    });
-  }
+    public openItem(item: any): void {
+        this.navCtrl.navigateForward(['calendario/evento', item.id], {
+            state: { item: item },
+        });
+    }
 }

@@ -2,7 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { DevelopmentToolsPage } from './development-tools.page';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: DevelopmentToolsPage,
@@ -12,5 +12,3 @@ const routes: Routes = [
     loadComponent: () => import('./populate-database/populate-database.page').then((m) => m.PopulateDatabasePage),
   },
 ];
-
-export class DevelopmentToolsPageRoutingModule {}

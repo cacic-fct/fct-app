@@ -6,7 +6,7 @@ import { RestrictedAreaPage } from './restricted-area.page';
 import { canActivate } from '@angular/fire/compat/auth-guard';
 import { adminOnly } from '../shared/services/routing/guards.service';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: RestrictedAreaPage,
@@ -30,5 +30,3 @@ const routes: Routes = [
     loadComponent: () => import('./manage-events/manage-events.page').then((m) => m.ManageEventsPage),
   },
 ];
-
-export class RestrictedAreaPageRoutingModule {}

@@ -1,5 +1,4 @@
 // @ts-strict-ignore
-import { IonSelect, ModalController } from '@ionic/angular';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
@@ -16,12 +15,58 @@ import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
 import { getStringChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { serverTimestamp } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
+import {
+  IonSelect,
+  ModalController,
+  IonHeader,
+  IonToolbar,
+  Iontitle,
+  IonButtons,
+  IonBackButton,
+  IonContent,
+  IonCardHeader,
+  IonItem,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonToggle,
+  IonCardTitle,
+  IonTitle,
+  IonInput,
+  IonDatetimeButton,
+  IonTextarea,
+  IonDatetime,
+  IonModal,
+  IonButton,
+} from '@ionic/angular/standalone';
 
 @Component({
-    selector: 'app-add-event',
-    templateUrl: './add-event.page.html',
-    styleUrls: ['./add-event.page.scss'],
-    standalone: true,
+  selector: 'app-add-event',
+  templateUrl: './add-event.page.html',
+  styleUrls: ['./add-event.page.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    Iontitle,
+    IonButtons,
+    IonBackButton,
+    IonContent,
+    IonCardHeader,
+    IonItem,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
+    IonToggle,
+    IonCardTitle,
+    IonTitle,
+    IonInput,
+    IonDatetimeButton,
+    IonTextarea,
+    IonDatetime,
+    IonModal,
+    IonButton,
+  ],
 })
 export class AddEventPage implements OnInit {
   @ViewChild('successSwal') private successSwal: SwalComponent;

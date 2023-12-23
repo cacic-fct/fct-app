@@ -2,7 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AboutPage } from './about.page';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: AboutPage,
@@ -13,5 +13,3 @@ const routes: Routes = [
     loadComponent: () => import('src/app/about/support/support.page').then((m) => m.SupportPage),
   },
 ];
-
-export class AboutPageRoutingModule {}

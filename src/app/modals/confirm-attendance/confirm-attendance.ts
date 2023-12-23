@@ -1,4 +1,4 @@
-import { NavController, ToastController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular/standalone';
 import { Component, inject, ViewChild } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
@@ -14,7 +14,7 @@ import { serverTimestamp, arrayRemove } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
 
 interface EventInfo {
-  name: string;
+    name: string;
 }
 
 @UntilDestroy()
@@ -25,237 +25,237 @@ interface EventInfo {
     standalone: true,
 })
 export class ConfirmAttendancePage {
-  eventID: string;
-  dataForm: FormGroup;
-  eventInfo$: Observable<EventInfo>;
-  private eventRef: AngularFirestoreDocument<EventItem>;
-  private isSubEvent: boolean | undefined;
-  private majorEventRef: AngularFirestoreDocument<MajorEventItem> | undefined;
-  private isPaid: boolean | undefined;
-  private attendanceCode: string | undefined;
-  @ViewChild('swalConfirm') private swalConfirm!: SwalComponent;
-  @ViewChild('swalNotFound') private swalNotFound!: SwalComponent;
-  @ViewChild('swalNotOnTime') private swalNotOnTime!: SwalComponent;
-  @ViewChild('swalAlreadyConfirmed') private swalAlreadyConfirmed!: SwalComponent;
+    eventID: string;
+    dataForm: FormGroup;
+    eventInfo$: Observable<EventInfo>;
+    private eventRef: AngularFirestoreDocument<EventItem>;
+    private isSubEvent: boolean | undefined;
+    private majorEventRef: AngularFirestoreDocument<MajorEventItem> | undefined;
+    private isPaid: boolean | undefined;
+    private attendanceCode: string | undefined;
+    @ViewChild('swalConfirm') private swalConfirm!: SwalComponent;
+    @ViewChild('swalNotFound') private swalNotFound!: SwalComponent;
+    @ViewChild('swalNotOnTime') private swalNotOnTime!: SwalComponent;
+    @ViewChild('swalAlreadyConfirmed') private swalAlreadyConfirmed!: SwalComponent;
 
-  private auth: Auth = inject(Auth);
-  user$ = user(this.auth);
+    private auth: Auth = inject(Auth);
+    user$ = user(this.auth);
 
-  constructor(
-    public formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private afs: AngularFirestore,
-    private navController: NavController,
-    private router: Router,
-    private toastController: ToastController
-  ) {
-    this.eventID = this.route.snapshot.params.eventID;
-    this.dataForm = this.formBuilder.group({
-      code: ['', [Validators.required, this.codeValidator]],
-    });
+    constructor(
+        public formBuilder: FormBuilder,
+        private route: ActivatedRoute,
+        private afs: AngularFirestore,
+        private navController: NavController,
+        private router: Router,
+        private toastController: ToastController
+    ) {
+        this.eventID = this.route.snapshot.params.eventID;
+        this.dataForm = this.formBuilder.group({
+            code: ['', [Validators.required, this.codeValidator]],
+        });
 
-    // Check if user is already registered
-    this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
-      if (!user) {
-        return;
-      }
-
-      const payingAttendance = this.afs
-        .doc<EventItem>(`events/${this.eventID}/attendance/${user.uid}`)
-        .get()
-        .pipe(map((doc) => doc.exists));
-
-      const nonPayingAttendance = this.afs
-        .doc<EventItem>(`events/${this.eventID}/non-paying-attendance/${user.uid}`)
-        .get()
-        .pipe(map((doc) => doc.exists));
-
-      const evaluateBool = combineLatest([payingAttendance, nonPayingAttendance]).pipe(
-        map(([paying, nonPaying]) => paying || nonPaying)
-      );
-
-      evaluateBool.subscribe((isAttendanceAlreadyCollected) => {
-        if (isAttendanceAlreadyCollected) {
-          this.swalAlreadyConfirmed.fire();
-          setTimeout(() => {
-            this.swalAlreadyConfirmed.close();
-            this.navController.back();
-          }, 2000);
-        }
-      });
-    });
-
-    this.eventRef = this.afs.collection<EventItem>('events').doc(this.eventID);
-
-    this.eventRef
-      .valueChanges()
-      .pipe(take(1), trace('firestore'))
-      .subscribe((eventItem) => {
-        if (!eventItem) {
-          this.swalNotFound.fire();
-          setTimeout(() => {
-            this.router.navigate(['/menu']);
-            this.swalNotFound.close();
-          }, 2000);
-          return;
-        }
-
-        if (!eventItem.attendanceCollectionStart || eventItem.attendanceCollectionEnd) {
-          this.swalNotOnTime.fire();
-          setTimeout(() => {
-            this.router.navigate(['/menu']);
-            this.swalNotOnTime.close();
-          }, 2000);
-        }
-      });
-
-    const eventValueChanges$: Observable<EventItem | undefined> = this.eventRef.valueChanges();
-    // attendanceCode is constant
-    eventValueChanges$.pipe(take(1)).subscribe((event) => {
-      if (!event) {
-        return;
-      }
-
-      this.attendanceCode = event.attendanceCode;
-      if (event.inMajorEvent) {
-        // If it is a subEvent, then check to see if the majorEvent
-        // is paid or free.
-        this.isSubEvent = true;
-        // majorEvent reference
-        this.majorEventRef = this.afs.collection<MajorEventItem>('majorEvents').doc(event.inMajorEvent);
-        // Checking if majorEvent is paid
-        // This should be constant
-        this.majorEventRef
-          .valueChanges()
-          .pipe(take(1))
-          .subscribe((majorEvent) => {
-            if (!majorEvent) {
-              return;
+        // Check if user is already registered
+        this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
+            if (!user) {
+                return;
             }
 
-            if (majorEvent.price.isFree) {
-              this.isPaid = false;
-            } else {
-              this.isPaid = true;
-            }
-          });
-      } else {
-        this.isSubEvent = false;
-      }
-    });
+            const payingAttendance = this.afs
+                .doc<EventItem>(`events/${this.eventID}/attendance/${user.uid}`)
+                .get()
+                .pipe(map((doc) => doc.exists));
 
-    // When the code is valid, automatically submit.
-    this.dataForm
-      ?.get('code')
-      ?.valueChanges.pipe(untilDestroyed(this))
-      .subscribe((value) => {
-        if (value == this.attendanceCode) {
-          this.onSubmit();
-        }
-      });
+            const nonPayingAttendance = this.afs
+                .doc<EventItem>(`events/${this.eventID}/non-paying-attendance/${user.uid}`)
+                .get()
+                .pipe(map((doc) => doc.exists));
 
-    this.eventInfo$ = eventValueChanges$.pipe(
-      trace('firestore'),
-      untilDestroyed(this),
-      map((event) => ({
-        name: event?.name || 'Evento indefinido',
-      }))
-    );
-  }
+            const evaluateBool = combineLatest([payingAttendance, nonPayingAttendance]).pipe(
+                map(([paying, nonPaying]) => paying || nonPaying)
+            );
 
-  async errorToast() {
-    const toast = await this.toastController.create({
-      message: 'Ocorreu um erro. Por favor, tente novamente.',
-      duration: 2000,
-      buttons: [
-        {
-          text: 'OK',
-          role: 'cancel',
-        },
-      ],
-    });
-    toast.present();
-  }
+            evaluateBool.subscribe((isAttendanceAlreadyCollected) => {
+                if (isAttendanceAlreadyCollected) {
+                    this.swalAlreadyConfirmed.fire();
+                    setTimeout(() => {
+                        this.swalAlreadyConfirmed.close();
+                        this.navController.back();
+                    }, 2000);
+                }
+            });
+        });
 
-  codeValidator = (formControl: AbstractControl): { [key: string]: boolean } | null => {
-    if (!this.attendanceCode) {
-      return { codeLoading: true };
-    }
-    if (formControl.value == this.attendanceCode) {
-      return null;
-    } else {
-      return { wrongCode: true };
-    }
-  };
+        this.eventRef = this.afs.collection<EventItem>('events').doc(this.eventID);
 
-  onSubmit() {
-    this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
-      if (!user || !this.majorEventRef) {
-        return;
-      }
-
-      const userID = user.uid;
-
-      if (this.isPaid === undefined || this.isSubEvent === undefined) {
-        return;
-      }
-
-      const isPaymentNecessary: boolean = this.isSubEvent && this.isPaid;
-
-      try {
-        if (isPaymentNecessary) {
-          // Check if user payment status = 2
-          this.majorEventRef
-            .collection('subscriptions')
-            .doc(userID)
+        this.eventRef
             .valueChanges()
             .pipe(take(1), trace('firestore'))
-            .subscribe((subscriptionItem) => {
-              if (subscriptionItem?.payment.status == 2) {
-                // Escrevendo na coleção 'attendance'
-                this.eventRef.collection('attendance').doc(userID).set({
-                  // @ts-ignore
-                  time: serverTimestamp(),
-                  author: 'online',
-                });
-              } else {
-                // Escrevendo na coleção 'non-paying-attendance'
-                this.eventRef.collection('non-paying-attendance').doc(userID).set({
-                  // @ts-ignore
-                  time: serverTimestamp(),
-                  author: 'online',
-                });
-              }
-            });
-        } else {
-          // Escrevendo na coleção 'attendance'
-          this.eventRef.collection('attendance').doc(userID).set({
-            // @ts-ignore
-            time: serverTimestamp(),
-            author: 'online',
-          });
-        }
+            .subscribe((eventItem) => {
+                if (!eventItem) {
+                    this.swalNotFound.fire();
+                    setTimeout(() => {
+                        this.router.navigate(['/menu']);
+                        this.swalNotFound.close();
+                    }, 2000);
+                    return;
+                }
 
-        this.afs
-          .doc(`users/${userID}`)
-          .update({
-            // @ts-ignore
-            'pending.onlineAttendance': arrayRemove(this.eventID),
-          })
-          .then(() => {
-            setTimeout(() => {
-              this.swalConfirm.fire();
-              setTimeout(() => {
-                this.swalConfirm.close();
-                this.navController.back();
-              }, 1500);
-            }, 1500);
-          });
-      } catch (error) {
-        this.dataForm?.get('code')?.enable();
-        this.errorToast();
-        console.error(error);
-      }
-    });
-  }
+                if (!eventItem.attendanceCollectionStart || eventItem.attendanceCollectionEnd) {
+                    this.swalNotOnTime.fire();
+                    setTimeout(() => {
+                        this.router.navigate(['/menu']);
+                        this.swalNotOnTime.close();
+                    }, 2000);
+                }
+            });
+
+        const eventValueChanges$: Observable<EventItem | undefined> = this.eventRef.valueChanges();
+        // attendanceCode is constant
+        eventValueChanges$.pipe(take(1)).subscribe((event) => {
+            if (!event) {
+                return;
+            }
+
+            this.attendanceCode = event.attendanceCode;
+            if (event.inMajorEvent) {
+                // If it is a subEvent, then check to see if the majorEvent
+                // is paid or free.
+                this.isSubEvent = true;
+                // majorEvent reference
+                this.majorEventRef = this.afs.collection<MajorEventItem>('majorEvents').doc(event.inMajorEvent);
+                // Checking if majorEvent is paid
+                // This should be constant
+                this.majorEventRef
+                    .valueChanges()
+                    .pipe(take(1))
+                    .subscribe((majorEvent) => {
+                        if (!majorEvent) {
+                            return;
+                        }
+
+                        if (majorEvent.price.isFree) {
+                            this.isPaid = false;
+                        } else {
+                            this.isPaid = true;
+                        }
+                    });
+            } else {
+                this.isSubEvent = false;
+            }
+        });
+
+        // When the code is valid, automatically submit.
+        this.dataForm
+            ?.get('code')
+            ?.valueChanges.pipe(untilDestroyed(this))
+            .subscribe((value) => {
+                if (value == this.attendanceCode) {
+                    this.onSubmit();
+                }
+            });
+
+        this.eventInfo$ = eventValueChanges$.pipe(
+            trace('firestore'),
+            untilDestroyed(this),
+            map((event) => ({
+                name: event?.name || 'Evento indefinido',
+            }))
+        );
+    }
+
+    async errorToast() {
+        const toast = await this.toastController.create({
+            message: 'Ocorreu um erro. Por favor, tente novamente.',
+            duration: 2000,
+            buttons: [
+                {
+                    text: 'OK',
+                    role: 'cancel',
+                },
+            ],
+        });
+        toast.present();
+    }
+
+    codeValidator = (formControl: AbstractControl): { [key: string]: boolean } | null => {
+        if (!this.attendanceCode) {
+            return { codeLoading: true };
+        }
+        if (formControl.value == this.attendanceCode) {
+            return null;
+        } else {
+            return { wrongCode: true };
+        }
+    };
+
+    onSubmit() {
+        this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
+            if (!user || !this.majorEventRef) {
+                return;
+            }
+
+            const userID = user.uid;
+
+            if (this.isPaid === undefined || this.isSubEvent === undefined) {
+                return;
+            }
+
+            const isPaymentNecessary: boolean = this.isSubEvent && this.isPaid;
+
+            try {
+                if (isPaymentNecessary) {
+                    // Check if user payment status = 2
+                    this.majorEventRef
+                        .collection('subscriptions')
+                        .doc(userID)
+                        .valueChanges()
+                        .pipe(take(1), trace('firestore'))
+                        .subscribe((subscriptionItem) => {
+                            if (subscriptionItem?.payment.status == 2) {
+                                // Escrevendo na coleção 'attendance'
+                                this.eventRef.collection('attendance').doc(userID).set({
+                                    // @ts-ignore
+                                    time: serverTimestamp(),
+                                    author: 'online',
+                                });
+                            } else {
+                                // Escrevendo na coleção 'non-paying-attendance'
+                                this.eventRef.collection('non-paying-attendance').doc(userID).set({
+                                    // @ts-ignore
+                                    time: serverTimestamp(),
+                                    author: 'online',
+                                });
+                            }
+                        });
+                } else {
+                    // Escrevendo na coleção 'attendance'
+                    this.eventRef.collection('attendance').doc(userID).set({
+                        // @ts-ignore
+                        time: serverTimestamp(),
+                        author: 'online',
+                    });
+                }
+
+                this.afs
+                    .doc(`users/${userID}`)
+                    .update({
+                        // @ts-ignore
+                        'pending.onlineAttendance': arrayRemove(this.eventID),
+                    })
+                    .then(() => {
+                        setTimeout(() => {
+                            this.swalConfirm.fire();
+                            setTimeout(() => {
+                                this.swalConfirm.close();
+                                this.navController.back();
+                            }, 1500);
+                        }, 1500);
+                    });
+            } catch (error) {
+                this.dataForm?.get('code')?.enable();
+                this.errorToast();
+                console.error(error);
+            }
+        });
+    }
 }

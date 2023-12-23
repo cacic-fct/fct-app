@@ -68,7 +68,7 @@ export const routes: Routes = [
   {
     path: 'sobre/licencas',
     title: 'Licenças',
-    loadComponent: () => import('./about/licenses/licenses.page').then((m) => m.PageLegalPage),
+    loadComponent: () => import('./about/licenses/licenses.page').then((m) => m.LicensesPage),
   },
   {
     path: 'manual-do-calouro',
