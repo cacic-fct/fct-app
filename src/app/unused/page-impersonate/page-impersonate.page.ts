@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import { Component, inject, OnInit } from '@angular/core';
 import { Auth, signInWithCustomToken } from '@angular/fire/auth';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ToastController } from '@ionic/angular/standalone';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 
@@ -27,6 +27,7 @@ import {
   styleUrls: ['./page-impersonate.page.scss'],
   standalone: true,
   imports: [
+    ReactiveFormsModule
     IonHeader,
     IonToolbar,
     IonTitle,

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EventSubscriptionLocal } from 'src/app/profile/my-attendances/my-attendances.page';
+import { AsyncPipe } from '@angular/common';
 
 import {
   IonCard,
@@ -19,7 +20,7 @@ import {
   templateUrl: './event-card-display-main-page.component.html',
   styleUrls: ['./event-card-display-main-page.component.scss'],
   standalone: true,
-  imports: [IonCard, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonButton, IonIcon, IonSpinner],
+  imports: [AsyncPipe, IonCard, IonCardHeader, IonCardTitle, IonGrid, IonRow, IonCol, IonButton, IonIcon, IonSpinner],
 })
 export class EventCardDisplayMainPageComponent implements OnInit {
   @Input() eventSubscriptionsInput!: Observable<EventSubscriptionLocal[]>;

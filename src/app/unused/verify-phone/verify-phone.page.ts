@@ -2,6 +2,8 @@
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Component, inject, Input, OnInit } from '@angular/core';
 
+import { DecimalPipe } from '@angular/common';
+
 import {
   Auth,
   authState,
@@ -38,6 +40,7 @@ import {
   IonLabel,
   IonInput,
   IonText,
+  IonTitle,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -46,6 +49,7 @@ import {
   styleUrls: ['./verify-phone.page.scss'],
   standalone: true,
   imports: [
+    DecimalPipe,
     IonHeader,
     IonToolbar,
     IonButtons,
@@ -59,6 +63,7 @@ import {
     IonLabel,
     IonInput,
     IonText,
+    IonTitle,
   ],
 })
 export class VerifyPhonePage implements OnInit {

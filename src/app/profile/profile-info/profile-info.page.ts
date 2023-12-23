@@ -7,6 +7,7 @@ import { CoursesService } from 'src/app/shared/services/courses.service';
 import { take, Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
+import { AsyncPipe } from '@angular/common';
 
 import {
   IonHeader,
@@ -41,6 +42,7 @@ import {
     IonCardTitle,
     IonSkeletonText,
     IonButton,
+    AsyncPipe,
   ],
 })
 export class ProfileInfoPage implements OnInit {

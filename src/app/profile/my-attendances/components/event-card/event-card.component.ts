@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DateService } from 'src/app/shared/services/date.service';
 import { EventSubscriptionLocal } from 'src/app/profile/my-attendances/my-attendances.page';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 import {
   IonCard,
@@ -19,7 +20,19 @@ import {
   templateUrl: './event-card.component.html',
   styleUrls: ['./event-card.component.scss'],
   standalone: true,
-  imports: [IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonGrid, IonRow, IonCol, IonButton, IonIcon],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardSubtitle,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonButton,
+    IonIcon,
+  ],
 })
 export class EventCardComponent implements OnInit {
   @Input() eventSubscription!: EventSubscriptionLocal;

@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { CertificateStoreData } from 'src/app/shared/services/certificates.service';
 import { MailtoService, Mailto } from 'src/app/shared/services/mailto.service';
 import { Component, inject, OnInit } from '@angular/core';
@@ -48,6 +49,7 @@ import {
     IonRow,
     IonCol,
     IonProgressBar,
+    AsyncPipe,
   ],
 })
 export class ListCertificatesComponent implements OnInit {

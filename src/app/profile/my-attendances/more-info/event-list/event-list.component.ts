@@ -1,4 +1,3 @@
-import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -7,13 +6,14 @@ import { EmojiService } from '../../../../shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 
 import { IonItemDivider, IonLabel, IonList, IonItem, IonSpinner } from '@ionic/angular/standalone';
+import { formatDate, AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-event-list[eventInput]',
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.scss'],
   standalone: true,
-  imports: [IonItemDivider, IonLabel, IonList, IonItem, IonLabel, IonSpinner],
+  imports: [AsyncPipe, IonItemDivider, IonLabel, IonList, IonItem, IonLabel, IonSpinner],
 })
 export class EventListComponent implements OnInit {
   @Input() eventInput!: Observable<EventItem[]>;

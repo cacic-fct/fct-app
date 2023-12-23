@@ -7,11 +7,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map, Observable, take, combineLatest } from 'rxjs';
 import { EventItem } from '../../shared/services/event';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MajorEventItem } from '../../shared/services/major-event.service';
 
 import { serverTimestamp, arrayRemove } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
+import { AsyncPipe } from '@angular/common';
 
 import {
   IonHeader,
@@ -42,6 +43,7 @@ interface EventInfo {
   styleUrls: ['./confirm-attendance.scss'],
   standalone: true,
   imports: [
+    AsyncPipe,
     ReactiveFormsModule,
     IonHeader,
     IonToolbar,
@@ -58,6 +60,7 @@ interface EventInfo {
     IonInput,
     IonProgressBar,
     IonText,
+    SweetAlert2Module,
   ],
 })
 export class ConfirmAttendancePage {

@@ -131,13 +131,9 @@ export class RegisterPage implements OnInit {
       });
 
     this.windowRef = this.win.windowRef;
-    this.windowRef.recaptchaVerifier = new RecaptchaVerifier(
-      'continue-button',
-      {
-        size: 'invisible',
-      },
-      this.auth
-    );
+    this.windowRef.recaptchaVerifier = new RecaptchaVerifier(this.auth, 'continue-button', {
+      size: 'invisible',
+    });
   }
 
   onSubmit() {

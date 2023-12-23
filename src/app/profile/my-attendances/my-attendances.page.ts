@@ -12,6 +12,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EnrollmentTypesService } from '../../shared/services/enrollment-types.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
+import { CurrencyPipe, DatePipe, AsyncPipe } from '@angular/common';
 
 import {
   IonHeader,
@@ -67,6 +68,9 @@ import {
     IonIcon,
     IonText,
     IonSpinner,
+    CurrencyPipe,
+    DatePipe,
+    AsyncPipe,
   ],
 })
 export class MyAttendancesPage implements OnInit {

@@ -7,6 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { trace } from '@angular/fire/compat/performance';
 import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
+import { AsyncPipe } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -14,7 +15,7 @@ import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
   standalone: true,
-  imports: [IonLabel, IonIcon, IonTabs, IonTabBar, IonTabButton],
+  imports: [AsyncPipe, IonLabel, IonIcon, IonTabs, IonTabBar, IonTabButton],
 })
 export class TabsPage {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);

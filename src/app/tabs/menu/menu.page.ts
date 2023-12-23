@@ -9,6 +9,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { environment } from 'src/environments/environment';
 import { Auth, authState, user, User } from '@angular/fire/auth';
+import { AsyncPipe } from '@angular/common';
 
 import {
   IonHeader,
@@ -29,7 +30,19 @@ import {
   templateUrl: 'menu.page.html',
   styleUrls: ['menu.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonTitle, IonContent, IonCard, IonItem, IonLabel],
+  imports: [
+    AsyncPipe,
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonTitle,
+    IonContent,
+    IonCard,
+    IonItem,
+    IonLabel,
+  ],
 })
 export class MenuPage {
   private auth: Auth = inject(Auth);

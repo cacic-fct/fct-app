@@ -5,6 +5,7 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { DecimalPipe } from '@angular/common';
 
 import {
   IonHeader,
@@ -31,6 +32,7 @@ import {
   styleUrls: ['./populate-database.page.scss'],
   standalone: true,
   imports: [
+    DecimalPipe
     ReactiveFormsModule,
     IonHeader,
     IonToolbar,

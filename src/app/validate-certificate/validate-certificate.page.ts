@@ -17,6 +17,7 @@ import {
   IonCardTitle,
   IonCardContent,
 } from '@ionic/angular/standalone';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-validate-certificate',
@@ -34,6 +35,7 @@ import {
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
+    AsyncPipe,
   ],
 })
 export class ValidateCertificatePage implements OnInit {

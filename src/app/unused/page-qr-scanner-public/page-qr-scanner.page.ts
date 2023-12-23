@@ -6,6 +6,7 @@ import { ModalController } from '@ionic/angular/standalone';
 
 import { IonRouterOutlet, AlertController } from '@ionic/angular/standalone';
 import { ToastController } from '@ionic/angular/standalone';
+import { AsyncPipe } from '@angular/common';
 
 import {
   IonHeader,
@@ -25,6 +26,7 @@ import {
   styleUrls: ['./page-qr-scanner.page.scss'],
   standalone: true,
   imports: [
+    AsyncPipe,
     IonHeader,
     IonToolbar,
     IonTitle,

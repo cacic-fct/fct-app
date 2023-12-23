@@ -1,4 +1,3 @@
-import { ListCertificatesComponent } from '../components/list-certificates/list-certificates.component';
 // @ts-strict-ignore
 import { Component, inject, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -15,6 +14,8 @@ import { ActivatedRoute } from '@angular/router';
 
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
+import { ListCertificatesComponent } from '../components/list-certificates/list-certificates.component';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
 
 import {
   IonHeader,
@@ -40,6 +41,8 @@ import {
   styleUrls: ['./more-info.page.scss'],
   standalone: true,
   imports: [
+    AsyncPipe,
+    CurrencyPipe,
     IonHeader,
     IonToolbar,
     IonButtons,
