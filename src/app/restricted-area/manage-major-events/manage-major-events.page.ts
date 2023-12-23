@@ -7,12 +7,52 @@ import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { trace } from '@angular/fire/compat/performance';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { DateService } from 'src/app/shared/services/date.service';
+import {
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonTitle,
+  IonIcon,
+  IonContent,
+  IonItem,
+  IonList,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonLabel,
+  IonProgressBar,
+  IonModal,
+  IonButton,
+  IonDatetime,
+  IonDatetimeButton,
+} from '@ionic/angular/standalone';
 
 @Component({
-    selector: 'app-manage-major-events',
-    templateUrl: './manage-major-events.page.html',
-    styleUrls: ['./manage-major-events.page.scss'],
-    standalone: true,
+  selector: 'app-manage-major-events',
+  templateUrl: './manage-major-events.page.html',
+  styleUrls: ['./manage-major-events.page.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonTitle,
+    IonIcon,
+    IonContent,
+    IonItem,
+    IonList,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonLabel,
+    IonProgressBar,
+    IonModal,
+    IonButton,
+    IonDatetime,
+    IonDatetimeButton,
+  ],
 })
 export class ManageMajorEventsPage implements OnInit {
   today: Date = new Date();

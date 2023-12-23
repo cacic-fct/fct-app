@@ -13,12 +13,61 @@ import { EnrollmentTypesService } from '../../shared/services/enrollment-types.s
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
 
+import {
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonTitle,
+  IonIcon,
+  IonContent,
+  IonList,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonLabel,
+  IonProgressBar,
+  IonModal,
+  IonButton,
+  IonDatetime,
+  IonDatetimeButton,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonCardSubtitle,
+  IonCard,
+  IonText,
+  IonSpinner,
+} from '@ionic/angular/standalone';
+
 @UntilDestroy()
 @Component({
-    selector: 'app-subscribe',
-    templateUrl: './my-attendances.page.html',
-    styleUrls: ['./my-attendances.page.scss'],
-    standalone: true,
+  selector: 'app-subscribe',
+  templateUrl: './my-attendances.page.html',
+  styleUrls: ['./my-attendances.page.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonTitle,
+    IonContent,
+    IonList,
+    IonProgressBar,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonCardSubtitle,
+    IonCard,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonButton,
+    IonIcon,
+    IonText,
+    IonSpinner,
+  ],
 })
 export class MyAttendancesPage implements OnInit {
   private auth: Auth = inject(Auth);
