@@ -19,14 +19,22 @@ import {
   IonSelect,
   IonSelectOption,
   IonButton,
+  IonNote,
 } from '@ionic/angular/standalone';
 
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 import { Auth, RecaptchaVerifier } from '@angular/fire/auth';
 
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { SweetAlert2Module, SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 
 import { GlobalConstantsService } from '../../shared/services/global-constants.service';
 
@@ -44,6 +52,8 @@ import { WindowService } from '../../shared/services/window.service';
   styleUrls: ['./register.page.scss'],
   standalone: true,
   imports: [
+    SweetAlert2Module,
+    ReactiveFormsModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -55,6 +65,7 @@ import { WindowService } from '../../shared/services/window.service';
     IonSelect,
     IonSelectOption,
     IonButton,
+    IonNote,
   ],
 })
 export class RegisterPage implements OnInit {
