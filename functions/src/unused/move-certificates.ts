@@ -2,7 +2,7 @@ import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { MainReturnType } from '../shared/return-types';
 
-exports.moveCertificates = onCall(async (context): Promise<MainReturnType> => {
+exports.moveCertificates = onCall({ timeoutSeconds: 540, memory: '1GiB' }, async (context): Promise<MainReturnType> => {
   if (!context.auth) {
     throw new HttpsError('failed-precondition', 'The function must be called while authenticated.');
   }
