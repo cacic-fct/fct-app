@@ -34,6 +34,9 @@ import {
   IonSpinner,
   ModalController,
 } from '@ionic/angular/standalone';
+import { HeaderComponent } from 'src/app/shared/modules/major-event-display/header/header.component';
+import { DescriptionComponent } from 'src/app/shared/modules/major-event-display/description/description.component';
+import { DateComponent } from 'src/app/shared/modules/major-event-display/date/date.component';
 
 @Component({
   selector: 'app-more-info',
@@ -57,6 +60,9 @@ import {
     IonAccordion,
     IonProgressBar,
     IonSpinner,
+    HeaderComponent,
+    DescriptionComponent,
+    DateComponent,
   ],
 })
 export class MoreInfoPage implements OnInit {

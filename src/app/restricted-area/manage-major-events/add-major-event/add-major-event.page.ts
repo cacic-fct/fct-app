@@ -38,6 +38,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { ReactiveFormsModule } from '@angular/forms';
+import { KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'app-add-major-event',
@@ -67,6 +68,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     IonDatetime,
     IonText,
     ReactiveFormsModule,
+    KeyValuePipe,
   ],
 })
 export class AddMajorEventPage implements OnInit {

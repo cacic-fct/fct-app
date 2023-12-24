@@ -12,7 +12,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { EnrollmentTypesService } from '../../shared/services/enrollment-types.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
-import { CurrencyPipe, DatePipe, AsyncPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, AsyncPipe, NgTemplateOutlet } from '@angular/common';
 
 import {
   IonHeader,
@@ -73,6 +73,7 @@ import { EventCardDisplayMainPageComponent } from 'src/app/profile/my-attendance
     DatePipe,
     AsyncPipe,
     EventCardDisplayMainPageComponent,
+    NgTemplateOutlet,
   ],
 })
 export class MyAttendancesPage implements OnInit {

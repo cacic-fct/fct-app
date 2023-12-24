@@ -27,6 +27,6 @@ export const routes: Routes = [
   {
     path: 'gerenciar-eventos',
     title: 'Gerenciar eventos',
-    loadComponent: () => import('./manage-events/manage-events.page').then((m) => m.ManageEventsPage),
+    loadComponent: () => import('./manage-events/manage-events.page').then((m) => m.PageManageEvents),
   },
 ];

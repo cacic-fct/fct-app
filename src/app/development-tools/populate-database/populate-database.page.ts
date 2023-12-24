@@ -32,7 +32,7 @@ import {
   styleUrls: ['./populate-database.page.scss'],
   standalone: true,
   imports: [
-    DecimalPipe
+    DecimalPipe,
     ReactiveFormsModule,
     IonHeader,
     IonToolbar,
