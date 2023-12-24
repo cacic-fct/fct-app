@@ -1,11 +1,14 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, inject } from '@angular/core';
 import { Firestore, query, where, collection, getDocs } from '@angular/fire/firestore';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-list-issued',
-  templateUrl: './list-issued.page.html',
-  styleUrls: ['./list-issued.page.scss'],
+    selector: 'app-list-issued',
+    templateUrl: './list-issued.page.html',
+    styleUrls: ['./list-issued.page.scss'],
+    standalone: true,
+    imports: [IonicModule],
 })
 export class ListIssuedPage implements OnInit {
   eventID: string | null;

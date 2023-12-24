@@ -7,9 +7,8 @@ describe('VerifyPhonePage', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [VerifyPhonePage],
-            imports: [IonicModule.forRoot()],
-        }).compileComponents();
+    imports: [IonicModule.forRoot(), VerifyPhonePage],
+}).compileComponents();
 
         fixture = TestBed.createComponent(VerifyPhonePage);
         component = fixture.componentInstance;

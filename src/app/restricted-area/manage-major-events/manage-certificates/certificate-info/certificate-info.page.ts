@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { doc, DocumentReference, Firestore, DocumentData, docData } from '@angular/fire/firestore';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CertificateAdminData, CertificateStoreData } from 'src/app/shared/services/certificates.service';
 import { DateService } from 'src/app/shared/services/date.service';
@@ -10,11 +10,22 @@ import {
   participationTypes,
   contentTypes,
 } from 'src/app/shared/services/certificates.service';
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-certificate-info',
-  templateUrl: './certificate-info.page.html',
-  styleUrls: ['./certificate-info.page.scss'],
+    selector: 'app-certificate-info',
+    templateUrl: './certificate-info.page.html',
+    styleUrls: ['./certificate-info.page.scss'],
+    standalone: true,
+    imports: [
+        IonicModule,
+        NgIf,
+        RouterLink,
+        NgFor,
+        AsyncPipe,
+        DatePipe,
+    ],
 })
 export class CertificateInfoPage implements OnInit {
   private firestore: Firestore = inject(Firestore);

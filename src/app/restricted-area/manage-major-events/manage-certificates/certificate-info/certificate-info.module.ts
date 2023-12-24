@@ -9,12 +9,12 @@ import { CertificateInfoPageRoutingModule } from './certificate-info-routing.mod
 import { CertificateInfoPage } from './certificate-info.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    CertificateInfoPageRoutingModule
-  ],
-  declarations: [CertificateInfoPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        CertificateInfoPageRoutingModule,
+        CertificateInfoPage
+    ]
 })
 export class CertificateInfoPageModule {}

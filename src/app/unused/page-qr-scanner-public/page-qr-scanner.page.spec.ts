@@ -8,9 +8,8 @@ describe('PageQrScannerPage', () => {
     beforeEach(
         waitForAsync(() => {
             TestBed.configureTestingModule({
-                declarations: [PageQrScannerPage],
-                imports: [IonicModule.forRoot()],
-            }).compileComponents();
+    imports: [IonicModule.forRoot(), PageQrScannerPage],
+}).compileComponents();
 
             fixture = TestBed.createComponent(PageQrScannerPage);
             component = fixture.componentInstance;
