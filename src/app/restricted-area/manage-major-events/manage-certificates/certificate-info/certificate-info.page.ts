@@ -11,19 +11,47 @@ import {
   contentTypes,
 } from 'src/app/shared/services/certificates.service';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import {
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonTitle,
+  IonContent,
+  IonText,
+  IonIcon,
+  IonButton,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonRouterLink,
+} from '@ionic/angular/standalone';
 
 @Component({
-    selector: 'app-certificate-info',
-    templateUrl: './certificate-info.page.html',
-    styleUrls: ['./certificate-info.page.scss'],
-    standalone: true,
-    imports: [
-    IonicModule,
+  selector: 'app-certificate-info',
+  templateUrl: './certificate-info.page.html',
+  styleUrls: ['./certificate-info.page.scss'],
+  standalone: true,
+  imports: [
     RouterLink,
     AsyncPipe,
-    DatePipe
-],
+    DatePipe,
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonTitle,
+    IonContent,
+    IonText,
+    IonIcon,
+    IonButton,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonRouterLink,
+  ],
 })
 export class CertificateInfoPage implements OnInit {
   private firestore: Firestore = inject(Firestore);

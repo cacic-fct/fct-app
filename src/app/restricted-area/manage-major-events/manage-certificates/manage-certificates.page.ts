@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
@@ -37,6 +38,7 @@ import {
     IonItem,
     IonLabel,
     SweetAlert2Module,
+    AsyncPipe,
   ],
 })
 export class ManageCertificatesPage implements OnInit {
