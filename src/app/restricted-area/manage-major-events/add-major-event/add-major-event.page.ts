@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import { Router } from '@angular/router';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { ModalController } from '@ionic/angular/standalone';
+import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { IonButton, ModalController } from '@ionic/angular/standalone';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CoursesService } from 'src/app/shared/services/courses.service';
@@ -38,7 +38,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { ReactiveFormsModule } from '@angular/forms';
-import { KeyValuePipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'app-add-major-event',
@@ -69,6 +69,10 @@ import { KeyValuePipe } from '@angular/common';
     IonText,
     ReactiveFormsModule,
     KeyValuePipe,
+    SweetAlert2Module,
+    AsyncPipe,
+    IonButton,
+    CurrencyPipe,
   ],
 })
 export class AddMajorEventPage implements OnInit {
@@ -230,6 +234,7 @@ export class AddMajorEventPage implements OnInit {
           });
       });
     });
+    return null;
   }
 
   validatorButton(control: AbstractControl): ValidationErrors | null {

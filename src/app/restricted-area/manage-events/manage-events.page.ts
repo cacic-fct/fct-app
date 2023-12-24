@@ -307,7 +307,7 @@ export class PageManageEvents implements OnInit {
     } else {
       let i = 0;
       checkArray.controls.forEach((item: FormGroup) => {
-        if (item.controls.id.value === eventItem.id) {
+        if (item.controls['id'].value === eventItem.id) {
           checkArray.removeAt(i);
           return;
         }

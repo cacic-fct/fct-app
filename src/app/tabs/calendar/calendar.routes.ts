@@ -9,6 +9,6 @@ export const routes: Routes = [
   {
     path: 'evento/:eventID',
     title: 'Informações do evento',
-    loadComponent: () => import('./event-info-display/event-info-display.page').then((m) => m.EventInfoDisplayPage),
+    loadChildren: () => import('./event-info-display/event-info-display.routes').then((m) => m.routes),
   },
 ];

@@ -14,19 +14,18 @@ export const routes: Routes = [
   {
     path: 'gerenciar-admins',
     title: 'Gerenciar admins',
-    loadComponent: () =>
-      import('src/app/restricted-area/manage-admins/manage-admins.page').then((m) => m.ManageAdminsPage),
+    loadChildren: () => import('src/app/restricted-area/manage-admins/manage-admins.routes').then((m) => m.routes),
     ...canActivate(adminOnly),
   },
   {
     path: 'gerenciar-grandes-eventos',
     title: 'Gerenciar grandes eventos',
-    loadComponent: () => import('./manage-major-events/manage-major-events.page').then((m) => m.ManageMajorEventsPage),
+    loadChildren: () => import('./manage-major-events/manage-major-events.routes').then((m) => m.routes),
     ...canActivate(adminOnly),
   },
   {
     path: 'gerenciar-eventos',
     title: 'Gerenciar eventos',
-    loadComponent: () => import('./manage-events/manage-events.page').then((m) => m.PageManageEvents),
+    loadChildren: () => import('./manage-events/manage-events.routes').then((m) => m.routes),
   },
 ];

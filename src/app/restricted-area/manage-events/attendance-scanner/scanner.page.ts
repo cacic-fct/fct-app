@@ -242,6 +242,7 @@ export class ScannerPage implements OnInit {
       this.toastInvalid();
       return false;
     }
+    return true;
   }
 
   onTorchCompatible(isCompatible: boolean): void {
@@ -411,6 +412,7 @@ export class ScannerPage implements OnInit {
         this.toastSucess();
         this.backdropColor('success');
         this.attendanceSessionScans++;
+        return true;
       });
   }
 
@@ -440,6 +442,7 @@ export class ScannerPage implements OnInit {
         this.toastSucess();
         this.backdropColor('success');
         this.attendanceSessionScans++;
+        return true;
       });
   }
 

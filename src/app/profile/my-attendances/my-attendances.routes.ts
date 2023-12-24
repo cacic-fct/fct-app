@@ -10,11 +10,11 @@ export const routes: Routes = [
   {
     path: 'pagar/:eventID',
     title: 'Pagar evento',
-    loadComponent: () => import('./send-receipt/send-receipt.page').then((m) => m.SendReceiptPage),
+    loadChildren: () => import('./send-receipt/send-receipt.routes').then((m) => m.routes),
   },
   {
     path: 'detalhes/:majorEventID',
     title: 'Detalhes da inscrição',
-    loadComponent: () => import('./more-info/more-info.page').then((m) => m.MoreInfoPage),
+    loadChildren: () => import('./more-info/more-info.routes').then((m) => m.routes),
   },
 ];

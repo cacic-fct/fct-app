@@ -9,7 +9,7 @@
 
 <ion-content>
   @if (event$ | async; as event) {
-    <h1 class="ion-padding-horizontal">{{ event.name }}</h1>
+  <h1 class="ion-padding-horizontal">{{ event.name }}</h1>
   }
 
   <form [formGroup]="dataForm">
@@ -24,49 +24,42 @@
         </ion-item>
 
         @if (dataForm.get('issueType').value === 'batch') {
-          <ng-container formGroupName="batchIssue">
-            <ion-item disabled="">
-              <ion-label>Emitir para inscritos pagantes</ion-label>
-              <ion-toggle formControlName="toPayer"> </ion-toggle>
-              <ion-note slot="helper">Quem pagou, se inscreveu e esteve presente</ion-note>
-            </ion-item>
-            <ion-item disabled="">
-              <ion-label>Emitir para pagantes não inscritos</ion-label>
-              <ion-note slot="helper">Quem pagou, não se inscreveu no evento e teve presença coletada</ion-note>
-              <ion-toggle formControlName="toNonSubscriber"> </ion-toggle>
-            </ion-item>
-            <ion-item disabled="">
-              <ion-label>Emitir para não pagantes</ion-label>
-              <ion-toggle formControlName="toNonPayer"> </ion-toggle>
-              <ion-note slot="helper">Quem não pagou e teve presença coletada</ion-note>
-            </ion-item>
-          </ng-container>
-        }
-
-        @if (dataForm.get('issueType').value === 'list') {
-          <ng-container formArrayName="issueList">
-            @for (person of getIssueList(); track person; let i = $index) {
-              <ion-item [formGroupName]="i">
-                <ion-label>{{ i + 1 }}.</ion-label>
-                @if (dataForm.get('issueList').get(i.toString()).errors?.notFound) {
-                  <ion-label
-                    color="danger"
-                    style="padding-left: 8px"
-                    >
-                    Não encontrado
-                  </ion-label>
-                }
-                <ion-input formControlName="userData" placeholder="E-mail, celular ou UID"> </ion-input>
-                <ion-button fill="clear" color="danger" (click)="removeIssueList(i)">
-                  <ion-icon slot="icon-only" name="trash"> </ion-icon>
-                </ion-button>
-              </ion-item>
+        <ng-container formGroupName="batchIssue">
+          <ion-item disabled="">
+            <ion-label>Emitir para inscritos pagantes</ion-label>
+            <ion-toggle formControlName="toPayer"> </ion-toggle>
+            <ion-note slot="helper">Quem pagou, se inscreveu e esteve presente</ion-note>
+          </ion-item>
+          <ion-item disabled="">
+            <ion-label>Emitir para pagantes não inscritos</ion-label>
+            <ion-note slot="helper">Quem pagou, não se inscreveu no evento e teve presença coletada</ion-note>
+            <ion-toggle formControlName="toNonSubscriber"> </ion-toggle>
+          </ion-item>
+          <ion-item disabled="">
+            <ion-label>Emitir para não pagantes</ion-label>
+            <ion-toggle formControlName="toNonPayer"> </ion-toggle>
+            <ion-note slot="helper">Quem não pagou e teve presença coletada</ion-note>
+          </ion-item>
+        </ng-container>
+        } @if (dataForm.get('issueType').value === 'list') {
+        <ng-container formArrayName="issueList">
+          @for (person of getIssueList(); track person; let i = $index) {
+          <ion-item [formGroupName]="i">
+            <ion-label>{{ i + 1 }}.</ion-label>
+            @if (dataForm.get('issueList').get(i.toString()).errors['notFound']) {
+            <ion-label color="danger" style="padding-left: 8px"> Não encontrado </ion-label>
             }
-            <div class="ion-padding">
-              <ion-button (click)="addToIssueList()">Adicionar</ion-button>
-              <ion-button (click)="clearIssueListAlert()" color="danger">Limpar</ion-button>
-            </div>
-          </ng-container>
+            <ion-input formControlName="userData" placeholder="E-mail, celular ou UID"> </ion-input>
+            <ion-button fill="clear" color="danger" (click)="removeIssueList(i)">
+              <ion-icon slot="icon-only" name="trash"> </ion-icon>
+            </ion-button>
+          </ion-item>
+          }
+          <div class="ion-padding">
+            <ion-button (click)="addToIssueList()">Adicionar</ion-button>
+            <ion-button (click)="clearIssueListAlert()" color="danger">Limpar</ion-button>
+          </div>
+        </ng-container>
         }
       </div>
       <ion-item>
@@ -74,7 +67,7 @@
         <ion-input
           formControlName="certificateName"
           (ionChange)="formatCertificateID()"
-        (ionBlur)="formatCertificateName()"></ion-input>
+          (ionBlur)="formatCertificateName()"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -86,9 +79,9 @@
         <ion-label>Modelo do certificado</ion-label>
         <ion-select interface="popover" formControlName="certificateTemplate">
           @for (certificateTemplate of certificateTemplates | keyvalue; track certificateTemplate) {
-            <ion-select-option [value]="certificateTemplate.key">
-              {{ certificateTemplate.value.displayName }}
-            </ion-select-option>
+          <ion-select-option [value]="certificateTemplate.key">
+            {{ certificateTemplate.value.displayName }}
+          </ion-select-option>
           }
         </ion-select>
       </ion-item>
@@ -102,21 +95,18 @@
         <ion-item>
           <ion-label>Tipo de participação</ion-label>
           <ion-select interface="popover" formControlName="type">
-            @for (participationType of participationTypes | keyvalue; track participationType) {
-              @if (!(participationType.key === 'custom')) {
-                <ion-select-option [value]="participationType.key">
-                  {{ participationType.value }}
-                </ion-select-option>
-              }
-            }
+            @for (participationType of participationTypes | keyvalue; track participationType) { @if
+            (!(participationType.key === 'custom')) {
+            <ion-select-option [value]="participationType.key"> {{ participationType.value }} </ion-select-option>
+            } }
             <ion-select-option value="custom"> Personalizado </ion-select-option>
           </ion-select>
         </ion-item>
         @if (dataForm.get('participationType').value.type === 'custom') {
-          <ion-item>
-            <ion-label>Tipo de participação personalizado</ion-label>
-            <ion-input placeholder="Escreva aqui" formControlName="custom"></ion-input>
-          </ion-item>
+        <ion-item>
+          <ion-label>Tipo de participação personalizado</ion-label>
+          <ion-input placeholder="Escreva aqui" formControlName="custom"></ion-input>
+        </ion-item>
         }
       </ng-container>
 
@@ -124,21 +114,17 @@
         <ion-item>
           <ion-label>Tipo de evento</ion-label>
           <ion-select interface="popover" formControlName="type">
-            @for (eventType of eventTypes | keyvalue; track eventType) {
-              @if (!(eventType.key === 'custom')) {
-                <ion-select-option [value]="eventType.key">
-                  {{ eventType.value }}
-                </ion-select-option>
-              }
-            }
+            @for (eventType of eventTypes | keyvalue; track eventType) { @if (!(eventType.key === 'custom')) {
+            <ion-select-option [value]="eventType.key"> {{ eventType.value }} </ion-select-option>
+            } }
             <ion-select-option value="custom"> Personalizado </ion-select-option>
           </ion-select>
         </ion-item>
         @if (dataForm.get('eventType').value.type === 'custom') {
-          <ion-item>
-            <ion-label>Tipo de evento personalizado</ion-label>
-            <ion-input placeholder="Escreva aqui" formControlName="custom"></ion-input>
-          </ion-item>
+        <ion-item>
+          <ion-label>Tipo de evento personalizado</ion-label>
+          <ion-input placeholder="Escreva aqui" formControlName="custom"></ion-input>
+        </ion-item>
         }
       </ng-container>
 
@@ -153,21 +139,17 @@
         <ion-item>
           <ion-label>Conteúdo do evento</ion-label>
           <ion-select interface="popover" formControlName="type">
-            @for (contentType of contentTypes | keyvalue; track contentType) {
-              @if (!(contentType.key === 'custom')) {
-                <ion-select-option [value]="contentType.key">
-                  {{ contentType.value }}
-                </ion-select-option>
-              }
-            }
+            @for (contentType of contentTypes | keyvalue; track contentType) { @if (!(contentType.key === 'custom')) {
+            <ion-select-option [value]="contentType.key"> {{ contentType.value }} </ion-select-option>
+            } }
             <ion-select-option value="custom"> Personalizado </ion-select-option>
           </ion-select>
         </ion-item>
         @if (dataForm.get('contentType').value.type === 'custom') {
-          <ion-item>
-            <ion-label>Conteúdo personalizado</ion-label>
-            <ion-textarea placeholder="Escreva aqui" formControlName="custom"></ion-textarea>
-          </ion-item>
+        <ion-item>
+          <ion-label>Conteúdo personalizado</ion-label>
+          <ion-textarea placeholder="Escreva aqui" formControlName="custom"></ion-textarea>
+        </ion-item>
         }
       </ng-container>
     </ion-list>

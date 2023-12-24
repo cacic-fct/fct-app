@@ -105,6 +105,7 @@ export class PageQrScannerPage implements OnInit {
     } else {
       this.toastInvalid();
     }
+    return null;
   }
 
   onTorchCompatible(isCompatible: boolean): void {

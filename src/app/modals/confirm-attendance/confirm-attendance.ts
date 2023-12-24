@@ -296,5 +296,6 @@ export class ConfirmAttendancePage {
         console.error(error);
       }
     });
+    return;
   }
 }

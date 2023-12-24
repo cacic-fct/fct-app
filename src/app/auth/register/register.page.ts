@@ -142,6 +142,7 @@ export class RegisterPage implements OnInit {
     }
 
     this.submitUserData();
+    return;
   }
 
   submitUserData() {

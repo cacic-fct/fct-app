@@ -11,7 +11,7 @@ export const routes: Routes = [
   // Development environment only
   {
     path: 'development-tools',
-    loadComponent: () => import('./development-tools/development-tools.page').then((m) => m.DevelopmentToolsPage),
+    loadChildren: () => import('./development-tools/development-tools.routes').then((m) => m.routes),
     canActivate: [DevelopmentOnlyGuard],
   },
   // General routes
@@ -24,13 +24,13 @@ export const routes: Routes = [
     path: 'sobre',
     data: { preload: true },
     title: 'Sobre',
-    loadComponent: () => import('./about/about.page').then((m) => m.AboutPage),
+    loadChildren: () => import('./about/about.routes').then((m) => m.routes),
   },
   {
     path: 'privacidade',
     data: { preload: true },
     title: 'Política de privacidade',
-    loadComponent: () => import('./about/privacy-policy/privacy-policy.page').then((m) => m.PrivacyPolicyPage),
+    loadChildren: () => import('./about/privacy-policy/privacy-policy.routes').then((m) => m.routes),
   },
   {
     path: 'privacy',
@@ -65,17 +65,17 @@ export const routes: Routes = [
   {
     path: 'sobre/licencas',
     title: 'Licenças',
-    loadComponent: () => import('./about/licenses/licenses.page').then((m) => m.LicensesPage),
+    loadChildren: () => import('./about/licenses/licenses.routes').then((m) => m.routes),
   },
   {
     path: 'manual-do-calouro',
     title: 'Manual do Calouro',
-    loadComponent: () => import('src/app/freshmen/manual/manual.page').then((m) => m.ManualPage),
+    loadChildren: () => import('src/app/freshmen/manual/manual.routes').then((m) => m.routes),
   },
   {
     path: 'calouros',
     title: 'Página dos calouros',
-    loadComponent: () => import('src/app/freshmen/welcome/welcome.page').then((m) => m.WelcomePage),
+    loadChildren: () => import('src/app/freshmen/welcome/welcome.routes').then((m) => m.routes),
   },
   // Unused route
   // {
@@ -100,41 +100,36 @@ export const routes: Routes = [
     path: 'perfil',
     title: 'Perfil',
     data: { preload: true },
-    loadComponent: () => import('src/app/profile/profile-info/profile-info.page').then((m) => m.ProfileInfoPage),
+    loadChildren: () => import('src/app/profile/profile-info/profile-info.routes').then((m) => m.routes),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'entidades',
     title: 'Entidades estudantis',
-    loadComponent: () =>
-      import('src/app/freshmen/student-organizations/student-organizations.page').then(
-        (m) => m.StudentOrganizationsPage
-      ),
+    loadChildren: () =>
+      import('src/app/freshmen/student-organizations/student-organizations.routes').then((m) => m.routes),
   },
   {
     path: 'eventos/inscrever/:eventID',
     title: 'Inscrição',
-    loadComponent: () =>
-      import('src/app/tabs/major-events-display/subscribe/subscribe.page').then((m) => m.SubscribePage),
+    loadChildren: () => import('src/app/tabs/major-events-display/subscribe/subscribe.routes').then((m) => m.routes),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'inscricoes',
     title: 'Minhas participações',
-    loadComponent: () => import('src/app/profile/my-attendances/my-attendances.page').then((m) => m.MyAttendancesPage),
+    loadChildren: () => import('src/app/profile/my-attendances/my-attendances.routes').then((m) => m.routes),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'confirmar-presenca/:eventID',
     title: 'Confirmar presença em um evento',
-    loadComponent: () =>
-      import('src/app/modals/confirm-attendance/confirm-attendance').then((m) => m.ConfirmAttendancePage),
+    loadChildren: () => import('src/app/modals/confirm-attendance/confirm-attendance.routes').then((m) => m.routes),
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'certificado/verificar/:param',
-    loadComponent: () =>
-      import('./validate-certificate/validate-certificate.page').then((m) => m.ValidateCertificatePage),
+    loadChildren: () => import('./validate-certificate/validate-certificate.routes').then((m) => m.routes),
   },
   // Redirect not found routes (404) to index
   // Must be the last route

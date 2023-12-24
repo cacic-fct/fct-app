@@ -7,7 +7,7 @@ import { take, map, Observable } from 'rxjs';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { EventItem } from 'src/app/shared/services/event';
 import { User } from 'src/app/shared/services/user';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { Timestamp } from '@firebase/firestore-types';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { DateService } from 'src/app/shared/services/date.service';
@@ -26,6 +26,7 @@ import {
   IonProgressBar,
   IonIcon,
 } from '@ionic/angular/standalone';
+import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 
 interface Attendance {
   user: Observable<User>;
@@ -52,6 +53,10 @@ interface Attendance {
     IonText,
     IonProgressBar,
     IonIcon,
+    SweetAlert2Module,
+    DatePipe,
+    DecimalPipe,
+    AsyncPipe,
   ],
 })
 export class ListPage implements OnInit {

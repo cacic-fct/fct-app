@@ -7,7 +7,7 @@ import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types
 import { EventItem } from 'src/app/shared/services/event';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 
-import { formatDate } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 
 import { documentId } from 'firebase/firestore';
 import { ActivatedRoute } from '@angular/router';
@@ -37,6 +37,7 @@ import {
 import { HeaderComponent } from 'src/app/shared/modules/major-event-display/header/header.component';
 import { DescriptionComponent } from 'src/app/shared/modules/major-event-display/description/description.component';
 import { DateComponent } from 'src/app/shared/modules/major-event-display/date/date.component';
+import { EventListComponent } from 'src/app/profile/my-attendances/more-info/event-list/event-list.component';
 
 @Component({
   selector: 'app-more-info',
@@ -63,6 +64,8 @@ import { DateComponent } from 'src/app/shared/modules/major-event-display/date/d
     HeaderComponent,
     DescriptionComponent,
     DateComponent,
+    EventListComponent,
+    DatePipe,
   ],
 })
 export class MoreInfoPage implements OnInit {

@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { Timestamp } from '@firebase/firestore-types';
 import { first, map, Observable } from 'rxjs';
 import { EventItem } from 'src/app/shared/services/event';
@@ -24,6 +24,7 @@ import {
   IonText,
   IonProgressBar,
 } from '@ionic/angular/standalone';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 interface Subscription {
   id: string;
@@ -48,6 +49,9 @@ interface Subscription {
     IonLabel,
     IonText,
     IonProgressBar,
+    SweetAlert2Module,
+    AsyncPipe,
+    DatePipe,
   ],
 })
 export class ListSubscriptionsPage implements OnInit {

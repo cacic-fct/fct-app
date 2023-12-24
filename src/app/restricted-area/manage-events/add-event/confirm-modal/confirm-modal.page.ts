@@ -8,13 +8,15 @@ import { StringManagementService } from '../../../../shared/services/string-mana
 import { DateService } from 'src/app/shared/services/date.service';
 
 import { IonContent, IonItem, IonIcon, IonLabel, IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { SafePipe } from 'src/app/shared/pipes/safe.pipe';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-confirm-modal',
   templateUrl: './confirm-modal.page.html',
   styleUrls: ['./confirm-modal.page.scss'],
   standalone: true,
-  imports: [IonContent, IonItem, IonIcon, IonLabel, IonButton, IonGrid, IonRow, IonCol],
+  imports: [IonContent, IonItem, IonIcon, IonLabel, IonButton, IonGrid, IonRow, IonCol, SafePipe, DatePipe],
 })
 export class ConfirmModalPage implements OnInit {
   @Input() dataForm: FormGroup<any>;
@@ -32,9 +34,11 @@ export class ConfirmModalPage implements OnInit {
 
   onSubmit() {
     this.modalController.dismiss(true);
+    return;
   }
 
   closeModal() {
     this.modalController.dismiss(false);
+    return;
   }
 }

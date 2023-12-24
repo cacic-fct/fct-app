@@ -597,6 +597,7 @@ export class SubscribePage implements OnInit {
         });
       });
     });
+    return;
   }
 
   async openConfirmModal(): Promise<boolean> {

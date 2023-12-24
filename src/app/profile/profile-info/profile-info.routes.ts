@@ -9,6 +9,6 @@ export const routes: Routes = [
   },
   {
     path: 'settings',
-    loadComponent: () => import('src/app/profile/profile-info/settings/settings.page').then((m) => m.SettingsPage),
+    loadChildren: () => import('src/app/profile/profile-info/settings/settings.routes').then((m) => m.routes),
   },
 ];

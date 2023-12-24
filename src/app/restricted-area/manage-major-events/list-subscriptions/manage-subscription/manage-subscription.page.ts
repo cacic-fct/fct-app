@@ -20,7 +20,6 @@ import {
   IonBackButton,
   IonTitle,
   IonContent,
-  IonCard,
   IonCardHeader,
   IonCardTitle,
   IonCardSubtitle,
@@ -32,6 +31,7 @@ import {
   IonIcon,
   IonLabel,
 } from '@ionic/angular/standalone';
+import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -57,14 +57,17 @@ import {
     IonButton,
     IonIcon,
     IonLabel,
+    DatePipe,
+    AsyncPipe,
+    CurrencyPipe,
   ],
 })
 export class ManageSubscriptionPage {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
 
-  subscriptionID = this.route.snapshot.paramMap.get('subscriptionID');
-  majorEventID = this.route.snapshot.paramMap.get('eventID');
+  subscriptionID: string;
+  majorEventID: string;
 
   subscription$: Observable<MajorEventSubscription | undefined>;
 
@@ -81,6 +84,8 @@ export class ManageSubscriptionPage {
     public dateService: DateService,
     private alertController: AlertController
   ) {
+    this.subscriptionID = this.route.snapshot.paramMap.get('subscriptionID');
+    this.majorEventID = this.route.snapshot.paramMap.get('eventID');
     this.userData$ = this.afs.doc<User>(`users/${this.subscriptionID}`).valueChanges().pipe(untilDestroyed(this));
 
     this.subscription$ = this.afs

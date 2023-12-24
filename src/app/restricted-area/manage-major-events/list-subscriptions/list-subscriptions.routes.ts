@@ -8,9 +8,9 @@ export const routes: Routes = [
   },
   {
     path: 'gerenciar-inscricao/:subscriptionID',
-    loadComponent: () =>
+    loadChildren: () =>
       import(
-        'src/app/restricted-area/manage-major-events/list-subscriptions/manage-subscription/manage-subscription.page'
-      ).then((m) => m.ManageSubscriptionPage),
+        'src/app/restricted-area/manage-major-events/list-subscriptions/manage-subscription/manage-subscription.routes'
+      ).then((m) => m.routes),
   },
 ];

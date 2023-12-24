@@ -25,13 +25,33 @@ import {
   IonIcon,
   IonProgressBar,
 } from '@ionic/angular/standalone';
+import { AsyncPipe } from '@angular/common';
+import { HeaderComponent } from 'src/app/shared/modules/event-display/header/header.component';
+import { DescriptionComponent } from 'src/app/shared/modules/event-display/description/description.component';
+import { MapComponent } from 'src/app/shared/modules/event-display/map/map.component';
+import { ButtonsComponent } from 'src/app/shared/modules/event-display/buttons/buttons.component';
 
 @Component({
   selector: 'app-event-info-display',
   templateUrl: './event-info-display.page.html',
   styleUrls: ['./event-info-display.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent, IonProgressBar],
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonTitle,
+    IonButton,
+    IonIcon,
+    IonContent,
+    IonProgressBar,
+    AsyncPipe,
+    HeaderComponent,
+    DescriptionComponent,
+    MapComponent,
+    ButtonsComponent,
+  ],
 })
 export class EventInfoDisplayPage implements OnInit {
   private analytics: Analytics = inject(Analytics);

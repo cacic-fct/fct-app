@@ -1,7 +1,7 @@
 import { EventItem } from 'src/app/shared/services/event';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ModalController } from '@ionic/angular/standalone';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Timestamp } from '@firebase/firestore';
 import { DateService } from 'src/app/shared/services/date.service';
 import { EmojiService } from '../../../../shared/services/emoji.service';
@@ -23,6 +23,7 @@ import {
   IonRow,
   IonCol,
 } from '@ionic/angular/standalone';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-group-creation-modal',
@@ -44,6 +45,8 @@ import {
     IonGrid,
     IonRow,
     IonCol,
+    DatePipe,
+    ReactiveFormsModule,
   ],
 })
 export class GroupCreationModalComponent implements OnInit {

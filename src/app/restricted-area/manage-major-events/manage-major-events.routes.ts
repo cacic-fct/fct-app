@@ -9,24 +9,24 @@ export const routes: Routes = [
   },
   {
     path: 'adicionar',
-    loadComponent: () => import('./add-major-event/add-major-event.page').then((m) => m.AddMajorEventPage),
+    loadChildren: () => import('./add-major-event/add-major-event.routes').then((m) => m.routes),
   },
   {
     path: 'validar-comprovante/:eventId',
     title: 'Validar comprovante',
-    loadComponent: () => import('./validate-receipt/validate-receipt.page').then((m) => m.ValidateReceiptPage),
+    loadChildren: () => import('./validate-receipt/validate-receipt.routes').then((m) => m.routes),
   },
   {
     path: 'listar-inscritos/:eventID',
     title: 'Listar inscritos',
-    loadComponent: () =>
-      import('src/app/restricted-area/manage-major-events/list-subscriptions/list-subscriptions.page').then(
-        (m) => m.ListSubscriptionsPage
+    loadChildren: () =>
+      import('src/app/restricted-area/manage-major-events/list-subscriptions/list-subscriptions.routes').then(
+        (m) => m.routes
       ),
   },
   {
     path: 'emitir-certificados/:eventID',
-    loadComponent: () => import('./issue-certificate/issue-certificate.page').then((m) => m.IssueCertificatePage),
+    loadChildren: () => import('./issue-certificate/issue-certificate.routes').then((m) => m.routes),
   },
   {
     path: 'emitir-certificados',

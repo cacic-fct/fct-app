@@ -3,7 +3,7 @@ import { Firestore, collection, collectionData, docData, doc, query, orderBy } f
 import { trace } from '@angular/fire/compat/performance';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { fromUnixTime } from 'date-fns';
 import { Timestamp } from '@firebase/firestore-types';
 import { map, Observable, take, forkJoin } from 'rxjs';
@@ -58,6 +58,7 @@ interface Subscription extends MajorEventSubscription {
     IonLabel,
     IonText,
     IonProgressBar,
+    SweetAlert2Module,
   ],
 })
 export class ListSubscriptionsPage implements OnInit {

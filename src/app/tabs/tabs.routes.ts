@@ -12,28 +12,28 @@ export const routes: Routes = [
       {
         path: 'calendario',
         title: 'Calendário de eventos',
-        loadComponent: () => import('src/app/tabs/calendar/calendar.page').then((m) => m.CalendarPage),
+        loadChildren: () => import('src/app/tabs/calendar/calendar.routes').then((m) => m.routes),
       },
       {
         path: 'eventos',
         title: 'Lista de eventos',
-        loadComponent: () =>
-          import('src/app/tabs/major-events-display/major-events-display.page').then((m) => m.MajorEventsDisplayPage),
+        loadChildren: () =>
+          import('src/app/tabs/major-events-display/major-events-display.routes').then((m) => m.routes),
       },
       {
         path: 'mapa',
         title: 'Mapa',
-        loadComponent: () => import('src/app/tabs/map/map.page').then((m) => m.MapPage),
+        loadChildren: () => import('src/app/tabs/map/map.routes').then((m) => m.routes),
       },
       {
         path: 'menu',
         title: 'Menu',
-        loadComponent: () => import('src/app/tabs/menu/menu.page').then((m) => m.MenuPage),
+        loadChildren: () => import('src/app/tabs/menu/menu.routes').then((m) => m.routes),
       },
       {
         path: 'area-restrita',
         title: 'Área restrita',
-        loadComponent: () => import('src/app/restricted-area/restricted-area.page').then((m) => m.RestrictedAreaPage),
+        loadChildren: () => import('src/app/restricted-area/restricted-area.routes').then((m) => m.routes),
         ...canActivate(caAndGreater),
       },
       {

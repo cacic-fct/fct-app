@@ -14,7 +14,7 @@ import { fromUnixTime } from 'date-fns';
 
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { Timestamp } from '@firebase/firestore';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 import { EnrollmentTypesService } from '../../../shared/services/enrollment-types.service';
 import { DateService } from 'src/app/shared/services/date.service';
@@ -40,6 +40,7 @@ import {
   IonProgressBar,
   IonText,
 } from '@ionic/angular/standalone';
+import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -66,6 +67,11 @@ import {
     IonIcon,
     IonProgressBar,
     IonText,
+    SweetAlert2Module,
+    DecimalPipe,
+    CurrencyPipe,
+    DatePipe,
+    AsyncPipe,
   ],
 })
 export class SendReceiptPage implements OnInit {

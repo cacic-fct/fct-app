@@ -2,7 +2,6 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { increment } from '@angular/fire/firestore';
 import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { Observable, map, take, combineLatest } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
@@ -10,9 +9,15 @@ import { User } from 'src/app/shared/services/user';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { trace } from '@angular/fire/compat/performance';
 import { EventItem } from 'src/app/shared/services/event';
-import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { AlertController, IonModal, ToastController } from '@ionic/angular/standalone';
+import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { serverTimestamp } from '@angular/fire/firestore';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
@@ -21,14 +26,14 @@ import { Storage, ref } from '@angular/fire/storage';
 import { getDownloadURL } from '@angular/fire/storage';
 
 import {
+  AlertController,
+  ToastController,
   IonHeader,
   IonToolbar,
   IonButtons,
   IonBackButton,
   IonTitle,
   IonButton,
-  IonIcon,
-  IonContent,
   IonCard,
   IonCardHeader,
   IonCardTitle,
@@ -46,7 +51,9 @@ import {
   IonRadioGroup,
   IonRadio,
   IonLabel,
+  IonCardContent,
 } from '@ionic/angular/standalone';
+import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -79,6 +86,12 @@ import {
     IonRadioGroup,
     IonRadio,
     IonLabel,
+    IonCardContent,
+    AsyncPipe,
+    ReactiveFormsModule,
+    SweetAlert2Module,
+    CurrencyPipe,
+    DatePipe,
   ],
 })
 export class ValidateReceiptPage implements OnInit {
