@@ -69,6 +69,14 @@ bootstrapApplication(AppComponent, {
           isTokenAutoRefreshEnabled: true,
         });
       }),
+      provideAuth(() => {
+        const auth = getAuth();
+        useDeviceLanguage(auth);
+        if (environment.useEmulators) {
+          connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+        }
+        return auth;
+      }),
       provideRemoteConfig(() => {
         const remoteConfig = getRemoteConfig();
         if (isDevMode()) {
@@ -89,14 +97,6 @@ bootstrapApplication(AppComponent, {
           console.error(err);
         });
         return remoteConfig;
-      }),
-      provideAuth(() => {
-        const auth = getAuth();
-        useDeviceLanguage(auth);
-        if (environment.useEmulators) {
-          connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-        }
-        return auth;
       }),
       provideAnalytics(() => {
         const analytics = getAnalytics();
