@@ -9,74 +9,78 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ng-container *ngIf="docData$ | async as certificate">
+  @if (docData$ | async; as certificate) {
     <div class="ion-padding">
       <h1>{{ certificate.certificateName }}</h1>
       <p><ion-text color="medium">ID: {{ certificate.id }}</ion-text></p>
-
       <ion-button [routerLink]="['listar-emitidos']">
         <ion-icon name="list-outline" slot="start"></ion-icon>
         <p slot="end">Visualizar emissões</p>
       </ion-button>
-
       <ion-button disabled>
         <ion-icon name="pencil-outline" slot="start"></ion-icon>
         <p slot="end">Editar certificado</p>
       </ion-button>
     </div>
-
     <ion-card>
       <ion-card-header> <ion-card-title>Informações gerais</ion-card-title></ion-card-header>
-
       <ion-card-content>
         <p><b>Modelo:</b> {{ certificateTemplates[certificate.certificateTemplate].displayName }}</p>
-
         <p><b>Conteúdo:</b> {{ contentTypes.default }}</p>
-        <p *ngIf="certificate.certificateContent.custom">{{ certificate.certificateContent.custom }}</p>
-
+        @if (certificate.certificateContent.custom) {
+          <p>{{ certificate.certificateContent.custom }}</p>
+        }
         <p><b>Tipo do evento:</b> {{ eventTypes[certificate.eventType.type] }}</p>
-        <p *ngIf="certificate.eventType.custom">{{ certificate.eventType.custom }}</p>
-
+        @if (certificate.eventType.custom) {
+          <p>{{ certificate.eventType.custom }}</p>
+        }
         <p><b>Tipo da participação:</b> {{ participationTypes[certificate.participationType.type] }}</p>
-        <p *ngIf="certificate.participationType.custom">{{ certificate.participationType.custom }}</p>
-
+        @if (certificate.participationType.custom) {
+          <p>{{ certificate.participationType.custom }}</p>
+        }
         <p><b>Texto extra:</b> {{ certificate.extraText }}</p>
       </ion-card-content>
     </ion-card>
-
-    <ion-card *ngIf="docAdminData$ | async as adminData ">
-      <ion-card-header>
-        <ion-card-title>Informações de admin</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <p>
-          <b>Data da primeira emissão:</b> {{ dateService.getDateFromTimestamp(adminData.firstIssuedOn) | date:
-          'dd/MM/yyyy - HH:mm' }}
-        </p>
-
-        <p><b>Responsável pela primeira emissão:</b> {{ adminData.firstIssuedBy }}</p>
-
-        <b>Emitido para:</b><br />
-        <ul>
-          <li *ngIf="adminData.issuedTo.toList.length !== 0">{{adminData.issuedTo.toList}}</li>
-          <li *ngIf="adminData.issuedTo.toPayer">Pagantes</li>
-          <li *ngIf="adminData.issuedTo.toNonPayer">Não pagantes</li>
-          <li *ngIf="adminData.issuedTo.toNonSubscriber">Não inscritos</li>
-        </ul>
-
-        <p>
-          <b>Anotações:</b><br />
-          <ng-container>{{ adminData.extraInfo }}</ng-container>
-        </p>
-
-        <ng-container *ngIf="adminData.failed">
-          <b>Emissão falhou para:</b>
+    @if (docAdminData$ | async; as adminData ) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Informações de admin</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>
+            <b>Data da primeira emissão:</b> {{ dateService.getDateFromTimestamp(adminData.firstIssuedOn) | date:
+            'dd/MM/yyyy - HH:mm' }}
+          </p>
+          <p><b>Responsável pela primeira emissão:</b> {{ adminData.firstIssuedBy }}</p>
+          <b>Emitido para:</b><br />
           <ul>
-            <li *ngFor="let failed of adminData.failed">{{ failed.uid + ' - ' + failed.error }}</li>
+            @if (adminData.issuedTo.toList.length !== 0) {
+              <li>{{adminData.issuedTo.toList}}</li>
+            }
+            @if (adminData.issuedTo.toPayer) {
+              <li>Pagantes</li>
+            }
+            @if (adminData.issuedTo.toNonPayer) {
+              <li>Não pagantes</li>
+            }
+            @if (adminData.issuedTo.toNonSubscriber) {
+              <li>Não inscritos</li>
+            }
           </ul>
-        </ng-container>
-      </ion-card-content>
-    </ion-card>
-  </ng-container>
+          <p>
+            <b>Anotações:</b><br />
+            <ng-container>{{ adminData.extraInfo }}</ng-container>
+          </p>
+          @if (adminData.failed) {
+            <b>Emissão falhou para:</b>
+            <ul>
+              @for (failed of adminData.failed; track failed) {
+                <li>{{ failed.uid + ' - ' + failed.error }}</li>
+              }
+            </ul>
+          }
+        </ion-card-content>
+      </ion-card>
+    }
+  }
 </ion-content>

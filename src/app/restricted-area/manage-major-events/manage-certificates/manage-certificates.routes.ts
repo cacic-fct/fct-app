@@ -10,12 +10,11 @@ const routes: Routes = [
   },
   {
     path: 'emitir',
-    loadChildren: () =>
-      import('./issue-certificate/issue-certificate.module').then((m) => m.IssueCertificatePageModule),
+    loadChildren: () => import('./issue-certificate/issue-certificate.routes').then((m) => m.routes),
   },
   {
     path: 'detalhes/:certificateID',
-    loadChildren: () => import('./certificate-info/certificate-info.module').then((m) => m.CertificateInfoPageModule),
+    loadChildren: () => import('./certificate-info/certificate-info.routes').then((m) => m.routes),
   },
 ];
 

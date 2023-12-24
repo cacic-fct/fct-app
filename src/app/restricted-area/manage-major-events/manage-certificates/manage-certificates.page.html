@@ -14,14 +14,16 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ng-container *ngIf="certificates$ | async as certificates">
-    <ion-item *ngFor="let certificate of certificates" button detail="true" [routerLink]="['detalhes', certificate.id]">
-      <ion-label>
-        <h3>{{certificate.certificateName}}</h3>
-        <p>{{certificate.id}}</p>
-      </ion-label>
-    </ion-item>
-  </ng-container>
+  @if (certificates$ | async; as certificates) {
+    @for (certificate of certificates; track certificate) {
+      <ion-item button detail="true" [routerLink]="['detalhes', certificate.id]">
+        <ion-label>
+          <h3>{{certificate.certificateName}}</h3>
+          <p>{{certificate.id}}</p>
+        </ion-label>
+      </ion-item>
+    }
+  }
 </ion-content>
 
 <swal

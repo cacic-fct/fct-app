@@ -10,7 +10,7 @@ import {
   participationTypes,
   contentTypes,
 } from 'src/app/shared/services/certificates.service';
-import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
@@ -19,13 +19,11 @@ import { IonicModule } from '@ionic/angular';
     styleUrls: ['./certificate-info.page.scss'],
     standalone: true,
     imports: [
-        IonicModule,
-        NgIf,
-        RouterLink,
-        NgFor,
-        AsyncPipe,
-        DatePipe,
-    ],
+    IonicModule,
+    RouterLink,
+    AsyncPipe,
+    DatePipe
+],
 })
 export class CertificateInfoPage implements OnInit {
   private firestore: Firestore = inject(Firestore);
