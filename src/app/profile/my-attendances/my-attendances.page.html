@@ -8,14 +8,14 @@
 </ion-header>
 
 <ion-content>
-  @if (subscriptions$ | async; as subscriptions) {
-    @if (subscriptions.length === 0) {
+  @if (majorEventSubscriptions$ | async; as majorEventSubscriptions) {
+    @if (majorEventSubscriptions.length === 0) {
       <h1 class="ion-text-center">Nenhuma participação encontrada</h1>
     }
-    @for (subscription of subscriptions; track subscription) {
+    @for (majorEventSubscription of majorEventSubscriptions; track majorEventSubscription) {
       <ion-list>
-        @if (subscription.majorEvent | async; as majorEventData) {
-          @if (subscription.userData | async; as subscriptionData) {
+        @if (majorEventSubscription.majorEvent | async; as majorEventData) {
+          @if (majorEventSubscription.userData | async; as subscriptionData) {
             @switch (getCardType(majorEventData, subscriptionData)) {
               @case (-1) {
                 <div>

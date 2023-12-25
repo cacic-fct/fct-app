@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 import { EventItem, EventSubscription } from 'src/app/shared/services/event';
 import { Timestamp } from '@firebase/firestore-types';
 import { MajorEventItem, MajorEventSubscription } from '../../shared/services/major-event.service';
@@ -13,6 +12,7 @@ import { EnrollmentTypesService } from '../../shared/services/enrollment-types.s
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
 import { CurrencyPipe, DatePipe, AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { Firestore, collection, collectionData, doc, getDoc, docData, DocumentData } from '@angular/fire/firestore';
 
 import {
   IonHeader,
@@ -77,10 +77,11 @@ import { EventCardDisplayMainPageComponent } from 'src/app/profile/my-attendance
   ],
 })
 export class MyAttendancesPage implements OnInit {
+  private firestore: Firestore = inject(Firestore);
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
 
-  subscriptions$!: Observable<Subscription[]>;
+  majorEventSubscriptions$: Observable<Subscription[]>;
   eventSubscriptions$!: Observable<EventSubscriptionLocal[]>;
 
   today: Date = new Date();
@@ -91,65 +92,68 @@ export class MyAttendancesPage implements OnInit {
     public dateService: DateService
   ) {
     this.user$.pipe(untilDestroyed(this)).subscribe((user) => {
-      if (user) {
-        this.subscriptions$ = this.afs
-          .collection<Subscription>(`users/${user.uid}/majorEventSubscriptions`)
-          .valueChanges({ idField: 'id' })
-          .pipe(
-            untilDestroyed(this),
-            trace('firestore'),
-            map((subscriptions) => {
-              return subscriptions.map((subscription) => {
-                return {
-                  id: subscription.id,
-                  userData: this.afs
-                    .doc<MajorEventSubscription>(`majorEvents/${subscription.id}/subscriptions/${user.uid}`)
-                    .valueChanges(),
-                  majorEvent: this.afs
-                    .doc<MajorEventItem>(`majorEvents/${subscription.id}`)
-                    .valueChanges({ idField: 'id' }),
-                };
+      if (!user) {
+        return;
+      }
+
+      const majorEventSubscriptionsCol = collection(this.firestore, `users/${user.uid}/majorEventSubscriptions`);
+
+      this.majorEventSubscriptions$ = collectionData(majorEventSubscriptionsCol, { idField: 'id' }).pipe(
+        untilDestroyed(this),
+        trace('firestore'),
+        map((subscriptions) => {
+          return subscriptions.map((subscription) => {
+            return {
+              id: subscription.id,
+              userData: docData(
+                doc(this.firestore, `majorEvents/${subscription.id}/subscriptions/${user.uid}`)
+              ) as Observable<MajorEventSubscription>,
+              majorEvent: docData(doc(this.firestore, `majorEvents/${subscription.id}`), {
+                idField: 'id',
+              }) as Observable<MajorEventItem>,
+            };
+          });
+        })
+      ) as Observable<Subscription[]>;
+
+      const eventSubscriptionsCol = collection(this.firestore, `users/${user.uid}/eventSubscriptions`);
+
+      this.eventSubscriptions$ = collectionData(eventSubscriptionsCol, { idField: 'id' }).pipe(
+        untilDestroyed(this),
+        trace('firestore'),
+        map((subscriptions) => {
+          const arrayOfEvents: Observable<EventItem>[] = subscriptions.map((subscription) => {
+            return docData(doc(this.firestore, `events/${subscription.id}`), {
+              idField: 'id',
+            }) as Observable<EventItem>;
+          });
+
+          let observableArrayOfEvents: Observable<EventItem[]> = combineLatest(arrayOfEvents);
+
+          observableArrayOfEvents = observableArrayOfEvents.pipe(
+            map((events) => {
+              return events.sort((a, b) => {
+                return a.eventStartDate.seconds - b.eventStartDate.seconds;
               });
             })
           );
 
-        this.eventSubscriptions$ = this.afs
-          .collection<EventSubscriptionLocal>(`users/${user.uid}/eventSubscriptions`)
-          .valueChanges({ idField: 'id' })
-          .pipe(
-            trace('firestore'),
-            map((subscriptions) => {
-              const arrayOfEvents: Observable<EventItem>[] = subscriptions.map((subscription) => {
-                return this.afs.doc<EventItem>(`events/${subscription.id}`).valueChanges({ idField: 'id' });
+          return observableArrayOfEvents.pipe(
+            map((events) => {
+              return events.map((event) => {
+                return {
+                  id: event.id,
+                  event: event,
+                  userData: docData(
+                    doc(this.firestore, `events/${event.id}/subscriptions/${user.uid}`)
+                  ) as Observable<EventSubscription>,
+                };
               });
-
-              let observableArrayOfEvents: Observable<EventItem[]> = combineLatest(arrayOfEvents);
-
-              observableArrayOfEvents = observableArrayOfEvents.pipe(
-                map((events) => {
-                  return events.sort((a, b) => {
-                    return a.eventStartDate.seconds - b.eventStartDate.seconds;
-                  });
-                })
-              );
-
-              return observableArrayOfEvents.pipe(
-                map((events) => {
-                  return events.map((event) => {
-                    return {
-                      id: event.id,
-                      event: event,
-                      userData: this.afs
-                        .doc<EventSubscription>(`events/${event.id}/subscriptions/${user.uid}`)
-                        .valueChanges(),
-                    };
-                  });
-                })
-              );
-            }),
-            switchMap((observable) => observable)
+            })
           );
-      }
+        }),
+        switchMap((observable) => observable)
+      ) as Observable<EventSubscriptionLocal[]>;
     });
   }
 
@@ -180,7 +184,6 @@ export class MyAttendancesPage implements OnInit {
 
 interface Subscription {
   id?: string;
-  reference?: DocumentReference<MajorEventSubscription>;
   userData?: Observable<MajorEventSubscription>;
   majorEvent?: Observable<MajorEventItem>;
 }

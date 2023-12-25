@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 import { Component, inject, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
@@ -14,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
-import { ListCertificatesComponent } from '../components/list-certificates/list-certificates.component';
+import { ListCertificatesComponent } from '../../components/list-certificates/list-certificates.component';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 
 import {
@@ -37,12 +36,12 @@ import {
 import { HeaderComponent } from 'src/app/shared/modules/major-event-display/header/header.component';
 import { DescriptionComponent } from 'src/app/shared/modules/major-event-display/description/description.component';
 import { DateComponent } from 'src/app/shared/modules/major-event-display/date/date.component';
-import { EventListComponent } from 'src/app/profile/my-attendances/more-info/event-list/event-list.component';
+import { EventListComponent } from 'src/app/profile/my-attendances/major-events/more-info/event-list/event-list.component';
 
 @Component({
   selector: 'app-more-info',
-  templateUrl: './more-info.page.html',
-  styleUrls: ['./more-info.page.scss'],
+  templateUrl: './events-more-info.page.html',
+  styleUrls: ['./events-more-info.page.scss'],
   standalone: true,
   imports: [
     AsyncPipe,
@@ -92,8 +91,6 @@ export class MoreInfoPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    // TODO: If event or subscription doesn't exist, redirect
-
     this.majorEventID = this.route.snapshot.paramMap.get('majorEventID');
     this.majorEvent$ = this.afs
       .doc<MajorEventItem>(`majorEvents/${this.majorEventID}`)

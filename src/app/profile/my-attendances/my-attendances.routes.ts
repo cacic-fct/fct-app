@@ -10,11 +10,11 @@ export const routes: Routes = [
   {
     path: 'pagar/:eventID',
     title: 'Pagar evento',
-    loadChildren: () => import('./send-receipt/send-receipt.routes').then((m) => m.routes),
+    loadChildren: () => import('./major-events/send-receipt/send-receipt.routes').then((m) => m.routes),
   },
   {
     path: 'detalhes/:majorEventID',
     title: 'Detalhes da inscrição',
-    loadChildren: () => import('./more-info/more-info.routes').then((m) => m.routes),
+    loadChildren: () => import('./major-events/more-info/more-info.routes').then((m) => m.routes),
   },
 ];
