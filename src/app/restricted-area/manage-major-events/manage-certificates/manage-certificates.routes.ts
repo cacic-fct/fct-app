@@ -1,8 +1,8 @@
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { ManageCertificatesPage } from './manage-certificates.page';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: ManageCertificatesPage,

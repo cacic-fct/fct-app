@@ -17,30 +17,131 @@
       <ion-icon name="list-outline" slot="start"></ion-icon>
       <p slot="end">Visualizar emissões</p>
     </ion-button>
-    <ion-button disabled>
+    @if (disableEditing === true) {
+    <ion-button (click)="allowEditing()">
       <ion-icon name="pencil-outline" slot="start"></ion-icon>
       <p slot="end">Editar certificado</p>
     </ion-button>
+
+    } @else {
+    <ion-button>
+      <ion-icon (click)="submitChanges()" name="checkmark" slot="start"></ion-icon>
+      <p slot="end">Salvar alterações</p>
+    </ion-button>
+
+    }
   </div>
-  <ion-card>
-    <ion-card-header> <ion-card-title>Informações gerais</ion-card-title></ion-card-header>
-    <ion-card-content>
-      <p><b>Modelo:</b> {{ certificateTemplates[certificate.certificateTemplate].displayName }}</p>
-      <p><b>Conteúdo:</b> {{ contentTypes['default'] }}</p>
-      @if (certificate.certificateContent.custom) {
-      <p>{{ certificate.certificateContent.custom }}</p>
-      }
-      <p><b>Tipo do evento:</b> {{ eventTypes[certificate.eventType.type] }}</p>
-      @if (certificate.eventType.custom) {
-      <p>{{ certificate.eventType.custom }}</p>
-      }
-      <p><b>Tipo da participação:</b> {{ participationTypes[certificate.participationType.type] }}</p>
-      @if (certificate.participationType.custom) {
-      <p>{{ certificate.participationType.custom }}</p>
-      }
-      <p><b>Texto extra:</b> {{ certificate.extraText }}</p>
-    </ion-card-content>
-  </ion-card>
+
+  <form [formGroup]="dataForm">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-lg="1">
+          <ion-list>
+            <ion-item>
+              <ion-label class="ion-text-wrap">Nome do certificado</ion-label>
+              <ion-input
+                formControlName="certificateName"
+                [readonly]="disableEditing"
+                (ionChange)="formatCertificateID()"
+                (ionBlur)="formatCertificateName()"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>ID do certificado</ion-label>
+              <ion-input tabindex="-1" color="medium" formControlName="certificateID" readonly></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Modelo do certificado</ion-label>
+              <ion-select interface="popover" formControlName="certificateTemplate" [disabled]="disableEditing">
+                @for (certificateTemplate of certificateTemplates | keyvalue; track certificateTemplate) {
+                <ion-select-option [value]="certificateTemplate.key">
+                  {{ certificateTemplate.value.displayName }}
+                </ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Conteúdo</ion-label>
+              <ion-input [readonly]="disableEditing"></ion-input>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+        <ion-col size="12" size-lg="1">
+          <ion-list>
+            <ng-container formGroupName="participationType">
+              <ion-item>
+                <ion-label>Tipo de participação</ion-label>
+                <ion-select interface="popover" formControlName="type" [disabled]="disableEditing">
+                  @for (participationType of participationTypes | keyvalue; track participationType) { @if
+                  (!(participationType.key === 'custom')) {
+                  <ion-select-option [value]="participationType.key"> {{ participationType.value }} </ion-select-option>
+                  } }
+                  <ion-select-option value="custom"> Personalizado </ion-select-option>
+                </ion-select>
+              </ion-item>
+              @if (dataForm.get('participationType').value.type === 'custom') {
+              <ion-item>
+                <ion-label>Tipo de participação personalizado</ion-label>
+                <ion-input formControlName="custom" [readonly]="disableEditing"></ion-input>
+              </ion-item>
+              }
+            </ng-container>
+
+            <ng-container formGroupName="eventType">
+              <ion-item>
+                <ion-label>Tipo de evento</ion-label>
+                <ion-select interface="popover" formControlName="type" [disabled]="disableEditing">
+                  @for (eventType of eventTypes | keyvalue; track eventType) { @if (!(eventType.key === 'custom')) {
+                  <ion-select-option [value]="eventType.key"> {{ eventType.value }} </ion-select-option>
+                  } }
+                  <ion-select-option value="custom"> Personalizado </ion-select-option>
+                </ion-select>
+              </ion-item>
+              @if (dataForm.get('eventType').value.type === 'custom') {
+              <ion-item>
+                <ion-label>Tipo de evento personalizado</ion-label>
+                <ion-input formControlName="custom" [readonly]="disableEditing"></ion-input>
+              </ion-item>
+              }
+            </ng-container>
+
+            <ion-item>
+              <ion-label>Texto complementar</ion-label>
+              <ion-textarea
+                placeholder="Escreva aqui"
+                formControlName="extraText"
+                [readonly]="disableEditing"></ion-textarea>
+            </ion-item>
+
+            <ng-container formGroupName="contentType">
+              <ion-item>
+                <ion-label>Conteúdo do evento</ion-label>
+                <ion-select interface="popover" formControlName="type" [disabled]="disableEditing">
+                  @for (contentType of contentTypes | keyvalue; track contentType) { @if (!(contentType.key ===
+                  'custom')) {
+                  <ion-select-option [value]="contentType.key"> {{ contentType.value }} </ion-select-option>
+                  } }
+                  <ion-select-option value="custom"> Personalizado </ion-select-option>
+                </ion-select>
+              </ion-item>
+              @if (dataForm.get('contentType').value.type === 'custom') {
+              <ion-item>
+                <ion-label>Conteúdo personalizado</ion-label>
+                <ion-textarea
+                  placeholder="Escreva aqui"
+                  formControlName="custom"
+                  [readonly]="disableEditing"></ion-textarea>
+              </ion-item>
+              }
+            </ng-container>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
   @if (docAdminData$ | async; as adminData ) {
   <ion-card>
     <ion-card-header>
