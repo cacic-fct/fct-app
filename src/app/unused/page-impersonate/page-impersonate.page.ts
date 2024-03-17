@@ -20,6 +20,7 @@ import {
   IonInput,
   IonButton,
 } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-page-impersonate',
@@ -48,7 +49,7 @@ export class PageImpersonatePage implements OnInit {
   private auth: Auth = inject(Auth);
   private functions: Functions = inject(Functions);
 
-  constructor(private formBuilder: FormBuilder, private toastController: ToastController) {
+  constructor(private formBuilder: FormBuilder, private toastController: ToastController, private router: Router) {
     this.impersonateForm = this.formBuilder.group({
       userID: '',
     });
@@ -62,7 +63,7 @@ export class PageImpersonatePage implements OnInit {
       const data: any = res.data;
       signInWithCustomToken(this.auth, data).then(() => {
         this.successToast();
-        this.impersonateForm.reset();
+        this.router.navigate(['/menu']);
       });
     });
   }
