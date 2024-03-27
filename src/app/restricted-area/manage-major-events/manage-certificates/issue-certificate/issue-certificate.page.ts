@@ -18,7 +18,7 @@ import {
   eventTypes,
   contentTypes,
   certificateTemplates,
-} from '../../../shared/services/certificates.service';
+} from 'src/app/shared/services/certificates.service';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { Observable, take } from 'rxjs';

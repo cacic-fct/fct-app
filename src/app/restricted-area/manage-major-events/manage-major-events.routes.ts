@@ -12,12 +12,12 @@ export const routes: Routes = [
     loadChildren: () => import('./add-major-event/add-major-event.routes').then((m) => m.routes),
   },
   {
-    path: 'validar-comprovante/:eventId',
+    path: ':eventId/validar-comprovante',
     title: 'Validar comprovante',
     loadChildren: () => import('./validate-receipt/validate-receipt.routes').then((m) => m.routes),
   },
   {
-    path: 'listar-inscritos/:eventID',
+    path: ':eventID/listar-inscritos',
     title: 'Listar inscritos',
     loadChildren: () =>
       import('src/app/restricted-area/manage-major-events/list-subscriptions/list-subscriptions.routes').then(
@@ -25,11 +25,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'emitir-certificados/:eventID',
-    loadChildren: () => import('./issue-certificate/issue-certificate.routes').then((m) => m.routes),
-  },
-  {
-    path: 'emitir-certificados',
-    redirectTo: '',
+    path: ':eventID/gerenciar-certificados',
+    loadChildren: () => import('./manage-certificates/manage-certificates.routes').then((m) => m.routes),
   },
 ];

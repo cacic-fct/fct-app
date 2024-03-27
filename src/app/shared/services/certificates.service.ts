@@ -448,7 +448,7 @@ export const eventTypes: CertificateOptionsTypes = {
 
 export const contentTypes: CertificateOptionsTypes = {
   custom: 'Personalizado',
-  default: 'Atividades realizadas (padrão)',
+  default: 'Atividades realizadas com data e carga-horária (padrão)',
 };
 
 export const certificateTemplates = {
@@ -526,5 +526,22 @@ export interface CertificateTemplateData {
     toNonSubscriber: string;
     toNonPayer: string;
     toList: string[];
+  };
+}
+
+export interface CertificateAdminData {
+  extraInfo: string;
+  failed: {
+    error: string;
+    uid: string;
+  }[];
+
+  firstIssuedBy: string;
+  firstIssuedOn: Timestamp;
+  issuedTo: {
+    toList: string[];
+    toNonPayer: boolean;
+    toNonSubscriber: boolean;
+    toPayer: boolean;
   };
 }
