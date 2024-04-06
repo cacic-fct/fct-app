@@ -3,7 +3,7 @@
     @if (authState$ | async) {
     <ion-buttons slot="primary">
       <ion-button fill="clear" (click)="authService.SignOut()">
-        <ion-icon slot="start" name="log-in-outline"></ion-icon>
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
         Sair
       </ion-button>
     </ion-buttons>
@@ -11,7 +11,7 @@
     } @else {
     <ion-buttons slot="primary">
       <ion-button fill="clear" [routerLink]="'/login'">
-        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        <ion-icon slot="start" name="log-in-outline"></ion-icon>
         Entrar
       </ion-button>
     </ion-buttons>
@@ -46,11 +46,11 @@
       }
       <ion-col size="12" size-lg="6">
         <ion-card>
-          <ion-item [routerLink]="['/calouros']">
+          <ion-item href="https://cacic-fct.github.io/manual-do-calouro/pagina-do-calouro">
             <ion-icon name="people-outline" slot="start" aria-hidden="true"></ion-icon>
             <ion-label>Página do calouro</ion-label>
           </ion-item>
-          <ion-item [routerLink]="['/manual-do-calouro']" lines="none">
+          <ion-item href="https://cacic-fct.github.io/manual-do-calouro" lines="none">
             <ion-icon name="book-outline" slot="start" aria-hidden="true"></ion-icon>
             <ion-label>Manual do calouro</ion-label>
           </ion-item>

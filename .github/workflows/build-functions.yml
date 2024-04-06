@@ -1,4 +1,4 @@
-name: Build Functions
+name: Cloud functions
 
 on: 
   push:
@@ -19,17 +19,26 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
-          cache: 'npm'
-          cache-dependency-path: functions/package-lock.json
+          node-version: 18
+          cache: 'yarn'
+          cache-dependency-path: functions/yarn.lock
 
       - name: Install dependencies
-        run: cd functions && npm ci
+        working-directory: ./functions
+        run: yarn install --frozen-lockfile
         
       - name: Build functions
-        run: npm run build
+        working-directory: ./functions
+        run: cd functions yarn build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        working-directory: ./functions
+        with:
+          name: Functions-artifacts
+          path: dist/

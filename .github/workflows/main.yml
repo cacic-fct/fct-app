@@ -10,38 +10,54 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Build for production
-        run: npm run build -- --configuration=production
+        run: yarn build --configuration=production
         
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build-artifacts
           path: www/
+  
+  release:
+      if: ${{ github.ref_type == 'tag' }}
+      needs: build
+      permissions:
+        contents: write
+
+      runs-on: ubuntu-latest
+      steps:
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create ${{ github.ref_name }}
+          --repo ${{ github.event.repository.full_name }}
+          --title ${{ github.ref_name }}
+          --generate-notes
+          --verify-tag
 
   deploy:
-    if: ${{ github.event_name == 'push' && github.ref_type == 'tag' }}
-    needs: build
+    needs: release
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: Build-artifacts
           path: www/
@@ -53,11 +69,3 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_FCT_PP }}'
           channelId: live
           projectId: fct-pp
-
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          body: |
-            [Changelog](https://github.com/cacic-fct/fct-app/blob/main/Changelog.md)
-          draft: false
-          prerelease: false

@@ -67,16 +67,6 @@ export const routes: Routes = [
     title: 'Licenças',
     loadChildren: () => import('./about/licenses/licenses.routes').then((m) => m.routes),
   },
-  {
-    path: 'manual-do-calouro',
-    title: 'Manual do Calouro',
-    loadChildren: () => import('src/app/freshmen/manual/manual.routes').then((m) => m.routes),
-  },
-  {
-    path: 'calouros',
-    title: 'Página dos calouros',
-    loadChildren: () => import('src/app/freshmen/welcome/welcome.routes').then((m) => m.routes),
-  },
   // Unused route
   // {
   //   path: 'scan',
@@ -102,12 +92,6 @@ export const routes: Routes = [
     data: { preload: true },
     loadChildren: () => import('src/app/profile/profile-info/profile-info.routes').then((m) => m.routes),
     ...canActivate(redirectUnauthorizedToLogin),
-  },
-  {
-    path: 'entidades',
-    title: 'Entidades estudantis',
-    loadChildren: () =>
-      import('src/app/freshmen/student-organizations/student-organizations.routes').then((m) => m.routes),
   },
   {
     path: 'eventos/inscrever/:eventID',

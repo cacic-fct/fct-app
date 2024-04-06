@@ -1,31 +1,60 @@
 # Attribution: Dave Sugden
 # https://davelms.medium.com/deploy-firebase-functions-using-github-actions-7dbafbd4df77
-name: Deploy Functions
+name: Deploy functions
 
-on: 
-  release:
-    types: [released]
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
-  deploy_functions:
+  build_functions:
+    if: ${{ github.ref_type == 'tag' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
-          cache: 'npm'
-          cache-dependency-path: functions/package-lock.json
+          node-version: 18
+          cache: 'yarn'
+          cache-dependency-path: functions/yarn.lock
 
       - name: Install dependencies
-        run: cd functions && npm ci
+        working-directory: ./functions
+        run: yarn install --frozen-lockfile
+        
+      - name: Build functions
+        working-directory: ./functions
+        run: yarn build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Functions-artifacts
+          path: functions/lib/
+
+  deploy:
+    needs: build_functions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Functions-artifacts
+          path: functions/lib/
 
       - name: Create Service Account key
+        working-directory: ./functions
         run: echo '${{ secrets.FIREBASE_FUNCTIONS_ACCOUNT }}' > $HOME/gcloud.json
          
       - name: Deploy Cloud Functions
+        working-directory: ./functions
         run: export GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud.json && npx firebase-tools deploy --only functions --json
