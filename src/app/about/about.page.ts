@@ -14,6 +14,8 @@ import {
   IonCol,
 } from '@ionic/angular/standalone';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'app-about',
   templateUrl: './about.page.html',
@@ -34,7 +36,8 @@ import {
   ],
 })
 export class AboutPage implements OnInit {
-  globalConstants = GlobalConstantsService;
+  public globalConstants = GlobalConstantsService;
+  public environment = environment;
 
   constructor() {}
 

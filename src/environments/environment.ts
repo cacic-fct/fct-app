@@ -20,6 +20,7 @@ export const environment = {
     url: 'https://supabase.yudi.me',
     anonKey: import.meta.env['ANON_KEY'],
   },
+  version: import.meta.env['APP_VERSION'] || 'Versão desconhecida',
 };
 
 /*

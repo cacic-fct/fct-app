@@ -105,7 +105,7 @@ bootstrapApplication(AppComponent, {
         const analytics = getAnalytics();
         logEvent(analytics, 'app_version', {
           app_name: GlobalConstantsService.appName,
-          app_version: GlobalConstantsService.appVersion,
+          app_version: environment.version,
         });
         return analytics;
       }),
