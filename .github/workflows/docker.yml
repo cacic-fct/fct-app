@@ -34,7 +34,6 @@ jobs:
           docker buildx build .
           --file ./Dockerfile
           --platform linux/amd64
-          --build-arg VERSION=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
           --output type=tar,dest=FCT-App.Docker.tar
 
       - name: Upload artifacts
@@ -70,7 +69,6 @@ jobs:
           docker buildx build .
           --file ./Dockerfile
           --platform linux/amd64
-          --build-arg VERSION=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
           --push
           --tag renanyudi/fct-app:latest
           ${{ github.ref_type == 'tag' && '--tag renanyudi/fct-app:$GITHUB_REF_NAME' || '' }}
