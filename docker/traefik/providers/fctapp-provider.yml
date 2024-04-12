@@ -1,0 +1,16 @@
+http:
+  routers:
+    fctapp:
+      entryPoints:
+        - web
+        - websecure
+      rule: 'Host(`fct.yudi.me`)'
+      service: fctapp
+      tls:
+        certResolver: 'letsencrypt'
+
+  middlewares:
+    fctapp-redirect:
+      redirectScheme:
+        scheme: 'https'
+        permanent: true

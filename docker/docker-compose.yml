@@ -1,0 +1,40 @@
+services:
+  fctapp:
+    image: renanyudi/fct-app:latest
+    container_name: fctapp
+    restart: always
+    networks:
+      - traefik
+    ports:
+      - '8081:80'
+
+  traefik:
+    image: 'traefik:v2.10'
+    container_name: 'traefik'
+    restart: 'always'
+    networks:
+      - traefik
+    command:
+      - '--api.insecure=false'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--providers.file.directory=/providers'
+      - '--entrypoints.web.address=:80'
+      - '--entrypoints.websecure.address=:443'
+      - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
+      - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web'
+      - '--certificatesresolvers.letsencrypt.acme.email=letsencrypt@yudi.me'
+      - '--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8080:8080'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - './traefik/letsencrypt:/letsencrypt'
+      - './traefik/providers:/providers'
+      - './traefik/middlewares:/middlewares'
+
+networks:
+  traefik:
+    external: true
