@@ -10,7 +10,7 @@ RUN yarn install --frozen-lockfile --network-timeout 1000000
 
 RUN yarn build --configuration=production
 
-COPY /app/dist/3rdpartylicenses.txt /app/dist/browser/3rdpartylicenses.txt
+#COPY /app/dist/3rdpartylicenses.txt /app/dist/browser/3rdpartylicenses.txt
 
 FROM nginx:stable
 
