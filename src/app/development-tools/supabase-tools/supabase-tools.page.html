@@ -13,4 +13,22 @@
       <ion-title size="large">Subapase</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <ion-card>
+    <ion-item>
+      <ion-input label="E-mail" [(ngModel)]="emailInput"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Senha" [(ngModel)]="passwordInput"></ion-input>
+    </ion-item>
+
+    <ion-button>
+      <ion-icon name="log-in-outline" slot="start" (click)="login()"></ion-icon>
+      Entrar
+    </ion-button>
+    <ion-button>
+      <ion-icon name="log-out-outline" slot="start" (click)="logout()"></ion-icon>
+      Sair
+    </ion-button>
+  </ion-card>
 </ion-content>

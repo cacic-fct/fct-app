@@ -17,7 +17,7 @@ export interface Profile {
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class SupabaseAuthService {
   // Supabase user state
   private _$user = new BehaviorSubject<User | null | undefined>(undefined);
   $user = this._$user.pipe(skipWhile((x) => typeof x === 'undefined')) as Observable<User | null>;
@@ -107,7 +107,7 @@ export class AuthService {
     });
   }
 
-  logout() {
+  signOut() {
     return this.supabase.client.auth.signOut();
   }
 }
