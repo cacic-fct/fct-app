@@ -6,4 +6,17 @@
 **/coverage
 **/.env
 **/.editorconfig
-**/www
+**/e2e
+**/*.log
+
+# Firebase
+**/functions
+**/emulator-datta
+**/gcloud-data
+**/firestore.rules
+**/storage.rules
+**/firebase-export*
+
+**/.github
+**/.vscode
+**/docker
