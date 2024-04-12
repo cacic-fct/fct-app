@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY . /app
 
-RUN yarn global add @angular/cli
+RUN yarn global add @angular/cli --network-timeout 1000000
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --network-timeout 1000000
 
 RUN yarn build --configuration=production
 
