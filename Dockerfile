@@ -6,7 +6,7 @@ COPY . /app
 
 RUN yarn global add @angular/cli
 
-RUN yarn
+RUN yarn install --frozen-lockfile
 
 RUN yarn build --configuration=production
 
