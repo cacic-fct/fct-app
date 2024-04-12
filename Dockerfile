@@ -3,13 +3,15 @@ FROM node:alpine AS build
 
 WORKDIR /app
 
-COPY package.json yarn.lock .
+COPY package.json bun.lockb .
 
-RUN yarn global add @angular/cli --network-timeout 1000000 && \
-    yarn install --frozen-lockfile --network-timeout 1000000
+RUN yarn global add bun
+
+RUN bun add -g @angular/cli && \
+    bun install --frozen-lockfile
 
 COPY . .
-RUN yarn build --configuration=production
+RUN bun run build --configuration=production
 
 # Serve
 FROM nginx:stable as serve
