@@ -18,7 +18,7 @@ export const environment = {
   recaptcha3SiteKey: '6LcFr9AdAAAAANB7MbCks-nBVqfZZYp8bGp6Kcto',
   supabase: {
     url: 'https://supabase.yudi.me',
-    anonKey: process.env['ANON_KEY'],
+    anonKey: import.meta.env['ANON_KEY'],
   },
 };
 
