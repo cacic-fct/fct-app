@@ -11,4 +11,8 @@ export const routes: Routes = [
     path: 'populate-db',
     loadChildren: () => import('./populate-database/populate-database.routes').then((m) => m.routes),
   },
+  {
+    path: 'supabase-tools',
+    loadComponent: () => import('./supabase-tools/supabase-tools.page').then( m => m.SupabaseToolsPage)
+  },
 ];
