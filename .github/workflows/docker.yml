@@ -1,0 +1,75 @@
+name: docker
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - selfhosted
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      actions: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        run: >
+          docker buildx build .
+          --file Dockerfile
+          --platform linux/amd64,linux/arm64
+          --build-arg VERSION=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
+          --output type=tar,dest=FCT-App.Docker.tar
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: FCT-App.Docker
+          path: FCT-App.Docker.tar
+          if-no-files-found: error
+
+  deploy:
+    if: ${{ github.ref_type == 'tag' || github.ref_type == 'branch' && github.ref_name == 'selfhosted' }}
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        run: >
+          echo ${{ secrets.DOCKER_TOKEN }} |
+          docker login --username renanyudi --password-stdin
+
+      - name: Build & push image
+        run: >
+          docker buildx build .
+          --file Dockerfile
+          --platform linux/amd64,linux/arm64
+          --build-arg VERSION=${{ github.ref_type == 'tag' && github.ref_name || format('999.9.9-ci-{0}', github.sha) }}
+          --push
+          --tag renanyudi/fct-app:latest
+          ${{ github.ref_type == 'tag' && '--tag renanyudi/fct-app:$GITHUB_REF_NAME' || '' }}
+          ${{ github.ref_type == 'tag' && '--tag renanyudi/fct-app:stable' || '' }}
