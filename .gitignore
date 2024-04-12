@@ -69,6 +69,7 @@ yarn-error.log
 baseline.json
 
 .angular
+**/*.env
 
 # Firebase
 .firebase
