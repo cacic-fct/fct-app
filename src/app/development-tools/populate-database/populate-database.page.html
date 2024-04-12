@@ -4,7 +4,7 @@
       <ion-back-button defaultHref="development-tools"></ion-back-button>
     </ion-buttons>
 
-    <ion-title>Popular banco de dados</ion-title>
+    <ion-title>Popular Firestore</ion-title>
 
     <ion-buttons slot="end">
       <ion-button (click)="populateDatabase()" fill="clear" [disabled]="numberOfSelectedCheckboxes === 0">
@@ -12,8 +12,8 @@
       </ion-button>
     </ion-buttons>
     @if (populateStarted) {
-      <ion-progress-bar
-        [value]="progress"
+    <ion-progress-bar
+      [value]="progress"
       [color]="parseFloat(progress | number: '1.0-1') >= 1 ? 'success': ''"></ion-progress-bar>
     }
   </ion-toolbar>
