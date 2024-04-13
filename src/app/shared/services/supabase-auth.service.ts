@@ -1,6 +1,6 @@
 // Attribution: kylerummens
 // https://gist.github.com/kylerummens/c2ec82e65d137f3220748ff0dee76c3f
-import { Injectable, signal } from '@angular/core';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RealtimeChannel, User } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable, first, skipWhile } from 'rxjs';
@@ -21,7 +21,8 @@ export class SupabaseAuthService {
   // Supabase user state
   private _$user = new BehaviorSubject<User | null | undefined>(undefined);
   $user = this._$user.pipe(skipWhile((x) => typeof x === 'undefined')) as Observable<User | null>;
-  private user_id: string;
+  private user_id: WritableSignal<string | undefined> = signal(undefined);
+  public isLoggedIn: WritableSignal<boolean | undefined> = signal(undefined);
 
   // Profile state
   private _$profile = new BehaviorSubject<Profile | null | undefined>(undefined);
@@ -34,6 +35,7 @@ export class SupabaseAuthService {
 
       // After the initial value is set, listen for auth state changes
       this.supabase.client.auth.onAuthStateChange((event, session) => {
+        console.log('Auth State Changed:', event, session);
         this._$user.next(session?.user ?? null);
       });
     });
@@ -42,13 +44,14 @@ export class SupabaseAuthService {
     // The state of the user's profile is dependent on their being a user. If no user is set, there shouldn't be a profile.
     this.$user.pipe(takeUntilDestroyed()).subscribe((user) => {
       if (user) {
+        this.isLoggedIn.set(true);
         // We only make changes if the user is different
-        if (user.id === this.user_id) {
+        if (user.id === this.user_id()) {
           return;
         }
 
         const user_id = user.id;
-        this.user_id = user_id;
+        this.user_id.set(user_id);
 
         // One-time API call to Supabase to get the user's profile
         this.supabase.client
@@ -81,7 +84,8 @@ export class SupabaseAuthService {
       } else {
         // If there is no user, update the profile BehaviorSubject, delete the user_id, and unsubscribe from Supabase Realtime
         this._$profile.next(null);
-        delete this.user_id;
+        this.isLoggedIn.set(false);
+        this.user_id.set(undefined);
         if (this.profile_subscription) {
           this.supabase.client.removeChannel(this.profile_subscription).then((res) => {
             console.log('Removed profile channel subscription with status: ', res);
@@ -96,11 +100,14 @@ export class SupabaseAuthService {
       // Set _$profile back to undefined. This will mean that $profile will wait to emit a value
       this._$profile.next(undefined);
       this.supabase.client.auth.signInWithPassword({ email, password }).then(({ data, error }) => {
-        if (error || !data) reject('Invalid email/password combination');
+        if (error || !data) {
+          reject(error);
+        }
 
         // Wait for $profile to be set again.
         // We don't want to proceed until our API request for the user's profile has completed
-        this.$profile.pipe(first(), takeUntilDestroyed()).subscribe(() => {
+        this.$profile.pipe(first()).subscribe(() => {
+          this.isLoggedIn.set(true);
           resolve();
         });
       });
@@ -108,6 +115,7 @@ export class SupabaseAuthService {
   }
 
   signOut() {
+    this.isLoggedIn.set(false);
     return this.supabase.client.auth.signOut();
   }
 }

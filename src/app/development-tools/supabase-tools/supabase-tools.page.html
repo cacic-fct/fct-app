@@ -22,13 +22,14 @@
       <ion-input label="Senha" [(ngModel)]="passwordInput"></ion-input>
     </ion-item>
 
-    <ion-button>
-      <ion-icon name="log-in-outline" slot="start" (click)="login()"></ion-icon>
+    <ion-button (click)="login()">
+      <ion-icon name="log-in-outline" slot="start"></ion-icon>
       Entrar
     </ion-button>
-    <ion-button>
-      <ion-icon name="log-out-outline" slot="start" (click)="logout()"></ion-icon>
+    <ion-button (click)="logout()">
+      <ion-icon name="log-out-outline" slot="start"></ion-icon>
       Sair
     </ion-button>
+    <h1>isLoggedIn: {{supabaseAuth.isLoggedIn()}}</h1>
   </ion-card>
 </ion-content>

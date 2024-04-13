@@ -41,16 +41,13 @@ export class SupabaseToolsPage implements OnInit {
   emailInput: string = '';
   passwordInput: string = '';
 
-  constructor(private supabaseAuth: SupabaseAuthService) {}
+  constructor(public supabaseAuth: SupabaseAuthService) {}
 
   login(): void {
-    this.emailInput = '';
-    this.passwordInput = '';
-
     this.supabaseAuth.signIn(this.emailInput, this.passwordInput);
   }
 
-  logout() {
+  logout(): void {
     this.supabaseAuth.signOut();
   }
 
