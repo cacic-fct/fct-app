@@ -21,7 +21,7 @@ export const environment = {
     anonKey:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzEyNzE4MDAwLAogICJleHAiOiAxODcwNDg0NDAwCn0.uw1mpsYyrLzPnDfs4xjVNcwurDoS6Y9u8gZggSqmRDo',
   },
-  version: import.meta.env['APP_VERSION'] || 'Versão desconhecida',
+  version: import.meta.env['NG_APP_VERSION'] || 'Versão desconhecida',
 };
 
 /*
