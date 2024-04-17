@@ -77,12 +77,13 @@ export const routes: Routes = [
   // },
   {
     path: 'login',
+    title: 'Entrar',
     loadComponent: () => import('src/app/auth/login/login.page').then((m) => m.LoginPage),
     ...canActivate(redirectLoggedInToMenu),
   },
   {
     path: 'register',
-    title: 'Registro',
+    title: 'Registrar-se',
     loadComponent: () => import('src/app/auth/register/register.page').then((m) => m.RegisterPage),
     ...canActivate(redirectUnauthorizedToLogin),
   },
@@ -107,7 +108,7 @@ export const routes: Routes = [
   },
   {
     path: 'confirmar-presenca/:eventID',
-    title: 'Confirmar presença em um evento',
+    title: 'Confirmar presença',
     loadChildren: () => import('src/app/modals/confirm-attendance/confirm-attendance.routes').then((m) => m.routes),
     ...canActivate(redirectUnauthorizedToLogin),
   },
