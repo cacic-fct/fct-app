@@ -1,97 +1,36 @@
-*~
-*.sw[mnpcod]
-.tmp
-*.tmp
-*.tmp.*
-*.sublime-project
-*.sublime-workspace
-.DS_Store
-Thumbs.db
-UserInterfaceState.xcuserstate
-$RECYCLE.BIN/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-*.log
-log.txt
-npm-debug.log*
-
-/.idea
-/.ionic
-/.sass-cache
-/.sourcemaps
-/.versions
-/coverage
-/dist
+# dependencies
 /node_modules
-/platforms
-/plugins
+/.pnp
+.pnp.js
+.yarn/install-state.gz
 
-/dist/
-/bazel-out
-/integration/bazel/bazel-*
-*.log
+# testing
+/coverage
 
-# Include when developing application packages.
-pubspec.lock
-.c9
-.idea/
-.devcontainer/*
-!.devcontainer/README.md
-!.devcontainer/recommended-devcontainer.json
-!.devcontainer/recommended-Dockerfile
-.settings/
-*.swo
-*.swp
-modules/.settings
-modules/.vscode
-.vimrc
-.nvimrc
+# next.js
+/.next/
+/out/
 
-# Don't check in secret files
-*secret.js
+# production
+/build
 
-# Ignore npm/yarn debug log
-npm-debug.log
-yarn-error.log
+# misc
+.DS_Store
+*.pem
 
-# build-analytics
-.build-analytics
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# rollup-test output
-/modules/rollup-test/dist/
+# local env files
+.env*.local
 
-# User specific bazel settings
-.bazelrc.user
+# vercel
+.vercel
 
-# User specific ng-dev settings
-.ng-dev.user*
-
-.notes.md
-baseline.json
-
-.angular
-
-# Firebase
-.firebase
-*-debug.log
-.runtimeconfig.json
-firestore.rules
-emulator-data
-firebase-export-*
-storage.rules
-
-# ASDF
-.tool-versions
-.eslintcache
-
-
-# VSCode
-.vscode/**/*
-
-# Allow shared settings
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# Ignore .history for the xyz.local-history VSCode extension
-**/.history
+# typescript
+*.tsbuildinfo
+next-env.d.ts

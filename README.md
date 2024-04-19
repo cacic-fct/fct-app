@@ -1,64 +1,36 @@
-> [!WARNING]  
-> Leia as discussões sobre migrar do Firebase para uma hospedagem própria ([#180](https://github.com/cacic-fct/fct-app/issues/180)) antes de desenvolver um recurso novo.
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Getting Started
 
-# FCT App
-
-O "FCT App" facilita a vida dos alunos da FCT, com o acesso aos eventos do câmpus. Tem alto potencial de expansão. 
-
-## Contribuindo
-
-Todos podem contribuir para o "FCT App".
-
-Leia o [guia de contribuição do CACiC](https://github.com/cacic-fct/.github/blob/main/Contributing.md).
-
-## Site
-
-O aplicativo é construído com Angular e pode ser acessado em [fct-pp.web.app](https://fct-pp.web.app).
-
-### Desenvolvimento
-
-Para iniciar o site localmente, primeiro instale o [Ionic CLI](https://ionicframework.com/docs/cli) e o [Bun](https://bun.sh/).
-
-Depois, instale as dependências:
+First, run the development server:
 
 ```bash
-bun install
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Em seguida, inicie o servidor de desenvolvimento:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```bash
-ionic serve --ssl
-```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-#### Simulador do Firebase
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-Instale o [Firebase CLI](https://firebase.google.com/docs/cli) e faça login.
+## Learn More
 
-Depois, no diretório do projeto, inicie o emulador com o comando:
+To learn more about Next.js, take a look at the following resources:
 
-```bash
-firebase emulators:start --project fct-pp --import=./emulator-data --export-on-exit
-```
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-##### Cloud Functions
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-Para testar as Cloud Functions, primeiro altere o diretório para `functions`:
-    
-```bash
-cd functions
-```
+## Deploy on Vercel
 
-Depois, instale as dependências:
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-```bash
-bun install
-```
-
-Em seguida, compile com:
-```bash
-bun build
-```
-
-Não é necessário reiniciar o simulador após compilar.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
