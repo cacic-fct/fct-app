@@ -1,7 +1,5 @@
 import createMDX from '@next/mdx'
 
-const { DOCS_URL } = process.env;
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
    pageExtensions: ['md', 'mdx', 'ts', 'tsx'],
@@ -13,11 +11,11 @@ const nextConfig = {
       },
       {
         source: "/docs",
-        destination: `${DOCS_URL}/docs`,
+        destination: 'https://docs.fctapp.ejcomp.com.br/docs',
       },
       {
         source: "/docs/:path*",
-        destination: `${DOCS_URL}/docs/:path*`,
+        destination: 'https://docs.fctapp.ejcomp.com.br/docs/:path*',
       },
     ];
   },
