@@ -20,8 +20,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install, build, and upload
-        working-directory: ./docs
         uses: withastro/action@v2
+        working-directory: ./docs
         with:
           package-manager: bun@latest
 
