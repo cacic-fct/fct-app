@@ -1,23 +1,19 @@
-# Nextra Docs Template 
+# FCT App Docs
 
-This is a template for creating documentation with [Nextra](https://nextra.site).
+## Site
 
-[**Live Demo →**](https://nextra-docs-template.vercel.app)
+O site é construído com [Starlight](https://starlight.astro.build/) e pode ser acessado em TODO: [cacic-fct.github.io/](https://cacic-fct.github.io/).
 
-[![](.github/screenshot.png)](https://nextra-docs-template.vercel.app)
+### Desenvolvimento
 
-## Quick Start
+Para iniciar o site localmente, primeiro instale as dependências com o [Bun](https://bun.sh/):
 
-Click the button to clone this repository and deploy it on Vercel:
+```bash
+bun install
+```
 
-[![](https://vercel.com/button)](https://vercel.com/new/clone?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra-docs-template&showOptionalTeamCreation=false)
+Depois, inicie o servidor de desenvolvimento:
 
-## Local Development
-
-First, run `pnpm i` to install the dependencies.
-
-Then, run `pnpm dev` to start the development server and visit localhost:3000.
-
-## License
-
-This project is licensed under the MIT License.
+```bash
+bun run dev
+```
