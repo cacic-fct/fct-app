@@ -21,9 +21,9 @@ jobs:
 
       - name: Install, build, and upload
         uses: withastro/action@v2
-        working-directory: ./docs
         with:
           package-manager: bun@latest
+        working-directory: ./docs
 
   deploy:
     needs: build
