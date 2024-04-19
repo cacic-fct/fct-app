@@ -2,9 +2,5 @@
 build
 coverage
 
-/dist
 /.github
 /node_modules
-*.md
-/.angular
-/.husky
