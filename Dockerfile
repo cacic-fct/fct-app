@@ -1,7 +1,8 @@
-LABEL "org.opencontainers.image.source"="https://github.com/cacic-fct/fct-app"
-LABEL "org.opencontainers.image.licenses"="AGPL-3.0-only"
 # Build
 FROM node:alpine AS build
+
+LABEL "org.opencontainers.image.source"="https://github.com/cacic-fct/fct-app"
+LABEL "org.opencontainers.image.licenses"="AGPL-3.0-only"
 
 WORKDIR /app
 
