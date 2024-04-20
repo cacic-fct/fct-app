@@ -43,33 +43,6 @@ jobs:
           path: FCT-App.Docker.tar
           if-no-files-found: error
 
-  release:
-      needs: pack
-      permissions:
-        contents: write
-
-      runs-on: ubuntu-latest
-      steps:
-      - name: Delete old release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: >
-          gh release delete latest
-          --repo ${{ github.event.repository.full_name }}
-          --cleanup-tag 
-
-      - name: Create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: >
-          gh release create latest
-          --repo ${{ github.event.repository.full_name }}
-          --title latest
-          --latest
-          --generate-notes
-          # TODO: Change me
-          --target nextjs
-
   deploy:
     needs: release
     runs-on: ubuntu-latest
