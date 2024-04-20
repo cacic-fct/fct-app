@@ -36,6 +36,6 @@ RUN bun run license-report > 3rdpartylicenses.md
 FROM nginx:stable as serve
 
 COPY --from=build /app/.next/standalone /usr/share/nginx/html
-COPY --from=build /app/dist/3rdpartylicenses.md /usr/share/nginx/html
+COPY --from=build /app/3rdpartylicenses.md /usr/share/nginx/html
 
 EXPOSE 80
