@@ -61,3 +61,5 @@ jobs:
           context: .
           push: true
           tags: cacic-fct/fct-app:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
