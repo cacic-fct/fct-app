@@ -1,4 +1,4 @@
-import createMDX from '@next/mdx'
+import createMDX from '@next/mdx';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -11,9 +11,13 @@ const nextConfig = {
       },
     ];
   },
+  env: {
+    baseUrl: 'https://fctapp.yudi.me',
+    docsUrl: 'https://docs.fctapp.yudi.me',
+    plausibleUrl: 'https://plausible.fctapp.yudi.me',
+  },
 };
 
+const withMDX = createMDX({});
 
-const withMDX = createMDX({})
- 
-export default withMDX(nextConfig)
+export default withMDX(nextConfig);
