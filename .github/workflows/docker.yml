@@ -44,7 +44,7 @@ jobs:
           if-no-files-found: error
 
   release:
-      needs: build
+      needs: pack
       permissions:
         contents: write
 
@@ -64,6 +64,7 @@ jobs:
           --target nextjs
 
   deploy:
+    needs: release
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
