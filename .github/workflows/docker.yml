@@ -9,35 +9,6 @@ on:
       - "*"
 
 jobs:
-  pack:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    permissions:
-      actions: write
-      contents: read
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build image
-        run: >
-          docker buildx build .
-          --file ./Dockerfile
-          --platform linux/amd64
-          --output type=tar,dest=FCT-App.Docker.tar
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: FCT-App.Docker
-          path: FCT-App.Docker.tar
-          if-no-files-found: error
-
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
