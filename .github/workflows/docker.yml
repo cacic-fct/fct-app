@@ -1,6 +1,4 @@
-# Attribution: Oleksii Holub (Tyrrrz)
-# https://github.com/Tyrrrz/DiscordChatExporter
-name: Push to GitHub Container Registry
+name: Publish to GitHub Packages
 
 on:
   workflow_dispatch:
