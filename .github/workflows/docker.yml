@@ -59,6 +59,7 @@ jobs:
           --title latest
           --latest
           --generate-notes
+          --verify-tag
           # TODO: Change me
           --target nextjs
 
