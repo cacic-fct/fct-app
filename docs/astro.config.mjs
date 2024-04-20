@@ -23,15 +23,15 @@ export default defineConfig({
       },
       sidebar: [
         {
-          label: 'Guides',
+          label: 'Banco de dados',
           autogenerate: {
-            directory: 'guides',
+            directory: 'database',
           },
         },
         {
-          label: 'Reference',
+          label: 'Especificações gerais',
           autogenerate: {
-            directory: 'reference',
+            directory: 'general-specs',
           },
         },
       ],
