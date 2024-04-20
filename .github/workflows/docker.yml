@@ -16,6 +16,7 @@ jobs:
     permissions:
       packages: write
       contents: write
+      deployment: write
 
     steps:
       - name: Checkout
