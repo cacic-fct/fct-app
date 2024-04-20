@@ -11,7 +11,7 @@ on:
       - "*"
 
 env:
-  IMAGE_NAME: fct_app
+  IMAGE_NAME: fct-app
 
 jobs:
   pack:
