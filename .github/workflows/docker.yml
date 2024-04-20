@@ -60,7 +60,7 @@ jobs:
           --generate-notes
           --verify-tag
           --latest 
-        # TODO: Change me
+          # TODO: Change me
           --target nextjs
 
   deploy:
