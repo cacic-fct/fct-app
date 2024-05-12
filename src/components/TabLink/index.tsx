@@ -1,9 +1,10 @@
 import React from "react"
 import Link from "next/link"
+
 import { IconType } from 'react-icons'
+import { BaseIcon } from "../BaseIcon"
 
 import styles from './TabLink.module.scss'
-import { BaseIcon } from "../BaseIcon"
 
 interface Props {
   icon: IconType

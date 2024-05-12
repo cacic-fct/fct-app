@@ -1,13 +1,19 @@
 "use client"
-import { BaseIcon } from "@/components/BaseIcon";
-import { Card } from "@/components/Card";
-import { MenuItens } from "@/components/MenuItens";
-import { Panel } from "@/components/Panel";
-import { TopBar } from "@/components/TopBar";
-import { Typography } from "@/components/Typography";
-import { IoBanOutline, IoBookOutline, IoCodeOutline, IoHammerOutline, IoReloadOutline, IoWarningOutline } from "react-icons/io5";
+import { Metadata } from 'next'
+
+import { BaseIcon } from "@/components/BaseIcon"
+import { Card } from "@/components/Card"
+import { MenuItens } from "@/components/MenuItens"
+import { Panel } from "@/components/Panel"
+import { TopBar } from "@/components/TopBar"
+import { Typography } from "@/components/Typography"
+import { IoBanOutline, IoBookOutline, IoCodeOutline, IoHammerOutline, IoReloadOutline, IoWarningOutline } from "react-icons/io5"
 
 import styles from './Support.module.scss'
+
+export const metadata: Metadata = {
+  title: 'Suporte FCT App',
+}
 
 export default function Support() {
   return (

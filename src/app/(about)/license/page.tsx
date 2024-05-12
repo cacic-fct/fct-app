@@ -1,5 +1,8 @@
-import Markdown from "@/components/Markdown";
-import { TopBar } from "@/components/TopBar";
+import Head from 'next/head'
+import { Metadata } from 'next'
+
+import Markdown from "@/components/Markdown"
+import { TopBar } from "@/components/TopBar"
 
 import styles from './License.module.scss'
 
@@ -15,7 +18,7 @@ GNU Affero General Public License
 =================================
 
 _Version 3, 19 November 2007_
-_Copyright © 2007 Free Software Foundation, Inc. &lt;<http />://fsf.org/>&gt;_
+_Copyright © 2007 Free Software Foundation, Inc. &lt<http />://fsf.org/>&gt_
 
 Everyone is permitted to copy and distribute verbatim copies
 of this license document, but changing it is not allowed.
@@ -176,7 +179,7 @@ and control, on terms that prohibit them from making any copies of
 your copyrighted material outside their relationship with you.
 
 Conveying under any other circumstances is permitted solely under
-the conditions stated below.  Sublicensing is not allowed; section 10
+the conditions stated below.  Sublicensing is not allowed section 10
 makes it unnecessary.
 
 ### 3. Protecting Users' Legal Rights From Anti-Circumvention Law
@@ -199,10 +202,10 @@ technological measures.
 
 You may convey verbatim copies of the Program's source code as you
 receive it, in any medium, provided that you conspicuously and
-appropriately publish on each copy an appropriate copyright notice;
+appropriately publish on each copy an appropriate copyright notice
 keep intact all notices stating that this License and any
-non-permissive terms added in accord with section 7 apply to the code;
-keep intact all notices of the absence of any warranty; and give all
+non-permissive terms added in accord with section 7 apply to the code
+keep intact all notices of the absence of any warranty and give all
 recipients a copy of this License along with the Program.
 
 You may charge any price or no price for each copy that you convey,
@@ -228,7 +231,7 @@ regardless of how they are packaged.  This License gives no
 permission to license the work in any other way, but it does not
 invalidate such permission if you have separately received it.
 * **d)** If the work has interactive user interfaces, each must display
-Appropriate Legal Notices; however, if the Program has interactive
+Appropriate Legal Notices however, if the Program has interactive
 interfaces that do not display Appropriate Legal Notices, your
 work need not make them do so.
 
@@ -359,17 +362,17 @@ add to a covered work, you may (if authorized by the copyright holders of
 that material) supplement the terms of this License with terms:
 
 * **a)** Disclaiming warranty or limiting liability differently from the
-terms of sections 15 and 16 of this License; or
+terms of sections 15 and 16 of this License or
 * **b)** Requiring preservation of specified reasonable legal notices or
 author attributions in that material or in the Appropriate Legal
-Notices displayed by works containing it; or
+Notices displayed by works containing it or
 * **c)** Prohibiting misrepresentation of the origin of that material, or
 requiring that modified versions of such material be marked in
-reasonable ways as different from the original version; or
+reasonable ways as different from the original version or
 * **d)** Limiting the use for publicity purposes of names of licensors or
-authors of the material; or
+authors of the material or
 * **e)** Declining to grant rights under trademark law for use of some
-trade names, trademarks, or service marks; or
+trade names, trademarks, or service marks or
 * **f)** Requiring indemnification of licensors and authors of that
 material by anyone who conveys the material (or modified versions of
 it) with contractual assumptions of liability to the recipient, for
@@ -392,7 +395,7 @@ additional terms that apply to those files, or a notice indicating
 where to find the applicable terms.
 
 Additional terms, permissive or non-permissive, may be stated in the
-form of a separately written license, or stated as exceptions;
+form of a separately written license, or stated as exceptions
 the above requirements apply either way.
 
 ### 8. Termination
@@ -540,7 +543,7 @@ to collect a royalty for further conveying from those to whom you convey
 the Program, the only way you could satisfy both those terms and this
 License would be to refrain entirely from conveying the Program.
 
-### 13. Remote Network Interaction; Use with the GNU General Public License
+### 13. Remote Network Interaction Use with the GNU General Public License
 
 Notwithstanding any other provision of this License, if you modify the
 Program, your modified version must prominently offer all users
@@ -629,6 +632,10 @@ The following software may be included in this product:
 
 hcal - by valnub - https://github.com/valnub/hcal - MIT
 ` 
+
+export const metadata: Metadata = {
+  title: 'Licenças FCT App',
+}
 
 export default function License(){
   return (

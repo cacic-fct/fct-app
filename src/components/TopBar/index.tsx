@@ -1,7 +1,9 @@
 "use client"
-import { useRouter } from 'next/navigation'
 import React from 'react'
+import { useRouter } from 'next/navigation'
+
 import { IoArrowBackOutline } from 'react-icons/io5'
+
 import { Button } from '../Button'
 import { Typography } from '../Typography'
 
@@ -30,5 +32,5 @@ export const TopBar = ({title, actions, backButton}: Props) => {
         {actions && actions.map((action, index) => <div key={index}>{action}</div>)}
       </div>
     </div>
-  );
+  )
 }

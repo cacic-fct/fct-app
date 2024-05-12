@@ -1,9 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+
 import { Button } from "../Button"
 import { Typography } from "../Typography"
 
-import styles from './WeeklyCalendar.module.scss'
 import { formatDate, weeks } from "@/utils/date"
+
+import styles from './WeeklyCalendar.module.scss'
 
 interface DayProps {
   selected: boolean

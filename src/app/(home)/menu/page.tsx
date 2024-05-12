@@ -1,8 +1,21 @@
-import { Button } from "@/components/Button";
-import { MenuItens } from "@/components/MenuItens";
-import { TopBar } from "@/components/TopBar";
-import { ENTIDADES_ESTUDANTIS, FCT_UNESP, MANUAL_DO_CALOURO, PAGINA_DO_CALOURO } from "@/constants/urls";
-import { IoBookOutline, IoInformationCircleOutline, IoLogIn, IoPeopleCircleOutline, IoPeopleOutline, IoSchoolOutline } from "react-icons/io5";
+import { Metadata } from 'next'
+
+import { MenuItens } from "@/components/MenuItens"
+import { TopBar } from "@/components/TopBar"
+
+import { 
+  ENTIDADES_ESTUDANTIS,
+   FCT_UNESP, MANUAL_DO_CALOURO, 
+   PAGINA_DO_CALOURO 
+} from "@/constants/urls"
+
+import { 
+  IoBookOutline,
+   IoInformationCircleOutline,
+   IoPeopleCircleOutline,
+   IoPeopleOutline,
+   IoSchoolOutline 
+} from "react-icons/io5"
 
 const menuItens = [
   {
@@ -33,11 +46,16 @@ const menuItens = [
   }
 ]
 
+ 
+export const metadata: Metadata = {
+  title: 'Recursos FCT App',
+}
+
 export default function Menu() {
   return (
     <>
       <TopBar title="Menu" />
       <MenuItens itens={menuItens} />
     </>
-  );
+  )
 }

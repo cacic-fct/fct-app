@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { IconType } from "react-icons"
+
 import { BaseIcon } from "../BaseIcon"
 import { Card } from "../Card"
 import { Typography } from "../Typography"

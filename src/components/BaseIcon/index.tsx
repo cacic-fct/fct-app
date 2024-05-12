@@ -1,7 +1,7 @@
 import { IconType } from 'react-icons'
 import styles from './BaseIcon.module.scss'
 import variables from '../../styles/variables.module.scss'
-import { ColorsType } from '@/models/colors'
+import { ColorsType } from '@/types/colors'
 
 interface Props {
   IconComponent: IconType

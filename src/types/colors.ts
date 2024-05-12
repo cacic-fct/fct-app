@@ -50,4 +50,4 @@ export type ColorsType =
 'light' |
 'lightContrast' |
 'lightShade' |
-'lightTint';
+'lightTint'

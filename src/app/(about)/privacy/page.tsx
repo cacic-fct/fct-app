@@ -1,9 +1,15 @@
-import { TopBar } from "@/components/TopBar";
-import React from "react";
-import { Typography } from "@/components/Typography";
-import Link from "next/link";
+import React from "react"
+import { Metadata } from 'next'
+import Link from "next/link"
+
+import { TopBar } from "@/components/TopBar"
+import { Typography } from "@/components/Typography"
 
 import styles from './Privacy.module.scss'
+
+export const metadata: Metadata = {
+  title: 'Políticas de privacidade do FCT App',
+}
 
 export default function Privacy() {
   return (
@@ -80,9 +86,9 @@ export default function Privacy() {
         <li>
           <Typography type="body">
             Através dos rastreadores e cookies dos serviços de marketing e SEO da <strong>Google</strong>.
-            Estas ferramentas coletam dados an&ocirc;nimos como a sua localização, seu IP, rastreia a
+            Estas ferramentas coletam dados an&ocircnimos como a sua localização, seu IP, rastreia a
             navegação e analisa o seu comportamento em nosso site a fim de nos fornecer relatórios
-            sobre os serviços e produtos que você procurou e qual a origem da sua visita; pesquisa do Google,
+            sobre os serviços e produtos que você procurou e qual a origem da sua visita pesquisa do Google,
             acesso direto ou link existente em outro site, o <strong>CACiC</strong> respeita a {' '}
             <Link href="https://policies.google.com/privacy?hl=pt-BR" target="_blank" rel="noopener">
               política de privacidade da Google
@@ -150,5 +156,5 @@ export default function Privacy() {
       </Typography>
     </div>
    </>
-  );
+  )
 }

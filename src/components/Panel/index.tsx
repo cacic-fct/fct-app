@@ -1,9 +1,10 @@
 "use client"
 import React, { useState } from "react"
+
 import { IconType } from "react-icons"
 import {  IoChevronDownOutline } from "react-icons/io5"
+
 import { BaseIcon } from "../BaseIcon"
-import { Button } from "../Button"
 import { Card } from "../Card"
 import { Typography } from "../Typography"
 
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export const Panel = ({children, title, icon}: Props) => {
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState(false)
 
   return (
       <div className={styles.wrapper}>
@@ -33,5 +34,5 @@ export const Panel = ({children, title, icon}: Props) => {
           </div>
         )}
       </div>
-  );
+  )
 }

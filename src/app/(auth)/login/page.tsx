@@ -1,10 +1,16 @@
-import { Button } from "@/components/Button";
-import { Center } from "@/components/Center";
-import { TopBar } from "@/components/TopBar";
-import { Typography } from "@/components/Typography";
-import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
-import variables from "@/styles/variables.module.scss";
+import Link from "next/link"
+import { Metadata } from 'next'
+
+import { FcGoogle } from "react-icons/fc"
+
+import { Button } from "@/components/Button"
+import { Center } from "@/components/Center"
+import { TopBar } from "@/components/TopBar"
+import { Typography } from "@/components/Typography"
+
+export const metadata: Metadata = {
+  title: 'Login FCT App',
+}
 
 export default function Login() {
   return (

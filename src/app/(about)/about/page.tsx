@@ -1,10 +1,16 @@
-import Link from "next/link"
 import React from "react"
+import Link from "next/link"
+import { Metadata } from 'next'
+
 import { Typography } from "@/components/Typography"
+import { TopBar } from "@/components/TopBar"
 import { APP_NAME, APP_VERSION } from "@/constants/app"
 
 import styles from "./About.module.scss"
-import { TopBar } from "@/components/TopBar"
+
+export const metadata: Metadata = {
+  title: 'Sobre o FCT App',
+}
 
 export default function About() {
   return (

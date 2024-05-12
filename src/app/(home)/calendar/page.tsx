@@ -1,18 +1,28 @@
 "use client"
-import { Button } from "@/components/Button";
-import { Checkbox } from "@/components/Checkbox";
-import { MenuPopover } from "@/components/MenuPopover";
-import { TopBar } from "@/components/TopBar";
-import { useMemo, useState } from "react";
-import { IoCalendarOutline, IoChevronBackOutline, IoChevronForwardOutline, IoFilter, IoTodayOutline } from "react-icons/io5";
-import { Typography } from "@/components/Typography";
-import { Center } from "@/components/Center";
-import variables from "@/styles/variables.module.scss";
+import { useMemo, useState } from "react"
+import Lottie from 'react-lottie'
 
-import * as animationData from '../../../../public/assets/lotties/emptyBox.json';
-import Lottie from 'react-lottie';
-import { WeeklyCalendar } from "@/components/WeeklyCalendar";
-import { weekTimestamp } from "@/utils/date";
+import { Button } from "@/components/Button"
+import { Checkbox } from "@/components/Checkbox"
+import { MenuPopover } from "@/components/MenuPopover"
+import { TopBar } from "@/components/TopBar"
+import { Typography } from "@/components/Typography"
+import { Center } from "@/components/Center"
+import { WeeklyCalendar } from "@/components/WeeklyCalendar"
+
+import { 
+  IoCalendarOutline, 
+  IoChevronBackOutline, 
+  IoChevronForwardOutline, 
+  IoFilter, 
+  IoTodayOutline 
+} from "react-icons/io5"
+
+import * as animationData from '../../../../public/assets/lotties/emptyBox.json'
+import { weekTimestamp } from "@/utils/date"
+
+import variables from "@/styles/variables.module.scss"
+import { Metadata } from 'next/types'
 
 const defaultOptions = {
   loop: true,
@@ -21,10 +31,14 @@ const defaultOptions = {
   rendererSettings: {
     preserveAspectRatio: 'xMidYMid slice'
   }
-};
+}
+
+export const metadata: Metadata = {
+  title: 'Calendário de eventos da FCT',
+}
 
 export default function Calendar() {
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false)
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
 
   const actions = useMemo(() => {
@@ -93,5 +107,5 @@ export default function Calendar() {
         <Typography type="body" color="medium">Nenhum evento encontrado</Typography>
       </Center>
     </>
-  );
+  )
 }

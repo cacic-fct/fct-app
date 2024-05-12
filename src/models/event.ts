@@ -12,4 +12,4 @@ interface BigEvent {
   id: string
 }
 
-export type { Event, BigEvent };
+export type { Event, BigEvent }

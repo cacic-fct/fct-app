@@ -1,7 +1,10 @@
 "use client"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+
 import { IconType } from 'react-icons'
 import { IoCalendar, IoMap, IoMenu,  IoPerson, IoSettings } from 'react-icons/io5'
+
 import { TabLink } from '../TabLink'
 
 import styles from './Navbar.module.scss'
@@ -14,6 +17,8 @@ type RouteType = {
 export const NavBar = () => {
   const [currentPath, setCurrentPath] = useState('')
 
+  const pathName = usePathname()
+  
   const configRoute: RouteType[] = [
     {
       path: '/calendar',
@@ -36,6 +41,15 @@ export const NavBar = () => {
       icon: IoPerson
     },
   ]
+
+  useEffect(() => {
+    if(pathName === '/'){
+      setCurrentPath("/calendar")
+    }
+    else {
+      setCurrentPath(pathName)
+    }
+  }, [pathName])
 
   return (
     <nav className={styles.nav}>

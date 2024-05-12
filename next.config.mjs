@@ -10,6 +10,10 @@ const nextConfig = {
         destination: `/:path*`,
       },
       {
+        source: '/',
+        destination: '/calendar',
+      },
+      {
         source: '/docs',
         destination: 'https://docs.fctapp.ejcomp.com.br/docs',
       },

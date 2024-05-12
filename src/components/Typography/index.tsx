@@ -1,5 +1,5 @@
-import { ColorsType } from "@/models/colors"
-import { TypographyOptions, TypographyType } from "@/models/typography"
+import { ColorsType } from "@/types/colors"
+import { TypographyOptions, TypographyType } from "@/types/typography"
 import variables from "@/styles/variables.module.scss"
 
 interface Props {

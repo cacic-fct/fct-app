@@ -1,11 +1,11 @@
 import React, { CSSProperties } from "react"
 import { IconType } from "react-icons"
+
 import { BaseIcon } from "../BaseIcon"
 import { Typography } from "../Typography"
-import variables from "@/styles/variables.module.scss"
 
+import variables from "@/styles/variables.module.scss"
 import styles from './Button.module.scss'
-import { ColorsType } from "@/models/colors"
 
 type VariantType = "default" | "text" | "outlined"
 

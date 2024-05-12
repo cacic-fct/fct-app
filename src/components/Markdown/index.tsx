@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import React from 'react'
+import ReactMarkdown from 'react-markdown'
 
 interface Props {
   markdownText: string
@@ -10,7 +10,7 @@ const Markdown = ({ markdownText }: Props) => {
     <div className="markdown-container">
       <ReactMarkdown>{markdownText}</ReactMarkdown>
     </div>
-  );
-};
+  )
+}
 
-export default Markdown;
+export default Markdown

@@ -1,7 +1,7 @@
 "use client"
-import { Button } from "@/components/Button";
-import { Center } from "@/components/Center";
-import Image from "next/image";
+import { Button } from "@/components/Button"
+import { Center } from "@/components/Center"
+import Image from "next/image"
 import { useRouter } from 'next/navigation'
 
 export default function NotFound() {
@@ -12,5 +12,5 @@ export default function NotFound() {
       <Image src="/assets/images/zoro.jpg" width={300} height={300} alt="lost image" />
       <Button onClick={() => { router.back()}}>Voltar</Button>
     </Center>
-  );
+  )
 }

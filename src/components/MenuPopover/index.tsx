@@ -1,13 +1,15 @@
 "use client"
-import { ColorsType } from "@/models/colors"
 import { useEffect, useRef, useState } from "react"
 import { IconType } from "react-icons"
 import { Button } from "../Button"
-import variables from "@/styles/variables.module.scss"
-
-import styles from "./MenuPopover.module.scss"
 import { Typography } from "../Typography"
+
+import { ColorsType } from "@/types/colors"
+
 import { IoCloseOutline } from "react-icons/io5"
+
+import variables from "@/styles/variables.module.scss"
+import styles from "./MenuPopover.module.scss"
 
 interface Props {
   itens: React.ReactNode[]

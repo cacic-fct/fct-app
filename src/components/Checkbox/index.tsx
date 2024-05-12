@@ -1,8 +1,10 @@
-import { ColorsType } from "@/models/colors"
 import { useState } from "react"
-import { IoCheckbox, IoSquareOutline } from "react-icons/io5"
+
 import { BaseIcon } from "../BaseIcon"
 import { Typography } from "../Typography"
+
+import { ColorsType } from "@/types/colors"
+import { IoCheckbox, IoSquareOutline } from "react-icons/io5"
 
 import styles from './Checkbox.module.scss'
 
