@@ -1,0 +1,26 @@
+@import '../../../styles/globals';
+
+.warning {
+  display: flex;
+  gap: 8px;
+}
+
+.warningOption {
+  >svg {
+    transition: all 0s !important;
+  }
+  &:hover, &:active {
+    background-color: $danger;
+    >p {
+      color: $dangerContrast !important;
+    }
+    >svg {
+      fill: $dangerContrast !important;
+      stroke: $dangerContrast !important;
+      >path {
+        stroke: $dangerContrast !important;
+      }
+    }
+  }
+
+}

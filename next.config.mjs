@@ -1,27 +1,26 @@
-import createMDX from '@next/mdx'
+import createMDX from '@next/mdx';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-   pageExtensions: ['md', 'mdx', 'ts', 'tsx'],
-   async rewrites() {
+  pageExtensions: ['md', 'mdx', 'ts', 'tsx'],
+  async rewrites() {
     return [
       {
-        source: "/:path*",
+        source: '/:path*',
         destination: `/:path*`,
       },
       {
-        source: "/docs",
+        source: '/docs',
         destination: 'https://docs.fctapp.ejcomp.com.br/docs',
       },
       {
-        source: "/docs/:path*",
+        source: '/docs/:path*',
         destination: 'https://docs.fctapp.ejcomp.com.br/docs/:path*',
       },
     ];
   },
 };
 
+const withMDX = createMDX({});
 
-const withMDX = createMDX({})
- 
-export default withMDX(nextConfig)
+export default withMDX(nextConfig);

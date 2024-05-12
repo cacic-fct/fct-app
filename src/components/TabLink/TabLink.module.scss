@@ -1,0 +1,21 @@
+@import '../../styles/globals';
+
+.wrapper {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  max-width: 240px;
+  background-color: transparent;
+  height: 100%;
+  position: relative;
+  
+  &:hover > svg, &:active > svg {
+    fill: $primary !important;
+  }
+  
+  &:hover > svg > path, &:active > svg > path {
+    stroke: $primary !important;
+  }
+}

@@ -1,0 +1,25 @@
+@import '../../styles/globals';
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: $lightTint;
+  width: 100%;
+  cursor: pointer;
+
+  > p {
+    text-align: start !important;
+  }
+
+  &:active {
+    background-color: $lightShade;
+  }
+
+  &:hover {
+    background-color: $light;
+  }
+}

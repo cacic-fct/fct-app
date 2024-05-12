@@ -1,0 +1,26 @@
+@import '../../styles/globals';
+
+.wrapper {
+  width: 100%;
+  padding: 16px;
+  box-shadow: 0px 2px 8px $mediumTint;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+
+  @media screen and (max-width: 600px) {
+    padding: 8px;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.titleWrapper {
+  display: flex;
+  gap: 16px;
+}

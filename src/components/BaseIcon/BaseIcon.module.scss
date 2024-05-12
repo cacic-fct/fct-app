@@ -1,0 +1,13 @@
+@import '../../styles/globals';
+
+.icon {
+  @media (prefers-color-scheme: dark) {
+    fill: $lightTint;
+    stroke: $lightTint;
+  }
+
+  &:hover {
+    fill: $primary; 
+    stroke: $primary;
+  }
+}

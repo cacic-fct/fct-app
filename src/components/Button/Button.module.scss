@@ -1,0 +1,22 @@
+@import '../../styles/globals';
+
+.button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: $primary;
+
+  &:disabled {
+    cursor: default;
+    background-color: $lightShade;
+  }
+
+  &:active:enabled {
+    background: $primaryShade !important;
+  }
+}
