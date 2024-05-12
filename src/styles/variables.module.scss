@@ -1,0 +1,114 @@
+/** primary **/
+$primary: #3880ff;
+$primaryContrast: #ffffff;
+$primaryShade: #3171e0;
+$primaryTint: #4c8dff;
+
+/** secondary **/
+$secondary: #3dc2ff;
+$secondaryContrast: #ffffff;
+$secondaryShade: #36abe0;
+$secondaryTint: #50c8ff;
+
+/** tertiary **/
+$tertiary: #5260ff;
+$tertiaryContrast: #ffffff;
+$tertiaryShade: #4854e0;
+$tertiaryTint: #6370ff;
+
+/** success **/
+$success: #2dd36f;
+$successContrast: #ffffff;
+$successShade: #28ba62;
+$successTint: #42d77d;
+
+/** warning **/
+$warning: #ffc409;
+$warningContrast: #000000;
+$warningShade: #e0ac08;
+$warningTint: #ffca22;
+
+/** danger **/
+$danger: #eb445a;
+$dangerContrast: #ffffff;
+$dangerShade: #cf3c4f;
+$dangerTint: #ed576b;
+
+/** dark **/
+$dark: #222428;
+$darkContrast: #ffffff;
+$darkShade: #1e2023;
+$darkTint: #383a3e;
+
+/** medium **/
+$medium: #92949c;
+$mediumContrast: #ffffff;
+$mediumShade: #808289;
+$mediumTint: #9d9fa6;
+
+/** light **/
+$light: #f4f5f8;
+$lightContrast: #000000;
+$lightShade: #d7d8da;
+$lightTint: #f5f6f9;
+
+
+/*
+* Next.js supports Sass variables exported from CSS Module files
+* You can use as: <h1 style={{ color: variables.primaryColor }}>Hello, Next.js!</h1>
+* For more information visit: https://nextjs.org/docs/app/building-your-application/styling/sass
+*/
+:export {
+ primary: $primary;
+ primaryContrast: $primaryContrast;
+ primaryShade: $primaryShade;
+ primaryTint: $primaryTint;
+
+ /** secondary **/
+ secondary: $secondary;
+ secondaryContrast: $secondaryContrast;
+ secondaryShade: $secondaryShade;
+ secondaryTint: $secondaryTint;
+
+ /** tertiary **/
+ tertiary: $tertiary;
+ tertiaryContrast: $tertiaryContrast;
+ tertiaryShade: $tertiaryShade;
+ tertiaryTint: $tertiaryTint;
+
+ /** success **/
+ success: $success;
+ successContrast: $successContrast;
+ successShade: $successShade;
+ successTint: $successTint;
+
+ /** warning **/
+ warning: $warning;
+ warningContrast: $warningContrast;
+ warningShade: $warningShade;
+ warningTint: $warningTint;
+
+ /** danger **/
+ danger: $danger;
+ dangerContrast: $dangerContrast;
+ dangerShade: $dangerShade;
+ dangerTint: $dangerTint;
+
+ /** dark **/
+ dark: $dark;
+ darkContrast: $darkContrast;
+ darkShade: $darkShade;
+ darkTint: $darkTint;
+
+ /** medium **/
+ medium: $medium;
+ mediumContrast: $mediumContrast;
+ mediumShade: $mediumShade;
+ mediumTint: $mediumTint;
+
+ /** light **/
+ light: $light;
+ lightContrast: $lightContrast;
+ lightShade: $lightShade;
+ lightTint: $lightTint;
+}

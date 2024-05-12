@@ -1,0 +1,18 @@
+@import '../../styles/globals';
+
+.nav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  height: 8vh;
+  background-color: $primaryContrast;
+  border-top: 1px solid $lightShade;
+  z-index: 1;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: $dark;
+  }
+}

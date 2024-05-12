@@ -1,0 +1,17 @@
+@import '../../styles/globals';
+
+.wrapper {
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  column-gap: 16px;
+  padding: 32px;
+  row-gap: 16px;
+
+  @media screen and (max-width: 600px){
+    display: flex;
+    padding: 16px;
+    flex-direction: column;
+  }
+}

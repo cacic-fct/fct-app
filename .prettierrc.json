@@ -3,5 +3,7 @@
   "bracketSameLine": true,
   "printWidth": 120,
   "prettier.tabWidth": 2,
-  "prettier.useTabs": false
+  "prettier.useTabs": false,
+  "trailingComma": "es5",
+  "tabWidth": 2
 }

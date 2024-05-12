@@ -1,0 +1,68 @@
+@import '../../styles/globals';
+
+.menu {
+  position: relative;
+
+  @media screen and (max-width: 600px) {
+    position: inherit;
+  }
+}
+
+.menuItens {
+  min-width: 260px;
+  position: absolute;
+  top: 42px;
+  right: 0;
+  background-color: $primaryContrast;
+  flex-direction: column;
+  border-radius: 8px;
+  z-index: 999;
+  box-shadow: 2px 2px 8px 0px $mediumShade;
+
+  >ul{
+    padding: 16px;
+  }
+
+  @media screen and (max-width: 600px) {
+    top: 0;
+    left: 0;
+    height: 100vh;
+    border-radius: 0;
+  }
+}
+
+.item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 8px;
+  padding: 8px;
+  cursor: pointer;
+  width: 100%;
+
+  &:hover {
+    background-color: $lightTint;
+  }
+}
+
+.open {
+  opacity: 1;
+}
+
+.close {
+  opacity: 0;
+  z-index: -1;
+}
+
+.filterHeader {
+  display: none;
+
+  @media screen and (max-width: 600px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid $light;
+  }
+}

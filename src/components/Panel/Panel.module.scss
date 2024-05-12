@@ -1,0 +1,28 @@
+@import '../../styles/globals';
+
+.open {
+  transform: rotate(0deg);
+}
+
+.close {
+  transform: rotate(180deg);
+}
+
+.wrapper {
+  padding: 32px;
+
+  @media screen and (max-width: 600px){
+    padding: 16px;
+  }
+}
+
+.childWrapper {
+  background-color: $lightTint;
+  border-radius: 0 0 8px 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  border-top: 1px solid $lightShade;
+}

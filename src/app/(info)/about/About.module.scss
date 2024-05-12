@@ -1,0 +1,25 @@
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 32px 25vw;
+  flex-direction: column;
+
+  @media screen and (max-width: 768px) {
+    padding: 32px;
+    > p {
+      text-align: justify !important;
+    }
+  }
+
+  > ul {
+    padding: 0;
+    list-style-type: none;
+    text-align: center;
+    gap: 8px;
+    display: flex;
+    flex-direction: column;
+  }
+}
