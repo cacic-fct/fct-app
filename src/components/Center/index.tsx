@@ -1,14 +1,15 @@
-import React from "react"
+import React, { CSSProperties } from "react"
 
 import styles from "./Center.module.scss"
 
 interface Props {
   children: React.ReactNode
+  style?: CSSProperties
 }
 
-export const Center = ({children}: Props) => {
+export const Center = ({children, style}: Props) => {
   return(
-    <div className={styles.wrapper}>
+    <div style={style} className={styles.wrapper}>
       {children}
     </div>
   )
