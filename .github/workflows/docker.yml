@@ -4,12 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dockerize
-    tags:
-      - "*"
-  pull_request:
-    branches:
-      - dockerize
+      - main
 
 env:
   REGISTRY: ghcr.io
@@ -17,6 +12,7 @@ env:
 
 jobs:
   pack:
+    name: Build and push Docker image
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -45,7 +41,7 @@ jobs:
 
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@v6.4
+        uses: docker/build-push-action@v5.3.0
         with:
           context: .
           push: true
