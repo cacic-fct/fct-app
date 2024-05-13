@@ -17,7 +17,7 @@ env:
 
 jobs:
   pack:
-    if: ${{ github.ref_type == 'tag' || github.ref_type == 'branch' && github.ref_name == 'main' }}
+    #if: ${{ github.ref_type == 'tag' || github.ref_type == 'branch' && github.ref_name == 'main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
