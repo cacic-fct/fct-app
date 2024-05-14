@@ -35,6 +35,11 @@
   margin-right: auto;
 }
 
+.margin-vertical-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .text-black {
   color: #000;
 }
@@ -77,6 +82,35 @@
 
 .no-margin-bottom {
   margin-bottom: 0;
+}
+
+.no-margin-top {
+  margin-top: 0;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.inherit-color {
+  color: inherit;
+}
+
+.ion-spinner-default {
+  margin: 0 auto;
+  display: block;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.font-400 {
+  font-weight: 400;
+}
+
+.font-500 {
+  font-weight: 500;
 }
 
 // https://github.com/ionic-team/ionic-framework/issues/17269
