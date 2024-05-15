@@ -71,7 +71,7 @@
       of subEventsInfo; track subEventInfo) {
       <ion-text
         [color]="subEventInfo.slotsAvailable > 0? '' : 'danger'"
-        [style.color]="subEventInfo.eventType === 'palestra' ? '#0277bd' : ''">
+        [class]="subEventInfo.eventType === 'palestra' ? 'palestra-color' : ''">
         <p>{{ subEventInfo.name }}: {{ subEventInfo.slotsAvailable }} vagas disponíveis.</p>
         <p>{{ subEventInfo.id }}</p>
         <!-- prettier-ignore -->
