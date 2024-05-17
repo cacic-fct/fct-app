@@ -34,15 +34,21 @@ export class DebugScannerPage implements OnInit, AfterViewInit {
     this.scannerCanvas = document.createElement('canvas');
   }
 
+  /**
+   * User device input
+   */
+  @Input({ required: true })
+  set device(device: MediaDeviceInfo | undefined) {
+    this.readBarcodeFromCanvas(device.deviceId);
+  }
+
   ngOnInit() {}
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.readBarcodeFromCanvas();
-    }, 1000);
+    this.readBarcodeFromCanvas('user');
   }
 
-  async readBarcodeFromCanvas() {
+  async readBarcodeFromCanvas(deviceId: string) {
     const video = this.video.nativeElement;
 
     video.setAttribute('id', 'video');
@@ -52,15 +58,12 @@ export class DebugScannerPage implements OnInit, AfterViewInit {
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
 
-    // TODO: Change the camera to the next available device
-    updateVideoStream('user');
-
     const canvas = this.scannerCanvas;
     canvas.width = 400;
     canvas.height = 400;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-    function updateVideoStream(deviceId: string) {
+    const updateVideoStream = (deviceId: string) => {
       // To ensure the camera switch, it is advisable to free up the media resources
       if (video.srcObject instanceof MediaStream) {
         video.srcObject.getTracks().forEach((track) => track.stop());
@@ -68,16 +71,18 @@ export class DebugScannerPage implements OnInit, AfterViewInit {
 
       navigator.mediaDevices
         .getUserMedia({ video: { facingMode: deviceId }, audio: false })
-        .then(function (stream) {
+        .then((stream) => {
           video.srcObject = stream;
           video.play();
-          // TODO: Fix this undefined
           processFrame(this.delaySeconds * 1000);
         })
         .catch(function (error) {
           console.error('Error accessing camera:', error);
         });
-    }
+    };
+
+    // TODO: Change the camera to the next available device
+    updateVideoStream(deviceId);
 
     const processFrame = async function (delay: number) {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -102,123 +107,4 @@ export class DebugScannerPage implements OnInit, AfterViewInit {
       setTimeout(() => requestAnimationFrame(processFrame.bind(null, delay)), timeout);
     };
   }
-
-  changeCamera(): void {
-    this.deviceIndex++;
-    if (this.deviceIndex === this.availableDevices.length) {
-      this.deviceIndex = 0;
-    }
-    this.currentDevice = this.availableDevices[this.deviceIndex];
-  }
-
-  onCamerasFound(devices: MediaDeviceInfo[]): void {
-    this.availableDevices = devices;
-    this.hasDevices = Boolean(devices && devices.length);
-  }
-
-  async askForPermission(): Promise<boolean> {
-    if (!this.hasNavigator) {
-      console.error('@zxing/ngx-scanner', "Can't ask permission, navigator is not present.");
-      this.setPermission(null);
-      return this.hasPermission;
-    }
-
-    if (!this.isMediaDevicesSupported) {
-      console.error('@zxing/ngx-scanner', "Can't get user media, this is not supported.");
-      this.setPermission(null);
-      return this.hasPermission;
-    }
-
-    let stream: MediaStream;
-    let permission: boolean;
-
-    try {
-      // Will try to ask for permission
-      stream = await this.getAnyVideoDevice();
-      permission = !!stream;
-    } catch (err) {
-      // TODO:
-      // return this.handlePermissionException(err);
-    } finally {
-      this.terminateStream(stream);
-    }
-
-    this.setPermission(permission);
-
-    // Returns the permission
-    return permission;
-  }
-
-  getAnyVideoDevice(): Promise<MediaStream> {
-    return navigator.mediaDevices.getUserMedia({ video: true });
-  }
-
-  private terminateStream(stream: MediaStream) {
-    if (stream) {
-      stream.getTracks().forEach((t) => t.stop());
-    }
-
-    stream = undefined;
-  }
-
-  private setPermission(hasPermission: boolean | null): void {
-    this.hasPermission = hasPermission;
-  }
-
-  // private async initAutostartOn(): Promise<void> {
-
-  //   this.isAutostarting = true;
-
-  //   let hasPermission: boolean;
-
-  //   try {
-  //     // Asks for permission before enumerating devices so it can get all the device's info
-  //     hasPermission = await this.askForPermission();
-  //   } catch (e) {
-  //     console.error('Exception occurred while asking for permission:', e);
-  //     return;
-  //   }
-
-  //   // from this point, things gonna need permissions
-  //   if (hasPermission) {
-  //     const devices = await this.updateVideoInputDevices();
-  //     await this.autostartScanner([...devices]);
-  //   }
-
-  //   this.isAutostarting = false;
-  //   this.autostarted.next();
-  // }
-
-  // private async autostartScanner(devices: MediaDeviceInfo[]): Promise<void> {
-  //   const matcher = ({ label }) => /back|trás|rear|traseira|environment|ambiente/gi.test(label);
-
-  //   // select the rear camera by default, otherwise take the last camera.
-  //   const device = devices.find(matcher) || devices.pop();
-
-  //   if (!device) {
-  //     throw new Error('Impossible to autostart, no input devices available.');
-  //   }
-
-  //   await this.setDevice(device);
-
-  //   this.deviceChange.next(device);
-  // }
-
-  // private async setDevice(device: MediaDeviceInfo): Promise<void> {
-  //   // instantly stops the scan before changing devices
-  //   this.scanStop();
-
-  //   // correctly sets the new (or none) device
-  //   this._device = device || undefined;
-
-  //   if (!this._device) {
-  //     // cleans the video because user removed the device
-  //     BrowserCodeReader.cleanVideoSource(this.previewElemRef.nativeElement);
-  //   }
-
-  //   // if enabled, starts scanning
-  //   if (this._enabled && device) {
-  //     await this.scanFromDevice(device.deviceId);
-  //   }
-  // }
 }

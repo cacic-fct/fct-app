@@ -12,7 +12,21 @@ import { DebugScannerPage } from 'src/app/debug-scanner/debug-scanner.page';
   imports: [IonFooter, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, DebugScannerPage],
 })
 export class DebugScannerPagePage implements OnInit {
+  availableDevices = [];
+  currentDevice: MediaDeviceInfo | null = null;
+  currentIndex = 0;
+
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Get all user cameras
+    navigator.mediaDevices.enumerateDevices().then((devices) => {
+      this.availableDevices = devices.filter((device) => device.kind === 'videoinput');
+    });
+  }
+
+  changeDevice() {
+    this.currentIndex = (this.currentIndex + 1) % this.availableDevices.length;
+    this.currentDevice = this.availableDevices[this.currentIndex];
+  }
 }

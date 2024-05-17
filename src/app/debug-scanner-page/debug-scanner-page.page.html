@@ -2,8 +2,9 @@
   <ion-toolbar>
     <ion-title>debug-scanner-page</ion-title>
   </ion-toolbar>
+  <button (click)="changeDevice()">Change</button>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-debug-scanner [delaySeconds]="1"></app-debug-scanner>
+  <app-debug-scanner [delaySeconds]="1" [device]="currentDevice"></app-debug-scanner>
 </ion-content>
