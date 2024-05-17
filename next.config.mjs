@@ -23,6 +23,12 @@ const nextConfig = {
       },
     ];
   },
+  env: {
+    baseUrl: 'https://fctapp.yudi.me',
+    docsUrl: 'https://docs.fctapp.yudi.me',
+    plausibleUrl: 'https://plausible.fctapp.yudi.me',
+  },
+  output: 'standalone',
 };
 
 const withMDX = createMDX({});
