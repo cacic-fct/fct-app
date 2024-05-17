@@ -13,13 +13,9 @@ import { readBarcodesFromImageData, ReadResult } from 'zxing-wasm';
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule],
 })
 export class DebugScannerPage implements OnInit, AfterViewInit {
-  // @ViewChild('scannerCanvas', { static: false }) scannerCanvas: ElementRef<HTMLCanvasElement>;
   @ViewChild('scannerVideo', { static: false }) video: ElementRef<HTMLVideoElement>;
 
   @Input({ required: true }) delaySeconds: number;
-
-  videoWidth: number;
-  videoHeight: number;
 
   deviceIndex: number = -1;
   currentDevice: MediaDeviceInfo | null = null;
@@ -36,8 +32,6 @@ export class DebugScannerPage implements OnInit, AfterViewInit {
     this.hasNavigator = typeof navigator !== 'undefined';
     this.isMediaDevicesSupported = this.hasNavigator && !!navigator.mediaDevices;
     this.scannerCanvas = document.createElement('canvas');
-
-    // this.askForPermission();
   }
 
   ngOnInit() {}
@@ -49,8 +43,6 @@ export class DebugScannerPage implements OnInit, AfterViewInit {
   }
 
   async readBarcodeFromCanvas() {
-    this.videoWidth = this.video.nativeElement.videoHeight;
-    this.videoHeight = this.video.nativeElement.videoWidth;
     const video = this.video.nativeElement;
 
     video.setAttribute('id', 'video');
@@ -60,11 +52,12 @@ export class DebugScannerPage implements OnInit, AfterViewInit {
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
 
+    // TODO: Change the camera to the next available device
     updateVideoStream('user');
 
     const canvas = this.scannerCanvas;
-    canvas.width = this.videoWidth;
-    canvas.height = this.videoHeight;
+    canvas.width = 400;
+    canvas.height = 400;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
     function updateVideoStream(deviceId: string) {
@@ -78,8 +71,8 @@ export class DebugScannerPage implements OnInit, AfterViewInit {
         .then(function (stream) {
           video.srcObject = stream;
           video.play();
-
-          processFrame(1000);
+          // TODO: Fix this undefined
+          processFrame(this.delaySeconds * 1000);
         })
         .catch(function (error) {
           console.error('Error accessing camera:', error);
