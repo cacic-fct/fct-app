@@ -56,7 +56,6 @@ interface Attendance {
   standalone: true,
   imports: [
     NgIf,
-    ZXingScannerModule,
     FormsModule,
     NgFor,
     SweetAlert2Module,
