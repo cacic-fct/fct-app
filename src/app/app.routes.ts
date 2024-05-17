@@ -116,10 +116,6 @@ export const routes: Routes = [
     path: 'certificado/verificar/:param',
     loadChildren: () => import('./validate-certificate/validate-certificate.routes').then((m) => m.routes),
   },
-  {
-    path: 'debug-scanner',
-    loadComponent: () => import('./debug-scanner-page/debug-scanner-page.page').then((m) => m.DebugScannerPagePage),
-  },
   // Redirect not found routes (404) to index
   // Must be the last route
   {

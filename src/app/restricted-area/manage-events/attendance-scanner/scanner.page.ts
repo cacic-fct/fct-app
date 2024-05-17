@@ -40,7 +40,7 @@ import {
   IonFooter,
 } from '@ionic/angular/standalone';
 
-import { readBarcodesFromImageData, ReadResult } from 'zxing-wasm';
+import { ScannerVideoComponent } from '../../../shared/components/aztec-scanner/aztec-scanner.component';
 
 interface Attendance {
   user: Observable<User | undefined>;
@@ -79,6 +79,7 @@ interface Attendance {
     IonText,
     IonProgressBar,
     IonFooter,
+    ScannerVideoComponent,
   ],
 })
 export class ScannerPage implements OnInit {
@@ -93,8 +94,6 @@ export class ScannerPage implements OnInit {
   availableDevices!: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo | null = null;
   allowedFormats = [BarcodeFormat.QR_CODE];
-  torchEnabled = false;
-  torchAvailable = new BehaviorSubject<boolean>(false);
   hasDevices: boolean = false;
   hasPermission: boolean = false;
   deviceIndex: number = -1;
@@ -216,8 +215,11 @@ export class ScannerPage implements OnInit {
         ),
       );
 
-    // Load audio asset (beep)
     this.audioSuccess = new Audio();
+    this.audioDuplicate = new Audio();
+    this.audioInvalid = new Audio();
+    this.audioNotPaid = new Audio();
+
     addIcons({ sendOutline, flashOutline, cameraReverseOutline });
   }
 
@@ -251,18 +253,11 @@ export class ScannerPage implements OnInit {
       this.writeUserAttendance(uid);
     } else {
       this.backdropColor('invalid');
+      this.audioInvalid.play();
       this.toastInvalid();
       return false;
     }
     return true;
-  }
-
-  onTorchCompatible(isCompatible: boolean): void {
-    this.torchAvailable.next(isCompatible || false);
-  }
-
-  toggleTorch(): void {
-    this.torchEnabled = !this.torchEnabled;
   }
 
   onHasPermission(has: boolean) {
@@ -412,6 +407,7 @@ export class ScannerPage implements OnInit {
         // If document with user uid already exists in attendance list
         if (document.exists) {
           this.backdropColor('duplicate');
+          this.audioDuplicate.play();
           this.toastDuplicate();
           return false;
         }
@@ -506,9 +502,9 @@ export class ScannerPage implements OnInit {
 
   async toastInvalid() {
     const toast = await this.toastController.create({
-      header: 'QR Code incompatível ou perfil não encontrado no banco de dados',
+      header: 'Código incompatível ou perfil não encontrado no banco de dados',
       message: 'Solicite que o usuário faça logoff e login novamente ou insira os dados manualmente.',
-      icon: 'close-circle',
+      icon: 'close-circle-outline',
       position: 'top',
       duration: 5000,
       buttons: [
@@ -553,5 +549,10 @@ export class ScannerPage implements OnInit {
     this._backdropVisibleSubject.next(false);
     // Remove backdrop class
     document.querySelector('ion-backdrop')!.classList.remove(color);
+  }
+
+  onDeviceList(event: MediaDeviceInfo[]) {
+    this.availableDevices = event;
+    this.hasDevices = Boolean(event && event.length);
   }
 }
