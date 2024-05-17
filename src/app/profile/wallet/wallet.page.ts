@@ -1,6 +1,6 @@
 // @ts-strict-ignore
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
@@ -29,11 +29,15 @@ import { RouterLink } from '@angular/router';
 
 import { ServiceWorkerService } from 'src/app/shared/services/service-worker/service-worker.service';
 
+import { register as registerSwiper } from 'swiper/element/bundle';
+import { SwiperOptions } from 'swiper/types';
+
 @Component({
-  selector: 'app-profile-info',
-  templateUrl: './profile-info.page.html',
-  styleUrls: ['./profile-info.page.scss'],
+  selector: 'app-wallet',
+  templateUrl: './wallet.page.html',
+  styleUrls: ['./wallet.page.scss'],
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     IonRouterLink,
     RouterLink,
@@ -53,7 +57,7 @@ import { ServiceWorkerService } from 'src/app/shared/services/service-worker/ser
     QrCodeModule,
   ],
 })
-export class ProfileInfoPage implements OnInit {
+export class WalletPage implements OnInit {
   private auth: Auth = inject(Auth);
 
   user$ = user(this.auth);
@@ -69,9 +73,7 @@ export class ProfileInfoPage implements OnInit {
     private sw: ServiceWorkerService,
   ) {
     this.serviceWorkerActive = this.sw.getServiceWorkerStatus();
-  }
 
-  ngOnInit() {
     this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
       if (user) {
         getIdTokenResult(user).then((idTokenResult) => {
@@ -83,5 +85,39 @@ export class ProfileInfoPage implements OnInit {
         this.userFirestore$ = this.afs.doc<User>(`users/${user.uid}`).valueChanges().pipe(take(1), trace('firestore'));
       }
     });
+  }
+
+  ngOnInit() {
+    registerSwiper();
+    // swiper element
+    const swiperEl = document.querySelector('swiper-container');
+
+    // swiper parameters
+    const swiperParams: SwiperOptions = {
+      slidesPerView: 'auto',
+      centeredSlides: true,
+      spaceBetween: 30,
+      pagination: {
+        enabled: true,
+        clickable: true,
+      },
+      direction: 'horizontal',
+      mousewheel: true,
+      breakpoints: {
+        1094: {
+          slidesPerView: 2,
+          centeredSlides: true,
+          spaceBetween: 30,
+          mousewheel: true,
+          direction: 'horizontal',
+        },
+      },
+    };
+
+    // now we need to assign all parameters to Swiper element
+    Object.assign(swiperEl, swiperParams);
+
+    // and now initialize it
+    swiperEl.initialize();
   }
 }

@@ -1,0 +1,46 @@
+ion-card {
+  width: 540px;
+}
+
+.qr-code {
+  padding: 10px 10px 20px 10px;
+  background-color: #fff;
+  display: block;
+  overflow: hidden;
+  height: 353.3px;
+}
+
+.info-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.info-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 3px;
+}
+
+.font-20 {
+  font-size: 20px;
+}
+
+.skeleton-1 {
+  width: 200px;
+  height: 24px;
+}
+
+.skeleton-2 {
+  width: 250px;
+  height: 20px;
+}
+
+.skeleton-3 {
+  width: 300px;
+  height: 20px;
+}
+
+.skeleton-qr {
+  width: 320px;
+  height: 100%;
+}
