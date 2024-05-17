@@ -1,5 +1,4 @@
 import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
-import { BarcodeFormat } from '@zxing/library';
 import { BehaviorSubject, take, map, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,7 +16,6 @@ import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
 import { FormsModule } from '@angular/forms';
-import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { NgIf, NgFor, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { sendOutline, flashOutline, cameraReverseOutline } from 'ionicons/icons';
@@ -92,11 +90,9 @@ export class ScannerPage implements OnInit {
   // QR Code scanner
   availableDevices!: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo | null = null;
-  allowedFormats = [BarcodeFormat.QR_CODE];
   hasDevices: boolean = false;
   hasPermission: boolean = false;
   deviceIndex: number = -1;
-  showScanner = true;
 
   attendanceCollection$: Observable<Attendance[]>;
   /**

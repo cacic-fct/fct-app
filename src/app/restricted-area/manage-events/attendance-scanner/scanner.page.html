@@ -24,17 +24,16 @@
     </h2>
   </div>
 
-  <div *ngIf="showScanner">
-    <app-aztec-scanner
-      (scanSuccess)="onCodeResult($event)"
-      (deviceList)="onDeviceList($event)"
-      (hasPermission)="onHasPermission($event)"
-      [device]="currentDevice"
-      [delaySeconds]="3"
-      class="scanner"
-      #scanner>
-    </app-aztec-scanner>
-  </div>
+  <app-aztec-scanner
+    (scanSuccess)="onCodeResult($event)"
+    (deviceList)="onDeviceList($event)"
+    (hasPermission)="onHasPermission($event)"
+    [device]="currentDevice"
+    [delaySeconds]="3"
+    class="scanner"
+    #scanner>
+  </app-aztec-scanner>
+
   <div>
     <ion-list class="margin-horizontal-auto list-container">
       <ng-container *ngIf="attendanceCollection$ | async as attendancePeople; else: loading">
