@@ -1,5 +1,5 @@
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, ViewChild, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 

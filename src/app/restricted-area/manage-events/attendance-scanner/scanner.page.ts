@@ -40,6 +40,8 @@ import {
   IonFooter,
 } from '@ionic/angular/standalone';
 
+import { readBarcodesFromImageData, ReadResult } from 'zxing-wasm';
+
 interface Attendance {
   user: Observable<User | undefined>;
   time: TimestampType;
@@ -81,8 +83,9 @@ interface Attendance {
 })
 export class ScannerPage implements OnInit {
   @Input('manualInput') manualInput!: string;
-  @ViewChild('mySwal')
-  private mySwal!: SwalComponent;
+  @ViewChild('mySwal') mySwal: SwalComponent;
+  @ViewChild('scannerCanvas') scannerCanvas: HTMLCanvasElement;
+
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
 
