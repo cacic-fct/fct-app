@@ -5,3 +5,10 @@ ion-grid {
 .user-card {
   width: 100%;
 }
+
+.quick-buttons {
+  @media (max-width: 600px) {
+    width: 60px;
+  }
+  width: auto;
+}
