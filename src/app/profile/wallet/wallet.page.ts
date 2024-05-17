@@ -1,6 +1,5 @@
-// @ts-strict-ignore
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, ViewChild, OnInit } from '@angular/core';
 import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
@@ -8,6 +7,10 @@ import { take, Observable, BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
 import { AsyncPipe } from '@angular/common';
+
+import { azteccode, interleaved2of5, drawingSVG } from 'bwip-js';
+
+import { SafePipe } from 'src/app/shared/pipes/safe.pipe';
 
 import {
   IonHeader,
@@ -39,6 +42,7 @@ import { SwiperOptions } from 'swiper/types';
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
+    SafePipe,
     IonRouterLink,
     RouterLink,
     IonHeader,
@@ -58,6 +62,9 @@ import { SwiperOptions } from 'swiper/types';
   ],
 })
 export class WalletPage implements OnInit {
+  public profileBarcode: string;
+  public restaurantBarcode: string;
+
   private auth: Auth = inject(Auth);
 
   user$ = user(this.auth);
@@ -83,16 +90,16 @@ export class WalletPage implements OnInit {
         });
 
         this.userFirestore$ = this.afs.doc<User>(`users/${user.uid}`).valueChanges().pipe(take(1), trace('firestore'));
+
+        this.renderAztecCode(user.uid);
       }
     });
   }
 
   ngOnInit() {
     registerSwiper();
-    // swiper element
     const swiperEl = document.querySelector('swiper-container');
 
-    // swiper parameters
     const swiperParams: SwiperOptions = {
       slidesPerView: 'auto',
       centeredSlides: true,
@@ -119,5 +126,46 @@ export class WalletPage implements OnInit {
 
     // and now initialize it
     swiperEl.initialize();
+  }
+
+  renderAztecCode(uid: string) {
+    try {
+      let svg: string = String(
+        azteccode(
+          {
+            bcid: 'interleaved2of5',
+            text: `uid:${uid}`,
+            scale: 3,
+            includetext: false,
+            //@ts-ignore
+            eclevel: '23',
+          },
+          drawingSVG(),
+        ),
+      );
+
+      this.profileBarcode = svg;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  render2DBarcode(uid: string) {
+    try {
+      let svg: string = String(
+        interleaved2of5(
+          {
+            bcid: 'interleaved2of5',
+            text: uid,
+            scale: 3,
+          },
+          drawingSVG(),
+        ),
+      );
+
+      this.restaurantBarcode = svg;
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

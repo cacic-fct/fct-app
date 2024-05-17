@@ -33,11 +33,8 @@
             }
           </ion-card-title>
         </div>
-        <qr-code
-          class="qr-code ion-text-center"
-          [value]="'uid:' + (user.uid)"
-          size="320"
-          errorCorrectionLevel="H"></qr-code>
+
+        <object class="qr-code margin-horizontal-auto" [innerHTML]="profileBarcode | safe: 'html'"></object>
         @if (serviceWorkerActive) {
         <div class="ion-text-center ion-padding">
           <ion-icon name="information-circle-outline" class="info-icon"></ion-icon>

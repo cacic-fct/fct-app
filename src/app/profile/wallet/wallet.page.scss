@@ -1,13 +1,14 @@
 ion-card {
-  width: 540px;
+  max-width: 540px;
 }
 
 .qr-code {
-  padding: 10px 10px 20px 10px;
+  padding: 25px;
   background-color: #fff;
   display: block;
   overflow: hidden;
-  height: 353.3px;
+  max-height: 300px;
+  max-width: 300px;
 }
 
 .info-text {
