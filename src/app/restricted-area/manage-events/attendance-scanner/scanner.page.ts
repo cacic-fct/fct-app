@@ -16,7 +16,7 @@ import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor, AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DecimalPipe, DatePipe } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { sendOutline, flashOutline, cameraReverseOutline } from 'ionicons/icons';
 import {
@@ -53,9 +53,7 @@ interface Attendance {
   styleUrls: ['./scanner.page.scss'],
   standalone: true,
   imports: [
-    NgIf,
     FormsModule,
-    NgFor,
     SweetAlert2Module,
     AsyncPipe,
     DecimalPipe,
@@ -76,8 +74,8 @@ interface Attendance {
     IonText,
     IonProgressBar,
     IonFooter,
-    ScannerVideoComponent,
-  ],
+    ScannerVideoComponent
+],
 })
 export class ScannerPage implements OnInit {
   @Input('manualInput') manualInput!: string;
