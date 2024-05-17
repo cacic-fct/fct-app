@@ -27,7 +27,6 @@ import {
   IonButton,
   IonRouterLink,
 } from '@ionic/angular/standalone';
-import { QrCodeModule } from 'ng-qrcode';
 import { RouterLink } from '@angular/router';
 
 import { ServiceWorkerService } from 'src/app/shared/services/service-worker/service-worker.service';
@@ -58,7 +57,6 @@ import { SwiperOptions } from 'swiper/types';
     IonSkeletonText,
     IonButton,
     AsyncPipe,
-    QrCodeModule,
   ],
 })
 export class WalletPage implements OnInit {
