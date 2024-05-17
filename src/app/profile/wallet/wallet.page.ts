@@ -124,6 +124,8 @@ export class WalletPage implements OnInit {
 
     // and now initialize it
     swiperEl.initialize();
+
+    this.render2DBarcode('123321');
   }
 
   renderAztecCode(uid: string) {
@@ -156,6 +158,7 @@ export class WalletPage implements OnInit {
             bcid: 'interleaved2of5',
             text: uid,
             scale: 3,
+            height: 15,
           },
           drawingSVG(),
         ),

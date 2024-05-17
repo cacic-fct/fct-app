@@ -74,22 +74,8 @@ export class MenuPage {
     this.user$.pipe(untilDestroyed(this), trace('auth')).subscribe((user) => {
       if (user) {
         this.userData.set(user);
-
-        this.firstName.set(user.displayName.split(' ')[0]);
-        this.lastName.set(user.displayName.split(' ').pop());
-
-        const names = user.displayName.split(' ');
-
-        if (names.length > 2) {
-          this.fullNameAbbreviation.set(
-            `${names[0]} ${names
-              .slice(1, -1)
-              .map((name) => name[0] + '.')
-              .join(' ')} ${names.pop()}`,
-          );
-        } else {
-          this.fullNameAbbreviation.set(user.displayName);
-        }
+      } else {
+        this.userData.set(null);
       }
     });
   }

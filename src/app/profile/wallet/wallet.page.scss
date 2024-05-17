@@ -2,7 +2,7 @@ ion-card {
   max-width: 540px;
 }
 
-.qr-code {
+.aztec-code {
   padding: 25px;
   background-color: #fff;
   display: block;
@@ -41,7 +41,14 @@ ion-card {
   height: 20px;
 }
 
-.skeleton-qr {
+.skeleton-aztec {
   width: 320px;
-  height: 100%;
+  height: 320px;
+}
+
+.ru-barcode {
+  display: block;
+  width: 150px;
+  padding: 5px;
+  margin-bottom: 16px;
 }

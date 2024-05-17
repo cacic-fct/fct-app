@@ -1,6 +1,7 @@
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Component, inject, OnInit } from '@angular/core';
 import { Auth, authState } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 import { User } from 'src/app/shared/services/user';
 import { AsyncPipe } from '@angular/common';
@@ -66,6 +67,7 @@ export class ProfileInfoPage implements OnInit {
     public authService: AuthService,
     private afs: AngularFirestore,
     private mailtoService: MailtoService,
+    private router: Router,
   ) {}
 
   alreadyLinked: boolean = false;
@@ -103,5 +105,11 @@ export class ProfileInfoPage implements OnInit {
       }`,
     };
     this.mailtoService.open(mailto);
+  }
+
+  logout() {
+    this.authService.SignOut();
+
+    this.router.navigate(['/login']);
   }
 }
