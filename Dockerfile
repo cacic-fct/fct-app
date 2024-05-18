@@ -27,18 +27,18 @@ RUN if [[ $(uname -m) == "aarch64" ]]; \
 
 RUN yarn global add bun
 
+RUN bun install -g pm2 
 RUN bun install --frozen-lockfile
 
 COPY . .
 RUN bun run build
 
+# TODO: Setup
 RUN bun run license-report > 3rdpartylicenses.md
 
-
 # Serve
-FROM nginx:stable as serve
+EXPOSE 3000
 
-COPY --from=build /app/.next/standalone /usr/share/nginx/html
-COPY --from=build /app/3rdpartylicenses.md /usr/share/nginx/html
+USER node
 
-EXPOSE 80
+CMD [ "pm2-runtime", "bun", "--", "start" ]
