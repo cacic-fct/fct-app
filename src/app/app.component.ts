@@ -85,6 +85,7 @@ import {
   cloudUpload,
   checkmarkCircle,
   closeCircle,
+  hourglass,
 } from 'ionicons/icons';
 
 @Component({
@@ -180,6 +181,7 @@ export class AppComponent {
       cloudUpload,
       checkmarkCircle,
       closeCircle,
+      hourglass,
     });
   }
 }
