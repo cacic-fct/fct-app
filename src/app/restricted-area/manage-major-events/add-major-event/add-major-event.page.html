@@ -94,7 +94,6 @@
     <ion-item>
       <ion-toggle
         class="ion-text-wrap"
-        slot="end"
         [checked]="isEventPaid"
         (ionChange)="isEventPaidChange()"
         formControlName="isEventPaidForm"
@@ -104,11 +103,7 @@
 
     @if ((isEventPaid$ | async);) {
     <ion-item>
-      <ion-toggle
-        class="ion-text-wrap"
-        slot="end"
-        [checked]="priceDifferentiate"
-        (ionChange)="priceDifferentiateChange()"
+      <ion-toggle class="ion-text-wrap" [checked]="priceDifferentiate" (ionChange)="priceDifferentiateChange()"
         >Diferenciar preço por tipo de inscrição</ion-toggle
       >
     </ion-item>
@@ -211,6 +206,7 @@
     </ion-item>
     <ion-item>
       <ion-textarea
+        class="ion-textarea-label-wrap"
         label="Informações adicionais (opcional)"
         labelPlacement="floating"
         formControlName="additionalPaymentInformation"></ion-textarea>
@@ -238,7 +234,7 @@
     </ion-card-header>
 
     <ion-item>
-      <ion-toggle slot="end" formControlName="public" checked="on">Evento aberto ao público</ion-toggle>
+      <ion-toggle formControlName="public" checked="on">Evento aberto ao público</ion-toggle>
     </ion-item>
 
     <ion-item>
