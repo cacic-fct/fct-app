@@ -94,9 +94,12 @@
       <ng-container formGroupName="participationType">
         <ion-item>
           <ion-select label="Tipo de participação" interface="popover" formControlName="type">
-            @for (participationType of participationTypes | keyvalue; track participationType) { @if
-            (!(participationType.key === 'custom')) {
-            <ion-select-option [value]="participationType.key"> {{ participationType.value }} </ion-select-option>
+            <!-- prettier-ignore -->
+            @for (participationType of participationTypes | keyvalue; track participationType) {
+            @if (!(participationType.key === 'custom')) {
+            <ion-select-option [value]="participationType.key">
+              <span class="ion-text-wrap">{{ participationType.value }} </span>
+            </ion-select-option>
             } }
             <ion-select-option value="custom"> Personalizado </ion-select-option>
           </ion-select>
