@@ -23,7 +23,6 @@
     "@angular/router": "~17.3.9",
     "@angular/service-worker": "^17.3.9",
     "@ionic/angular": "^8.1.2",
-    "@ionic/angular-server": "^8.1.2",
     "@ngneat/until-destroy": "^10.0.0",
     "@pdfme/generator": "^4.0.1",
     "@sweetalert2/ngx-sweetalert2": "^12.3.0",
