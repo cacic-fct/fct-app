@@ -31,7 +31,6 @@
               "src/robots.txt"
             ],
             "styles": [
-              "src/theme/variables.scss",
               "src/global.scss"
             ],
             "scripts": [],

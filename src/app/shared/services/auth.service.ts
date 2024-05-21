@@ -292,7 +292,7 @@ export class AuthService {
 
                   if (data === undefined) {
                     return true;
-                  } else if (remoteDataVersion && versionGreaterThan(remoteDataVersion, this.localDataVersion)) {
+                  } else if (remoteDataVersion && remoteDataVersion > this.localDataVersion) {
                     return true;
                   } else if (!remoteDataVersion || remoteDataVersion !== this.localDataVersion) {
                     this.router.navigate(['/register']);
