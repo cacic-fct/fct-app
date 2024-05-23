@@ -51,13 +51,17 @@ export class EventListFormComponent implements OnInit {
   @Input({ required: true }) majorEventID!: string;
   @Input({ required: true }) isAlreadySubscribed!: boolean;
   @Input({ required: true }) user$!: Observable<User>;
+  @Input({ required: true }) maxCourses!: number;
+  @Input({ required: true }) maxLectures!: number;
 
   events$: Observable<EventItem[]>;
   eventList: EventItem[] = [];
+  mandatoryEvents: EventItem[] = [];
   isEventScheduleBeingChecked: boolean = false;
   today: Date = new Date();
   public dataForm: FormGroup;
   private firestore: Firestore = inject(Firestore);
+  private amountOfEventsSelected: number = 0;
 
   constructor(
     private modalController: ModalController,
@@ -137,7 +141,7 @@ export class EventListFormComponent implements OnInit {
   }
 
   selectAlreadySubscribed() {
-    // If user is already subscribed, auto select event
+    // If user is already subscribed, auto select events
     this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
       if (user) {
         const subscriptionDocRef = doc(this.firestore, `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`);
@@ -147,6 +151,17 @@ export class EventListFormComponent implements OnInit {
           if (subscription) {
             subscription.subscribedToEvents.forEach((eventID) => {
               this.dataForm.get(eventID)?.setValue(true);
+              this.dataForm.get(eventID)?.enable();
+
+              const event = this.eventList.find((event) => event.id === eventID);
+              // Check if event is in mandatoryList
+
+              if (event && this.mandatoryEvents.includes(event)) {
+                // If event is mandatory, disable it
+                this.dataForm.get(eventID)?.disable();
+              }
+
+              this.amountOfEventsSelected++;
             });
           }
         });
@@ -154,7 +169,7 @@ export class EventListFormComponent implements OnInit {
     });
   }
 
-  autoSelectEventList(eventList: EventItem[]) {
+  autoSelectMandatory(eventList: EventItem[]) {
     eventList.forEach((event) => {
       this.dataForm.get(event.id!)?.setValue(true);
     });

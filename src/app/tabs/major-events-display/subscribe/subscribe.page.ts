@@ -172,25 +172,6 @@ export class SubscribePage implements OnInit {
   }
 
   ngOnInit() {
-    this.user$.pipe(take(1)).subscribe((user) => {
-      if (user) {
-        this.afs
-          .collection('users')
-          .doc<User>(user.uid)
-          .get()
-          .pipe(take(1))
-          .subscribe((doc) => {
-            if (doc.exists) {
-              if (doc.data().dataVersion !== GlobalConstantsService.userDataVersion) {
-                this.router.navigate(['/register']);
-              }
-            } else {
-              this.router.navigate(['/register']);
-            }
-          });
-      }
-    });
-
     this.afs
       .collection('majorEvents')
       .doc(this.majorEventID)
