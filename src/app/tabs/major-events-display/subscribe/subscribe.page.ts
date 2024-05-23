@@ -23,7 +23,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { Firestore, doc, docData, serverTimestamp } from '@angular/fire/firestore';
 import { EmojiService } from 'src/app/shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
-import { Auth, user } from '@angular/fire/auth';
+import { Auth, user, User as FirebaseUser } from '@angular/fire/auth';
 
 import {
   IonHeader,
@@ -107,7 +107,7 @@ export class SubscribePage implements OnInit {
   private eventOutOfSubscriptionDate: SwalComponent;
 
   private auth: Auth = inject(Auth);
-  user$ = user(this.auth);
+  user$: Observable<FirebaseUser> = user(this.auth);
 
   today: Date = new Date();
 
