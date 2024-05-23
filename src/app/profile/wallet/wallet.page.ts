@@ -3,14 +3,16 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core
 import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
-import { take, Observable, BehaviorSubject } from 'rxjs';
+import { take, Observable, BehaviorSubject, filter } from 'rxjs';
 import { User } from 'src/app/shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
 import { AsyncPipe } from '@angular/common';
 
-import { azteccode, interleaved2of5, drawingSVG } from 'bwip-js';
+import { azteccode, interleaved2of5, drawingSVG } from 'node_modules/bwip-js/dist/bwip-js.js';
 
 import { SafePipe } from 'src/app/shared/pipes/safe.pipe';
+
+import { User as AuthUser } from '@angular/fire/auth';
 
 import {
   IonHeader,
@@ -60,14 +62,14 @@ import { ServiceWorkerService } from 'src/app/shared/services/service-worker/ser
   ],
 })
 export class WalletPage implements OnInit {
-  public profileBarcode: string;
-  public restaurantBarcode: string;
+  public profileBarcode: string | undefined;
+  // public restaurantBarcode: string;
 
   private auth: Auth = inject(Auth);
 
-  user$ = user(this.auth);
-  userFirestore$: Observable<User>;
-  academicID$: Observable<string>;
+  user$: Observable<AuthUser> = user(this.auth);
+  userFirestore$: Observable<User> | undefined;
+  academicID$: Observable<string> | undefined;
   public serviceWorkerActive: boolean = false;
   _isProfessor = new BehaviorSubject<boolean>(false);
   isProfessor$: Observable<boolean> = this._isProfessor.asObservable();
@@ -79,7 +81,7 @@ export class WalletPage implements OnInit {
   ) {
     this.serviceWorkerActive = this.sw.getServiceWorkerStatus();
 
-    this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
+    this.user$.pipe(take(1), trace('auth')).subscribe((user: AuthUser) => {
       if (user) {
         getIdTokenResult(user).then((idTokenResult) => {
           if (idTokenResult.claims['role'] === 3000) {
@@ -87,7 +89,14 @@ export class WalletPage implements OnInit {
           }
         });
 
-        this.userFirestore$ = this.afs.doc<User>(`users/${user.uid}`).valueChanges().pipe(take(1), trace('firestore'));
+        this.userFirestore$ = this.afs
+          .doc<User>(`users/${user.uid}`)
+          .valueChanges()
+          .pipe(
+            take(1),
+            trace('firestore'),
+            filter((user): user is User => user !== undefined),
+          );
 
         this.renderAztecCode(user.uid);
       }
@@ -131,13 +140,13 @@ export class WalletPage implements OnInit {
   renderAztecCode(uid: string) {
     try {
       let svg: string = String(
+        // @ts-ignore - Required since eclevel actually exists
         azteccode(
           {
             bcid: 'interleaved2of5',
             text: `uid:${uid}`,
             scale: 3,
             includetext: false,
-            //@ts-ignore
             eclevel: '23',
           },
           drawingSVG(),
@@ -150,23 +159,23 @@ export class WalletPage implements OnInit {
     }
   }
 
-  render2DBarcode(uid: string) {
-    try {
-      let svg: string = String(
-        interleaved2of5(
-          {
-            bcid: 'interleaved2of5',
-            text: uid,
-            scale: 3,
-            height: 15,
-          },
-          drawingSVG(),
-        ),
-      );
+  // render2DBarcode(uid: string) {
+  //   try {
+  //     let svg: string = String(
+  //       interleaved2of5(
+  //         {
+  //           bcid: 'interleaved2of5',
+  //           text: uid,
+  //           scale: 3,
+  //           height: 15,
+  //         },
+  //         drawingSVG(),
+  //       ),
+  //     );
 
-      this.restaurantBarcode = svg;
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  //     this.restaurantBarcode = svg;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
 }
