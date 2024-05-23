@@ -54,6 +54,7 @@ export class EventListFormComponent implements OnInit {
   eventList: EventItem[] = [];
   isEventScheduleBeingChecked: boolean = false;
   dataForm: FormGroup;
+  today: Date = new Date();
 
   private firestore: Firestore = inject(Firestore);
 
@@ -71,35 +72,67 @@ export class EventListFormComponent implements OnInit {
 
     this.events$ = eventsCollection$.pipe(
       map((events: EventItem[]) => {
+        // Only add events to form
+        // Do stuff on ngOnInit
+
         return events.map((eventItem) => {
           this.eventList.push(eventItem);
 
-          // If there are no slots available, add event to form with disabled selection
-          if (
-            !eventItem.slotsAvailable ||
-            eventItem.slotsAvailable <= 0 ||
-            // If event has already started, disable it
-            this.dateService.getDateFromTimestamp(eventItem.eventStartDate) < this.today
-          ) {
-            this.dataForm.addControl(eventItem.id!, this.formBuilder.control({ value: null, disabled: true }));
-          } else {
-            this.dataForm.addControl(eventItem.id!, this.formBuilder.control(null));
-          }
+          this.dataForm.addControl(eventItem.id!, this.formBuilder.control(null));
 
-          // Autoselects and disables palestras
-          // Used during SECOMPP when palestras are mandatory
-          if (eventItem.eventType === 'palestra') {
-            this.dataForm.get(eventItem.id!)?.setValue(true);
-            this.dataForm.get(eventItem.id!)?.disable();
-          }
-
-          if (this.isAlreadySubscribed) {
-            this.selectAlreadySubscribed();
-          }
           return eventItem;
         });
       }),
     );
+
+    // this.events$ = eventsCollection$.pipe(
+    //   map((events: EventItem[]) => {
+    //     return events.map((eventItem) => {
+    //       this.eventList.push(eventItem);
+
+    //       // If there are no slots available, add event to form with disabled selection
+    //       if (
+    //         !eventItem.slotsAvailable ||
+    //         eventItem.slotsAvailable <= 0 ||
+    //         // If event has already started, disable it
+    //         this.dateService.getDateFromTimestamp(eventItem.eventStartDate) < this.today
+    //       ) {
+    //         this.dataForm.addControl(eventItem.id!, this.formBuilder.control({ value: null, disabled: true }));
+    //       } else {
+    //         this.dataForm.addControl(eventItem.id!, this.formBuilder.control(null));
+    //       }
+
+    //       // Autoselects and disables palestras
+    //       // Used during SECOMPP when palestras are mandatory
+    //       if (eventItem.eventType === 'palestra') {
+    //         this.dataForm.get(eventItem.id!)?.setValue(true);
+    //         this.dataForm.get(eventItem.id!)?.disable();
+    //       }
+
+    //       return eventItem;
+    //     });
+    //   }),
+    // );
+  }
+
+  ngOnInit() {
+    if (this.isAlreadySubscribed) {
+      this.selectAlreadySubscribed();
+    }
+
+    this.events$.pipe(take(1)).subscribe((events) => {
+      events.forEach((eventItem) => {
+        // If there are no slots available, disable event
+        if (
+          !eventItem.slotsAvailable ||
+          eventItem.slotsAvailable <= 0 ||
+          // Or if event has already started, disable it
+          this.dateService.getDateFromTimestamp(eventItem.eventStartDate) < this.today
+        ) {
+          this.blockEventGroup([eventItem]);
+        }
+      });
+    });
   }
 
   selectAlreadySubscribed() {
@@ -120,7 +153,11 @@ export class EventListFormComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  autoSelectEventList(eventList: EventItem[]) {
+    eventList.forEach((event) => {
+      this.dataForm.get(event.id!)?.setValue(true);
+    });
+  }
 
   async showEventInfo(event: EventItem) {
     const modal = await this.modalController.create({
@@ -147,6 +184,9 @@ export class EventListFormComponent implements OnInit {
             return;
           }
           this.dataForm.get(eventFromGroup)?.setValue(true);
+
+          const conflicts = this.checkConflicts(eventFromGroup);
+          this.blockEventGroup(conflicts);
         });
       }
     } else {
@@ -157,9 +197,63 @@ export class EventListFormComponent implements OnInit {
             return;
           }
           this.dataForm.get(eventFromGroup)?.setValue(false);
+
+          const conflicts = this.checkConflicts(eventFromGroup);
+          this.unblockEventGroup(conflicts);
         });
       }
     }
+  }
+
+  checkConflicts(selectedEventId: string): EventItem[] {
+    const selectedEvent = this.eventList.find((event) => event.id === selectedEventId);
+    let conflicts: EventItem[] = [];
+    if (selectedEvent) {
+      this.eventList.forEach((event) => {
+        if (this.isConflict(selectedEvent, event)) {
+          conflicts.push(event);
+        }
+      });
+    }
+    return conflicts;
+  }
+
+  blockEventGroup(conflicts: EventItem[]) {
+    conflicts.forEach((conflict) => {
+      if (conflict.eventGroup?.groupEventIDs) {
+        conflict.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
+          this.dataForm.get(eventFromGroup)?.disable();
+          this.dataForm.get(eventFromGroup)?.setValue(false);
+        });
+      } else {
+        this.dataForm.get(conflict.id!)?.disable();
+      }
+    });
+  }
+
+  unblockEventGroup(conflicts: EventItem[]) {
+    conflicts.forEach((conflict) => {
+      if (conflict.eventGroup?.groupEventIDs) {
+        conflict.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
+          this.dataForm.get(eventFromGroup)?.enable();
+        });
+      } else {
+        this.dataForm.get(conflict.id!)?.enable();
+      }
+    });
+  }
+
+  isConflict(event1: EventItem, event2: EventItem): boolean {
+    const event1StartDate = this.dateService.getDateFromTimestamp(event1.eventStartDate);
+    const event1EndDate = this.dateService.getDateFromTimestamp(event1.eventEndDate);
+    const event2StartDate = this.dateService.getDateFromTimestamp(event2.eventStartDate);
+    const event2EndDate = this.dateService.getDateFromTimestamp(event2.eventEndDate);
+
+    return (
+      event1.id !== event2.id &&
+      ((event1StartDate < event2EndDate && event1EndDate > event2StartDate) ||
+        (event2StartDate < event1EndDate && event2EndDate > event1StartDate))
+    );
   }
 
   formatDate(date: Date): string {
@@ -185,7 +279,7 @@ export class EventListFormComponent implements OnInit {
   //   );
   // }
 
-  countCheckeds(e: any, event: EventItem) {
+  /* countCheckeds(e: any, event: EventItem) {
     const checked: boolean = e.currentTarget.checked;
     const name: string = e.currentTarget.name;
 
@@ -264,9 +358,9 @@ export class EventListFormComponent implements OnInit {
         }
       }
     }
-  }
+  }*/
 
-  checkForScheduleConflict(e, eventItem: EventItem) {
+  /* checkForScheduleConflict(e, eventItem: EventItem) {
     if (this.isEventScheduleBeingChecked) {
       return;
     }
@@ -343,8 +437,8 @@ export class EventListFormComponent implements OnInit {
 
         // If event overlaps, enable it
 
-        /* Keeps event disabled if it's a palestra.
-                 Used during SECOMPP22 where palestras were mandatory*/
+        // Keeps event disabled if it's a palestra.
+      //       Used during SECOMPP22 where palestras were mandatory
         if (this.eventList[i].eventType !== 'palestra') {
           if (this.eventList[i].slotsAvailable > 0) {
             if (this.eventList[i].eventGroup?.groupEventIDs) {
@@ -381,5 +475,5 @@ export class EventListFormComponent implements OnInit {
       }
     }
     this.isEventScheduleBeingChecked = false;
-  }
+  }*/
 }

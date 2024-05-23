@@ -9,7 +9,7 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firest
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { compareAsc } from 'date-fns';
-import { take, map, Observable } from 'rxjs';
+import { take, map, Observable, switchMap, of } from 'rxjs';
 
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { EventItem } from 'src/app/shared/services/event';
@@ -20,7 +20,7 @@ import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { trace } from '@angular/fire/compat/performance';
 
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, doc, docData, serverTimestamp } from '@angular/fire/firestore';
 import { EmojiService } from 'src/app/shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user } from '@angular/fire/auth';
@@ -129,6 +129,10 @@ export class SubscribePage implements OnInit {
 
   majorEventID: string;
 
+  isAlreadySubscribed: boolean | undefined;
+
+  private firestore: Firestore = inject(Firestore);
+
   constructor(
     private route: ActivatedRoute,
     public afs: AngularFirestore,
@@ -141,6 +145,27 @@ export class SubscribePage implements OnInit {
     public dateService: DateService,
   ) {
     this.majorEventID = this.route.snapshot.params['eventID'];
+
+    this.user$
+      .pipe(
+        take(1),
+        switchMap((user) => {
+          if (user) {
+            const subscriptionDocRef = doc(
+              this.firestore,
+              `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
+            );
+            return docData(subscriptionDocRef) as Observable<MajorEventSubscription>;
+          } else {
+            return of(null);
+          }
+        }),
+      )
+      .subscribe((subscription) => {
+        if (subscription) {
+          this.isAlreadySubscribed = true;
+        }
+      });
   }
 
   ngOnInit() {

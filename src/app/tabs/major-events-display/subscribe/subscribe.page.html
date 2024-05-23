@@ -54,7 +54,10 @@
         </ion-text>
       </p>
     </div>
-    <app-event-list-form [majorEventID]="majorEventID"></app-event-list-form>
+    <app-event-list-form
+      [majorEventID]="majorEventID"
+      [user$]="user$"
+      [isAlreadySubscribed]="isAlreadySubscribed"></app-event-list-form>
   </div>
   } @else {
   <ion-progress-bar type="indeterminate"></ion-progress-bar>
