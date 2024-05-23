@@ -1,4 +1,10 @@
-import { enableProdMode, LOCALE_ID, isDevMode, importProvidersFrom } from '@angular/core';
+import {
+  enableProdMode,
+  LOCALE_ID,
+  isDevMode,
+  importProvidersFrom,
+  provideExperimentalZonelessChangeDetection,
+} from '@angular/core';
 import { RouteReuseStrategy, provideRouter, withComponentInputBinding, withPreloading } from '@angular/router';
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
@@ -48,6 +54,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideExperimentalZonelessChangeDetection(),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular({
       backButtonText: isPlatform('ios') ? 'Voltar' : undefined,
