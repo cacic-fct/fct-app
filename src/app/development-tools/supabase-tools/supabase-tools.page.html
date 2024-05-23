@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Supabase</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Subapase</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-card>
+    <ion-item>
+      <ion-input label="E-mail" [(ngModel)]="emailInput"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input label="Senha" [(ngModel)]="passwordInput"></ion-input>
+    </ion-item>
+
+    <ion-button (click)="login()">
+      <ion-icon name="log-in-outline" slot="start"></ion-icon>
+      Entrar com e-mail
+    </ion-button>
+
+    <ion-button (click)="logout()">
+      <ion-icon name="log-out-outline" slot="start"></ion-icon>
+      Sair
+    </ion-button>
+    <div class="ion-padding">
+      <h1>isLoggedIn: {{supabaseAuth.isLoggedIn()}}</h1>
+      <h2>User data:</h2>
+      @if (supabaseAuth.$user | async; as user) {
+      <pre>{{ user | json }}</pre>
+      }
+      <h2>DB data:</h2>
+      @if (supabaseAuth.$profile | async; as profile) {
+      <pre>{{ profile | json }}</pre>
+      } @else {
+      <code>Empty or not logged in</code>
+      }
+    </div>
+  </ion-card>
+</ion-content>

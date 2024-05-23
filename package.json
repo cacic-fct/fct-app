@@ -26,6 +26,7 @@
     "@ionic/angular": "^8.2.0",
     "@ngneat/until-destroy": "^10.0.0",
     "@pdfme/generator": "^4.0.1",
+    "@supabase/supabase-js": "^2.43.4",
     "@sweetalert2/ngx-sweetalert2": "^12.3.0",
     "buffer": "^6.0.3",
     "bwip-js": "^4.3.2",

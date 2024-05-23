@@ -1,13 +1,8 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 
-import { AuthService } from '../../shared/services/auth.service';
-
-import { trace } from '@angular/fire/compat/performance';
-
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { environment } from 'src/environments/environment';
-import { Auth, authState, user, User } from '@angular/fire/auth';
 import { AsyncPipe } from '@angular/common';
 
 import {
@@ -29,6 +24,9 @@ import {
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propagation';
+import { SupabaseAuthService } from 'src/app/shared/services/supabase-auth.service';
+import { Observable } from 'rxjs';
+import { User } from '@supabase/supabase-js';
 
 @UntilDestroy()
 @Component({
@@ -58,20 +56,17 @@ import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propa
   ],
 })
 export class MenuPage {
-  private auth: Auth = inject(Auth);
-  user$ = user(this.auth);
-  authState$ = authState(this.auth);
+  private auth = inject(SupabaseAuthService);
+
+  user$: Observable<User | null> = this.auth.$user;
 
   isProduction: boolean = environment.production;
   userData: WritableSignal<User | null> = signal(null);
-  firstName: WritableSignal<string | null> = signal(null);
-  lastName: WritableSignal<string | null> = signal(null);
-  fullNameAbbreviation: WritableSignal<string | null> = signal(null);
 
-  constructor(public authService: AuthService) {}
+  constructor() {}
 
   ngOnInit() {
-    this.user$.pipe(untilDestroyed(this), trace('auth')).subscribe((user) => {
+    this.user$.pipe(untilDestroyed(this)).subscribe((user) => {
       if (user) {
         this.userData.set(user);
       } else {

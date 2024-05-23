@@ -12,9 +12,11 @@
         <ion-card>
           <ion-item class="user-card" [routerLink]="['/perfil']" lines="none">
             <ion-avatar slot="start">
-              <img [src]="userData().photoURL" />
+              <img [src]="userData().user_metadata['picture']" />
             </ion-avatar>
-            <ion-label class="ion-text-wrap"> <h1 class="no-margin">{{userData().displayName}}</h1></ion-label>
+            <ion-label class="ion-text-wrap">
+              <h1 class="no-margin">{{userData().user_metadata['name']}}</h1>
+            </ion-label>
 
             <ion-row class="quick-buttons">
               <ion-col>
@@ -107,5 +109,17 @@
       </ion-col>
     </ion-row>
     }
+
+    <!-- TODO: Remove me before release -->
+    <ion-row>
+      <ion-col size="12" size-lg="6">
+        <ion-card>
+          <ion-item [routerLink]="['/development-tools/supabase-tools']" lines="none">
+            <ion-icon name="flash-outline" slot="start" aria-hidden="true"></ion-icon>
+            <ion-label>Supabase</ion-label>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ion-content>

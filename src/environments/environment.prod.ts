@@ -12,6 +12,13 @@ export const environment = {
     useEmulators: false,
   },
   recaptcha3SiteKey: '6LcFr9AdAAAAANB7MbCks-nBVqfZZYp8bGp6Kcto',
+
+  supabase: {
+    url: 'https://supabase.yudi.me',
+    anonKey:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzEyNzE4MDAwLAogICJleHAiOiAxODcwNDg0NDAwCn0.uw1mpsYyrLzPnDfs4xjVNcwurDoS6Y9u8gZggSqmRDo',
+  },
+
   // Also change OGP image in index.html
   baseUrl: 'https://fctapp.yudi.me/',
 };

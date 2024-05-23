@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 
-import { canActivate } from '@angular/fire/compat/auth-guard';
-import { caAndGreater } from '../shared/services/routing/guards.service';
+import { adminOnly } from '../shared/services/routing/guards.service';
 
 export const routes: Routes = [
   {
@@ -34,7 +33,7 @@ export const routes: Routes = [
         path: 'area-restrita',
         title: 'Ferramentas administrativas',
         loadChildren: () => import('src/app/restricted-area/restricted-area.routes').then((m) => m.routes),
-        ...canActivate(caAndGreater),
+        canActivate: [adminOnly],
       },
       {
         path: '',
