@@ -22,21 +22,24 @@ import { provideAnalytics, getAnalytics, logEvent } from '@angular/fire/analytic
 import { provideAuth, getAuth, useDeviceLanguage, connectAuthEmulator } from '@angular/fire/auth';
 import { provideRemoteConfig, getRemoteConfig, fetchAndActivate } from '@angular/fire/remote-config';
 import { getApp, provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAppCheck, ReCaptchaV3Provider, initializeAppCheck } from '@angular/fire/app-check';
-import { AngularFireModule } from '@angular/fire/compat';
+
+import { provideAppCheck, initializeAppCheck } from '@angular/fire/app-check';
+// TODO: This should be imported from '@angular/fire/app-check' but it's not available
+import { ReCaptchaV3Provider } from 'firebase/app-check';
+
+// import { AngularFireModule } from '@angular/fire/compat';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { MarkdownModule } from 'ngx-markdown';
 import { withInterceptorsFromDi, provideHttpClient, HttpClient } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { routes } from 'src/app/app.routes';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import {
-  SETTINGS as FIRESTORE_SETTINGS,
-  USE_EMULATOR as USE_FIRESTORE_EMULATOR,
-  AngularFirestoreModule,
-} from '@angular/fire/compat/firestore';
+// import {
+//   SETTINGS as FIRESTORE_SETTINGS,
+//   USE_EMULATOR as USE_FIRESTORE_EMULATOR,
+//   AngularFirestoreModule,
+// } from '@angular/fire/compat/firestore';
 import { IonicRouteStrategy, isPlatform, provideIonicAngular } from '@ionic/angular/standalone';
-import { PerformanceMonitoringService, AngularFirePerformanceModule } from '@angular/fire/compat/performance';
 import { PreloadingStrategyService } from 'src/app/shared/services/routing/preloading-strategy.service';
 
 import { registerLocaleData } from '@angular/common';
@@ -67,14 +70,12 @@ bootstrapApplication(AppComponent, {
       MarkdownModule.forRoot({ loader: HttpClient }),
       SweetAlert2Module.forRoot(),
       // AngularFire
-      AngularFireModule.initializeApp(environment.firebase),
+      // AngularFireModule.initializeApp(environment.firebase),
 
       // TODO: https://github.com/cacic-fct/fct-app/issues/172
-      AngularFirestoreModule, //.enablePersistence({ synchronizeTabs: true }),
-
-      AngularFirePerformanceModule,
+      // AngularFirestoreModule, //.enablePersistence({ synchronizeTabs: true }),
     ),
-    PerformanceMonitoringService,
+
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAppCheck(() => {
       const provider = new ReCaptchaV3Provider(environment.recaptcha3SiteKey);
@@ -146,8 +147,8 @@ bootstrapApplication(AppComponent, {
       return firestore;
     }),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
-    { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true, merge: true } },
-    { provide: USE_FIRESTORE_EMULATOR, useValue: environment.firebase.useEmulators ? ['localhost', 8081] : undefined },
+    // { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true, merge: true } },
+    // { provide: USE_FIRESTORE_EMULATOR, useValue: environment.firebase.useEmulators ? ['localhost', 8081] : undefined },
     provideHttpClient(withInterceptorsFromDi()),
   ],
 }).catch((err) => console.log(err));
