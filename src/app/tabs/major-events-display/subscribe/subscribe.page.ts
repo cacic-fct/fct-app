@@ -106,6 +106,9 @@ export class SubscribePage implements OnInit {
   @ViewChild('eventOutOfSubscriptionDate')
   private eventOutOfSubscriptionDate: SwalComponent;
 
+  @ViewChild('formComponent')
+  private formComponent: EventListFormComponent;
+
   private auth: Auth = inject(Auth);
   user$: Observable<FirebaseUser> = user(this.auth);
 
@@ -309,7 +312,7 @@ export class SubscribePage implements OnInit {
       }
 
       this.majorEvent$.pipe(take(1)).subscribe((majorEvent) => {
-        let price;
+        let price: number;
         switch (this.opSelected) {
           case '0':
             price = majorEvent.price.students;

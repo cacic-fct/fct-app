@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import {
   IonItem,
   IonList,
@@ -18,10 +18,11 @@ import { ModalController } from '@ionic/angular/standalone';
 import { EventItem } from 'src/app/shared/services/event';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, map, take } from 'rxjs';
-import { Firestore, collection, collectionData, doc, docData } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, docData, orderBy, query } from '@angular/fire/firestore';
 import { User } from '@angular/fire/auth';
 import { trace } from '@angular/fire/compat/performance';
 import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
+import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propagation';
 
 @Component({
   selector: 'app-event-list-form',
@@ -29,6 +30,7 @@ import { MajorEventSubscription } from 'src/app/shared/services/major-event.serv
   styleUrls: ['./event-list-form.component.scss'],
   standalone: true,
   imports: [
+    ClickStopPropagation,
     FormsModule,
     ReactiveFormsModule,
     InfoModalComponent,
@@ -53,9 +55,8 @@ export class EventListFormComponent implements OnInit {
   events$: Observable<EventItem[]>;
   eventList: EventItem[] = [];
   isEventScheduleBeingChecked: boolean = false;
-  dataForm: FormGroup;
   today: Date = new Date();
-
+  public dataForm: FormGroup;
   private firestore: Firestore = inject(Firestore);
 
   constructor(
@@ -68,18 +69,18 @@ export class EventListFormComponent implements OnInit {
 
     const eventsCollection = collection(this.firestore, `events`);
 
-    const eventsCollection$ = collectionData(eventsCollection, { idField: 'id' }) as Observable<EventItem[]>;
+    const eventsCollection$ = collectionData(query(eventsCollection, orderBy('eventStartDate')), {
+      idField: 'id',
+    }) as Observable<EventItem[]>;
 
     this.events$ = eventsCollection$.pipe(
       map((events: EventItem[]) => {
         // Only add events to form
         // Do stuff on ngOnInit
+        this.eventList = [...events];
 
         return events.map((eventItem) => {
-          this.eventList.push(eventItem);
-
           this.dataForm.addControl(eventItem.id!, this.formBuilder.control(null));
-
           return eventItem;
         });
       }),
@@ -177,6 +178,9 @@ export class EventListFormComponent implements OnInit {
 
     // If event has been selected
     if (this.dataForm.get(event.id)?.value) {
+      const conflicts = this.checkConflicts(event.id);
+      this.blockEventGroup(conflicts);
+
       // Select other events from the same group
       if (event.eventGroup?.groupEventIDs) {
         event.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
@@ -190,12 +194,16 @@ export class EventListFormComponent implements OnInit {
         });
       }
     } else {
+      const conflicts = this.checkConflicts(event.id);
+      this.unblockEventGroup(conflicts);
+
       // Unselect other events from the same group
       if (event.eventGroup?.groupEventIDs) {
         event.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
           if (eventFromGroup === event.id) {
             return;
           }
+
           this.dataForm.get(eventFromGroup)?.setValue(false);
 
           const conflicts = this.checkConflicts(eventFromGroup);
@@ -208,8 +216,10 @@ export class EventListFormComponent implements OnInit {
   checkConflicts(selectedEventId: string): EventItem[] {
     const selectedEvent = this.eventList.find((event) => event.id === selectedEventId);
     let conflicts: EventItem[] = [];
+
     if (selectedEvent) {
       this.eventList.forEach((event) => {
+        console.log('Checking', selectedEvent.name, 'with', event.name);
         if (this.isConflict(selectedEvent, event)) {
           conflicts.push(event);
         }
@@ -245,14 +255,21 @@ export class EventListFormComponent implements OnInit {
 
   isConflict(event1: EventItem, event2: EventItem): boolean {
     const event1StartDate = this.dateService.getDateFromTimestamp(event1.eventStartDate);
-    const event1EndDate = this.dateService.getDateFromTimestamp(event1.eventEndDate);
     const event2StartDate = this.dateService.getDateFromTimestamp(event2.eventStartDate);
-    const event2EndDate = this.dateService.getDateFromTimestamp(event2.eventEndDate);
+
+    // If event doesn't have end date, consider it the same as start date
+    let event1EndDate = event1StartDate;
+    let event2EndDate = event2StartDate;
+
+    if (event1.eventEndDate && event2.eventEndDate) {
+      event1EndDate = this.dateService.getDateFromTimestamp(event1.eventEndDate);
+      event2EndDate = this.dateService.getDateFromTimestamp(event2.eventEndDate);
+    }
 
     return (
       event1.id !== event2.id &&
-      ((event1StartDate < event2EndDate && event1EndDate > event2StartDate) ||
-        (event2StartDate < event1EndDate && event2EndDate > event1StartDate))
+      ((event1StartDate <= event2EndDate && event1EndDate >= event2StartDate) ||
+        (event2StartDate <= event1EndDate && event2EndDate >= event1StartDate))
     );
   }
 
@@ -261,6 +278,19 @@ export class EventListFormComponent implements OnInit {
 
     formated = formated.charAt(0).toUpperCase() + formated.slice(1);
     return formated;
+  }
+
+  itemClick(eventItem: EventItem) {
+    const eventID = eventItem.id!;
+    const formEvent = this.dataForm.get(eventID);
+
+    if (!formEvent || formEvent?.disabled) {
+      return;
+    }
+
+    formEvent.setValue(!formEvent.value);
+
+    this.selectFromGroup(eventItem);
   }
 
   // pushEvent(eventFromGroup: string) {

@@ -55,6 +55,23 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     provideExperimentalZonelessChangeDetection(),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAppCheck(() => {
+      const provider = new ReCaptchaV3Provider(environment.recaptcha3SiteKey);
+      return initializeAppCheck(getApp(), {
+        provider,
+        isTokenAutoRefreshEnabled: true,
+      });
+    }),
+    provideAuth(() => {
+      const auth = getAuth();
+      useDeviceLanguage(auth);
+      if (environment.firebase.useEmulators) {
+        connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+      }
+      return auth;
+    }),
+
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular({
       backButtonText: isPlatform('ios') ? 'Voltar' : undefined,
@@ -76,22 +93,6 @@ bootstrapApplication(AppComponent, {
       AngularFirestoreModule, //.enablePersistence({ synchronizeTabs: true }),
     ),
 
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAppCheck(() => {
-      const provider = new ReCaptchaV3Provider(environment.recaptcha3SiteKey);
-      return initializeAppCheck(getApp(), {
-        provider,
-        isTokenAutoRefreshEnabled: true,
-      });
-    }),
-    provideAuth(() => {
-      const auth = getAuth();
-      useDeviceLanguage(auth);
-      if (environment.firebase.useEmulators) {
-        connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-      }
-      return auth;
-    }),
     provideRemoteConfig(() => {
       const remoteConfig = getRemoteConfig();
       if (isDevMode()) {
