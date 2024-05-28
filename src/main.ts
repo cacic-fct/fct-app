@@ -1,9 +1,9 @@
 import {
-  enableProdMode,
   LOCALE_ID,
   isDevMode,
   importProvidersFrom,
   provideExperimentalZonelessChangeDetection,
+  CSP_NONCE,
 } from '@angular/core';
 import { RouteReuseStrategy, provideRouter, withComponentInputBinding, withPreloading } from '@angular/router';
 import { environment } from './environments/environment';
@@ -18,7 +18,6 @@ import {
 import { provideFunctions, getFunctions, connectFunctionsEmulator } from '@angular/fire/functions';
 import { provideStorage, getStorage, connectStorageEmulator } from '@angular/fire/storage';
 import { GlobalConstantsService } from './app/shared/services/global-constants.service';
-import { provideAnalytics, getAnalytics, logEvent } from '@angular/fire/analytics';
 import { provideAuth, getAuth, useDeviceLanguage, connectAuthEmulator } from '@angular/fire/auth';
 import { provideRemoteConfig, getRemoteConfig, fetchAndActivate } from '@angular/fire/remote-config';
 import { getApp, provideFirebaseApp, initializeApp } from '@angular/fire/app';
@@ -45,13 +44,29 @@ import localePt from '@angular/common/locales/pt';
 registerLocaleData(localePt);
 
 import { unwrapResourceUrl, trustedResourceUrl } from 'safevalues';
+import { setNonce } from '@ionic/core/loader';
 
-if (environment.production) {
-  enableProdMode();
-}
+import { H } from 'highlight.run';
+
+H.init('1jdkoe52', {
+  environment: isDevMode() ? 'dev' : 'production',
+  backendUrl: 'https://api.highlight.fctapp.yudi.me/public',
+  networkRecording: {
+    enabled: true,
+    recordHeadersAndBody: true,
+    urlBlocklist: [],
+  },
+  privacySetting: 'none',
+  sendMode: 'local',
+});
+
+const nonce = fetchNonce();
+setNonce(nonce);
 
 bootstrapApplication(AppComponent, {
   providers: [
+    { provide: CSP_NONCE, useValue: nonce },
+
     provideExperimentalZonelessChangeDetection(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAppCheck(() => {
@@ -74,7 +89,9 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular({
       backButtonText: isPlatform('ios') ? 'Voltar' : undefined,
     }),
+
     provideRouter(routes, withPreloading(PreloadingStrategyService), withComponentInputBinding()),
+
     importProvidersFrom(
       BrowserModule,
       ServiceWorkerModule.register(unwrapResourceUrl(trustedResourceUrl`/ngsw-worker.js`) as string, {
@@ -112,13 +129,6 @@ bootstrapApplication(AppComponent, {
       });
       return remoteConfig;
     }),
-    provideAnalytics(() => {
-      const analytics = getAnalytics();
-      logEvent(analytics, 'app_version', {
-        app_name: GlobalConstantsService.appName,
-      });
-      return analytics;
-    }),
     provideStorage(() => {
       const storage = getStorage();
       if (environment.firebase.useEmulators) {
@@ -147,7 +157,22 @@ bootstrapApplication(AppComponent, {
     }),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: FIRESTORE_SETTINGS, useValue: { ignoreUndefinedProperties: true, merge: true } },
-    { provide: USE_FIRESTORE_EMULATOR, useValue: environment.firebase.useEmulators ? ['localhost', 8081] : undefined },
+    {
+      provide: USE_FIRESTORE_EMULATOR,
+      useValue: environment.firebase.useEmulators ? ['localhost', 8081] : undefined,
+    },
     provideHttpClient(withInterceptorsFromDi()),
   ],
 }).catch((err) => console.log(err));
+
+function fetchNonce(): string {
+  const regex = new RegExp(`s*nonce=`);
+  const nonce = document.cookie.split(';').find((cookie) => cookie.match(regex));
+  if (!nonce) {
+    if (isDevMode()) {
+      return 'development-nonce';
+    }
+    throw new Error('Nonce not found in cookies');
+  }
+  return nonce.split('=')[1];
+}

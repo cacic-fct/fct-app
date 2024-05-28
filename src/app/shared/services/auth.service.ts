@@ -19,8 +19,6 @@ import {
   GoogleAuthProvider,
 } from '@angular/fire/auth';
 
-import { Analytics, logEvent, setUserId } from '@angular/fire/analytics';
-
 import { ModalController, ToastController } from '@ionic/angular/standalone';
 import { GlobalConstantsService } from './global-constants.service';
 import { take, Observable, map, switchMap } from 'rxjs';
@@ -30,13 +28,16 @@ import { getStringChanges, RemoteConfig, getBooleanChanges } from '@angular/fire
 import { arrayRemove } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { CredentialResponse } from 'google-one-tap';
+import { PlausibleService } from '@notiz/ngx-plausible';
+
+import { H } from 'highlight.run';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private plausible: PlausibleService = inject(PlausibleService);
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
-  private analytics: Analytics = inject(Analytics);
 
   private auth: Auth = inject(Auth);
   private functions: Functions = inject(Functions);
@@ -59,6 +60,10 @@ export class AuthService {
         this.userData = user;
         localStorage.setItem('user', JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem('user'));
+
+        H.identify(user.email, {
+          id: user.uid,
+        });
 
         getStringChanges(this.remoteConfig, 'professors').subscribe((professors) => {
           if (professors) {
@@ -149,16 +154,17 @@ export class AuthService {
     const credential = GoogleAuthProvider.credential(token.credential);
 
     signInWithCredential(this.auth, credential).then((result) => {
-      this.SetUserData(result.user);
-      logEvent(this.analytics, 'login');
-      setUserId(this.analytics, result.user.uid);
+      const user = result.user;
+      this.SetUserData(user);
 
       this.route.queryParams.pipe(take(1)).subscribe((params) => {
         const redirect = params['redirect'];
         if (redirect) {
           this.router.navigate([redirect]);
+          this.plausible.event('Login', { props: { redirect: redirect } });
         } else {
           this.router.navigate(['menu']);
+          this.plausible.event('Login', { props: { redirect: 'menu' } });
         }
       });
     });
@@ -177,13 +183,11 @@ export class AuthService {
     this.auth.useDeviceLanguage();
     try {
       signInWithPopup(this.auth, provider).then((result) => {
-        this.SetUserData(result.user);
+        const user = result.user;
+        this.SetUserData(user);
 
         this.route.queryParams.pipe(take(1)).subscribe((params) => {
           const redirect = params['redirect'];
-
-          logEvent(this.analytics, 'login');
-          setUserId(this.analytics, result.user.uid);
 
           if (redirect) {
             this.router.navigate([redirect]);

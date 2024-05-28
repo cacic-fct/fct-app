@@ -18,7 +18,8 @@
 
     <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
 
-    <meta name="csp-nonce" content="NGINX_CSP_NONCE" />
+    <!-- Analytics -->
+    <script defer data-domain="fctapp.yudi.me" src="https://plausible.fctapp.yudi.me/js/script.js"></script>
 
     <!-- OGP -->
     <meta property="og:type" content="website" />
@@ -245,9 +246,9 @@
   </head>
 
   <body>
-    <app-root ngCspNonce="NGINX_CSP_NONCE"></app-root>
+    <app-root></app-root>
     <noscript>Enable JavaScript to use this application. Habilite o JavaScript para utilizar este aplicativo.</noscript>
   </body>
 
-  <script src="https://accounts.google.com/gsi/client" nonce="NGINX_CSP_NONCE" async defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </html>
