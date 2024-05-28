@@ -14,7 +14,7 @@ import { DateService } from 'src/app/shared/services/date.service';
 import { EmojiService } from 'src/app/shared/services/emoji.service';
 import { InfoModalComponent } from 'src/app/tabs/major-events-display/subscribe/info-modal/info-modal.component';
 
-import { ModalController } from '@ionic/angular/standalone';
+import { ModalController, ToastController } from '@ionic/angular/standalone';
 import { EventItem } from 'src/app/shared/services/event';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable, map, take } from 'rxjs';
@@ -23,6 +23,8 @@ import { User } from '@angular/fire/auth';
 import { trace } from '@angular/fire/compat/performance';
 import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propagation';
+import { addIcons } from 'ionicons';
+import { alertCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-event-list-form',
@@ -53,18 +55,23 @@ export class EventListFormComponent implements OnInit {
   @Input({ required: true }) user$!: Observable<User>;
   @Input({ required: true }) maxCourses!: number;
   @Input({ required: true }) maxLectures!: number;
+  @Output() private onFormGroupChange = new EventEmitter<FormGroup>();
 
   events$: Observable<EventItem[]>;
   eventList: EventItem[] = [];
-  mandatoryEvents: EventItem[] = [];
+  mandatoryEvents: string[] = [];
   isEventScheduleBeingChecked: boolean = false;
   today: Date = new Date();
   public dataForm: FormGroup;
   private firestore: Firestore = inject(Firestore);
-  private amountOfEventsSelected: number = 0;
+  private amountOfUncategorizedSelected: number = 0;
+  private amountOfCoursesSelected: number = 0;
+  private amountOfLecturesSelected: number = 0;
+  public totalAmountOfEventsSelected: number = 0;
 
   constructor(
     private modalController: ModalController,
+    private toastController: ToastController,
     public emojiService: EmojiService,
     public dateService: DateService,
     private formBuilder: FormBuilder,
@@ -81,6 +88,7 @@ export class EventListFormComponent implements OnInit {
       map((events: EventItem[]) => {
         // Only add events to form
         // Do stuff on ngOnInit
+        // This way we'll have all events ready to be used
         this.eventList = [...events];
 
         return events.map((eventItem) => {
@@ -90,42 +98,19 @@ export class EventListFormComponent implements OnInit {
       }),
     );
 
-    // this.events$ = eventsCollection$.pipe(
-    //   map((events: EventItem[]) => {
-    //     return events.map((eventItem) => {
-    //       this.eventList.push(eventItem);
-
-    //       // If there are no slots available, add event to form with disabled selection
-    //       if (
-    //         !eventItem.slotsAvailable ||
-    //         eventItem.slotsAvailable <= 0 ||
-    //         // If event has already started, disable it
-    //         this.dateService.getDateFromTimestamp(eventItem.eventStartDate) < this.today
-    //       ) {
-    //         this.dataForm.addControl(eventItem.id!, this.formBuilder.control({ value: null, disabled: true }));
-    //       } else {
-    //         this.dataForm.addControl(eventItem.id!, this.formBuilder.control(null));
-    //       }
-
-    //       // Autoselects and disables palestras
-    //       // Used during SECOMPP when palestras are mandatory
-    //       if (eventItem.eventType === 'palestra') {
-    //         this.dataForm.get(eventItem.id!)?.setValue(true);
-    //         this.dataForm.get(eventItem.id!)?.disable();
-    //       }
-
-    //       return eventItem;
-    //     });
-    //   }),
-    // );
+    addIcons({
+      alertCircleOutline,
+    });
   }
 
   ngOnInit() {
-    if (this.isAlreadySubscribed) {
-      this.selectAlreadySubscribed();
-    }
-
     this.events$.pipe(take(1)).subscribe((events) => {
+      this.autoSelectMandatory(this.mandatoryEvents);
+
+      if (this.isAlreadySubscribed) {
+        this.selectAlreadySubscribed();
+      }
+
       events.forEach((eventItem) => {
         // If there are no slots available, disable event
         if (
@@ -137,6 +122,10 @@ export class EventListFormComponent implements OnInit {
           this.blockEventGroup([eventItem]);
         }
       });
+    });
+
+    this.dataForm.valueChanges.subscribe(() => {
+      this.onFormGroupChange.emit(this.dataForm);
     });
   }
 
@@ -151,17 +140,31 @@ export class EventListFormComponent implements OnInit {
           if (subscription) {
             subscription.subscribedToEvents.forEach((eventID) => {
               this.dataForm.get(eventID)?.setValue(true);
-              this.dataForm.get(eventID)?.enable();
 
               const event = this.eventList.find((event) => event.id === eventID);
               // Check if event is in mandatoryList
 
-              if (event && this.mandatoryEvents.includes(event)) {
+              if (event && this.mandatoryEvents.includes(eventID)) {
                 // If event is mandatory, disable it
                 this.dataForm.get(eventID)?.disable();
+              } else {
+                this.dataForm.get(eventID)?.enable();
               }
 
-              this.amountOfEventsSelected++;
+              switch (event?.eventType) {
+                case 'minicurso':
+                  this.amountOfCoursesSelected++;
+                  this.totalAmountOfEventsSelected++;
+                  break;
+                case 'palestra':
+                  this.amountOfLecturesSelected++;
+                  this.totalAmountOfEventsSelected++;
+                  break;
+                default:
+                  this.amountOfUncategorizedSelected++;
+                  this.totalAmountOfEventsSelected++;
+                  break;
+              }
             });
           }
         });
@@ -169,9 +172,23 @@ export class EventListFormComponent implements OnInit {
     });
   }
 
-  autoSelectMandatory(eventList: EventItem[]) {
-    eventList.forEach((event) => {
-      this.dataForm.get(event.id!)?.setValue(true);
+  autoSelectMandatory(mandatoryList: string[]) {
+    if (mandatoryList.length === 0) {
+      return;
+    }
+
+    mandatoryList.forEach((event) => {
+      console.debug('DEBUG: Event is mandatory:', event);
+      const conflicts = this.checkConflicts(event);
+
+      console.debug('DEBUG: Event', event, 'conflicts:', conflicts);
+      this.blockEventGroup(conflicts);
+
+      console.log(this.dataForm.get(event));
+      console.log(this.dataForm.value);
+
+      this.dataForm.get(event)?.setValue(true);
+      this.dataForm.get(event)?.disable();
     });
   }
 
@@ -188,6 +205,17 @@ export class EventListFormComponent implements OnInit {
 
   selectFromGroup(event: EventItem) {
     if (!event.id) {
+      return;
+    }
+
+    // If max amount of courses has been selected, unselect event
+    if (event.eventType === 'minicurso' && this.amountOfCoursesSelected >= this.maxCourses) {
+      this.dataForm.get(event.id)?.setValue(false);
+      this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
+      return;
+    } else if (event.eventType === 'palestra' && this.amountOfLecturesSelected >= this.maxLectures) {
+      this.presentLimitReachedToast('palestras', this.maxLectures.toString());
+      this.dataForm.get(event.id)?.setValue(false);
       return;
     }
 
@@ -234,7 +262,7 @@ export class EventListFormComponent implements OnInit {
 
     if (selectedEvent) {
       this.eventList.forEach((event) => {
-        console.log('Checking', selectedEvent.name, 'with', event.name);
+        console.debug('DEBUG: Checking', selectedEvent.name, 'with', event.name);
         if (this.isConflict(selectedEvent, event)) {
           conflicts.push(event);
         }
@@ -295,17 +323,62 @@ export class EventListFormComponent implements OnInit {
     return formated;
   }
 
-  itemClick(eventItem: EventItem) {
+  /**
+   * If item was clicked, do the same as if the checkbox was clicked
+   * @param eventItem
+   * @returns
+   */
+  itemClick(eventItem: EventItem): void {
     const eventID = eventItem.id!;
     const formEvent = this.dataForm.get(eventID);
+    console.debug('DEBUG: itemClick():', eventItem);
 
     if (!formEvent || formEvent?.disabled) {
+      this.presentDisabledToast();
       return;
     }
 
     formEvent.setValue(!formEvent.value);
 
     this.selectFromGroup(eventItem);
+  }
+
+  async presentLimitReachedToast(type: string, max: string) {
+    const toast = await this.toastController.create({
+      header: `Limite atingido`,
+      message: `Você pode escolher até ${max} ${type}`,
+      icon: 'alert-circle-outline',
+      position: 'bottom',
+      duration: 5000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    toast.present();
+  }
+
+  async presentDisabledToast() {
+    const toast = await this.toastController.create({
+      header: `Evento indisponível`,
+      message: `Confira o número de vagas ou se há choque de horário`,
+      icon: 'alert-circle-outline',
+      position: 'bottom',
+      duration: 2000,
+      buttons: [
+        {
+          side: 'end',
+          text: 'OK',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    toast.present();
   }
 
   // pushEvent(eventFromGroup: string) {

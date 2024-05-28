@@ -55,6 +55,8 @@
       </p>
     </div>
     <app-event-list-form
+      [maxCourses]="maxCourses"
+      [maxLectures]="maxLectures"
       [majorEventID]="majorEventID"
       [user$]="user$"
       [isAlreadySubscribed]="isAlreadySubscribed"></app-event-list-form>

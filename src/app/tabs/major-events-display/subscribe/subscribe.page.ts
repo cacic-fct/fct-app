@@ -254,10 +254,19 @@ export class SubscribePage implements OnInit {
     });
   }
 
-  async presentLimitReachedToast(type: string, max: string) {
+  goToConfirmSubscription() {
+    this.router.navigateByUrl('/eventos/confirmar-inscricao', {
+      state: {
+        eventsSelected: this.eventsSelected,
+        majorEvent: this.majorEvent$,
+      },
+    });
+  }
+
+  async presentSelectSubscriptionToast() {
     const toast = await this.toastController.create({
-      header: `Limite atingido`,
-      message: `Você pode escolher até ${max} ${type}`,
+      header: `Selecione o tipo de inscrição`,
+      message: `No início da página, logo abaixo das informações do evento.`,
       icon: 'alert-circle-outline',
       position: 'bottom',
       duration: 5000,
@@ -273,27 +282,29 @@ export class SubscribePage implements OnInit {
     toast.present();
   }
 
-  goToConfirmSubscription() {
-    this.router.navigateByUrl('/eventos/confirmar-inscricao', {
-      state: {
-        eventsSelected: this.eventsSelected,
-        majorEvent: this.majorEvent$,
-      },
-    });
-  }
-
   onSubmit() {
-    if (this.eventsSelected['minicurso'].length + this.eventsSelected['palestra'].length === 0) {
+    const dataForm = this.formComponent.dataForm;
+    const amountOfEventsSelected = this.formComponent.totalAmountOfEventsSelected;
+
+    if (amountOfEventsSelected === 0) {
       return;
     }
 
-    this.openConfirmModal().then((response) => {
-      if (!response) {
-        return;
-      }
+    this.majorEvent$.pipe(take(1)).subscribe((majorEvent) => {
+      this.openConfirmModal().then((response) => {
+        if (!response) {
+          return;
+        }
 
-      this.majorEvent$.pipe(take(1)).subscribe((majorEvent) => {
         let price: number;
+        if (majorEvent.price.single) {
+          this.opSelected = 'single';
+        } else {
+          if (this.opSelected === undefined) {
+            return;
+          }
+        }
+
         switch (this.opSelected) {
           case '0':
             price = majorEvent.price.students;
@@ -304,9 +315,11 @@ export class SubscribePage implements OnInit {
           case '2':
             price = majorEvent.price.professors;
             break;
-          default:
+          case 'single':
             price = majorEvent.price.single;
             break;
+          default:
+            return;
         }
 
         this.user$.pipe(take(1)).subscribe((user) => {
@@ -434,6 +447,7 @@ export class SubscribePage implements OnInit {
         });
       });
     });
+
     return;
   }
 
