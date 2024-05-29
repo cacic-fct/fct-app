@@ -1,12 +1,11 @@
-// @ts-strict-ignore
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
 
 import { MajorEventItem } from '../../../../shared/services/major-event.service';
 import { EventItem } from '../../../../shared/services/event';
 import { ModalController } from '@ionic/angular/standalone';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 
 import { EmojiService } from '../../../../shared/services/emoji.service';
@@ -30,6 +29,8 @@ import {
   IonCardTitle,
 } from '@ionic/angular/standalone';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { MajorEventInfoSubscriptionComponent } from 'src/app/tabs/major-events-display/subscribe/major-event-info-subscription/major-event-info-subscription.component';
 
 @Component({
   selector: 'app-confirm-modal',
@@ -57,22 +58,50 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     CurrencyPipe,
     DecimalPipe,
     DatePipe,
+    MajorEventInfoSubscriptionComponent,
   ],
 })
 export class ConfirmModalComponent implements OnInit {
-  @Input() majorEvent$: Observable<MajorEventItem>;
-  @Input() eventsSelected: EventItem[];
-  @Input() minicursosCount: number;
-  @Input() palestrasCount: number;
-  @Input() subscriptionType: string;
+  @Input() majorEvent$!: Observable<MajorEventItem>;
+  @Input() eventsSelected!: string[];
+  @Input() minicursosCount!: number;
+  @Input() palestrasCount!: number;
+  @Input() subscriptionType!: string;
+  @Input() events$!: Observable<EventItem[]>;
+
+  displayEvents$: Observable<EventItem[]>;
+
+  private eventsSelected$ = new BehaviorSubject<string[]>(this.eventsSelected);
+
+  firestore = inject(Firestore);
 
   constructor(
-    public afs: AngularFirestore,
     private modalController: ModalController,
     public enrollmentTypes: EnrollmentTypesService,
     public emojiService: EmojiService,
-    public dateService: DateService
-  ) {}
+    public dateService: DateService,
+  ) {
+    // Check if developer forgot to pass required inputs
+    if (this.majorEvent$ === undefined) {
+      throw new Error('majorEvent$ is required');
+    } else if (this.eventsSelected === undefined) {
+      throw new Error('eventsSelected is required');
+    } else if (this.minicursosCount === undefined) {
+      throw new Error('minicursosCount is required');
+    } else if (this.palestrasCount === undefined) {
+      throw new Error('palestrasCount is required');
+    } else if (this.subscriptionType === undefined) {
+      throw new Error('subscriptionType is required');
+    } else if (this.events$ === undefined) {
+      throw new Error('events$ is required');
+    }
+
+    this.displayEvents$ = combineLatest([this.events$, this.eventsSelected$]).pipe(
+      map(([events, selectedIds]) => {
+        return events.filter((event) => selectedIds.includes(event.id!));
+      }),
+    );
+  }
 
   ngOnInit() {}
 

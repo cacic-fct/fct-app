@@ -1,6 +1,4 @@
 // @ts-strict-ignore
-import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
-import { User } from 'src/app/shared/services/user';
 import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -17,10 +15,21 @@ import { ModalController, ToastController } from '@ionic/angular/standalone';
 
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-import { trace } from '@angular/fire/compat/performance';
 
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Firestore, doc, docData, serverTimestamp } from '@angular/fire/firestore';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  Firestore,
+  doc,
+  docData,
+  serverTimestamp,
+  collection,
+  collectionData,
+  setDoc,
+  query,
+  where,
+  documentId,
+  orderBy,
+} from '@angular/fire/firestore';
 import { EmojiService } from 'src/app/shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Auth, user, User as FirebaseUser } from '@angular/fire/auth';
@@ -94,45 +103,38 @@ import { EventListFormComponent } from 'src/app/tabs/major-events-display/subscr
 })
 export class SubscribePage implements OnInit {
   @ViewChild('successSwal')
-  private successSwal: SwalComponent;
+  private successSwal!: SwalComponent;
   @ViewChild('errorSwal')
-  private errorSwal: SwalComponent;
+  private errorSwal!: SwalComponent;
   @ViewChild('maxChanged')
-  private maxChanged: SwalComponent;
+  private maxChanged!: SwalComponent;
   @ViewChild('alreadySubscribed')
-  private alreadySubscribed: SwalComponent;
+  private alreadySubscribed!: SwalComponent;
   @ViewChild('eventNotFound')
-  private eventNotFound: SwalComponent;
+  private eventNotFound!: SwalComponent;
   @ViewChild('eventOutOfSubscriptionDate')
-  private eventOutOfSubscriptionDate: SwalComponent;
+  private eventOutOfSubscriptionDate!: SwalComponent;
 
   @ViewChild('formComponent')
-  private formComponent: EventListFormComponent;
+  private formComponent!: EventListFormComponent;
 
   private auth: Auth = inject(Auth);
-  user$: Observable<FirebaseUser> = user(this.auth);
 
   today: Date = new Date();
 
-  majorEvent$: Observable<MajorEventItem>;
-
-  maxCourses: number;
-  maxLectures: number;
-
-  eventsSelected: { [key: string]: EventItem[] } = {
-    minicurso: [],
-    palestra: [],
-  };
-
-  eventGroupMinicursoCount: number = 0;
-
-  opSelected: string;
+  opSelected: string | undefined = undefined;
 
   paymentStatus: number;
 
-  majorEventID: string;
-
+  // These are passed to the form component
+  maxCourses: number | undefined;
+  maxLectures: number | undefined;
+  majorEvent$: Observable<MajorEventItem>;
+  user$: Observable<FirebaseUser | null> = user(this.auth);
   isAlreadySubscribed: boolean | undefined;
+  majorEventID: string;
+  events$: Observable<EventItem[]>;
+  mandatoryEvents: string[] = [];
 
   private firestore: Firestore = inject(Firestore);
 
@@ -169,6 +171,31 @@ export class SubscribePage implements OnInit {
           this.isAlreadySubscribed = true;
         }
       });
+
+    const majorEventCol = collection(this.firestore, 'majorEvents');
+    this.majorEvent$ = docData(doc(majorEventCol, this.majorEventID), { idField: 'id' }) as Observable<MajorEventItem>;
+
+    this.events$ = this.majorEvent$.pipe(
+      switchMap((majorEvent) => {
+        if (!majorEvent) {
+          return of([]);
+        }
+
+        if (majorEvent.mandatoryEvents) {
+          this.mandatoryEvents = majorEvent.mandatoryEvents;
+        }
+
+        const eventsCollection = collection(this.firestore, `events`);
+        const eventsCollection$ = collectionData(
+          query(eventsCollection, where(documentId(), 'in', majorEvent.events), orderBy('eventStartDate')),
+          {
+            idField: 'id',
+          },
+        ) as Observable<EventItem[]>;
+
+        return eventsCollection$;
+      }),
+    );
   }
 
   ngOnInit() {
@@ -176,7 +203,7 @@ export class SubscribePage implements OnInit {
       .collection('majorEvents')
       .doc(this.majorEventID)
       .get()
-      .pipe(untilDestroyed(this), trace('firestore'))
+      .pipe(untilDestroyed(this))
       .subscribe((document) => {
         // If majorEventID is not valid, redirect
         if (!document.exists) {
@@ -202,37 +229,30 @@ export class SubscribePage implements OnInit {
 
     // Check if user has receipt validated
     // If they have, they can't edit their subscription
-    this.user$.pipe(take(1), trace('auth')).subscribe((user) => {
+    this.user$.pipe(take(1)).subscribe((user) => {
       if (user) {
-        this.afs
-          .doc<MajorEventSubscription>(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`)
-          .valueChanges({ idField: 'id' })
-          .pipe(take(1), trace('firestore'))
-          .subscribe((subscription) => {
-            if (subscription?.payment) {
-              if (subscription.payment.status === 2) {
-                this.alreadySubscribed.fire();
-                this.router.navigate(['/eventos'], { replaceUrl: true });
+        const subscriptionDocRef = doc(this.firestore, `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`);
 
-                setTimeout(() => {
-                  this.alreadySubscribed.close();
-                }, 1000);
-              } else {
-                this.paymentStatus = subscription.payment.status;
+        docData(subscriptionDocRef).subscribe((subscription) => {
+          if (subscription) {
+            if (subscription['payment'].status === 2) {
+              this.router.navigate(['/eventos'], { replaceUrl: true });
 
-                if (subscription.subscriptionType) {
-                  this.opSelected = subscription.subscriptionType.toString();
-                }
+              this.alreadySubscribed.fire();
+              setTimeout(() => {
+                this.alreadySubscribed.close();
+              }, 1000);
+            } else {
+              this.paymentStatus = subscription['payment'].status;
+
+              if (subscription['subscriptionType']) {
+                this.opSelected = subscription['subscriptionType'].toString();
               }
             }
-          });
+          }
+        });
       }
     });
-
-    this.majorEvent$ = this.afs
-      .doc<MajorEventItem>(`majorEvents/${this.majorEventID}`)
-      .valueChanges({ idField: 'id' })
-      .pipe(trace('firestore'));
 
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((majorEvent) => {
       if (this.maxCourses && this.maxCourses !== majorEvent.maxCourses) {
@@ -251,15 +271,6 @@ export class SubscribePage implements OnInit {
 
       this.maxCourses = majorEvent.maxCourses;
       this.maxLectures = majorEvent.maxLectures;
-    });
-  }
-
-  goToConfirmSubscription() {
-    this.router.navigateByUrl('/eventos/confirmar-inscricao', {
-      state: {
-        eventsSelected: this.eventsSelected,
-        majorEvent: this.majorEvent$,
-      },
     });
   }
 
@@ -284,23 +295,27 @@ export class SubscribePage implements OnInit {
 
   onSubmit() {
     const dataForm = this.formComponent.dataForm;
-    const amountOfEventsSelected = this.formComponent.totalAmountOfEventsSelected;
+
+    const eventsSelected: string[] = Object.keys(dataForm.value).filter((key) => dataForm.value[key]);
+    const amountOfEventsSelected = eventsSelected.length;
 
     if (amountOfEventsSelected === 0) {
       return;
     }
 
     this.majorEvent$.pipe(take(1)).subscribe((majorEvent) => {
-      this.openConfirmModal().then((response) => {
+      this.openConfirmModal(eventsSelected).then((response) => {
         if (!response) {
           return;
         }
 
-        let price: number;
+        let price: number | undefined;
+
         if (majorEvent.price.single) {
           this.opSelected = 'single';
         } else {
           if (this.opSelected === undefined) {
+            this.presentSelectSubscriptionToast();
             return;
           }
         }
@@ -322,152 +337,124 @@ export class SubscribePage implements OnInit {
             return;
         }
 
+        if (price === undefined) {
+          return;
+        }
+
+        let subscriptionType: number = Number.parseInt(this.opSelected);
+
+        if (isNaN(subscriptionType)) {
+          subscriptionType = null;
+        }
+
         this.user$.pipe(take(1)).subscribe((user) => {
-          if (user) {
-            this.afs
-              .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`)
-              .valueChanges({ idField: 'id' })
-              .pipe(take(1), trace('firestore'))
-              .subscribe((subscription) => {
-                if (this.paymentStatus !== 2) {
-                  // Merge eventsSelected arrays
-                  const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
-
-                  // Create array with event IDs from eventsSelected
-                  const eventsSelectedID = eventsSelected.map((event) => event.id);
-
-                  let status: number = 0;
-
-                  if (this.paymentStatus !== undefined) {
-                    switch (this.paymentStatus) {
-                      case 1:
-                        // User already sent payment proof, keep status as "pending verification"
-                        status = 1;
-                        break;
-                      case 3:
-                        // User had payment proof denied, keep status as "pending resending proof"
-                        status = 3;
-                        break;
-                      case 4:
-                      case 5:
-                        // If user has already paid,
-                        // but subscription was denied due to insufficient slots or schedule conflict,
-                        // set status to "pending verification"
-                        status = 1;
-                        break;
-                      case null:
-                        status = null;
-                        break;
-                      default:
-                        status = 0;
-                        break;
-                    }
-                  }
-
-                  let subscriptionType: number = Number.parseInt(this.opSelected);
-
-                  if (isNaN(subscriptionType)) {
-                    subscriptionType = null;
-                  }
-
-                  this.afs
-                    .collection(`majorEvents/${this.majorEventID}/subscriptions`)
-                    .doc<MajorEventSubscription>(user.uid)
-                    .get()
-                    .subscribe((doc) => {
-                      if (status === 0) {
-                        this.afs
-                          .collection(`majorEvents/${this.majorEventID}/subscriptions`)
-                          .doc<MajorEventSubscription>(user.uid)
-                          .set({
-                            subscriptionType: subscriptionType,
-                            subscribedToEvents: eventsSelectedID,
-                            // @ts-ignore
-                            time: serverTimestamp(),
-                            payment: {
-                              price: price,
-                              status: status,
-                              // @ts-ignore
-                              time: serverTimestamp(),
-                              author: user.uid,
-                            },
-                          });
-                      } else {
-                        this.afs
-                          .collection(`majorEvents/${this.majorEventID}/subscriptions`)
-                          .doc<MajorEventSubscription>(user.uid)
-                          .update({
-                            subscriptionType: subscriptionType,
-                            subscribedToEvents: eventsSelectedID,
-                            payment: {
-                              price: price,
-                              status: status,
-                              // @ts-ignore
-                              time: serverTimestamp(),
-                              author: user.uid,
-                            },
-                          });
-                      }
-
-                      this.afs
-                        .collection(`users/${user.uid}/majorEventSubscriptions`)
-                        .doc(this.majorEventID)
-                        .set({
-                          reference: this.afs.doc(`majorEvents/${this.majorEventID}/subscriptions/${user.uid}`).ref,
-                        })
-                        .then(() => {
-                          this.successSwal.fire();
-                          setTimeout(() => {
-                            this.successSwal.close();
-                            if (
-                              this.paymentStatus === 1 ||
-                              this.paymentStatus === 4 ||
-                              this.paymentStatus === 5 ||
-                              price === 0
-                            ) {
-                              this.router.navigate(['/inscricoes'], { replaceUrl: true });
-                            } else {
-                              this.router.navigate(['/inscricoes/pagar', this.majorEventID], {
-                                replaceUrl: true,
-                              });
-                            }
-                          }, 2000);
-                        });
-                    });
-                } else {
-                  this.alreadySubscribed.fire();
-                  this.router.navigate(['/eventos'], { replaceUrl: true });
-
-                  setTimeout(() => {
-                    this.alreadySubscribed.close();
-                  }, 1000);
-                }
-              });
+          if (!user) {
+            return;
           }
+
+          const userSubscriptionDocRef = doc(
+            this.firestore,
+            `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
+          );
+
+          docData<Subscription>(userSubscriptionDocRef, { idField: 'id' }).subscribe(async (userSubscription) => {
+            if (userSubscription) {
+              let paymentStatusLocal: number = this.setPaymentStatus(userSubscription['payment'].status);
+
+              // If user already had payment validated, don't allow them to change subscription
+              if (paymentStatusLocal === 2) {
+                return;
+              }
+
+              try {
+                const subscriptionDocRef = doc(
+                  this.firestore,
+                  `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
+                );
+
+                await setDoc(subscriptionDocRef, <Subscription>{
+                  eventsSelected: eventsSelected,
+                  subscriptionType: subscriptionType,
+                  time: serverTimestamp(),
+                  payment: {
+                    amount: price,
+                    status: paymentStatusLocal,
+                    timestamp: serverTimestamp(),
+                    author: user.uid,
+                  },
+                }).then(async () => {
+                  const userSubscriptionDocRef = doc(
+                    this.firestore,
+                    `users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`,
+                  );
+
+                  await setDoc(userSubscriptionDocRef, {
+                    reference: subscriptionDocRef,
+                  }).then(() => {
+                    this.successSwal.fire();
+                    setTimeout(() => {
+                      this.successSwal.close();
+                      if (
+                        this.paymentStatus === 1 ||
+                        this.paymentStatus === 4 ||
+                        this.paymentStatus === 5 ||
+                        price === 0
+                      ) {
+                        this.router.navigate(['/inscricoes'], { replaceUrl: true });
+                      } else {
+                        this.router.navigate(['/inscricoes/pagar', this.majorEventID], {
+                          replaceUrl: true,
+                        });
+                      }
+                    }, 2000);
+                  });
+                });
+              } catch (err) {
+                console.log(err);
+              }
+            }
+          });
         });
       });
     });
-
-    return;
   }
 
-  async openConfirmModal(): Promise<boolean> {
-    const eventsSelected: EventItem[] = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
+  /**
+   *
+   * @param status
+   * @returns Updated status
+   */
+  setPaymentStatus(status: number): number {
+    if (this.paymentStatus !== undefined) {
+      switch (this.paymentStatus) {
+        case 4:
+        case 5:
+          // If user has already paid,
+          // but subscription was denied due to insufficient slots or schedule conflict,
+          // set status to "pending verification"
+          status = 1;
+          break;
+        case null:
+          status = null;
+          break;
 
-    eventsSelected.sort((a, b) => {
-      return compareAsc(
-        this.dateService.getDateFromTimestamp(a.eventStartDate),
-        this.dateService.getDateFromTimestamp(b.eventStartDate),
-      );
-    });
+        default:
+          // If status === 1, 3, keep status as is
+          return status;
+      }
+    }
 
+    return status;
+  }
+
+  async openConfirmModal(eventsSelected: string[]): Promise<boolean> {
     const modal = await this.modalController.create({
       component: ConfirmModalComponent,
       componentProps: {
         majorEvent$: this.majorEvent$,
         eventsSelected: eventsSelected,
-        minicursosCount: this.eventsSelected['minicurso'].length - this.eventGroupMinicursoCount,
-        palestrasCount: this.eventsSelected['palestra'].length,
+        minicursosCount: this.formComponent.amountOfCoursesSelected,
+        palestrasCount: this.formComponent.amountOfLecturesSelected,
         subscriptionType: this.opSelected,
       },
       showBackdrop: true,

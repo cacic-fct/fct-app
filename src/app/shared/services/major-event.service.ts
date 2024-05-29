@@ -71,6 +71,7 @@ export interface MajorEventItem {
   createdBy: string;
   createdOn: Timestamp;
   events: string[];
+  mandatoryEvents?: string[];
   id?: string;
 }
 

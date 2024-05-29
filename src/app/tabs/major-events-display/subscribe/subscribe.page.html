@@ -21,23 +21,29 @@
           placeholder="Selecionar"
           [(ngModel)]="opSelected"
           [disabled]="paymentStatus !== undefined">
+          @if (majorEvent.price.students) {
           <ion-select-option value="0">{{ enrollmentTypes.getEnrollmentType(0) }}</ion-select-option>
+          } @if (majorEvent.price.otherStudents) {
           <ion-select-option value="1">{{ enrollmentTypes.getEnrollmentType(1) }}</ion-select-option>
+          } @if (majorEvent.price.professors) {
           <ion-select-option value="2">{{ enrollmentTypes.getEnrollmentType(2) }}</ion-select-option>
+          }
         </ion-select>
       </ion-item>
       }
       <!-- prettier-ignore -->
       @if (majorEvent.maxCourses && majorEvent.maxCourses > 0) {
       <p>
-        {{ eventsSelected['minicurso'].length - this.eventGroupMinicursoCount| number: '2.0-0' }} de {{
-        majorEvent.maxCourses | number: '2.0-0' }} minicursos selecionados
+        {{ formComponent.amountOfCoursesSelected | number: '2.0-0' }} de {{ majorEvent.maxCourses | number: '2.0-0' }}
+        minicursos selecionados
       </p>
       } @if (majorEvent.maxLectures && majorEvent.maxLectures > 0) {
       <p>
-        {{ eventsSelected['palestra'].length | number: '2.0-0' }} de {{ majorEvent.maxLectures | number: '2.0-0' }}
+        {{ formComponent.amountOfLecturesSelected | number: '2.0-0' }} de {{ majorEvent.maxLectures | number: '2.0-0' }}
         palestras selecionados
       </p>
+      } @if (formComponent.amountOfUncategorizedSelected > 0) {
+      <p>{{ formComponent.amountOfUncategorizedSelected | number: '2.0-0' }} eventos não categorizados selecionados</p>
       }
       <p>
         <ion-text color="danger">
@@ -54,13 +60,19 @@
         </ion-text>
       </p>
     </div>
+
     <app-event-list-form
+      #formComponent
+      [majorEvent$]="majorEvent$"
+      [majorEventID]="majorEventID"
+      [isAlreadySubscribed]="isAlreadySubscribed "
+      [user$]="user$"
       [maxCourses]="maxCourses"
       [maxLectures]="maxLectures"
-      [majorEventID]="majorEventID"
-      [user$]="user$"
-      [isAlreadySubscribed]="isAlreadySubscribed"></app-event-list-form>
+      [events$]="events$"
+      [mandatoryEvents]="mandatoryEvents"></app-event-list-form>
   </div>
+
   } @else {
   <ion-progress-bar type="indeterminate"></ion-progress-bar>
   }
@@ -69,7 +81,6 @@
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </ng-template>
 
-  <!-- TODO: Se houver mais de um tipo de inscrição, desabilitar fab quando a seleção for indefinida-->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="onSubmit()">
       <ion-icon name="checkmark"></ion-icon>

@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import {
   IonItem,
   IonList,
@@ -17,11 +17,11 @@ import { InfoModalComponent } from 'src/app/tabs/major-events-display/subscribe/
 import { ModalController, ToastController } from '@ionic/angular/standalone';
 import { EventItem } from 'src/app/shared/services/event';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Observable, map, take } from 'rxjs';
-import { Firestore, collection, collectionData, doc, docData, orderBy, query } from '@angular/fire/firestore';
+import { Observable, take } from 'rxjs';
+import { Firestore, doc, docData } from '@angular/fire/firestore';
 import { User } from '@angular/fire/auth';
 import { trace } from '@angular/fire/compat/performance';
-import { MajorEventSubscription } from 'src/app/shared/services/major-event.service';
+import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
 import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propagation';
 import { addIcons } from 'ionicons';
 import { alertCircleOutline } from 'ionicons/icons';
@@ -50,23 +50,23 @@ import { alertCircleOutline } from 'ionicons/icons';
   ],
 })
 export class EventListFormComponent implements OnInit {
+  @Input({ required: true }) majorEvent$!: Observable<MajorEventItem>;
   @Input({ required: true }) majorEventID!: string;
   @Input({ required: true }) isAlreadySubscribed!: boolean;
   @Input({ required: true }) user$!: Observable<User>;
   @Input({ required: true }) maxCourses!: number;
   @Input({ required: true }) maxLectures!: number;
-  @Output() private onFormGroupChange = new EventEmitter<FormGroup>();
+  @Input({ required: true }) events$!: Observable<EventItem[]>;
+  @Input({ required: true }) mandatoryEvents!: string[];
 
-  events$: Observable<EventItem[]>;
   eventList: EventItem[] = [];
-  mandatoryEvents: string[] = [];
   isEventScheduleBeingChecked: boolean = false;
   today: Date = new Date();
   public dataForm: FormGroup;
   private firestore: Firestore = inject(Firestore);
-  private amountOfUncategorizedSelected: number = 0;
-  private amountOfCoursesSelected: number = 0;
-  private amountOfLecturesSelected: number = 0;
+  public amountOfUncategorizedSelected: number = 0;
+  public amountOfCoursesSelected: number = 0;
+  public amountOfLecturesSelected: number = 0;
   public totalAmountOfEventsSelected: number = 0;
 
   constructor(
@@ -76,30 +76,19 @@ export class EventListFormComponent implements OnInit {
     public dateService: DateService,
     private formBuilder: FormBuilder,
   ) {
-    this.dataForm = this.formBuilder.group({});
-
-    const eventsCollection = collection(this.firestore, `events`);
-
-    const eventsCollection$ = collectionData(query(eventsCollection, orderBy('eventStartDate')), {
-      idField: 'id',
-    }) as Observable<EventItem[]>;
-
-    this.events$ = eventsCollection$.pipe(
-      map((events: EventItem[]) => {
-        // Only add events to form
-        // Do stuff on ngOnInit
-        // This way we'll have all events ready to be used
-        this.eventList = [...events];
-
-        return events.map((eventItem) => {
-          this.dataForm.addControl(eventItem.id!, this.formBuilder.control(null));
-          return eventItem;
-        });
-      }),
-    );
-
     addIcons({
       alertCircleOutline,
+    });
+
+    this.dataForm = this.formBuilder.group({});
+
+    this.events$.subscribe((events) => {
+      this.eventList = events;
+      events.forEach((event) => {
+        if (!this.dataForm.contains(event.id!)) {
+          this.dataForm.addControl(event.id!, this.formBuilder.control(null));
+        }
+      });
     });
   }
 
@@ -123,10 +112,6 @@ export class EventListFormComponent implements OnInit {
         }
       });
     });
-
-    this.dataForm.valueChanges.subscribe(() => {
-      this.onFormGroupChange.emit(this.dataForm);
-    });
   }
 
   selectAlreadySubscribed() {
@@ -144,32 +129,45 @@ export class EventListFormComponent implements OnInit {
               const event = this.eventList.find((event) => event.id === eventID);
               // Check if event is in mandatoryList
 
-              if (event && this.mandatoryEvents.includes(eventID)) {
+              if (!event) {
+                return;
+              }
+
+              if (this.mandatoryEvents.includes(eventID)) {
                 // If event is mandatory, disable it
                 this.dataForm.get(eventID)?.disable();
               } else {
                 this.dataForm.get(eventID)?.enable();
               }
 
-              switch (event?.eventType) {
-                case 'minicurso':
-                  this.amountOfCoursesSelected++;
-                  this.totalAmountOfEventsSelected++;
-                  break;
-                case 'palestra':
-                  this.amountOfLecturesSelected++;
-                  this.totalAmountOfEventsSelected++;
-                  break;
-                default:
-                  this.amountOfUncategorizedSelected++;
-                  this.totalAmountOfEventsSelected++;
-                  break;
+              // If event is part of a group, but not the main event, don't count it
+              if (event.eventGroup && event.eventGroup.mainEventID !== eventID) {
+                return;
               }
+
+              this.incrementAmountOfEventsSelected(event);
             });
           }
         });
       }
     });
+  }
+
+  incrementAmountOfEventsSelected(event: EventItem) {
+    switch (event.eventType) {
+      case 'minicurso':
+        this.amountOfCoursesSelected++;
+        this.totalAmountOfEventsSelected++;
+        break;
+      case 'palestra':
+        this.amountOfLecturesSelected++;
+        this.totalAmountOfEventsSelected++;
+        break;
+      default:
+        this.amountOfUncategorizedSelected++;
+        this.totalAmountOfEventsSelected++;
+        break;
+    }
   }
 
   autoSelectMandatory(mandatoryList: string[]) {
@@ -228,6 +226,7 @@ export class EventListFormComponent implements OnInit {
       if (event.eventGroup?.groupEventIDs) {
         event.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
           if (eventFromGroup === event.id) {
+            this.incrementAmountOfEventsSelected(event);
             return;
           }
           this.dataForm.get(eventFromGroup)?.setValue(true);
@@ -235,6 +234,8 @@ export class EventListFormComponent implements OnInit {
           const conflicts = this.checkConflicts(eventFromGroup);
           this.blockEventGroup(conflicts);
         });
+      } else {
+        this.incrementAmountOfEventsSelected(event);
       }
     } else {
       const conflicts = this.checkConflicts(event.id);
@@ -262,8 +263,8 @@ export class EventListFormComponent implements OnInit {
 
     if (selectedEvent) {
       this.eventList.forEach((event) => {
-        console.debug('DEBUG: Checking', selectedEvent.name, 'with', event.name);
         if (this.isConflict(selectedEvent, event)) {
+          console.debug('DEBUG: Conflict found:', selectedEvent.name, 'with', event.name);
           conflicts.push(event);
         }
       });
