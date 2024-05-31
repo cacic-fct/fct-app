@@ -35,7 +35,9 @@ module.exports = tseslint.config(
   {
     files: ['**/*.html'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-    rules: {},
+    rules: {
+      '@angular-eslint/component-class-suffix': 'off',
+    },
   },
   {
     ignores: ['functions/*', 'src/app/unused/*'],
