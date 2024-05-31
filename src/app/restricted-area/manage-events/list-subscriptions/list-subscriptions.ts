@@ -68,7 +68,7 @@ export class ListSubscriptionsPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public courses: CoursesService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {
     this.eventID = this.route.snapshot.params['eventID'];
     this.afs
@@ -90,7 +90,7 @@ export class ListSubscriptionsPage implements OnInit {
       .collection('events')
       .doc<EventItem>(this.eventID)
       .valueChanges()
-      // @ts-ignore
+      // @ts-expect-error
       .pipe(trace('firestore'));
 
     this.subscriptions$ = this.afs
@@ -107,12 +107,10 @@ export class ListSubscriptionsPage implements OnInit {
               .doc(item.id)
               .get()
               .pipe(map((document) => document.data())),
-          }))
-        )
+          })),
+        ),
       );
   }
-
-  ngOnInit() {}
 
   generateCSV() {
     this.afs

@@ -27,10 +27,8 @@ export class ConfirmModalPage implements OnInit {
     public emojiService: EmojiService,
     public coursesService: CoursesService,
     public stringService: StringManagementService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {}
-
-  ngOnInit() {}
 
   onSubmit() {
     this.modalController.dismiss(true);

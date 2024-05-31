@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 import { useGeographic } from 'ol/proj';
-import { Control, defaults as defaultControls } from 'ol/control';
 import { IonHeader, IonContent } from '@ionic/angular/standalone';
 
 useGeographic();
@@ -18,8 +17,6 @@ useGeographic();
 })
 export class MapPage implements AfterViewInit, OnDestroy {
   map: Map | undefined | null;
-
-  constructor() {}
 
   ngAfterViewInit() {
     useGeographic();

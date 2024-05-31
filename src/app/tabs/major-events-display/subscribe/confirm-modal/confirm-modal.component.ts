@@ -71,10 +71,8 @@ export class ConfirmModalComponent implements OnInit {
     private modalController: ModalController,
     public enrollmentTypes: EnrollmentTypesService,
     public emojiService: EmojiService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {}
-
-  ngOnInit() {}
 
   formatDate(date: Date): string {
     let formated = formatDate(date, "EEEE, dd 'de' MMMM 'de' yyyy", 'pt-BR');

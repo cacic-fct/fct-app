@@ -19,6 +19,4 @@ export class TrackingDataComponent implements OnInit {
       idCardOutline,
     });
   }
-
-  ngOnInit() {}
 }

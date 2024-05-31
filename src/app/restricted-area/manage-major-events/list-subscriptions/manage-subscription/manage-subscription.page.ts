@@ -82,7 +82,7 @@ export class ManageSubscriptionPage {
     private route: ActivatedRoute,
     private afs: AngularFirestore,
     public dateService: DateService,
-    private alertController: AlertController
+    private alertController: AlertController,
   ) {
     this.subscriptionID = this.route.snapshot.paramMap.get('subscriptionID');
     this.majorEventID = this.route.snapshot.paramMap.get('eventID');
@@ -102,7 +102,7 @@ export class ManageSubscriptionPage {
 
       data.subscribedToEvents.map((event) => {
         tempArray.push(
-          this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' }).pipe(take(1), trace('firestore'))
+          this.afs.doc<EventItem>(`events/${event}`).valueChanges({ idField: 'id' }).pipe(take(1), trace('firestore')),
         );
       });
 
@@ -116,7 +116,7 @@ export class ManageSubscriptionPage {
             }
             return a.eventStartDate.toMillis() - b.eventStartDate.toMillis();
           });
-        })
+        }),
       );
 
       this.eventsUserIsSubscribedTo$ = observableArrayOfEvents;
@@ -177,9 +177,11 @@ export class ManageSubscriptionPage {
           data.subscribedToEvents.forEach((event) => {
             this.afs.doc<EventItem>(`events/${event}/subscriptions/${this.subscriptionID}`).delete();
             this.afs.doc<EventItem>(`events/${event}`).update({
-              // @ts-ignore
+              // @ts-expect-error
+              // This works
               slotsAvailable: increment(1),
-              // @ts-ignore
+              // @ts-expect-error
+              // This works
               numberOfSubscriptions: increment(-1),
             });
           });
@@ -211,9 +213,11 @@ export class ManageSubscriptionPage {
             data.subscribedToEvents.forEach((event) => {
               this.afs.doc<EventItem>(`events/${event}/subscriptions/${this.subscriptionID}`).delete();
               this.afs.doc<EventItem>(`events/${event}`).update({
-                // @ts-ignore
+                // @ts-expect-error
+                // This works
                 slotsAvailable: increment(1),
-                // @ts-ignore
+                // @ts-expect-error
+                // This works
                 numberOfSubscriptions: increment(-1),
               });
             });

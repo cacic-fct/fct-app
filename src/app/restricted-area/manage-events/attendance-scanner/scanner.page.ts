@@ -74,13 +74,13 @@ interface Attendance {
     IonText,
     IonProgressBar,
     IonFooter,
-    ScannerVideoComponent
-],
+    ScannerVideoComponent,
+  ],
 })
 export class ScannerPage implements OnInit {
   @Input() manualInput!: string;
-  @ViewChild('mySwal') mySwal: SwalComponent;
-  @ViewChild('scannerCanvas') scannerCanvas: HTMLCanvasElement;
+  @ViewChild('mySwal') mySwal!: SwalComponent;
+  @ViewChild('scannerCanvas') scannerCanvas!: HTMLCanvasElement;
 
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
@@ -157,7 +157,7 @@ export class ScannerPage implements OnInit {
       .collection('events')
       .doc<EventItem>(this.eventID)
       .valueChanges()
-      // @ts-ignore
+      // @ts-expect-error
       .pipe(trace('firestore'));
     this.checkIfEventIsPaid();
 
@@ -405,7 +405,6 @@ export class ScannerPage implements OnInit {
           return false;
         }
         this.afs.collection(`events/${this.eventID}/attendance`).doc(uid).set({
-          // @ts-ignore
           time: serverTimestamp(),
           author: this.adminID,
         });
@@ -436,7 +435,6 @@ export class ScannerPage implements OnInit {
           return false;
         }
         this.afs.collection(`events/${this.eventID}/non-paying-attendance`).doc(uid).set({
-          // @ts-ignore
           time: serverTimestamp(),
           author: this.adminID,
         });

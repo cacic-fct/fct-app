@@ -14,8 +14,4 @@ import { IonCardContent } from '@ionic/angular/standalone';
 })
 export class DescriptionComponent implements OnInit {
   @Input() majorEventItem!: MajorEventItem;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

@@ -169,8 +169,6 @@ export class MyAttendancesPage implements OnInit {
     );
   }
 
-  ngOnInit() {}
-
   isInSubscriptionPeriod(endDateTimestamp: Timestamp): boolean {
     if (endDateTimestamp) {
       const endDate = this.dateService.getDateFromTimestamp(endDateTimestamp);

@@ -28,8 +28,6 @@ export class MapComponent implements OnInit, OnDestroy, OnChanges {
   map: Map | undefined | null;
   @Input() eventItem!: EventItem;
 
-  constructor() {}
-
   ngOnInit() {
     this.generateMap();
   }

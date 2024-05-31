@@ -42,6 +42,4 @@ export class EventCardComponent implements OnInit {
   @Input() eventSubscription!: EventSubscriptionLocal;
 
   constructor(public dateService: DateService) {}
-
-  ngOnInit() {}
 }

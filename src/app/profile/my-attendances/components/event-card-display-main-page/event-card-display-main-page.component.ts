@@ -37,8 +37,4 @@ import { EventCardComponent } from 'src/app/profile/my-attendances/components/ev
 })
 export class EventCardDisplayMainPageComponent implements OnInit {
   @Input() eventSubscriptionsInput!: Observable<EventSubscriptionLocal[]>;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

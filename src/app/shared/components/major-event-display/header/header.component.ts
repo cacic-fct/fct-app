@@ -13,8 +13,4 @@ import { IonCardHeader, IonCardTitle } from '@ionic/angular/standalone';
 })
 export class HeaderComponent implements OnInit {
   @Input() majorEventItem!: MajorEventItem;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

@@ -32,8 +32,6 @@ export class CertificatePreviewModalComponent implements OnInit {
 
   constructor(private modalController: ModalController) {}
 
-  ngOnInit() {}
-
   formatParticipation(): string {
     return this.certificateData.participation.type === 'custom'
       ? this.certificateData.participation.custom

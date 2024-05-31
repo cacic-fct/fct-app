@@ -32,8 +32,6 @@ export class InfoModalComponent implements OnInit {
     addIcons({ closeOutline });
   }
 
-  ngOnInit() {}
-
   closeModal() {
     this.modalController.dismiss();
   }

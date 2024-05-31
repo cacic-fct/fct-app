@@ -40,6 +40,4 @@ export class DevelopmentToolsPage implements OnInit {
   constructor() {
     addIcons({ serverOutline });
   }
-
-  ngOnInit() {}
 }

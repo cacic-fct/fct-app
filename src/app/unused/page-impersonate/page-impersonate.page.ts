@@ -48,13 +48,14 @@ export class PageImpersonatePage implements OnInit {
   private auth: Auth = inject(Auth);
   private functions: Functions = inject(Functions);
 
-  constructor(private formBuilder: FormBuilder, private toastController: ToastController) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private toastController: ToastController,
+  ) {
     this.impersonateForm = this.formBuilder.group({
       userID: '',
     });
   }
-
-  ngOnInit() {}
 
   impersonate() {
     const impersonate = httpsCallable(this.functions, 'impersonate');

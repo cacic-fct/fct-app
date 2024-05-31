@@ -19,6 +19,4 @@ export class DateComponent implements OnInit {
   @Input() majorEventItem!: MajorEventItem;
 
   constructor(public dateService: DateService) {}
-
-  ngOnInit() {}
 }

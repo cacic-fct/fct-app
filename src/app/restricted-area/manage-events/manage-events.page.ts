@@ -287,7 +287,8 @@ export class PageManageEvents implements OnInit {
     } while (bannedCodes.includes(code));
 
     this.afs.doc<EventItem>(`events/${eventID}`).update({
-      // @ts-ignore
+      // @ts-expect-error
+      // This works
       attendanceCollectionStart: serverTimestamp(),
       attendanceCollectionEnd: null,
       attendanceCode: code,
@@ -299,7 +300,7 @@ export class PageManageEvents implements OnInit {
       .subscribe((subscriptions) => {
         subscriptions.forEach((subscription) => {
           this.afs.doc<User>(`users/${subscription.id}`).update({
-            // @ts-ignore
+            // @ts-expect-error
             'pending.onlineAttendance': arrayUnion(eventID),
           });
         });
@@ -310,7 +311,8 @@ export class PageManageEvents implements OnInit {
 
   closeOnlineAttendance(eventID: string) {
     this.afs.doc<EventItem>(`events/${eventID}`).update({
-      // @ts-ignore
+      // @ts-expect-error
+      // This works
       attendanceCollectionEnd: serverTimestamp(),
     });
 
@@ -320,7 +322,8 @@ export class PageManageEvents implements OnInit {
       .subscribe((subscriptions) => {
         subscriptions.forEach((subscription) => {
           this.afs.doc<User>(`users/${subscription.id}`).update({
-            // @ts-ignore
+            // @ts-expect-error
+            // This works
             'pending.onlineAttendance': arrayRemove(eventID),
           });
         });
@@ -399,7 +402,8 @@ export class PageManageEvents implements OnInit {
       .subscribe((events) => {
         events.forEach((event) => {
           this.afs.doc<EventItem>(`events/${event.id}`).update({
-            // @ts-ignore
+            // @ts-expect-error
+            // This works
             eventGroup: deleteField(),
           });
         });

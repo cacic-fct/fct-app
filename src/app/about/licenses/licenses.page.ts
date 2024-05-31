@@ -19,8 +19,4 @@ import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent 
     IonContent,
   ],
 })
-export class LicensesPage implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
-}
+export class LicensesPage implements OnInit {}

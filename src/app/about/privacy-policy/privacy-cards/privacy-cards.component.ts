@@ -11,8 +11,4 @@ import { TrackingDataComponent } from 'src/app/about/privacy-policy/privacy-card
   imports: [IonItem, IonList, LinkedDataComponent, NotLinkedDataComponent, TrackingDataComponent],
   standalone: true,
 })
-export class PrivacyCardsComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
-}
+export class PrivacyCardsComponent implements OnInit {}

@@ -41,10 +41,6 @@ import { Router, RouterLink } from '@angular/router';
 export class LandingPage implements OnInit {
   router = inject(Router);
 
-  constructor() {}
-
-  ngOnInit() {}
-
   jumpTo(anchor: string) {
     const element = document.querySelector(`#${anchor}`);
 

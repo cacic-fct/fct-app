@@ -217,7 +217,8 @@ export class AddMajorEventPage implements OnInit {
               : null,
             public: this.dataForm.get('public').value === '' || false,
             createdBy: user.uid,
-            // @ts-ignore
+            // @ts-expect-error
+            // This works
             createdOn: serverTimestamp(),
             events: [],
           })

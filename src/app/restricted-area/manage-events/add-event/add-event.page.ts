@@ -14,13 +14,11 @@ import { format, getDayOfYear, isEqual, parseISO, setDayOfYear, subMilliseconds 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { take, Observable, map } from 'rxjs';
-import { Timestamp, arrayUnion } from '@firebase/firestore';
 import { EventItem } from 'src/app/shared/services/event';
-import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
 import { getStringChanges, RemoteConfig } from '@angular/fire/remote-config';
-import { serverTimestamp } from '@angular/fire/firestore';
+import { serverTimestamp, Timestamp, arrayUnion } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
 import {
   IonSelect,
@@ -189,7 +187,7 @@ export class AddEventPage implements OnInit {
             majorEvent = null;
           }
 
-          let dateEnd: TimestampType | null;
+          let dateEnd: Timestamp | null;
 
           if (this.hasDateEnd) {
             dateEnd = Timestamp.fromDate(new Date(this.dataForm.get('eventEndDate').value));
@@ -250,7 +248,8 @@ export class AddEventPage implements OnInit {
               collectAttendance: this.dataForm.get('collectAttendance').value,
               creditHours: Number.parseInt(this.dataForm.get('creditHours').value) || null,
               createdBy: user.uid,
-              // @ts-ignore
+              // @ts-expect-error
+              // This works
               createdOn: serverTimestamp(),
               slotsAvailable: Number.parseInt(this.dataForm.get('slotsAvailable').value) || 0,
               numberOfSubscriptions: 0,
@@ -395,9 +394,12 @@ export class AddEventPage implements OnInit {
   }
 }
 
-type placesRemoteConfig = Record<string, {
+type placesRemoteConfig = Record<
+  string,
+  {
     name: string;
     description: string;
     lat: string;
     lon: string;
-  }>;
+  }
+>;

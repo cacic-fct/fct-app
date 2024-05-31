@@ -52,8 +52,6 @@ export class SupportPage implements OnInit {
     this.serviceWorkerActive = this.sw.getServiceWorkerStatus();
   }
 
-  ngOnInit() {}
-
   async alertUpdate() {
     const alert = await this.alertController.create({
       header: 'Atualizar o aplicativo',

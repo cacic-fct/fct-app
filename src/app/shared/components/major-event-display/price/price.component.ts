@@ -15,8 +15,4 @@ import { CurrencyPipe } from '@angular/common';
 })
 export class PriceComponent implements OnInit {
   @Input() majorEventItem!: MajorEventItem;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

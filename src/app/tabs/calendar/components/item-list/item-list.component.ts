@@ -25,9 +25,11 @@ export class ItemListComponent implements OnInit {
   @Input()
   eventItem!: EventItem;
 
-  constructor(public emojiService: EmojiService, private navCtrl: NavController, public dateService: DateService) {}
-
-  ngOnInit() {}
+  constructor(
+    public emojiService: EmojiService,
+    private navCtrl: NavController,
+    public dateService: DateService,
+  ) {}
 
   public openItem(item: any): void {
     this.navCtrl.navigateForward(['calendario/evento', item.id], {

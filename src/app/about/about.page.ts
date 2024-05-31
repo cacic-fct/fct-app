@@ -35,8 +35,4 @@ import {
 })
 export class AboutPage implements OnInit {
   globalConstants = GlobalConstantsService;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

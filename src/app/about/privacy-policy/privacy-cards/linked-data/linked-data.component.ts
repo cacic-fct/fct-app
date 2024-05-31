@@ -32,6 +32,4 @@ export class LinkedDataComponent implements OnInit {
       personCircleOutline,
     });
   }
-
-  ngOnInit() {}
 }

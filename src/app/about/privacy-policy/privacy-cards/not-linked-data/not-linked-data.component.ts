@@ -19,6 +19,4 @@ export class NotLinkedDataComponent implements OnInit {
       ellipsisHorizontalCircleOutline,
     });
   }
-
-  ngOnInit() {}
 }

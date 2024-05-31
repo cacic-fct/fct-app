@@ -23,7 +23,4 @@ import { MarkdownModule } from 'ngx-markdown';
 })
 export class PrivacyPolicyPage implements OnInit {
   public baseUrl = environment.baseUrl;
-  constructor() {}
-
-  ngOnInit() {}
 }

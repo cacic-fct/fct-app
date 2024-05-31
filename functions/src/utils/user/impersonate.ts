@@ -20,7 +20,7 @@
 
   // Get whitelist array as string from remote config
   return remoteConfig.getTemplate().then((template) => {
-    // @ts-ignore
+    // @ts-expect-error
     const whitelist: string = template.parameters.adminWhitelist.defaultValue?.value;
 
     if (context.auth?.uid) {

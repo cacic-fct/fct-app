@@ -159,8 +159,6 @@ export class CertificateService {
         const inputs = [input];
 
         PDFGenerate({
-          // TODO: Remove me when upstream fixes i
-          // @ts-ignore
           template,
           inputs,
           options: { font },

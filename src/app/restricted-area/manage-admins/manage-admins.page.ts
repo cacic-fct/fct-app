@@ -62,13 +62,14 @@ export class ManageAdminsPage implements OnInit {
     adminEmail: new FormControl(''),
   });
 
-  constructor(public toastController: ToastController, private alertController: AlertController) {
+  constructor(
+    public toastController: ToastController,
+    private alertController: AlertController,
+  ) {
     this.adminList$ = docData(doc(this.firestore, 'claims', 'admin')).pipe(map((doc) => doc['admins'])) as Observable<
       string[]
     >;
   }
-
-  ngOnInit() {}
 
   async errorToast(message: string) {
     const toast = await this.toastController.create({

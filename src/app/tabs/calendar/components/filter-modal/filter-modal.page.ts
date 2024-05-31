@@ -58,8 +58,6 @@ export class FilterModalPage implements OnInit, AfterViewInit {
     }
   }
 
-  ngOnInit() {}
-
   checkBoxClickCourse(coursekey: string) {
     const coursesArray = this.selectedFilter['courses'];
     // Add coursekey to array if not present. If present, remove it

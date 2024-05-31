@@ -34,8 +34,4 @@ import {
     IonCol,
   ],
 })
-export class LoginPage implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
-}
+export class LoginPage implements OnInit {}
