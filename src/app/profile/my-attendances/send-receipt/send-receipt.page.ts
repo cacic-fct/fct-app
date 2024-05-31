@@ -3,14 +3,13 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 
 import { Observable } from 'rxjs';
-import { finalize, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { ToastController } from '@ionic/angular/standalone';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
-import { fromUnixTime } from 'date-fns';
 
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { Timestamp } from '@firebase/firestore';
@@ -111,7 +110,7 @@ export class SendReceiptPage implements OnInit {
     private route: ActivatedRoute,
     public afs: AngularFirestore,
     public enrollmentTypes: EnrollmentTypesService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {}
 
   ngOnInit() {
@@ -231,7 +230,7 @@ export class SendReceiptPage implements OnInit {
           this.uploadFile(result, format);
           this.rawFile = result;
         }
-      }
+      },
     );
   }
 
@@ -276,7 +275,7 @@ export class SendReceiptPage implements OnInit {
             console.error('Failed to get download URL', err);
             this.toastUploadError();
           });
-      }
+      },
     );
   }
 

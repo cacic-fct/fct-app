@@ -8,7 +8,11 @@ import { User } from 'src/app/shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
 import { AsyncPipe } from '@angular/common';
 
-import { azteccode, interleaved2of5, drawingSVG } from 'bwip-js';
+import {
+  azteccode,
+  //interleaved2of5,
+  drawingSVG,
+} from 'bwip-js';
 
 import { SafePipe } from 'src/app/shared/pipes/safe.pipe';
 
