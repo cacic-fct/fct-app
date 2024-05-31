@@ -147,8 +147,7 @@ export class WalletPage implements OnInit {
             text: `uid:${uid}`,
             scale: 3,
             includetext: false,
-            // @ts-expect-error
-            // Required since eclevel actually exists
+            // @ts-expect-error - Required since eclevel actually exists
             eclevel: '23',
           },
           drawingSVG(),

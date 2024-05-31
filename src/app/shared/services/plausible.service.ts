@@ -11,8 +11,7 @@ export class PlausibleLocalService {
     window.plausible =
       window.plausible ||
       function () {
-        // @ts-expect-error
-        // This is defined by Plausible in main.ts
+        // @ts-expect-error - This is defined by Plausible in main.ts
         (window.plausible.q = window.plausible.q || []).push(arguments);
       };
   }

@@ -121,8 +121,7 @@ export class AuthService {
                             .collection('users')
                             .doc<User>(this.userData.uid)
                             .update({
-                              // @ts-expect-error
-                              // This works
+                              // @ts-expect-error - This works
                               pending: { onlineAttendance: arrayRemove(eventID) },
                             });
                         }

@@ -98,7 +98,7 @@ export class ScannerPage implements OnInit {
    */
   nonPayingAttendanceCollection$: Observable<Attendance[]>;
   eventID: string;
-  event$: Observable<EventItem>;
+  event$: Observable<EventItem | undefined>;
   /**
    * Variable initialized at this.checkIfEventIsPaid();
    * Variável inicializada no método this.checkIfEventIsPaid()
@@ -153,12 +153,7 @@ export class ScannerPage implements OnInit {
         }
       });
 
-    this.event$ = this.afs
-      .collection('events')
-      .doc<EventItem>(this.eventID)
-      .valueChanges()
-      // @ts-expect-error
-      .pipe(trace('firestore'));
+    this.event$ = this.afs.collection('events').doc<EventItem>(this.eventID).valueChanges();
     this.checkIfEventIsPaid();
 
     // Get attendance list

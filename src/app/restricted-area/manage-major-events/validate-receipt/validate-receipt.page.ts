@@ -198,8 +198,7 @@ export class ValidateReceiptPage implements OnInit {
         .subscribe((col) => {
           const subscriberID = col.docs[this.arrayIndex].id;
           this.subscriptionsQuery.doc(subscriberID).update({
-            // @ts-expect-error
-            // This works
+            // @ts-expect-error - This works
             'payment.status': 2, // Novo status: pagamento aprovado
             'payment.time': serverTimestamp(),
             'payment.author': adminUser.uid, // Autor da mudança
@@ -218,8 +217,6 @@ export class ValidateReceiptPage implements OnInit {
                   .collection('subscriptions')
                   .doc(subscriberID)
                   .set({
-                    // @ts-expect-error
-                    // This works
                     time: serverTimestamp(),
                   });
 
@@ -268,8 +265,7 @@ export class ValidateReceiptPage implements OnInit {
           switch (this.refuseForm.value.radioGroup) {
             case 'invalidReceipt':
               this.subscriptionsQuery.doc(subscriberID).update({
-                // @ts-expect-error
-                // This works
+                // @ts-expect-error - This works
                 'payment.status': 3,
                 'payment.validationTime': serverTimestamp(),
                 'payment.validationAuthor': user.uid,
@@ -302,8 +298,7 @@ export class ValidateReceiptPage implements OnInit {
               break;
             case 'noSlots':
               this.subscriptionsQuery.doc(subscriberID).update({
-                // @ts-expect-error
-                // This works
+                // @ts-expect-error - This works
                 'payment.status': 4,
                 'payment.validationTime': serverTimestamp(),
                 'payment.validationAuthor': user.uid,
@@ -334,8 +329,7 @@ export class ValidateReceiptPage implements OnInit {
 
             case 'scheduleConflict':
               this.subscriptionsQuery.doc(subscriberID).update({
-                // @ts-expect-error
-                // This works
+                // @ts-expect-error - This works
                 'payment.status': 5,
                 'payment.validationTime': serverTimestamp(),
                 'payment.validationAuthor': user.uid,

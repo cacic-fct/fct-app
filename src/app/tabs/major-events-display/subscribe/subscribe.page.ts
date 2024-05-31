@@ -532,14 +532,12 @@ export class SubscribePage implements OnInit {
                           .set({
                             subscriptionType: subscriptionType,
                             subscribedToEvents: eventsSelectedID,
-                            // @ts-expect-error
-                            // This works
+                            // @ts-expect-error - This works
                             time: serverTimestamp(),
                             payment: {
                               price: price,
                               status: status,
-                              // @ts-expect-error
-                              // This works
+                              // @ts-expect-error - This works
                               time: serverTimestamp(),
                               author: user.uid,
                             },
@@ -554,8 +552,7 @@ export class SubscribePage implements OnInit {
                             payment: {
                               price: price,
                               status: status,
-                              // @ts-expect-error
-                              // This works
+                              // @ts-expect-error - This works
                               time: serverTimestamp(),
                               author: user.uid,
                             },

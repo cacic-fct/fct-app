@@ -177,11 +177,9 @@ export class ManageSubscriptionPage {
           data.subscribedToEvents.forEach((event) => {
             this.afs.doc<EventItem>(`events/${event}/subscriptions/${this.subscriptionID}`).delete();
             this.afs.doc<EventItem>(`events/${event}`).update({
-              // @ts-expect-error
-              // This works
+              // @ts-expect-error - This works
               slotsAvailable: increment(1),
-              // @ts-expect-error
-              // This works
+              // @ts-expect-error - This works
               numberOfSubscriptions: increment(-1),
             });
           });
@@ -213,11 +211,9 @@ export class ManageSubscriptionPage {
             data.subscribedToEvents.forEach((event) => {
               this.afs.doc<EventItem>(`events/${event}/subscriptions/${this.subscriptionID}`).delete();
               this.afs.doc<EventItem>(`events/${event}`).update({
-                // @ts-expect-error
-                // This works
+                // @ts-expect-error - This works
                 slotsAvailable: increment(1),
-                // @ts-expect-error
-                // This works
+                // @ts-expect-error - This works
                 numberOfSubscriptions: increment(-1),
               });
             });

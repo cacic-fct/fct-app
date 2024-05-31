@@ -176,8 +176,7 @@ function fetchNonce(): string {
     const message =
       'Ocorreu um erro ao validar a integridade do aplicativo.\nRecarregue a página.\nErro: Nonce não encontrado';
 
-    // @ts-expect-error
-    // Alert is globally available in the browser
+    // @ts-expect-error - Alert is globally available in the browser
     if (!alert(message)) {
       window.location.reload();
     }
