@@ -46,10 +46,6 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~18.0.1",
-    "@angular-eslint/builder": "~17.5.1",
-    "@angular-eslint/eslint-plugin": "~17.5.1",
-    "@angular-eslint/eslint-plugin-template": "~17.5.1",
-    "@angular-eslint/template-parser": "~17.5.1",
     "@angular/cli": "~18.0.1",
     "@angular/compiler": "~18.0.0",
     "@angular/compiler-cli": "~18.0.0",
@@ -57,10 +53,9 @@
     "@ionic/angular-toolkit": "^11.0.1",
     "@pdfme/common": "^4.0.1",
     "@pdfme/schemas": "^4.0.1",
-    "@typescript-eslint/eslint-plugin": "7.11.0",
-    "@typescript-eslint/parser": "7.11.0",
     "@types/google-one-tap": "^1.2.6",
     "@types/twemoji-parser": "^13.1.4",
+    "angular-eslint": "18.0.1",
     "eslint": "^9.3.0",
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-jsdoc": "48.2.6",
@@ -72,6 +67,7 @@
     "ts-node": "~10.9.2",
     "tslib": "^2.6.2",
     "typescript": "5.4.5",
+    "typescript-eslint": "8.0.0-alpha.20",
     "typescript-strict-plugin": "^2.4.3"
   },
   "trustedDependencies": [
