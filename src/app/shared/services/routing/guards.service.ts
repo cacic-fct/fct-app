@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class DevelopmentOnlyGuard {
-  // es-ling-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): boolean {
     return !environment.production;
   }

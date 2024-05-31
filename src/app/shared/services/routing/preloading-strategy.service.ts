@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class PreloadingStrategyService implements PreloadingStrategy {
-  // es-lint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   preload(route: Route, fn: () => Observable<any>): Observable<null> {
     if (route.data && route.data['preload']) {
       return fn();

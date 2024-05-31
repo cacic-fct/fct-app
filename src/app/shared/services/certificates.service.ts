@@ -159,7 +159,7 @@ export class CertificateService {
         const inputs = [input];
 
         PDFGenerate({
-          // eslink-disable-next-line @typescript-eslint/ban-ts-comment
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           template,
           inputs,
