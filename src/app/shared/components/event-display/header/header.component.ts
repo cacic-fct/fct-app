@@ -1,5 +1,5 @@
 import { ToastController } from '@ionic/angular/standalone';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { WeatherInfo, WeatherService } from '../../../services/weather.service';
@@ -21,7 +21,7 @@ import { DatePipe, AsyncPipe } from '@angular/common';
   standalone: true,
   imports: [IonCardHeader, IonCardTitle, IonIcon, IonText, DatePipe, AsyncPipe],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   @Input() eventItem!: EventItem;
   @Input() displayWeather: boolean | undefined;
 
