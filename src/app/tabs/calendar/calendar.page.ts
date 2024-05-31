@@ -106,7 +106,7 @@ export class CalendarPage implements OnInit {
     this.generateCalendarData();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-explicit-any
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>): number => {
     return 0;
   };
