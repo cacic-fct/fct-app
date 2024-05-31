@@ -1,4 +1,4 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, inject, signal, WritableSignal, OnInit } from '@angular/core';
 
 import { AuthService } from '../../shared/services/auth.service';
 
@@ -57,7 +57,7 @@ import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propa
     ClickStopPropagation,
   ],
 })
-export class MenuPage {
+export class MenuPage implements OnInit {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
   authState$ = authState(this.auth);

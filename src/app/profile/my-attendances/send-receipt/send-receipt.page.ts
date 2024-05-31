@@ -102,7 +102,7 @@ export class SendReceiptPage implements OnInit {
   rawFile: string;
   userSubscription$: Promise<MajorEventSubscription>;
   today: Date = new Date();
-  outOfDate: boolean = false;
+  outOfDate = false;
 
   constructor(
     private imageCompress: NgxImageCompressService,

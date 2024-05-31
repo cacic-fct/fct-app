@@ -44,7 +44,7 @@ export class FilterModalPage implements OnInit, AfterViewInit {
   constructor(private modalController: ModalController) {}
 
   @Input() selectedFilter: {
-    courses: Array<string>;
+    courses: string[];
   };
 
   ngAfterViewInit() {
@@ -61,7 +61,7 @@ export class FilterModalPage implements OnInit, AfterViewInit {
   ngOnInit() {}
 
   checkBoxClickCourse(coursekey: string) {
-    let coursesArray = this.selectedFilter['courses'];
+    const coursesArray = this.selectedFilter['courses'];
     // Add coursekey to array if not present. If present, remove it
     if (coursesArray.includes(coursekey)) {
       coursesArray.splice(coursesArray.indexOf(coursekey), 1);

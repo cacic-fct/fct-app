@@ -113,7 +113,7 @@ export class ValidateReceiptPage implements OnInit {
   @ViewChild('swalConfirm') private swalConfirm: SwalComponent;
   @ViewChild('refuseModal') private refuseModal: IonModal;
 
-  arrayIndex: number = 0;
+  arrayIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -380,7 +380,7 @@ export class ValidateReceiptPage implements OnInit {
           handler: () => {
             const formattedPhone = this.formatPhoneWhatsApp(phone);
 
-            const text: string = `Olá, ${name}! O seu comprovante de pagamento do evento "${event}" foi recusado.%0aA justificativa é "${message}".%0a%0aRealize o envio novamente pelo link:%0a${environment.baseUrl}inscricoes/pagar/${this.majorEventID}?utm_source=whatsapp%26utm_medium=message%26utm_campaign=payment_error`;
+            const text = `Olá, ${name}! O seu comprovante de pagamento do evento "${event}" foi recusado.%0aA justificativa é "${message}".%0a%0aRealize o envio novamente pelo link:%0a${environment.baseUrl}inscricoes/pagar/${this.majorEventID}?utm_source=whatsapp%26utm_medium=message%26utm_campaign=payment_error`;
 
             const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${text}`;
             window.open(url, '_blank');
@@ -407,7 +407,7 @@ export class ValidateReceiptPage implements OnInit {
           handler: () => {
             const formattedPhone = this.formatPhoneWhatsApp(phone);
 
-            const text: string = `Olá, ${name}! Ocorreu um problema com a sua inscrição no evento "${event}".%0aNão há mais vagas em uma das atividades selecionadas.%0a%0aVocê precisa editar a sua inscrição pelo link:%0a${environment.baseUrl}eventos/inscrever/${this.majorEventID}?utm_source=whatsapp%26utm_medium=message%26utm_campaign=no_slots`;
+            const text = `Olá, ${name}! Ocorreu um problema com a sua inscrição no evento "${event}".%0aNão há mais vagas em uma das atividades selecionadas.%0a%0aVocê precisa editar a sua inscrição pelo link:%0a${environment.baseUrl}eventos/inscrever/${this.majorEventID}?utm_source=whatsapp%26utm_medium=message%26utm_campaign=no_slots`;
             const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${text}`;
             window.open(url, '_blank');
           },
@@ -433,7 +433,7 @@ export class ValidateReceiptPage implements OnInit {
           handler: () => {
             const formattedPhone = this.formatPhoneWhatsApp(phone);
 
-            const text: string = `Olá, ${name}! Ocorreu um problema com a sua inscrição no evento "${event}".%0aHá um choque de horário nos eventos que você selecionou.%0a%0aVocê precisa editar a sua inscrição pelo link:%0a${environment.baseUrl}eventos/inscrever/${this.majorEventID}?utm_source=whatsapp%26utm_medium=message%26utm_campaign=schedule_conflict`;
+            const text = `Olá, ${name}! Ocorreu um problema com a sua inscrição no evento "${event}".%0aHá um choque de horário nos eventos que você selecionou.%0a%0aVocê precisa editar a sua inscrição pelo link:%0a${environment.baseUrl}eventos/inscrever/${this.majorEventID}?utm_source=whatsapp%26utm_medium=message%26utm_campaign=schedule_conflict`;
             const url = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${text}`;
             window.open(url, '_blank');
           },

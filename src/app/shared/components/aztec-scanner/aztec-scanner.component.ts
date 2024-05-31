@@ -13,21 +13,21 @@ import { ReadResult, readBarcodesFromImageData } from 'zxing-wasm';
   standalone: true,
 })
 export class ScannerVideoComponent implements AfterViewInit {
-  isAutostarting: boolean = false;
+  isAutostarting = false;
 
   scannerCanvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
-  @Output() deviceList: EventEmitter<MediaDeviceInfo[]> = new EventEmitter();
-  @Output() noCamerasFound: EventEmitter<void> = new EventEmitter();
-  @Output() hasPermission: EventEmitter<boolean> = new EventEmitter(false);
-  @Output() scanSuccess: EventEmitter<string> = new EventEmitter();
+  @Output() deviceList = new EventEmitter<MediaDeviceInfo[]>();
+  @Output() noCamerasFound = new EventEmitter<void>();
+  @Output() hasPermission = new EventEmitter<boolean>(false);
+  @Output() scanSuccess = new EventEmitter<string>();
 
-  @Input() delaySeconds: number = 1;
+  @Input() delaySeconds = 1;
 
   @ViewChild('scannerVideo') videoElemRef!: ElementRef<HTMLVideoElement>;
 
-  _hasPermission: boolean = false;
+  _hasPermission = false;
 
   /**
    * The device that should be used to scan things.
@@ -184,7 +184,7 @@ export class ScannerVideoComponent implements AfterViewInit {
     }
 
     let stream: MediaStream | undefined;
-    let permission: boolean = false;
+    let permission = false;
 
     try {
       // Will try to ask for permission
@@ -265,7 +265,7 @@ export class ScannerVideoComponent implements AfterViewInit {
     const ctx = this.ctx;
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    let imageData = canvas.getContext('2d')?.getImageData(0, 0, canvas.width, canvas.height);
+    const imageData = canvas.getContext('2d')?.getImageData(0, 0, canvas.width, canvas.height);
 
     if (!imageData) {
       console.error('No image data found.');

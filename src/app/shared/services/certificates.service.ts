@@ -37,7 +37,7 @@ export class CertificateService {
       throw new Error('Request is malformed: id is missing');
     }
 
-    let pdfJson: Observable<Object>;
+    let pdfJson: Observable<object>;
     const pdfPath = `assets/certificates/templates/${certificateStoreData.certificateTemplate}.json`;
     if (isDevMode()) {
       pdfJson = this.http.get(pdfPath, {
@@ -136,7 +136,7 @@ export class CertificateService {
           throw new Error('Major event is missing');
         }
 
-        let input = {
+        const input = {
           name: certificateDataSnapshot.fullName,
           name_small: certificateDataSnapshot.fullName,
           event_name: majorEventData.name,
@@ -277,9 +277,9 @@ function generateContent(
             continue;
           }
 
-          let creditHours: number = 0;
+          let creditHours = 0;
           // let creditHoursTotal: number = 0;
-          let eventDays: Timestamp[] = [];
+          const eventDays: Timestamp[] = [];
 
           // Sum credit hours of all events in group
           for (const e of groupEventsAttended) {

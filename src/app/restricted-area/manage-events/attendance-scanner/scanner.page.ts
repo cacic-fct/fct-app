@@ -78,7 +78,7 @@ interface Attendance {
 ],
 })
 export class ScannerPage implements OnInit {
-  @Input('manualInput') manualInput!: string;
+  @Input() manualInput!: string;
   @ViewChild('mySwal') mySwal: SwalComponent;
   @ViewChild('scannerCanvas') scannerCanvas: HTMLCanvasElement;
 
@@ -88,9 +88,9 @@ export class ScannerPage implements OnInit {
   // QR Code scanner
   availableDevices!: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo | null = null;
-  hasDevices: boolean = false;
-  hasPermission: boolean = false;
-  deviceIndex: number = -1;
+  hasDevices = false;
+  hasPermission = false;
+  deviceIndex = -1;
 
   attendanceCollection$: Observable<Attendance[]>;
   /**
@@ -113,7 +113,7 @@ export class ScannerPage implements OnInit {
   _backdropVisibleSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   backdropVisible$: Observable<boolean> = this._backdropVisibleSubject.asObservable();
 
-  attendanceSessionScans: number = 0;
+  attendanceSessionScans = 0;
 
   audioSuccess: HTMLAudioElement;
   audioDuplicate: HTMLAudioElement;

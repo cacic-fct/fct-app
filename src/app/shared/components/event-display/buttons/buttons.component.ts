@@ -37,7 +37,7 @@ export class ButtonsComponent implements OnInit {
   userID: string | undefined;
   subscribedToEvent: boolean | undefined;
   isUserAuthenticated: Observable<boolean>;
-  disableSubscriptionNoSlotsLeft: boolean = false;
+  disableSubscriptionNoSlotsLeft = false;
 
   constructor(
     private toastController: ToastController,

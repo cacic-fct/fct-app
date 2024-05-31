@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -16,7 +16,7 @@ useGeographic();
   standalone: true,
   imports: [IonHeader, IonContent],
 })
-export class MapPage implements AfterViewInit {
+export class MapPage implements AfterViewInit, OnDestroy {
   map: Map | undefined | null;
 
   constructor() {}

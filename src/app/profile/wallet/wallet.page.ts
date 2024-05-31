@@ -71,7 +71,7 @@ export class WalletPage implements OnInit {
   user$: Observable<AuthUser | null> = user(this.auth);
   userFirestore$: Observable<User> | undefined;
   academicID$: Observable<string> | undefined;
-  public serviceWorkerActive: boolean = false;
+  public serviceWorkerActive = false;
   _isProfessor = new BehaviorSubject<boolean>(false);
   isProfessor$: Observable<boolean> = this._isProfessor.asObservable();
 
@@ -140,7 +140,7 @@ export class WalletPage implements OnInit {
 
   renderAztecCode(uid: string) {
     try {
-      let svg: string = String(
+      const svg = String(
         azteccode(
           {
             bcid: 'interleaved2of5',

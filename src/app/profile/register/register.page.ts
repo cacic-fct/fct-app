@@ -78,8 +78,8 @@ export class RegisterPage implements OnInit {
   dataVersion: string = GlobalConstantsService.userDataVersion;
   userData: any;
   dataForm: FormGroup;
-  isUnesp: boolean = false;
-  isUndergraduate: boolean = false;
+  isUnesp = false;
+  isUndergraduate = false;
 
   constructor(
     public authService: AuthService,
@@ -279,7 +279,7 @@ export class RegisterPage implements OnInit {
       return false;
     }
 
-    let sum: number = 0;
+    let sum = 0;
     let rest: number;
     for (let i = 1; i <= 9; i++) sum = sum + parseInt(cpf.substring(i - 1, i)) * (11 - i);
     rest = (sum * 10) % 11;

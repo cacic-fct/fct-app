@@ -87,11 +87,11 @@ interface EventItemQuery extends EventItem {
   ],
 })
 export class PageManageEvents implements OnInit {
-  groupUnderSelection: boolean = false;
+  groupUnderSelection = false;
   dataForm: FormGroup;
   today: Date = new Date();
   currentMonth: string = this.today.toISOString();
-  currentMonth$: BehaviorSubject<string | null> = new BehaviorSubject(this.currentMonth);
+  currentMonth$ = new BehaviorSubject<string | null>(this.currentMonth);
   events$: Observable<EventItemQuery[]>;
   constructor(
     private afs: AngularFirestore,
@@ -124,7 +124,7 @@ export class PageManageEvents implements OnInit {
             trace('firestore'),
             map((events) =>
               events.map((event) => {
-                let eventObject: EventItemQuery = event;
+                const eventObject: EventItemQuery = event;
                 if (eventObject.inMajorEvent)
                   eventObject.inMajorEventName = this.getMajorEventName$(event.inMajorEvent);
                 return eventObject;

@@ -1,5 +1,5 @@
 // @ts-strict-ignore
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { compareAsc, subMonths, startOfDay } from 'date-fns';
@@ -52,7 +52,7 @@ import { PriceComponent } from 'src/app/shared/components/major-event-display/pr
     PriceComponent,
   ],
 })
-export class MajorEventsDisplayPage {
+export class MajorEventsDisplayPage implements OnInit {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
 

@@ -89,7 +89,7 @@ export class AddEventPage implements OnInit {
   courses = CoursesService.courses;
   majorEventsData$: Observable<MajorEventItem[]>;
 
-  hasDateEnd: boolean = false;
+  hasDateEnd = false;
 
   dataForm: FormGroup;
 
@@ -197,7 +197,7 @@ export class AddEventPage implements OnInit {
             dateEnd = null;
           }
 
-          let buttonUrl: string = this.dataForm.get('button').get('url').value;
+          const buttonUrl: string = this.dataForm.get('button').get('url').value;
 
           if (buttonUrl) {
             const pattern = /^((http|https):\/\/)/;
@@ -339,7 +339,7 @@ export class AddEventPage implements OnInit {
     return null;
   }
 
-  validatorDateEnd(control: AbstractControl): { [key: string]: boolean } | null {
+  validatorDateEnd(control: AbstractControl): Record<string, boolean> | null {
     if (control.get('hasDateEndForm').value) {
       const dateStart = parseISO(control.get('eventStartDate').value);
       const dateEnd = parseISO(control.get('eventEndDate').value);
@@ -395,11 +395,9 @@ export class AddEventPage implements OnInit {
   }
 }
 
-interface placesRemoteConfig {
-  [key: string]: {
+type placesRemoteConfig = Record<string, {
     name: string;
     description: string;
     lat: string;
     lon: string;
-  };
-}
+  }>;

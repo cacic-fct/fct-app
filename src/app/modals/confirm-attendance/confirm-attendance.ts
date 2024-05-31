@@ -219,7 +219,7 @@ export class ConfirmAttendancePage {
     toast.present();
   }
 
-  codeValidator = (formControl: AbstractControl): { [key: string]: boolean } | null => {
+  codeValidator = (formControl: AbstractControl): Record<string, boolean> | null => {
     if (!this.attendanceCode) {
       return { codeLoading: true };
     }

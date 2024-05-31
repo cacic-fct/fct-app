@@ -352,7 +352,7 @@ export class IssueCertificatePage implements OnInit {
     return;
   }
 
-  async openConfirmModal(certificateData: { [key: string]: any }): Promise<boolean> {
+  async openConfirmModal(certificateData: Record<string, any>): Promise<boolean> {
     const modal = await this.modalController.create({
       component: CertificatePreviewModalComponent,
       componentProps: {

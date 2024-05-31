@@ -72,7 +72,7 @@ export class ListSubscriptionsPage implements OnInit {
 
   eventID: string;
 
-  disableCSVDownloadButton: boolean = false;
+  disableCSVDownloadButton = false;
 
   constructor(
     private router: Router,
@@ -148,9 +148,9 @@ export class ListSubscriptionsPage implements OnInit {
           return;
         }
 
-        let events: Observable<MajorEventItem | undefined>[] = [];
+        const events: Observable<MajorEventItem | undefined>[] = [];
         let eventsArray: Observable<(MajorEventItem | undefined)[]>;
-        let eventNames: { [key: string]: string } = {};
+        const eventNames: Record<string, string> = {};
 
         event.events.forEach((event) => {
           events.push(
@@ -198,7 +198,7 @@ export class ListSubscriptionsPage implements OnInit {
                   break;
               }
 
-              let subscribedToEventsItemArray$: Observable<MajorEventItem | undefined>[] = [];
+              const subscribedToEventsItemArray$: Observable<MajorEventItem | undefined>[] = [];
 
               // TODO: Optimize this
               item.subscribedToEvents.forEach((eventID) => {

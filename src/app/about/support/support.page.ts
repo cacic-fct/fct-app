@@ -43,7 +43,7 @@ import { ServiceWorkerService } from 'src/app/shared/services/service-worker/ser
   ],
 })
 export class SupportPage implements OnInit {
-  serviceWorkerActive: boolean = false;
+  serviceWorkerActive = false;
 
   constructor(
     private alertController: AlertController,

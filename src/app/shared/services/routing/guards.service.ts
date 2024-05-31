@@ -27,11 +27,11 @@ export const redirectLoggedInToCalendar = () => redirectLoggedInTo(['calendario'
 export const caAndGreater = () =>
   pipe(
     customClaims,
-    map((claims: { [key: string]: any }) => (claims['role'] as number) < 3000),
+    map((claims: Record<string, any>) => (claims['role'] as number) < 3000),
   );
 
 export const adminOnly = () =>
   pipe(
     customClaims,
-    map((claims: { [key: string]: any }) => (claims['role'] as number) === 1000),
+    map((claims: Record<string, any>) => (claims['role'] as number) === 1000),
   );

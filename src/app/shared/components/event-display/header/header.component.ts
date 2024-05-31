@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
   @Input() displayWeather: boolean | undefined;
 
   weather: Observable<WeatherInfo> | undefined;
-  weatherFailed: boolean = false;
+  weatherFailed = false;
 
   constructor(
     public coursesService: CoursesService,

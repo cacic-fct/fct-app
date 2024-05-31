@@ -46,15 +46,15 @@ import { ItemListComponent } from 'src/app/tabs/calendar/components/item-list/it
 })
 export class CalendarListViewComponent implements OnInit, OnChanges {
   @Input() filter: {
-    courses: Array<string>;
+    courses: string[];
   };
 
-  courseFilter$: BehaviorSubject<{
-    courses: Array<string>;
-  } | null> = new BehaviorSubject(null);
-  dateFilter$: BehaviorSubject<Date | null> = new BehaviorSubject(null);
+  courseFilter$ = new BehaviorSubject<{
+    courses: string[];
+  } | null>(null);
+  dateFilter$ = new BehaviorSubject<Date | null>(null);
 
-  loadOlderCount: number = 0;
+  loadOlderCount = 0;
 
   items$: Observable<EventItem[]>;
 

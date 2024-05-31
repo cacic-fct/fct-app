@@ -66,7 +66,7 @@ import { FormsModule } from '@angular/forms';
 export class ManageMajorEventsPage implements OnInit {
   today: Date = new Date();
   currentMonth: string = this.today.toISOString();
-  currentMonth$: BehaviorSubject<string | null> = new BehaviorSubject(this.currentMonth);
+  currentMonth$ = new BehaviorSubject<string | null>(this.currentMonth);
   majorEvents$: Observable<MajorEventItem[]>;
 
   constructor(private afs: AngularFirestore, public courses: CoursesService, public dateService: DateService) {}

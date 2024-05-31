@@ -30,14 +30,14 @@ module.exports = tseslint.config(
           style: 'kebab-case',
         },
       ],
+      '@angular-eslint/component-class-suffix': 'off',
+      '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
     },
   },
   {
     files: ['**/*.html'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-    rules: {
-      '@angular-eslint/component-class-suffix': 'off',
-    },
+    rules: {},
   },
   {
     ignores: ['functions/*', 'src/app/unused/*'],

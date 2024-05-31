@@ -98,7 +98,7 @@ export class ManageSubscriptionPage {
         return;
       }
 
-      let tempArray: Observable<EventItem | undefined>[] = [];
+      const tempArray: Observable<EventItem | undefined>[] = [];
 
       data.subscribedToEvents.map((event) => {
         tempArray.push(

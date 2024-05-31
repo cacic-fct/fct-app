@@ -116,12 +116,12 @@ export class SubscribePage implements OnInit {
 
   dataForm: FormGroup;
 
-  eventsSelected: { [key: string]: EventItem[] } = {
+  eventsSelected: Record<string, EventItem[]> = {
     minicurso: [],
     palestra: [],
   };
 
-  eventGroupMinicursoCount: number = 0;
+  eventGroupMinicursoCount = 0;
 
   opSelected: string;
 
@@ -130,7 +130,7 @@ export class SubscribePage implements OnInit {
   majorEventID: string;
 
   eventSchedule: EventItem[] = [];
-  isEventScheduleBeingChecked: boolean = false;
+  isEventScheduleBeingChecked = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -486,7 +486,7 @@ export class SubscribePage implements OnInit {
                   // Create array with event IDs from eventsSelected
                   const eventsSelectedID = eventsSelected.map((event) => event.id);
 
-                  let status: number = 0;
+                  let status = 0;
 
                   if (this.paymentStatus !== undefined) {
                     switch (this.paymentStatus) {
