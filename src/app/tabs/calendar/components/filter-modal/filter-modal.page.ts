@@ -1,6 +1,6 @@
 // @ts-strict-ignore
 import { KeyValue, KeyValuePipe } from '@angular/common';
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular/standalone';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
@@ -38,7 +38,7 @@ import {
     KeyValuePipe,
   ],
 })
-export class FilterModalPage implements OnInit, AfterViewInit {
+export class FilterModalPage implements AfterViewInit {
   courses = CoursesService.courses;
 
   constructor(private modalController: ModalController) {}

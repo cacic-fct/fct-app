@@ -5,7 +5,7 @@ import {
   contentTypes,
   CertificateTemplateData,
 } from '../../../../../shared/services/certificates.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import {
   IonHeader,
@@ -27,7 +27,7 @@ import {
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonChip, IonLabel, IonGrid, IonRow, IonCol, IonButton],
 })
-export class CertificatePreviewModalComponent implements OnInit {
+export class CertificatePreviewModalComponent {
   @Input() certificateData!: CertificateTemplateData;
 
   constructor(private modalController: ModalController) {}

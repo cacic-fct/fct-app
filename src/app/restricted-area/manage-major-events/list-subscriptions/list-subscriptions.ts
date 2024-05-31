@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { Firestore, collection, collectionData, docData, doc, query, orderBy } from '@angular/fire/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -61,7 +61,7 @@ interface Subscription extends MajorEventSubscription {
     SweetAlert2Module,
   ],
 })
-export class ListSubscriptionsPage implements OnInit {
+export class ListSubscriptionsPage {
   @ViewChild('mySwal')
   private mySwal!: SwalComponent;
 

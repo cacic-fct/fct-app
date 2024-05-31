@@ -10,6 +10,6 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./description.component.scss'],
   standalone: true,
 })
-export class DescriptionComponent implements OnInit {
+export class DescriptionComponent {
   @Input() eventItem!: EventItem;
 }

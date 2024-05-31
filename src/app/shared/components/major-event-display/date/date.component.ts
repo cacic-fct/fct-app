@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DateService } from 'src/app/shared/services/date.service';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 
@@ -15,7 +15,7 @@ import { DatePipe } from '@angular/common';
   standalone: true,
   imports: [IonIcon, IonItem, DatePipe],
 })
-export class DateComponent implements OnInit {
+export class DateComponent {
   @Input() majorEventItem!: MajorEventItem;
 
   constructor(public dateService: DateService) {}

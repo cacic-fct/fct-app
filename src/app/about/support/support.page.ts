@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular/standalone';
 
 import {
@@ -42,7 +42,7 @@ import { ServiceWorkerService } from 'src/app/shared/services/service-worker/ser
     IonText,
   ],
 })
-export class SupportPage implements OnInit {
+export class SupportPage {
   serviceWorkerActive = false;
 
   constructor(

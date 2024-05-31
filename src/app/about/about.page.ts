@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { GlobalConstantsService } from '../shared/services/global-constants.service';
 import { RouterLink } from '@angular/router';
 import {
@@ -33,6 +33,6 @@ import {
     IonCol,
   ],
 })
-export class AboutPage implements OnInit {
+export class AboutPage {
   globalConstants = GlobalConstantsService;
 }

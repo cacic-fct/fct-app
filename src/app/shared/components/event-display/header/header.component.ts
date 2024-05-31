@@ -1,5 +1,5 @@
 import { ToastController } from '@ionic/angular/standalone';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { WeatherInfo, WeatherService } from '../../../services/weather.service';
@@ -21,7 +21,7 @@ import { DatePipe, AsyncPipe } from '@angular/common';
   standalone: true,
   imports: [IonCardHeader, IonCardTitle, IonIcon, IonText, DatePipe, AsyncPipe],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   @Input() eventItem!: EventItem;
   @Input() displayWeather: boolean | undefined;
 
@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
     private weatherService: WeatherService,
     public dateService: DateService,
     public stringService: StringManagementService,
-    public emojiService: EmojiService
+    public emojiService: EmojiService,
   ) {}
 
   ngOnInit() {
@@ -46,7 +46,7 @@ export class HeaderComponent implements OnInit {
       this.weather = this.weatherService.getWeather(
         this.dateService.getDateFromTimestamp(this.eventItem.eventStartDate),
         this.eventItem.location.lat,
-        this.eventItem.location.lon
+        this.eventItem.location.lon,
       );
     }
   }

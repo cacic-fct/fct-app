@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { parseISO, getUnixTime } from 'date-fns';
 
@@ -41,7 +41,7 @@ import { PriceComponent } from 'src/app/shared/components/major-event-display/pr
     PriceComponent,
   ],
 })
-export class ConfirmModalComponent implements OnInit {
+export class ConfirmModalComponent {
   @Input() dataForm!: FormGroup<any>;
   @Input() isEventPaid!: boolean;
 

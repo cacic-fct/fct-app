@@ -1,5 +1,5 @@
 // @ts-strict-ignore
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
 
@@ -59,7 +59,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     DatePipe,
   ],
 })
-export class ConfirmModalComponent implements OnInit {
+export class ConfirmModalComponent {
   @Input() majorEvent$: Observable<MajorEventItem>;
   @Input() eventsSelected: EventItem[];
   @Input() minicursosCount: number;

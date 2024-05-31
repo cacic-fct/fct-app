@@ -1,6 +1,6 @@
 // @ts-strict-ignore
 import { FormGroup } from '@angular/forms';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 import { ModalController } from '@ionic/angular/standalone';
 import { EmojiService } from '../../../../shared/services/emoji.service';
@@ -18,7 +18,7 @@ import { DatePipe } from '@angular/common';
   standalone: true,
   imports: [IonContent, IonItem, IonIcon, IonLabel, IonButton, IonGrid, IonRow, IonCol, SafePipe, DatePipe],
 })
-export class ConfirmModalPage implements OnInit {
+export class ConfirmModalPage {
   @Input() dataForm: FormGroup<any>;
   @Input() hasDateEnd: boolean;
 
