@@ -1,4 +1,4 @@
-import { RouterModule, Routes } from '@angular/router';
+import { , Routes } from '@angular/router';
 import { PageManageEvents } from './manage-events.page';
 
 export const routes: Routes = [

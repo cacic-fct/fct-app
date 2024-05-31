@@ -1,4 +1,4 @@
-import { RouterModule, Routes } from '@angular/router';
+import { , Routes } from '@angular/router';
 import { ListSubscriptionsPage } from './list-subscriptions';
 
 export const routes: Routes = [
