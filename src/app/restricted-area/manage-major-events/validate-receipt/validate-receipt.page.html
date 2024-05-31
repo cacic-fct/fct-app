@@ -85,7 +85,7 @@
       }
       <div class="img-container">
         @if (subscription.image | async; as url) {
-        <img [src]="url" loading="lazy" />
+        <img alt="Comprovante enviado pelo usuário" [src]="url" loading="lazy" />
         } @else {
         <h1>Imagem não encontrada</h1>
         }
