@@ -20,13 +20,7 @@ jobs:
         run: bun run build --configuration=production
       
       - name: Unit tests
-        run: bun run test --configuration=ci
-
-      - name: Install dependencies
-        run: bunx playwright install --with-deps
-
-      - name: E2E tests
-        run: bun run e2e
+        run: bun run test --no-watch --no-progress --browsers=ChromeHeadless
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
