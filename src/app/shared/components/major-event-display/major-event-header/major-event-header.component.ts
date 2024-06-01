@@ -5,12 +5,12 @@ import { IonCardHeader, IonCardTitle } from '@ionic/angular/standalone';
 
 @Component({
   // Requires the majorEventItem input to be passed in.
-  selector: 'app-major-event-display-header[majorEventItem]',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  selector: 'app-major-event-display-major-event-header[majorEventItem]',
+  templateUrl: './major-event-header.component.html',
+  styleUrls: ['./major-event-header.component.scss'],
   standalone: true,
   imports: [IonCardHeader, IonCardTitle],
 })
-export class HeaderComponent {
+export class MajorEventHeaderComponent {
   @Input() majorEventItem!: MajorEventItem;
 }

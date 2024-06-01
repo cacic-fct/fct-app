@@ -37,8 +37,8 @@ interface Subscription extends MajorEventSubscription {
 @UntilDestroy()
 @Component({
   selector: 'app-list-subscriptions',
-  templateUrl: './list-subscriptions.html',
-  styleUrls: ['./list-subscriptions.scss'],
+  templateUrl: './list-major-event-subscriptions.html',
+  styleUrls: ['./list-major-event-subscriptions.scss'],
   standalone: true,
   imports: [
     IonRouterLink,
@@ -61,7 +61,7 @@ interface Subscription extends MajorEventSubscription {
     SweetAlert2Module,
   ],
 })
-export class ListSubscriptionsPage {
+export class ListMajorEventSubscriptionsPage {
   @ViewChild('mySwal')
   private mySwal!: SwalComponent;
 

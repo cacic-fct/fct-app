@@ -24,8 +24,8 @@ import {
   IonRouterLink,
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
-import { HeaderComponent } from 'src/app/shared/components/major-event-display/header/header.component';
-import { DescriptionComponent } from 'src/app/shared/components/major-event-display/description/description.component';
+import { MajorEventHeaderComponent } from 'src/app/shared/components/major-event-display/major-event-header/major-event-header.component';
+import { MajorEventDescriptionComponent } from 'src/app/shared/components/major-event-display/major-event-description/major-event-description.component';
 import { DateComponent } from 'src/app/shared/components/major-event-display/date/date.component';
 import { PriceComponent } from 'src/app/shared/components/major-event-display/price/price.component';
 
@@ -46,8 +46,8 @@ import { PriceComponent } from 'src/app/shared/components/major-event-display/pr
     IonProgressBar,
     RouterLink,
     IonRouterLink,
-    HeaderComponent,
-    DescriptionComponent,
+    MajorEventHeaderComponent,
+    MajorEventDescriptionComponent,
     DateComponent,
     PriceComponent,
   ],

@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { take, Observable, map } from 'rxjs';
 import { EventItem } from 'src/app/shared/services/event';
 import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
+import { ConfirmAddEventModalPage } from './confirm-add-event-modal/confirm-add-event-modal.page';
 import { getStringChanges, RemoteConfig } from '@angular/fire/remote-config';
 import { serverTimestamp, Timestamp, arrayUnion } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
@@ -296,7 +296,7 @@ export class AddEventPage implements OnInit {
 
   async openConfirmModal(): Promise<boolean> {
     const modal = await this.modalController.create({
-      component: ConfirmModalPage,
+      component: ConfirmAddEventModalPage,
       componentProps: {
         dataForm: this.dataForm,
         hasDateEnd: this.hasDateEnd,

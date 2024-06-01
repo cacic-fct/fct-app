@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 import { WeatherInfo, WeatherService } from '../../../services/weather.service';
 import { DateService } from '../../../services/date.service';
-import { CoursesService } from './../../../services/courses.service';
-import { StringManagementService } from './../../../services/string-management.service';
-import { EmojiService } from './../../../services/emoji.service';
+import { CoursesService } from '../../../services/courses.service';
+import { StringManagementService } from '../../../services/string-management.service';
+import { EmojiService } from '../../../services/emoji.service';
 import { EventItem } from '../../../services/event';
 import { IonCardHeader, IonCardTitle, IonIcon, IonText } from '@ionic/angular/standalone';
 import { DatePipe, AsyncPipe } from '@angular/common';
@@ -15,13 +15,13 @@ import { DatePipe, AsyncPipe } from '@angular/common';
  * Requires the eventItem input to be passed in.
  */
 @Component({
-  selector: 'app-event-display-header[eventItem]',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  selector: 'app-event-display-event-header[eventItem]',
+  templateUrl: './event-header.component.html',
+  styleUrls: ['./event-header.component.scss'],
   standalone: true,
   imports: [IonCardHeader, IonCardTitle, IonIcon, IonText, DatePipe, AsyncPipe],
 })
-export class HeaderComponent implements OnInit {
+export class EventHeaderComponent implements OnInit {
   @Input() eventItem!: EventItem;
   @Input() displayWeather: boolean | undefined;
 

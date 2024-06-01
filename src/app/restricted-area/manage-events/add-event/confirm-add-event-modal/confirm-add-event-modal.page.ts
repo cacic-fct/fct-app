@@ -13,12 +13,12 @@ import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-confirm-modal',
-  templateUrl: './confirm-modal.page.html',
-  styleUrls: ['./confirm-modal.page.scss'],
+  templateUrl: './confirm-add-event-modal.page.html',
+  styleUrls: ['./confirm-add-event-modal.page.scss'],
   standalone: true,
   imports: [IonContent, IonItem, IonIcon, IonLabel, IonButton, IonGrid, IonRow, IonCol, SafePipe, DatePipe],
 })
-export class ConfirmModalPage {
+export class ConfirmAddEventModalPage {
   @Input() dataForm: FormGroup<any>;
   @Input() hasDateEnd: boolean;
 

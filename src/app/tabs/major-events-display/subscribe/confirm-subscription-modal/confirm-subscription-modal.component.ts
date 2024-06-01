@@ -32,9 +32,9 @@ import {
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @Component({
-  selector: 'app-confirm-modal',
-  templateUrl: './confirm-modal.component.html',
-  styleUrls: ['./confirm-modal.component.scss'],
+  selector: 'app-confirm-subscription-modal',
+  templateUrl: './confirm-subscription-modal.component.html',
+  styleUrls: ['./confirm-subscription-modal.component.scss'],
   standalone: true,
   imports: [
     IonHeader,
@@ -59,7 +59,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     DatePipe,
   ],
 })
-export class ConfirmModalComponent {
+export class ConfirmSubscriptionModalComponent {
   @Input() majorEvent$: Observable<MajorEventItem>;
   @Input() eventsSelected: EventItem[];
   @Input() minicursosCount: number;

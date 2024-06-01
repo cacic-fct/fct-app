@@ -16,7 +16,7 @@ import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { EventItem } from 'src/app/shared/services/event';
 import { ModalController, ToastController } from '@ionic/angular/standalone';
 
-import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
+import { ConfirmSubscriptionModalComponent } from './confirm-subscription-modal/confirm-subscription-modal.component';
 import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { trace } from '@angular/fire/compat/performance';
 
@@ -611,7 +611,7 @@ export class SubscribePage implements OnInit {
     });
 
     const modal = await this.modalController.create({
-      component: ConfirmModalComponent,
+      component: ConfirmSubscriptionModalComponent,
       componentProps: {
         majorEvent$: this.majorEvent$,
         eventsSelected: eventsSelected,

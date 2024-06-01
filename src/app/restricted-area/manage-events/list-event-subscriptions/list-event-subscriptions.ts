@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
@@ -33,9 +34,9 @@ interface Subscription {
 }
 @UntilDestroy()
 @Component({
-  selector: 'app-list-subscriptions',
-  templateUrl: './list-subscriptions.html',
-  styleUrls: ['./list-subscriptions.scss'],
+  selector: 'app-list-event-subscriptions',
+  templateUrl: './list-event-subscriptions.html',
+  styleUrls: ['./list-event-subscriptions.scss'],
   standalone: true,
   imports: [
     IonHeader,
@@ -54,7 +55,7 @@ interface Subscription {
     DatePipe,
   ],
 })
-export class ListSubscriptionsPage {
+export class ListEventSubscriptionsPage {
   @ViewChild('mySwal')
   private mySwal!: SwalComponent;
 

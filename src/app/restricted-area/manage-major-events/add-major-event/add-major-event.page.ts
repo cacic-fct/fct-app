@@ -12,7 +12,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 
-import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
+import { ConfirmAddEventModalComponent } from './components/confirm-add-event-modal/confirm-add-event-modal.component';
 import { serverTimestamp } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
 
@@ -304,7 +304,7 @@ export class AddMajorEventPage implements OnInit {
 
   async openConfirmModal(): Promise<boolean> {
     const modal = await this.modalController.create({
-      component: ConfirmModalComponent,
+      component: ConfirmAddEventModalComponent,
       componentProps: {
         dataForm: this.dataForm,
         isEventPaid: this.isEventPaid,

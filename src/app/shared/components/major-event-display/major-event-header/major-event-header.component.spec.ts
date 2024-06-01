@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ConfirmModalComponent } from './confirm-modal.component';
+import { MajorEventHeaderComponent } from './major-event-header.component';
 
-describe('ConfirmModalComponent', () => {
-  let component: ConfirmModalComponent;
-  let fixture: ComponentFixture<ConfirmModalComponent>;
+describe('MajorEventHeaderComponent', () => {
+  let component: MajorEventHeaderComponent;
+  let fixture: ComponentFixture<MajorEventHeaderComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ConfirmModalComponent],
+      imports: [MajorEventHeaderComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ConfirmModalComponent);
+    fixture = TestBed.createComponent(MajorEventHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

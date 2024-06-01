@@ -16,15 +16,15 @@ import {
   IonCol,
   IonCardContent,
 } from '@ionic/angular/standalone';
-import { HeaderComponent } from 'src/app/shared/components/major-event-display/header/header.component';
-import { DescriptionComponent } from 'src/app/shared/components/major-event-display/description/description.component';
+import { MajorEventHeaderComponent } from 'src/app/shared/components/major-event-display/major-event-header/major-event-header.component';
+import { MajorEventDescriptionComponent } from 'src/app/shared/components/major-event-display/major-event-description/major-event-description.component';
 import { DateComponent } from 'src/app/shared/components/major-event-display/date/date.component';
 import { PriceComponent } from 'src/app/shared/components/major-event-display/price/price.component';
 
 @Component({
-  selector: 'app-confirm-modal[dataForm][isEventPaid]',
-  templateUrl: './confirm-modal.component.html',
-  styleUrls: ['./confirm-modal.component.scss'],
+  selector: 'app-confirm-add-event-modal[dataForm][isEventPaid]',
+  templateUrl: './confirm-add-event-modal.component.html',
+  styleUrls: ['./confirm-add-event-modal.component.scss'],
   standalone: true,
   imports: [
     IonIcon,
@@ -35,13 +35,13 @@ import { PriceComponent } from 'src/app/shared/components/major-event-display/pr
     IonRow,
     IonCol,
     IonCardContent,
-    HeaderComponent,
-    DescriptionComponent,
+    MajorEventHeaderComponent,
+    MajorEventDescriptionComponent,
     DateComponent,
     PriceComponent,
   ],
 })
-export class ConfirmModalComponent implements OnInit {
+export class ConfirmAddEventModalComponent implements OnInit {
   @Input() dataForm!: FormGroup<any>;
   @Input() isEventPaid!: boolean;
 
