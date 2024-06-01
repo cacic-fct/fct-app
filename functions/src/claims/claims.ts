@@ -8,7 +8,7 @@ import { log } from 'firebase-functions/logger';
 exports.addAdminRole = onCall(async (request): Promise<MainReturnType> => {
   const data = request.data;
   const context = request;
-  if (context.app == undefined) {
+  if (context.app === undefined) {
     throw new HttpsError('failed-precondition', 'The function must be called from an App Check verified app.');
   }
 
@@ -50,7 +50,7 @@ exports.removeAdminRole = onCall(async (request): Promise<MainReturnType> => {
   const context = request;
   const remoteConfig = getRemoteConfig();
 
-  if (context.app == undefined) {
+  if (context.app === undefined) {
     throw new HttpsError('failed-precondition', 'The function must be called from an App Check verified app.');
   }
 
@@ -110,7 +110,7 @@ exports.addProfessorRole = onCall(async (request): Promise<MainReturnType> => {
   const context = request;
   const db = getFirestore();
 
-  if (context.app == undefined) {
+  if (context.app === undefined) {
     throw new HttpsError('failed-precondition', 'The function must be called from an App Check verified app.');
   }
 

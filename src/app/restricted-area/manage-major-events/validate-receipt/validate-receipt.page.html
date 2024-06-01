@@ -67,7 +67,7 @@
         </ion-button>
       </p>
       <br />
-      @if (subscription.subEventsInfo | async; as subEventsInfo) { @if (subEventsInfo.length != 0) { @for (subEventInfo
+      @if (subscription.subEventsInfo | async; as subEventsInfo) { @if (subEventsInfo.length !== 0) { @for (subEventInfo
       of subEventsInfo; track subEventInfo) {
       <ion-text
         [color]="subEventInfo.slotsAvailable > 0? '' : 'danger'"

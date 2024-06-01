@@ -88,7 +88,7 @@ export class ConfirmAttendancePage {
     private afs: AngularFirestore,
     private navController: NavController,
     private router: Router,
-    private toastController: ToastController,
+    private toastController: ToastController
   ) {
     this.eventID = this.route.snapshot.params['eventID'];
     this.dataForm = this.formBuilder.group({
@@ -112,7 +112,7 @@ export class ConfirmAttendancePage {
         .pipe(map((doc) => doc.exists));
 
       const evaluateBool = combineLatest([payingAttendance, nonPayingAttendance]).pipe(
-        map(([paying, nonPaying]) => paying || nonPaying),
+        map(([paying, nonPaying]) => paying || nonPaying)
       );
 
       evaluateBool.subscribe((isAttendanceAlreadyCollected) => {
@@ -191,7 +191,7 @@ export class ConfirmAttendancePage {
       ?.get('code')
       ?.valueChanges.pipe(untilDestroyed(this))
       .subscribe((value) => {
-        if (value == this.attendanceCode) {
+        if (value === this.attendanceCode) {
           this.onSubmit();
         }
       });
@@ -201,7 +201,7 @@ export class ConfirmAttendancePage {
       untilDestroyed(this),
       map((event) => ({
         name: event?.name || 'Evento indefinido',
-      })),
+      }))
     );
   }
 
@@ -223,7 +223,7 @@ export class ConfirmAttendancePage {
     if (!this.attendanceCode) {
       return { codeLoading: true };
     }
-    if (formControl.value == this.attendanceCode) {
+    if (formControl.value === this.attendanceCode) {
       return null;
     } else {
       return { wrongCode: true };
@@ -259,7 +259,7 @@ export class ConfirmAttendancePage {
               if (!subscriptionItem) {
                 return;
               }
-              if (subscriptionItem['payment'].status == 2) {
+              if (subscriptionItem['payment'].status === 2) {
                 // Escrevendo na coleção 'attendance'
                 this.eventRef.collection('attendance').doc(userID).set({
                   time: serverTimestamp(),

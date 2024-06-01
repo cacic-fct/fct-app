@@ -3,7 +3,7 @@
 // Attribution: amiregelz
 // https://stackoverflow.com/questions/36759627/firebase-login-as-other-user/71808501#71808501
 /*exports.impersonate = functions.https.onCall((data, context) => {
-  if (context.app == undefined) {
+  if (context.app===undefined) {
     throw new functions.https.HttpsError(
       'failed-precondition',
       'The function must be called from an App Check verified app.'

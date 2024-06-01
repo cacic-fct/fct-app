@@ -109,7 +109,7 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
   }
 
   loadOlderEvents() {
-    if (this.loadOlderCount == 0) {
+    if (this.loadOlderCount === 0) {
       this.baseDate = startOfWeek(this.baseDate);
     }
 
@@ -126,7 +126,7 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
   async presentToast() {
     const toast = await this.toastController.create({
       header: 'Procurando por eventos mais antigos...',
-      message: 'De até ' + this.loadOlderCount + (this.loadOlderCount == 1 ? ' semana ' : ' semanas ') + 'atrás',
+      message: 'De até ' + this.loadOlderCount + (this.loadOlderCount === 1 ? ' semana ' : ' semanas ') + 'atrás',
       icon: 'search',
       position: 'bottom',
       duration: 1000,

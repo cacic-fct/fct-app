@@ -23,7 +23,7 @@
         </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      @if (eventsUserIsSubscribedTo$ | async; as subEventsInfo) { @if (subEventsInfo.length != 0) { @for (subEventInfo
+      @if (eventsUserIsSubscribedTo$ | async; as subEventsInfo) { @if (subEventsInfo.length !== 0) { @for (subEventInfo
       of subEventsInfo; track subEventInfo) {
       <div class="margin-bottom-24">
         <ion-text [color]="subEventInfo.slotsAvailable? '' : 'danger'">
