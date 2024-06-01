@@ -20,5 +20,3 @@ jobs:
         with:
           name: Build-artifacts
           path: dist/      
-
-  test:
