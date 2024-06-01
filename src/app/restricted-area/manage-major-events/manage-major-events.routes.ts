@@ -20,9 +20,9 @@ export const routes: Routes = [
     path: 'listar-inscritos/:eventID',
     title: 'Listar inscritos',
     loadChildren: () =>
-      import('src/app/restricted-area/manage-major-events/list-subscriptions/list-subscriptions.routes').then(
-        (m) => m.routes,
-      ),
+      import(
+        'src/app/restricted-area/manage-major-events/list-major-event-subscriptions/list-major-event-subscriptions.routes'
+      ).then((m) => m.routes),
   },
   {
     path: 'emitir-certificados/:eventID',

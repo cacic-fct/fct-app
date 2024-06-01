@@ -15,7 +15,7 @@ import { DatePipe, AsyncPipe } from '@angular/common';
  * Requires the eventItem input to be passed in.
  */
 @Component({
-  selector: 'app-event-display-event-header[eventItem]',
+  selector: 'app-event-header[eventItem]',
   templateUrl: './event-header.component.html',
   styleUrls: ['./event-header.component.scss'],
   standalone: true,

@@ -6,7 +6,7 @@ import { IonCardContent } from '@ionic/angular/standalone';
  * Requires the majorEventItem input to be passed in.
  */
 @Component({
-  selector: 'app-major-event-display-major-event-description[majorEventItem]',
+  selector: 'app-major-event-description[majorEventItem]',
   templateUrl: './major-event-description.component.html',
   styleUrls: ['./major-event-description.component.scss'],
   standalone: true,

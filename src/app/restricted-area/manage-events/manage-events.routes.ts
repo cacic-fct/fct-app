@@ -10,7 +10,7 @@ export const routes: Routes = [
     path: 'listar-inscritos/:eventID',
     title: 'Listar inscritos',
     loadChildren: () =>
-      import('src/app/restricted-area/manage-events/list-subscriptions/list-subscriptions.routes').then(
+      import('src/app/restricted-area/manage-events/list-event-subscriptions/list-event-subscriptions.routes').then(
         (m) => m.routes,
       ),
   },

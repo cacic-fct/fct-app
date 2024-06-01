@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { ListSubscriptionsPage } from './list-event-subscriptions';
+import { ListEventSubscriptionsPage } from './list-event-subscriptions';
 
 export const routes: Routes = [
   {
     path: '',
-    component: ListSubscriptionsPage,
+    component: ListEventSubscriptionsPage,
   },
 ];
