@@ -7,16 +7,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: ./.github/workflows/setup-deps
+
+      - name: Build for production
+        run: bun run build --configuration=production
         
-      - uses: ./.github/workflows/frontend/setup-deps.yml
-
-      - uses: ./.github/workflows/frontend/build.yml
-
-      - uses: ./.github/workflows/frontend/lint.yml
-
-      - uses: ./.github/workflows/frontend/tests-upload.yml
-
-      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build-artifacts
+          path: dist/      
 
