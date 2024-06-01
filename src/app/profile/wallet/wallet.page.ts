@@ -8,7 +8,11 @@ import { User } from 'src/app/shared/services/user';
 import { trace } from '@angular/fire/compat/performance';
 import { AsyncPipe } from '@angular/common';
 
-import { azteccode, interleaved2of5, drawingSVG } from 'bwip-js';
+import {
+  azteccode,
+  //interleaved2of5,
+  drawingSVG,
+} from 'bwip-js';
 
 import { SafePipe } from 'src/app/shared/pipes/safe.pipe';
 
@@ -71,7 +75,7 @@ export class WalletPage implements OnInit {
   user$: Observable<AuthUser | null> = user(this.auth);
   userFirestore$: Observable<User> | undefined;
   academicID$: Observable<string> | undefined;
-  public serviceWorkerActive: boolean = false;
+  public serviceWorkerActive = false;
   _isProfessor = new BehaviorSubject<boolean>(false);
   isProfessor$: Observable<boolean> = this._isProfessor.asObservable();
 
@@ -140,14 +144,14 @@ export class WalletPage implements OnInit {
 
   renderAztecCode(uid: string) {
     try {
-      let svg: string = String(
+      const svg = String(
         azteccode(
           {
             bcid: 'interleaved2of5',
             text: `uid:${uid}`,
             scale: 3,
             includetext: false,
-            // @ts-ignore - Required since eclevel actually exists
+            // @ts-expect-error - Required since eclevel actually exists
             eclevel: '23',
           },
           drawingSVG(),

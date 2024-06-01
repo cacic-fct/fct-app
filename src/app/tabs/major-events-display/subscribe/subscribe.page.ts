@@ -116,12 +116,12 @@ export class SubscribePage implements OnInit {
 
   dataForm: FormGroup;
 
-  eventsSelected: { [key: string]: EventItem[] } = {
+  eventsSelected: Record<string, EventItem[]> = {
     minicurso: [],
     palestra: [],
   };
 
-  eventGroupMinicursoCount: number = 0;
+  eventGroupMinicursoCount = 0;
 
   opSelected: string;
 
@@ -130,7 +130,7 @@ export class SubscribePage implements OnInit {
   majorEventID: string;
 
   eventSchedule: EventItem[] = [];
-  isEventScheduleBeingChecked: boolean = false;
+  isEventScheduleBeingChecked = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -141,7 +141,7 @@ export class SubscribePage implements OnInit {
     public enrollmentTypes: EnrollmentTypesService,
     private formBuilder: FormBuilder,
     public emojiService: EmojiService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {
     this.majorEventID = this.route.snapshot.params['eventID'];
   }
@@ -232,7 +232,7 @@ export class SubscribePage implements OnInit {
 
     this.events$ = this.afs
       .collection<EventItem>(`events`, (ref) =>
-        ref.where('inMajorEvent', '==', this.majorEventID).orderBy('eventStartDate', 'asc')
+        ref.where('inMajorEvent', '==', this.majorEventID).orderBy('eventStartDate', 'asc'),
       )
       .valueChanges({ idField: 'id' })
       .pipe(
@@ -290,7 +290,7 @@ export class SubscribePage implements OnInit {
 
             return eventItem;
           });
-        })
+        }),
       );
 
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((majorEvent) => {
@@ -325,7 +325,7 @@ export class SubscribePage implements OnInit {
   filterEvent(eventFromGroup: string) {
     const eventItem = this.eventSchedule.find((event) => event.id === eventFromGroup);
     this.eventsSelected[eventItem.eventType] = this.eventsSelected[eventItem.eventType].filter(
-      (event) => event.id !== eventItem.id
+      (event) => event.id !== eventItem.id,
     );
   }
 
@@ -486,7 +486,7 @@ export class SubscribePage implements OnInit {
                   // Create array with event IDs from eventsSelected
                   const eventsSelectedID = eventsSelected.map((event) => event.id);
 
-                  let status: number = 0;
+                  let status = 0;
 
                   if (this.paymentStatus !== undefined) {
                     switch (this.paymentStatus) {
@@ -532,12 +532,12 @@ export class SubscribePage implements OnInit {
                           .set({
                             subscriptionType: subscriptionType,
                             subscribedToEvents: eventsSelectedID,
-                            // @ts-ignore
+                            // @ts-expect-error - This works
                             time: serverTimestamp(),
                             payment: {
                               price: price,
                               status: status,
-                              // @ts-ignore
+                              // @ts-expect-error - This works
                               time: serverTimestamp(),
                               author: user.uid,
                             },
@@ -552,7 +552,7 @@ export class SubscribePage implements OnInit {
                             payment: {
                               price: price,
                               status: status,
-                              // @ts-ignore
+                              // @ts-expect-error - This works
                               time: serverTimestamp(),
                               author: user.uid,
                             },
@@ -606,7 +606,7 @@ export class SubscribePage implements OnInit {
     eventsSelected.sort((a, b) => {
       return compareAsc(
         this.dateService.getDateFromTimestamp(a.eventStartDate),
-        this.dateService.getDateFromTimestamp(b.eventStartDate)
+        this.dateService.getDateFromTimestamp(b.eventStartDate),
       );
     });
 

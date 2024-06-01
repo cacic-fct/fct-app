@@ -1,4 +1,4 @@
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { ManageMajorEventsPage } from './manage-major-events.page';
 
@@ -21,7 +21,7 @@ export const routes: Routes = [
     title: 'Listar inscritos',
     loadChildren: () =>
       import('src/app/restricted-area/manage-major-events/list-subscriptions/list-subscriptions.routes').then(
-        (m) => m.routes
+        (m) => m.routes,
       ),
   },
   {

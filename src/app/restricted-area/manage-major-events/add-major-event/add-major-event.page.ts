@@ -83,10 +83,10 @@ export class AddMajorEventPage implements OnInit {
   user$ = user(this.auth);
 
   courses = CoursesService.courses;
-  priceDifferentiate: boolean = true;
+  priceDifferentiate = true;
   _priceDifferentiateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.priceDifferentiate);
   priceDifferentiate$: Observable<boolean> = this._priceDifferentiateSubject.asObservable();
-  isEventPaid: boolean = true;
+  isEventPaid = true;
   _isEventPaidSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.isEventPaid);
   isEventPaid$: Observable<boolean> = this._isEventPaidSubject.asObservable();
 
@@ -175,7 +175,7 @@ export class AddMajorEventPage implements OnInit {
         price = { isFree: true };
       }
 
-      let buttonUrl = this.dataForm.get('buttonUrl').value;
+      const buttonUrl = this.dataForm.get('buttonUrl').value;
 
       if (buttonUrl) {
         const pattern = /^((http|https):\/\/)/;
@@ -217,7 +217,8 @@ export class AddMajorEventPage implements OnInit {
               : null,
             public: this.dataForm.get('public').value === '' || false,
             createdBy: user.uid,
-            // @ts-ignore
+            // @ts-expect-error
+            // This works
             createdOn: serverTimestamp(),
             events: [],
           })

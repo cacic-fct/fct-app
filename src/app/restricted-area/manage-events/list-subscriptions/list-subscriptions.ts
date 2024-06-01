@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -54,11 +54,11 @@ interface Subscription {
     DatePipe,
   ],
 })
-export class ListSubscriptionsPage implements OnInit {
+export class ListSubscriptionsPage {
   @ViewChild('mySwal')
   private mySwal!: SwalComponent;
 
-  event$: Observable<EventItem>;
+  event$: Observable<EventItem | undefined>;
   subscriptions$: Observable<Subscription[]>;
 
   eventID: string;
@@ -68,7 +68,7 @@ export class ListSubscriptionsPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public courses: CoursesService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {
     this.eventID = this.route.snapshot.params['eventID'];
     this.afs
@@ -86,12 +86,7 @@ export class ListSubscriptionsPage implements OnInit {
         }
       });
 
-    this.event$ = this.afs
-      .collection('events')
-      .doc<EventItem>(this.eventID)
-      .valueChanges()
-      // @ts-ignore
-      .pipe(trace('firestore'));
+    this.event$ = this.afs.collection('events').doc<EventItem>(this.eventID).valueChanges();
 
     this.subscriptions$ = this.afs
       .collection<Subscription>(`events/${this.eventID}/subscriptions`, (ref) => ref.orderBy('time'))
@@ -107,12 +102,10 @@ export class ListSubscriptionsPage implements OnInit {
               .doc(item.id)
               .get()
               .pipe(map((document) => document.data())),
-          }))
-        )
+          })),
+        ),
       );
   }
-
-  ngOnInit() {}
 
   generateCSV() {
     this.afs

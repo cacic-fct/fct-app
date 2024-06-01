@@ -12,7 +12,13 @@
     }
     <ion-list>
       <ion-item [routerLink]="['evento', event.id]" routerDirection="forward">
-        <img [src]="emojiService.getEmoji(event.icon)" class="twemoji" slot="start" aria-hidden="true" loading="lazy" />
+        <img
+          [src]="emojiService.getEmoji(event.icon)"
+          alt="Emoji do evento"
+          class="twemoji"
+          slot="start"
+          aria-hidden="true"
+          loading="lazy" />
         <ion-label>
           <h2 class="ion-text-wrap">{{ event.name }}</h2>
           <h3 class="ion-text-wrap">{{ event.shortDescription }}</h3>

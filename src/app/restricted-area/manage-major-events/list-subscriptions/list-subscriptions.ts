@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { Firestore, collection, collectionData, docData, doc, query, orderBy } from '@angular/fire/firestore';
 import { trace } from '@angular/fire/compat/performance';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -61,7 +61,7 @@ interface Subscription extends MajorEventSubscription {
     SweetAlert2Module,
   ],
 })
-export class ListSubscriptionsPage implements OnInit {
+export class ListSubscriptionsPage {
   @ViewChild('mySwal')
   private mySwal!: SwalComponent;
 
@@ -72,13 +72,13 @@ export class ListSubscriptionsPage implements OnInit {
 
   eventID: string;
 
-  disableCSVDownloadButton: boolean = false;
+  disableCSVDownloadButton = false;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     public courses: CoursesService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {
     this.eventID = this.route.snapshot.params['eventID'];
 
@@ -106,12 +106,10 @@ export class ListSubscriptionsPage implements OnInit {
         subscription.map((item) => ({
           ...item,
           user: docData(doc(this.firestore, 'users', item.id)) as Observable<User | undefined>,
-        }))
-      )
+        })),
+      ),
     );
   }
-
-  ngOnInit() {}
 
   getDateFromTimestamp(timestamp: Timestamp): Date {
     return fromUnixTime(timestamp.seconds);
@@ -148,15 +146,15 @@ export class ListSubscriptionsPage implements OnInit {
           return;
         }
 
-        let events: Observable<MajorEventItem | undefined>[] = [];
+        const events: Observable<MajorEventItem | undefined>[] = [];
         let eventsArray: Observable<(MajorEventItem | undefined)[]>;
-        let eventNames: { [key: string]: string } = {};
+        const eventNames: Record<string, string> = {};
 
         event.events.forEach((event) => {
           events.push(
             (
               docData(doc(this.firestore, 'events', event), { idField: 'id' }) as Observable<MajorEventItem | undefined>
-            ).pipe(take(1))
+            ).pipe(take(1)),
           );
         });
 
@@ -198,7 +196,7 @@ export class ListSubscriptionsPage implements OnInit {
                   break;
               }
 
-              let subscribedToEventsItemArray$: Observable<MajorEventItem | undefined>[] = [];
+              const subscribedToEventsItemArray$: Observable<MajorEventItem | undefined>[] = [];
 
               // TODO: Optimize this
               item.subscribedToEvents.forEach((eventID) => {

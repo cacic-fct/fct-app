@@ -1,6 +1,6 @@
 import { EventItem, EventSubscription } from 'src/app/shared/services/event';
 import { MajorEventItem, MajorEventSubscription } from '../../shared/services/major-event.service';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { map, Observable, switchMap, combineLatest, shareReplay, catchError } from 'rxjs';
 
 import {
@@ -81,7 +81,7 @@ import { EventCardDisplayMainPageComponent } from 'src/app/profile/my-attendance
     NgTemplateOutlet,
   ],
 })
-export class MyAttendancesPage implements OnInit {
+export class MyAttendancesPage {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth).pipe(shareReplay(1), untilDestroyed(this));
 
@@ -168,8 +168,6 @@ export class MyAttendancesPage implements OnInit {
       }),
     );
   }
-
-  ngOnInit() {}
 
   isInSubscriptionPeriod(endDateTimestamp: Timestamp): boolean {
     if (endDateTimestamp) {

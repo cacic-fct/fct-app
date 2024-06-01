@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
   @Input() displayWeather: boolean | undefined;
 
   weather: Observable<WeatherInfo> | undefined;
-  weatherFailed: boolean = false;
+  weatherFailed = false;
 
   constructor(
     public coursesService: CoursesService,
@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
     private weatherService: WeatherService,
     public dateService: DateService,
     public stringService: StringManagementService,
-    public emojiService: EmojiService
+    public emojiService: EmojiService,
   ) {}
 
   ngOnInit() {
@@ -46,7 +46,7 @@ export class HeaderComponent implements OnInit {
       this.weather = this.weatherService.getWeather(
         this.dateService.getDateFromTimestamp(this.eventItem.eventStartDate),
         this.eventItem.location.lat,
-        this.eventItem.location.lon
+        this.eventItem.location.lon,
       );
     }
   }

@@ -14,13 +14,11 @@ import { format, getDayOfYear, isEqual, parseISO, setDayOfYear, subMilliseconds 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { take, Observable, map } from 'rxjs';
-import { Timestamp, arrayUnion } from '@firebase/firestore';
 import { EventItem } from 'src/app/shared/services/event';
-import { Timestamp as TimestampType } from '@firebase/firestore-types';
 import { SwalComponent, SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { ConfirmModalPage } from './confirm-modal/confirm-modal.page';
 import { getStringChanges, RemoteConfig } from '@angular/fire/remote-config';
-import { serverTimestamp } from '@angular/fire/firestore';
+import { serverTimestamp, Timestamp, arrayUnion } from '@angular/fire/firestore';
 import { Auth, user } from '@angular/fire/auth';
 import {
   IonSelect,
@@ -89,7 +87,7 @@ export class AddEventPage implements OnInit {
   courses = CoursesService.courses;
   majorEventsData$: Observable<MajorEventItem[]>;
 
-  hasDateEnd: boolean = false;
+  hasDateEnd = false;
 
   dataForm: FormGroup;
 
@@ -189,7 +187,7 @@ export class AddEventPage implements OnInit {
             majorEvent = null;
           }
 
-          let dateEnd: TimestampType | null;
+          let dateEnd: Timestamp | null;
 
           if (this.hasDateEnd) {
             dateEnd = Timestamp.fromDate(new Date(this.dataForm.get('eventEndDate').value));
@@ -197,7 +195,7 @@ export class AddEventPage implements OnInit {
             dateEnd = null;
           }
 
-          let buttonUrl: string = this.dataForm.get('button').get('url').value;
+          const buttonUrl: string = this.dataForm.get('button').get('url').value;
 
           if (buttonUrl) {
             const pattern = /^((http|https):\/\/)/;
@@ -250,7 +248,8 @@ export class AddEventPage implements OnInit {
               collectAttendance: this.dataForm.get('collectAttendance').value,
               creditHours: Number.parseInt(this.dataForm.get('creditHours').value) || null,
               createdBy: user.uid,
-              // @ts-ignore
+              // @ts-expect-error
+              // This works
               createdOn: serverTimestamp(),
               slotsAvailable: Number.parseInt(this.dataForm.get('slotsAvailable').value) || 0,
               numberOfSubscriptions: 0,
@@ -339,7 +338,7 @@ export class AddEventPage implements OnInit {
     return null;
   }
 
-  validatorDateEnd(control: AbstractControl): { [key: string]: boolean } | null {
+  validatorDateEnd(control: AbstractControl): Record<string, boolean> | null {
     if (control.get('hasDateEndForm').value) {
       const dateStart = parseISO(control.get('eventStartDate').value);
       const dateEnd = parseISO(control.get('eventEndDate').value);
@@ -395,11 +394,12 @@ export class AddEventPage implements OnInit {
   }
 }
 
-interface placesRemoteConfig {
-  [key: string]: {
+type placesRemoteConfig = Record<
+  string,
+  {
     name: string;
     description: string;
     lat: string;
     lon: string;
-  };
-}
+  }
+>;

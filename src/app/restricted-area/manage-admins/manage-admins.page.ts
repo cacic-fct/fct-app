@@ -52,7 +52,7 @@ import { AsyncPipe } from '@angular/common';
     AsyncPipe,
   ],
 })
-export class ManageAdminsPage implements OnInit {
+export class ManageAdminsPage {
   private firestore: Firestore = inject(Firestore);
   private functions: Functions = inject(Functions);
 
@@ -62,13 +62,14 @@ export class ManageAdminsPage implements OnInit {
     adminEmail: new FormControl(''),
   });
 
-  constructor(public toastController: ToastController, private alertController: AlertController) {
-    this.adminList$ = docData(doc(this.firestore, 'claims', 'admin')).pipe(map((doc) => doc['admins'])) as Observable<
-      string[]
-    >;
+  constructor(
+    public toastController: ToastController,
+    private alertController: AlertController,
+  ) {
+    this.adminList$ = docData(doc(this.firestore, 'claims', 'admin')).pipe(
+      map((doc) => (doc ? doc['admins'] : [])),
+    ) as Observable<string[]>;
   }
-
-  ngOnInit() {}
 
   async errorToast(message: string) {
     const toast = await this.toastController.create({
@@ -89,7 +90,7 @@ export class ManageAdminsPage implements OnInit {
   addAdmin() {
     const addAdminRole = httpsCallable(this.functions, 'claims-addAdminRole');
     addAdminRole({ email: this.addAdminForm.value.adminEmail })
-      .then((res) => {
+      .then(() => {
         this.successToast();
         this.addAdminForm.reset();
       })
@@ -102,7 +103,7 @@ export class ManageAdminsPage implements OnInit {
   removeAdmin(adminEmail: string) {
     const removeAdminRole = httpsCallable(this.functions, 'claims-removeAdminRole');
     removeAdminRole({ email: adminEmail })
-      .then((res) => {
+      .then(() => {
         this.successToast();
       })
       .catch((err) => {
@@ -114,7 +115,7 @@ export class ManageAdminsPage implements OnInit {
   certificateMove() {
     const moveCertificates = httpsCallable(this.functions, 'moveCertificates-moveCertificates');
     moveCertificates()
-      .then((res) => {
+      .then(() => {
         this.successToast();
       })
       .catch((err) => {

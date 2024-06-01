@@ -30,13 +30,13 @@ export class ItemListViewComponent implements OnInit, OnChanges {
 
   @Input() date: Date;
   @Input() filter: {
-    courses: Array<string>;
+    courses: string[];
   };
 
-  dateFilter$: BehaviorSubject<Date | null> = new BehaviorSubject(null);
-  courseFilter$: BehaviorSubject<{
-    courses: Array<string>;
-  } | null> = new BehaviorSubject(null);
+  dateFilter$ = new BehaviorSubject<Date | null>(null);
+  courseFilter$ = new BehaviorSubject<{
+    courses: string[];
+  } | null>(null);
 
   items$: Observable<EventItem[]>;
 

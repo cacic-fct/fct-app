@@ -15,7 +15,7 @@
     @if (userFirestore$ | async; as userFirestore) {
     <div class="ion-text-center ion-padding-horizontal ion-padding-top">
       <ion-avatar class="margin-horizontal-auto">
-        <img [src]="user.photoURL" />
+        <img [src]="user.photoURL" alt="Avatar do usuário" />
       </ion-avatar>
       <ion-card-title>
         <h2 class="margin-horizontal-auto">{{ (userFirestore$ | async)?.fullName || user.displayName }}</h2>
@@ -97,7 +97,7 @@
         <div class="ion-text-center ion-padding-horizontal ion-padding-top">
           <h1>Cartão do RU</h1>
           <ion-avatar class="margin-horizontal-auto">
-            <img [src]="user.photoURL" />
+            <img [src]="user.photoURL" alt= "Avatar do usuário" />
           </ion-avatar>
           <ion-card-title>
             <h2 class="margin-horizontal-auto">{{ (userFirestore$ | async)?.fullName || user.displayName }}</h2>

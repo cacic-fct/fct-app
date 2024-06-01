@@ -1,6 +1,6 @@
 // @ts-strict-ignore
 import { KeyValue, KeyValuePipe } from '@angular/common';
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular/standalone';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
@@ -38,13 +38,13 @@ import {
     KeyValuePipe,
   ],
 })
-export class FilterModalPage implements OnInit, AfterViewInit {
+export class FilterModalPage implements AfterViewInit {
   courses = CoursesService.courses;
 
   constructor(private modalController: ModalController) {}
 
   @Input() selectedFilter: {
-    courses: Array<string>;
+    courses: string[];
   };
 
   ngAfterViewInit() {
@@ -58,10 +58,8 @@ export class FilterModalPage implements OnInit, AfterViewInit {
     }
   }
 
-  ngOnInit() {}
-
   checkBoxClickCourse(coursekey: string) {
-    let coursesArray = this.selectedFilter['courses'];
+    const coursesArray = this.selectedFilter['courses'];
     // Add coursekey to array if not present. If present, remove it
     if (coursesArray.includes(coursekey)) {
       coursesArray.splice(coursesArray.indexOf(coursekey), 1);

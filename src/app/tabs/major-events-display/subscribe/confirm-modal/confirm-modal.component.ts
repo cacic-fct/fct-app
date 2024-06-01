@@ -1,5 +1,5 @@
 // @ts-strict-ignore
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
 
@@ -59,7 +59,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     DatePipe,
   ],
 })
-export class ConfirmModalComponent implements OnInit {
+export class ConfirmModalComponent {
   @Input() majorEvent$: Observable<MajorEventItem>;
   @Input() eventsSelected: EventItem[];
   @Input() minicursosCount: number;
@@ -71,10 +71,8 @@ export class ConfirmModalComponent implements OnInit {
     private modalController: ModalController,
     public enrollmentTypes: EnrollmentTypesService,
     public emojiService: EmojiService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {}
-
-  ngOnInit() {}
 
   formatDate(date: Date): string {
     let formated = formatDate(date, "EEEE, dd 'de' MMMM 'de' yyyy", 'pt-BR');

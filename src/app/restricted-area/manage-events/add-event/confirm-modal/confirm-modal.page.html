@@ -4,7 +4,10 @@
 <!-- TODO: Usar módulo event-display -->
 <ion-content>
   <div class="margin-horizontal-auto content-container ion-padding width-100">
-    <img class="margin-horizontal-auto emoji" [src]="emojiService.getEmoji(dataForm.value.icon) " />
+    <img
+      class="margin-horizontal-auto emoji"
+      alt="Emoji do evento"
+      [src]="emojiService.getEmoji(dataForm.value.icon) " />
 
     <div class="ion-text-center">
       <h1 class="no-margin">{{ dataForm.value.name }}</h1>

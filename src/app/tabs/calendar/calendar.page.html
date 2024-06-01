@@ -43,7 +43,9 @@
             [ngClass]="{'active' : active === dowhtml.key}"
             class="hcal-header-date-inner"
             (click)="dateClick(dowhtml.key)"
+            (keypress)="dateClick(dowhtml.key)"
             [id]="dowhtml.key"
+            tabindex="0"
             [attr.aria-label]="dowhtml.value.date">
             {{ getDayFromDate(dowhtml.value.date) }}
           </div>
@@ -54,9 +56,11 @@
       <div class="hcal-header-today" id="date-full">{{ fullDate }}</div>
     </div>
   </div>
-  } @if (!this.itemView) {
+  } @if (!this.itemView) { <<<<<<< HEAD
   <app-item-list-view [date]="dowList[active]?.date" [filter]="selectedFilter"></app-item-list-view>
-  } @if (this.itemView) {
+  =======
+  <app-item-list [date]="dowList[active]?.date" [filter]="selectedFilter"></app-item-list>
+  >>>>>>> angular-setup-lint } @if (this.itemView) {
   <app-calendar-list-view [filter]="selectedFilter"> </app-calendar-list-view>
   }
 </ion-content>

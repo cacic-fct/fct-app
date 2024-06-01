@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 
 import { IonCardHeader, IonCardTitle } from '@ionic/angular/standalone';
@@ -11,10 +11,6 @@ import { IonCardHeader, IonCardTitle } from '@ionic/angular/standalone';
   standalone: true,
   imports: [IonCardHeader, IonCardTitle],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   @Input() majorEventItem!: MajorEventItem;
-
-  constructor() {}
-
-  ngOnInit() {}
 }

@@ -219,7 +219,7 @@ export class ConfirmAttendancePage {
     toast.present();
   }
 
-  codeValidator = (formControl: AbstractControl): { [key: string]: boolean } | null => {
+  codeValidator = (formControl: AbstractControl): Record<string, boolean> | null => {
     if (!this.attendanceCode) {
       return { codeLoading: true };
     }
@@ -262,14 +262,12 @@ export class ConfirmAttendancePage {
               if (subscriptionItem['payment'].status == 2) {
                 // Escrevendo na coleção 'attendance'
                 this.eventRef.collection('attendance').doc(userID).set({
-                  // @ts-ignore
                   time: serverTimestamp(),
                   author: 'online',
                 });
               } else {
                 // Escrevendo na coleção 'non-paying-attendance'
                 this.eventRef.collection('non-paying-attendance').doc(userID).set({
-                  // @ts-ignore
                   time: serverTimestamp(),
                   author: 'online',
                 });
@@ -278,7 +276,6 @@ export class ConfirmAttendancePage {
         } else {
           // Escrevendo na coleção 'attendance'
           this.eventRef.collection('attendance').doc(userID).set({
-            // @ts-ignore
             time: serverTimestamp(),
             author: 'online',
           });
@@ -287,7 +284,6 @@ export class ConfirmAttendancePage {
         this.afs
           .doc(`users/${userID}`)
           .update({
-            // @ts-ignore
             'pending.onlineAttendance': arrayRemove(this.eventID),
           })
           .then(() => {

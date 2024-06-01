@@ -1,4 +1,8 @@
-<img class="margin-horizontal-auto emoji" [src]="emojiService.getEmoji(eventItem.icon)" (click)="presentToast()" />
+<img
+  class="margin-horizontal-auto emoji"
+  alt="Emoji do evento"
+  [src]="emojiService.getEmoji(eventItem.icon)"
+  (click)="presentToast()" />
 
 <div class="ion-text-center">
   <h1 class="no-margin">{{ eventItem.name }}</h1>

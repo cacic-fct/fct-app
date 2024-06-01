@@ -43,7 +43,7 @@ export class PageQrScannerPage implements OnInit {
   constructor(
     public modalController: ModalController,
     private routerOutlet: IonRouterOutlet,
-    public toastController: ToastController
+    public toastController: ToastController,
   ) {}
   availableDevices: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo = null;
@@ -76,7 +76,6 @@ export class PageQrScannerPage implements OnInit {
       return await modal.present();
     }
   */
-  ngOnInit() {}
 
   changeCamera(): void {
     this.deviceIndex++;

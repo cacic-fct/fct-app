@@ -1,6 +1,6 @@
 // @ts-strict-ignore
 import { ModalController } from '@ionic/angular/standalone';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { EventItem } from 'src/app/shared/services/event';
 import { DescriptionComponent } from '../../../../shared/components/event-display/description/description.component';
 import { HeaderComponent } from '../../../../shared/components/event-display/header/header.component';
@@ -25,14 +25,12 @@ import { IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonTitle, IonCon
     IonContent,
   ],
 })
-export class InfoModalComponent implements OnInit {
+export class InfoModalComponent {
   @Input() event: EventItem;
 
   constructor(private modalController: ModalController) {
     addIcons({ closeOutline });
   }
-
-  ngOnInit() {}
 
   closeModal() {
     this.modalController.dismiss();

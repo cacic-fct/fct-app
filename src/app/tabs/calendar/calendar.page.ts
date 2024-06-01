@@ -1,6 +1,6 @@
 // @ts-strict-ignore
 import { Router } from '@angular/router';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { KeyValue, KeyValuePipe, NgClass, formatDate } from '@angular/common';
 
 import { CoursesService } from 'src/app/shared/services/courses.service';
@@ -45,14 +45,14 @@ import { ItemListViewComponent } from 'src/app/tabs/calendar/components/item-lis
     NgClass,
   ],
 })
-export class CalendarPage {
+export class CalendarPage implements OnInit {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
   // Selected calendar date
   active: string;
   fullDate: string;
-  itemView: boolean = true;
+  itemView = true;
   selectedFilter: {
-    courses: Array<string>;
+    courses: string[];
   } = {
     courses: [],
   };
@@ -65,7 +65,7 @@ export class CalendarPage {
   courses = CoursesService.courses;
 
   // Limit button clicks
-  weekClicks: number = 0;
+  weekClicks = 0;
 
   // List of days of week and date
   dowList = {
@@ -106,6 +106,7 @@ export class CalendarPage {
     this.generateCalendarData();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-explicit-any
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>): number => {
     return 0;
   };
@@ -167,7 +168,7 @@ export class CalendarPage {
 
   generateCalendarData(): void {
     let i = 0;
-    for (let dow in this.dowList) {
+    for (const dow in this.dowList) {
       this.dowList[dow].date = addDays(this.calendarBaseDate, i);
       i++;
     }

@@ -78,9 +78,9 @@ interface Attendance {
   ],
 })
 export class ScannerPage implements OnInit {
-  @Input('manualInput') manualInput!: string;
-  @ViewChild('mySwal') mySwal: SwalComponent;
-  @ViewChild('scannerCanvas') scannerCanvas: HTMLCanvasElement;
+  @Input() manualInput!: string;
+  @ViewChild('mySwal') mySwal!: SwalComponent;
+  @ViewChild('scannerCanvas') scannerCanvas!: HTMLCanvasElement;
 
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
@@ -88,9 +88,9 @@ export class ScannerPage implements OnInit {
   // QR Code scanner
   availableDevices!: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo | null = null;
-  hasDevices: boolean = false;
-  hasPermission: boolean = false;
-  deviceIndex: number = -1;
+  hasDevices = false;
+  hasPermission = false;
+  deviceIndex = -1;
 
   attendanceCollection$: Observable<Attendance[]>;
   /**
@@ -98,7 +98,7 @@ export class ScannerPage implements OnInit {
    */
   nonPayingAttendanceCollection$: Observable<Attendance[]>;
   eventID: string;
-  event$: Observable<EventItem>;
+  event$: Observable<EventItem | undefined>;
   /**
    * Variable initialized at this.checkIfEventIsPaid();
    * Variável inicializada no método this.checkIfEventIsPaid()
@@ -113,7 +113,7 @@ export class ScannerPage implements OnInit {
   _backdropVisibleSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   backdropVisible$: Observable<boolean> = this._backdropVisibleSubject.asObservable();
 
-  attendanceSessionScans: number = 0;
+  attendanceSessionScans = 0;
 
   audioSuccess: HTMLAudioElement;
   audioDuplicate: HTMLAudioElement;
@@ -153,12 +153,7 @@ export class ScannerPage implements OnInit {
         }
       });
 
-    this.event$ = this.afs
-      .collection('events')
-      .doc<EventItem>(this.eventID)
-      .valueChanges()
-      // @ts-ignore
-      .pipe(trace('firestore'));
+    this.event$ = this.afs.collection('events').doc<EventItem>(this.eventID).valueChanges();
     this.checkIfEventIsPaid();
 
     // Get attendance list
@@ -405,7 +400,6 @@ export class ScannerPage implements OnInit {
           return false;
         }
         this.afs.collection(`events/${this.eventID}/attendance`).doc(uid).set({
-          // @ts-ignore
           time: serverTimestamp(),
           author: this.adminID,
         });
@@ -436,7 +430,6 @@ export class ScannerPage implements OnInit {
           return false;
         }
         this.afs.collection(`events/${this.eventID}/non-paying-attendance`).doc(uid).set({
-          // @ts-ignore
           time: serverTimestamp(),
           author: this.adminID,
         });
