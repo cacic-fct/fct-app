@@ -19,9 +19,9 @@ import { ItemListComponent } from 'src/app/tabs/calendar/components/item-list/it
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-item-list',
-  templateUrl: './item-list.component.html',
-  styleUrls: ['./item-list.component.scss'],
+  selector: 'app-item-list-view',
+  templateUrl: './item-list-view.component.html',
+  styleUrls: ['./item-list-view.component.scss'],
   standalone: true,
   imports: [IonList, IonProgressBar, ItemListComponent, AsyncPipe],
 })
@@ -40,7 +40,11 @@ export class ItemListViewComponent implements OnInit, OnChanges {
 
   items$: Observable<EventItem[]>;
 
-  constructor(private afs: AngularFirestore, public emojiService: EmojiService, public dateService: DateService) {}
+  constructor(
+    private afs: AngularFirestore,
+    public emojiService: EmojiService,
+    public dateService: DateService,
+  ) {}
 
   ngOnInit() {
     this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
@@ -61,7 +65,7 @@ export class ItemListViewComponent implements OnInit, OnChanges {
           })
           .valueChanges({ idField: 'id' })
           .pipe(trace('firestore'));
-      })
+      }),
     );
   }
 

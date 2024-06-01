@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ItemListViewComponent } from './item-list.component';
+import { ItemListViewComponent } from './item-list-view.component';
 
-describe('ItemListComponent', () => {
+describe('ItemListViewComponent', () => {
   let component: ItemListViewComponent;
   let fixture: ComponentFixture<ItemListViewComponent>;
 

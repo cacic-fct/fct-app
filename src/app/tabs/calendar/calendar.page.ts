@@ -23,7 +23,7 @@ import { trace } from '@angular/fire/compat/performance';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { CalendarListViewComponent } from 'src/app/tabs/calendar/components/calendar-list-view/calendar-list-view.component';
-import { ItemListViewComponent } from 'src/app/tabs/calendar/components/item-list-view/item-list.component';
+import { ItemListViewComponent } from 'src/app/tabs/calendar/components/item-list-view/item-list-view.component';
 
 @UntilDestroy()
 @Component({
@@ -92,7 +92,7 @@ export class CalendarPage {
   constructor(
     private modalController: ModalController,
     public router: Router,
-    public toastController: ToastController
+    public toastController: ToastController,
   ) {
     getBooleanChanges(this.remoteConfig, 'calendarItemViewDefault')
       .pipe(untilDestroyed(this), trace('remote-config'))
