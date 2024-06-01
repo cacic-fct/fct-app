@@ -34,11 +34,11 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
 
-      - name: Install dependencies
+      - name: Install playwright
         run: bun install playwright
       
-      - name: Install playwright
-        run: playwright install --with-deps
+      - name: Install playwright deps
+        run: bunx playwright install --with-deps
 
-      - name: E2E tests
+      - name: Run e2e tests
         run: bun run e2e
