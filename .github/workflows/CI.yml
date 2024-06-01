@@ -18,6 +18,9 @@ jobs:
 
       - name: Build for production
         run: bun run build --configuration=production
+      
+      - name: Test
+        run: bun run test --configuration=ci
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
