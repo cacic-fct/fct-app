@@ -13,7 +13,7 @@ import { ReadResult, readBarcodesFromImageData } from 'zxing-wasm';
   standalone: true,
 })
 export class AztecScannerComponent implements AfterViewInit {
-  isAutostarting: boolean = false;
+  isAutostarting = false;
 
   scannerCanvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
