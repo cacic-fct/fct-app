@@ -19,8 +19,8 @@ jobs:
       - name: Unit tests
         run: bun run test --configuration=ci
 
-      - name: Install dependencies
-        run: bunx playwright install --with-deps
+      # - name: Install dependencies
+      #   run: bunx playwright install --with-deps
 
       # - name: E2E tests
       #   run: bun run e2e
