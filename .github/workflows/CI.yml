@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - uses: ./.github/workflows/setup-deps
 
       - name: Build for production
@@ -18,3 +21,4 @@ jobs:
           name: Build-artifacts
           path: dist/      
 
+  test:
