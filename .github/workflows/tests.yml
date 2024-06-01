@@ -19,13 +19,13 @@ jobs:
       - name: Unit tests
         run: bun run test --no-watch --no-progress --browsers=ChromeHeadless
 
-      # - name: Install dependencies
-      #   run: bunx playwright install --with-deps
-
-      # - name: E2E tests
-      #   run: bun run e2e
-
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Install dependencies
+        run: bunx playwright install --with-deps
+
+      - name: E2E tests
+        run: bun run e2e
