@@ -89,7 +89,7 @@ export class FilterModalPage implements AfterViewInit {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>): number => {
     return 0;
   };
