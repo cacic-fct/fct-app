@@ -23,7 +23,7 @@ jobs:
         run: bun run test --configuration=ci
 
       - name: Install dependencies
-        run: playwright install --with-deps
+        run: bunx playwright install --with-deps
 
       - name: E2E tests
         run: bun run e2e
