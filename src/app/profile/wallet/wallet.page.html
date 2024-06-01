@@ -32,7 +32,10 @@
       </ion-card-title>
     </div>
 
-    <object class="aztec-code margin-horizontal-auto" [innerHTML]="profileBarcode | safe: 'html'"></object>
+    <object
+      alt="Código de barras"
+      class="aztec-code margin-horizontal-auto"
+      [innerHTML]="profileBarcode | safe: 'html'"></object>
     @if (serviceWorkerActive) {
     <div class="ion-text-center ion-padding">
       <ion-icon name="information-circle-outline" class="info-icon"></ion-icon>
@@ -110,7 +113,7 @@
           </ion-card-title>
         </div>
 
-        <object class="ru-barcode margin-horizontal-auto" [innerHTML]="restaurantBarcode | safe: 'html'"></object>
+        <object alt="Código de barras" class="ru-barcode margin-horizontal-auto" [innerHTML]="restaurantBarcode | safe: 'html'"></object>
         }
       </ion-card>
       }

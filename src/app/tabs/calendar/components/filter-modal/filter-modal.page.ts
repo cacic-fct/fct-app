@@ -49,13 +49,13 @@ export class FilterModalPage implements AfterViewInit {
   };
 
   ngAfterViewInit() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const elements: HTMLCollectionOf<any> = document.getElementsByClassName('course');
+    const elements: HTMLCollectionOf<Element> = document.getElementsByClassName('course');
 
     for (const element of elements) {
+      const checkbox = element as HTMLInputElement;
       // Check checkboxes that have id matching selectedFilter
-      if (this.selectedFilter['courses'].includes(element.id)) {
-        element.checked = true;
+      if (this.selectedFilter['courses'].includes(checkbox.id)) {
+        checkbox.checked = true;
       }
     }
   }
@@ -73,10 +73,11 @@ export class FilterModalPage implements AfterViewInit {
   uncheckAll() {
     // Get elements with course.key id
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const elements: HTMLCollectionOf<any> = document.getElementsByClassName('course');
+    const elements: HTMLCollectionOf<Element> = document.getElementsByClassName('course');
     // Uncheck all elements
     for (const element of elements) {
-      element.checked = false;
+      const checkbox = element as HTMLInputElement;
+      checkbox.checked = false;
     }
     // Clear all selectedFilter keys
     this.selectedFilter['courses'] = [];
