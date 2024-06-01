@@ -12,7 +12,7 @@ import { ReadResult, readBarcodesFromImageData } from 'zxing-wasm';
   styleUrls: ['./aztec-scanner.component.scss'],
   standalone: true,
 })
-export class ScannerVideoComponent implements AfterViewInit {
+export class AztecScannerComponent implements AfterViewInit {
   isAutostarting: boolean = false;
 
   scannerCanvas: HTMLCanvasElement;

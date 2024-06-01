@@ -2,20 +2,20 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RestrictedAreaPage } from './restricted-area.page';
 
 describe('RestrictedAreaPage', () => {
-    let component: RestrictedAreaPage;
-    let fixture: ComponentFixture<RestrictedAreaPage>;
+  let component: RestrictedAreaPage;
+  let fixture: ComponentFixture<RestrictedAreaPage>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            imports: [IonicModule.forRoot(), RestrictedAreaPage],
-        }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [RestrictedAreaPage],
+    }).compileComponents();
 
-        fixture = TestBed.createComponent(RestrictedAreaPage);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    }));
+    fixture = TestBed.createComponent(RestrictedAreaPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }));
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

@@ -38,7 +38,7 @@ import {
   IonFooter,
 } from '@ionic/angular/standalone';
 
-import { ScannerVideoComponent } from '../../../shared/components/aztec-scanner/aztec-scanner.component';
+import { AztecScannerComponent } from '../../../shared/components/aztec-scanner/aztec-scanner.component';
 
 interface Attendance {
   user: Observable<User | undefined>;
@@ -74,8 +74,8 @@ interface Attendance {
     IonText,
     IonProgressBar,
     IonFooter,
-    ScannerVideoComponent
-],
+    AztecScannerComponent,
+  ],
 })
 export class ScannerPage implements OnInit {
   @Input('manualInput') manualInput!: string;

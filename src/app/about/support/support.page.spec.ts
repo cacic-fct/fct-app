@@ -2,20 +2,20 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SupportPage } from './support.page';
 
 describe('SupportPage', () => {
-    let component: SupportPage;
-    let fixture: ComponentFixture<SupportPage>;
+  let component: SupportPage;
+  let fixture: ComponentFixture<SupportPage>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            imports: [IonicModule.forRoot(), SupportPage],
-        }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [SupportPage],
+    }).compileComponents();
 
-        fixture = TestBed.createComponent(SupportPage);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    }));
+    fixture = TestBed.createComponent(SupportPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }));
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

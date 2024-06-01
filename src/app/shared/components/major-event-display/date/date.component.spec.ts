@@ -2,20 +2,20 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DateComponent } from './date.component';
 
 describe('DateComponent', () => {
-    let component: DateComponent;
-    let fixture: ComponentFixture<DateComponent>;
+  let component: DateComponent;
+  let fixture: ComponentFixture<DateComponent>;
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            imports: [IonicModule.forRoot(), DateComponent]
-        }).compileComponents();
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [DateComponent],
+    }).compileComponents();
 
-        fixture = TestBed.createComponent(DateComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    }));
+    fixture = TestBed.createComponent(DateComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }));
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
