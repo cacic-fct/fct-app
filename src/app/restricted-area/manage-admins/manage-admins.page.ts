@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { Functions, httpsCallable } from '@angular/fire/functions';
 
@@ -62,12 +62,9 @@ export class ManageAdminsPage {
     adminEmail: new FormControl(''),
   });
 
-  constructor(
-    public toastController: ToastController,
-    private alertController: AlertController,
-  ) {
+  constructor(public toastController: ToastController, private alertController: AlertController) {
     this.adminList$ = docData(doc(this.firestore, 'claims', 'admin')).pipe(
-      map((doc) => (doc ? doc['admins'] : [])),
+      map((doc) => (doc ? doc['admins'] : []))
     ) as Observable<string[]>;
   }
 

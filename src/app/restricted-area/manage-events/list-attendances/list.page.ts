@@ -1,5 +1,5 @@
 import { ToastController, AlertController } from '@ionic/angular/standalone';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { trace } from '@angular/fire/compat/performance';
@@ -75,7 +75,7 @@ export class ListPage {
     public courses: CoursesService,
     private toastController: ToastController,
     private alertController: AlertController,
-    public dateService: DateService,
+    public dateService: DateService
   ) {
     this.eventID = this.route.snapshot.params['eventID'];
     this.afs
@@ -110,7 +110,7 @@ export class ListPage {
               user: this.afs.collection('users').doc<User>(item.id).valueChanges().pipe(filterNullish(), take(1)),
             };
           });
-        }),
+        })
       );
   }
 

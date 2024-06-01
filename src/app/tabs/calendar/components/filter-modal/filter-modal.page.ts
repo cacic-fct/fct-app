@@ -72,7 +72,7 @@ export class FilterModalPage implements AfterViewInit {
   }
   uncheckAll() {
     // Get elements with course.key id
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const elements: HTMLCollectionOf<Element> = document.getElementsByClassName('course');
     // Uncheck all elements
     for (const element of elements) {

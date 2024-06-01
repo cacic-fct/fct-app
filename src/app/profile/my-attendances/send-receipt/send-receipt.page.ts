@@ -110,7 +110,7 @@ export class SendReceiptPage implements OnInit {
     private route: ActivatedRoute,
     public afs: AngularFirestore,
     public enrollmentTypes: EnrollmentTypesService,
-    public dateService: DateService,
+    public dateService: DateService
   ) {}
 
   ngOnInit() {
@@ -230,10 +230,11 @@ export class SendReceiptPage implements OnInit {
           this.uploadFile(result, format);
           this.rawFile = result;
         }
-      },
+      }
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   uploadFile(result: string, format: string) {
     // Attribution: Harsh Mittal
     // https://stackoverflow.com/questions/68324916/resize-compress-selected-image-before-uploading-to-firebase-in-angular
@@ -275,7 +276,7 @@ export class SendReceiptPage implements OnInit {
             console.error('Failed to get download URL', err);
             this.toastUploadError();
           });
-      },
+      }
     );
   }
 

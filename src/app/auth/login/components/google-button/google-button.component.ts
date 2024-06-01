@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, WritableSignal, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, WritableSignal, signal } from '@angular/core';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { CredentialResponse } from 'google-one-tap';
 import { environment } from 'src/environments/environment';

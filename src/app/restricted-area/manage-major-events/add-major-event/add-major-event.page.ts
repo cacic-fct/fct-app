@@ -97,7 +97,7 @@ export class AddMajorEventPage implements OnInit {
     public formBuilder: FormBuilder,
     private modalController: ModalController,
     private afs: AngularFirestore,
-    private router: Router,
+    private router: Router
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
 
@@ -136,7 +136,7 @@ export class AddMajorEventPage implements OnInit {
       },
       {
         validators: [this.validatorButton, this.requirePaymentDetails, this.validatorDateEnd],
-      },
+      }
     );
   }
 
@@ -217,8 +217,7 @@ export class AddMajorEventPage implements OnInit {
               : null,
             public: this.dataForm.get('public').value === '' || false,
             createdBy: user.uid,
-            // @ts-expect-error
-            // This works
+            // @ts-expect-error - This works
             createdOn: serverTimestamp(),
             events: [],
           })

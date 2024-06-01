@@ -1,5 +1,5 @@
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { Auth, user, getIdTokenResult } from '@angular/fire/auth';
 import { CoursesService } from 'src/app/shared/services/courses.service';
 
@@ -66,7 +66,7 @@ import { filterNullish } from 'src/app/shared/services/rxjs.service';
     AsyncPipe,
   ],
 })
-export class WalletPage implements OnInit {
+export class WalletPage {
   public profileBarcode: string | undefined;
   // public restaurantBarcode: string;
 
@@ -79,11 +79,7 @@ export class WalletPage implements OnInit {
   _isProfessor = new BehaviorSubject<boolean>(false);
   isProfessor$: Observable<boolean> = this._isProfessor.asObservable();
 
-  constructor(
-    public courses: CoursesService,
-    private afs: AngularFirestore,
-    private sw: ServiceWorkerService,
-  ) {
+  constructor(public courses: CoursesService, private afs: AngularFirestore, private sw: ServiceWorkerService) {
     this.serviceWorkerActive = this.sw.getServiceWorkerStatus();
 
     this.user$.pipe(filterNullish(), take(1), trace('auth')).subscribe((user: AuthUser) => {
@@ -100,7 +96,7 @@ export class WalletPage implements OnInit {
           .pipe(
             take(1),
             trace('firestore'),
-            filter((user): user is User => user !== undefined),
+            filter((user): user is User => user !== undefined)
           );
 
         this.renderAztecCode(user.uid);
@@ -108,8 +104,8 @@ export class WalletPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    /* registerSwiper();
+  // ngOnInit() {
+  /* registerSwiper();
     const swiperEl = document.querySelector('swiper-container');
 
     const swiperParams: SwiperOptions = {
@@ -140,7 +136,7 @@ export class WalletPage implements OnInit {
     swiperEl.initialize();
 
     this.render2DBarcode('123321');*/
-  }
+  // }
 
   renderAztecCode(uid: string) {
     try {
@@ -154,8 +150,8 @@ export class WalletPage implements OnInit {
             // @ts-expect-error - Required since eclevel actually exists
             eclevel: '23',
           },
-          drawingSVG(),
-        ),
+          drawingSVG()
+        )
       );
 
       this.profileBarcode = svg;

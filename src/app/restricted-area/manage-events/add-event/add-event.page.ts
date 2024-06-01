@@ -91,6 +91,7 @@ export class AddEventPage implements OnInit {
 
   dataForm: FormGroup;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userData: any;
 
   places$: Observable<placesRemoteConfig>;
@@ -105,7 +106,7 @@ export class AddEventPage implements OnInit {
     private modalController: ModalController,
     public majorEvents: MajorEventsService,
     private afs: AngularFirestore,
-    private router: Router,
+    private router: Router
   ) {
     this.userData = JSON.parse(localStorage.getItem('user'));
   }
@@ -154,7 +155,7 @@ export class AddEventPage implements OnInit {
       },
       {
         validators: [this.validatorLatLong, this.validatorButton, this.validatorDateEnd],
-      },
+      }
     );
     this.userData.displayName.replace(/%20/g, ' ');
     this.majorEventsData$ = this.majorEvents.getCurrentAndFutureMajorEvents();
@@ -167,7 +168,7 @@ export class AddEventPage implements OnInit {
           return parsed;
         }
         return {};
-      }),
+      })
     );
   }
 
@@ -207,7 +208,7 @@ export class AddEventPage implements OnInit {
             }
           }
 
-          let location: { description: any; lat: any; lon: any } | null;
+          let location: { description: string; lat: number; lon: number } | null;
 
           if (
             !this.dataForm.get('location.description').value &&
@@ -218,8 +219,8 @@ export class AddEventPage implements OnInit {
           } else {
             location = {
               description: this.dataForm.get('location.description').value,
-              lat: this.dataForm.get('location.lat').value || null,
-              lon: this.dataForm.get('location.lon').value || null,
+              lat: Number.parseInt(this.dataForm.get('location.lat').value) || null,
+              lon: Number.parseInt(this.dataForm.get('location.lon').value) || null,
             };
           }
 
@@ -248,8 +249,7 @@ export class AddEventPage implements OnInit {
               collectAttendance: this.dataForm.get('collectAttendance').value,
               creditHours: Number.parseInt(this.dataForm.get('creditHours').value) || null,
               createdBy: user.uid,
-              // @ts-expect-error
-              // This works
+              // @ts-expect-error - This works
               createdOn: serverTimestamp(),
               slotsAvailable: Number.parseInt(this.dataForm.get('slotsAvailable').value) || 0,
               numberOfSubscriptions: 0,
@@ -358,6 +358,7 @@ export class AddEventPage implements OnInit {
     return null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   placeChange(ev: any) {
     if (this.parsedPlaces[ev.detail.value] === undefined) {
       return 1;
@@ -368,9 +369,7 @@ export class AddEventPage implements OnInit {
       .get('description')
       .setValue(
         this.parsedPlaces[ev.detail.value].name +
-          (this.parsedPlaces[ev.detail.value].description
-            ? ' - ' + this.parsedPlaces[ev.detail.value].description
-            : ''),
+          (this.parsedPlaces[ev.detail.value].description ? ' - ' + this.parsedPlaces[ev.detail.value].description : '')
       );
     this.dataForm.get('location').get('lat').setValue(this.parsedPlaces[ev.detail.value].lat);
     this.dataForm.get('location').get('lon').setValue(this.parsedPlaces[ev.detail.value].lon);
@@ -388,7 +387,7 @@ export class AddEventPage implements OnInit {
   onDateStartChange() {
     const newTime = setDayOfYear(
       parseISO(this.dataForm.get('eventEndDate').value),
-      getDayOfYear(parseISO(this.dataForm.get('eventStartDate').value)),
+      getDayOfYear(parseISO(this.dataForm.get('eventStartDate').value))
     );
     this.dataForm.get('eventEndDate').setValue(subMilliseconds(newTime, this.tzoffset).toISOString().slice(0, -1));
   }
