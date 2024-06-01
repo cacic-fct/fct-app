@@ -25,17 +25,12 @@ module.exports = function (config) {
       suppressAll: true, // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/ngv'),
+      dir: require('path').join(__dirname, './coverage/app'),
       subdir: '.',
       reporters: [{ type: 'html' }, { type: 'text-summary' }, { type: 'lcovonly' }],
     },
     reporters: ['progress', 'kjhtml'],
-    port: 9876,
-    colors: true,
-    logLevel: config.LOG_INFO,
-    autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false,
     restartOnFileChange: true,
   });
 };
