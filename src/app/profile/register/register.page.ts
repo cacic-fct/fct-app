@@ -71,11 +71,13 @@ import { WindowService } from '../../shared/services/window.service';
 export class RegisterPage implements OnInit {
   @ViewChild('mySwal')
   private mySwal: SwalComponent;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   windowRef: any;
 
   private auth: Auth = inject(Auth);
 
   dataVersion: string = GlobalConstantsService.userDataVersion;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userData: any;
   dataForm: FormGroup;
   isUnesp = false;

@@ -92,6 +92,7 @@ export class AddMajorEventPage implements OnInit {
 
   dataForm: FormGroup;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userData: any;
   constructor(
     public formBuilder: FormBuilder,

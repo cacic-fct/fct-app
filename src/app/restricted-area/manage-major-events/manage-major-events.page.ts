@@ -76,6 +76,7 @@ export class ManageMajorEventsPage implements OnInit {
       switchMap(([date]) => {
         return this.afs
           .collection<MajorEventItem>('majorEvents', (ref) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let query: any = ref;
             query = query
               .where('eventStartDate', '<=', endOfMonth(parseISO(date)))

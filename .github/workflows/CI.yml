@@ -42,7 +42,7 @@ jobs:
         run: bun run lint
 
   unit-tests:
-    if: ${{ github.event_name != 'push' }}
+    if: ${{ github.event_name == 'pull_request' }}
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
@@ -58,8 +58,11 @@ jobs:
       - name: Unit tests
         run: bun run test --no-watch --no-progress --browsers=ChromeHeadless
 
+
   unit-tests-upload:
-    if: ${{ github.event_name != 'pull_request' }}
+    # This job uses a secret
+    # Pull requests are untrusted
+    if: ${{ github.event_name == 'push' }}
     name: Unit tests and upload to Codecov
     runs-on: ubuntu-latest
 

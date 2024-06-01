@@ -19,6 +19,8 @@ import { DatePipe } from '@angular/common';
   imports: [IonContent, IonItem, IonIcon, IonLabel, IonButton, IonGrid, IonRow, IonCol, SafePipe, DatePipe],
 })
 export class ConfirmAddEventModalPage {
+  // TODO: Review any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() dataForm: FormGroup<any>;
   @Input() hasDateEnd: boolean;
 
@@ -27,7 +29,7 @@ export class ConfirmAddEventModalPage {
     public emojiService: EmojiService,
     public coursesService: CoursesService,
     public stringService: StringManagementService,
-    public dateService: DateService,
+    public dateService: DateService
   ) {}
 
   onSubmit() {

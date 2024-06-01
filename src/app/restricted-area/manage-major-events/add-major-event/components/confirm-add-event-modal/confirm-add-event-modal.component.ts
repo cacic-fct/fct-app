@@ -42,6 +42,8 @@ import { PriceComponent } from 'src/app/shared/components/major-event-display/pr
   ],
 })
 export class ConfirmAddEventModalComponent implements OnInit {
+  // TODO: Review any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() dataForm!: FormGroup<any>;
   @Input() isEventPaid!: boolean;
 

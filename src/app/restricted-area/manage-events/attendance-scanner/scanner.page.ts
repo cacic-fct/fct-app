@@ -308,21 +308,24 @@ export class ScannerPage implements OnInit {
    * @param uid User ID, ID do usuário
    */
   userPaid$(uid: string): Observable<boolean> {
-    return this.afs
-      .collection<any>(`majorEvents/${this.majorEventID}/subscriptions`)
-      .doc(uid)
-      .valueChanges()
-      .pipe(
-        untilDestroyed(this),
-        trace('firestore'),
-        map((subscription) => {
-          if (subscription) {
-            return subscription.payment.status === 2;
-          } else {
-            return false;
-          }
-        })
-      );
+    return (
+      this.afs
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .collection<any>(`majorEvents/${this.majorEventID}/subscriptions`)
+        .doc(uid)
+        .valueChanges()
+        .pipe(
+          untilDestroyed(this),
+          trace('firestore'),
+          map((subscription) => {
+            if (subscription) {
+              return subscription.payment.status === 2;
+            } else {
+              return false;
+            }
+          })
+        )
+    );
   }
 
   /**

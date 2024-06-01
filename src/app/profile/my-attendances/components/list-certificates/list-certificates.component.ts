@@ -128,6 +128,7 @@ export class ListCertificatesComponent {
     this.mailtoService.open(mailto);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getCertificate(event: any, certificateData: CertificateStoreData, certificate: UserCertificateDocumentLocal) {
     event.target.disabled = true;
 

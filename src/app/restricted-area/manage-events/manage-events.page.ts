@@ -101,7 +101,7 @@ export class PageManageEvents implements OnInit {
     public emojiService: EmojiService,
     public dateService: DateService,
     private formBuilder: FormBuilder,
-    private modalController: ModalController,
+    private modalController: ModalController
   ) {
     this.dataForm = this.formBuilder.group({
       selectedCheckboxes: this.formBuilder.array([]),
@@ -113,6 +113,7 @@ export class PageManageEvents implements OnInit {
       switchMap(([date]) => {
         return this.afs
           .collection<EventItem>('events', (ref) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let query: any = ref;
             query = query
               .where('eventStartDate', '<=', endOfMonth(parseISO(date)))
@@ -128,10 +129,10 @@ export class PageManageEvents implements OnInit {
                 if (eventObject.inMajorEvent)
                   eventObject.inMajorEventName = this.getMajorEventName$(event.inMajorEvent);
                 return eventObject;
-              }),
-            ),
+              })
+            )
           );
-      }),
+      })
     );
   }
 
@@ -142,7 +143,7 @@ export class PageManageEvents implements OnInit {
       .get()
       .pipe(
         take(1),
-        map((doc) => doc.data()?.name),
+        map((doc) => doc.data()?.name)
       );
   }
 
@@ -327,6 +328,7 @@ export class PageManageEvents implements OnInit {
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onCheckBoxChange(e: any, eventItem: EventItem) {
     const checkArray: FormArray = this.dataForm.get('selectedCheckboxes') as FormArray;
 
@@ -338,7 +340,7 @@ export class PageManageEvents implements OnInit {
           name: eventItem.name,
           eventStartDate: eventItem.eventStartDate,
           eventEndDate: eventItem.eventEndDate,
-        }),
+        })
       );
     } else {
       let i = 0;

@@ -282,6 +282,7 @@ export class SendReceiptPage implements OnInit {
 
   updateUser() {
     this.afs
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .doc<any>(`/majorEvents/${this.eventID}/subscriptions/${this.uid}`)
       .update({
         'payment.status': 1,
@@ -374,6 +375,7 @@ export class SendReceiptPage implements OnInit {
 
 interface Subscription {
   id?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reference?: DocumentReference<any>;
 }
 

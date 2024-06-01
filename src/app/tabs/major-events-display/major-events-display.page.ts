@@ -63,15 +63,13 @@ export class MajorEventsDisplayPage implements OnInit {
   >;
   today: Date = new Date();
 
-  constructor(
-    public afs: AngularFirestore,
-    public dateService: DateService,
-  ) {}
+  constructor(public afs: AngularFirestore, public dateService: DateService) {}
 
   ngOnInit() {
     this.user$.pipe(take(1)).subscribe((user) => {
       this.majorEvents$ = this.afs
         .collection<MajorEventItem>('majorEvents', (ref) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           let query: any = ref;
 
           // TODO: Show events in which the subscription opens in the next 2 weeks AND events that ended in the last 2 weeks
@@ -100,12 +98,12 @@ export class MajorEventsDisplayPage implements OnInit {
                             }
                           }
                           return doc.exists;
-                        }),
+                        })
                       )
                   : null,
               };
             });
-          }),
+          })
         );
     });
   }
