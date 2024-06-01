@@ -11,13 +11,13 @@ import { AppComponent } from './app/app.component';
 import {
   provideFirestore,
   initializeFirestore,
-  persistentLocalCache,
-  persistentMultipleTabManager,
+  //persistentLocalCache,
+  //persistentMultipleTabManager,
   connectFirestoreEmulator,
 } from '@angular/fire/firestore';
 import { provideFunctions, getFunctions, connectFunctionsEmulator } from '@angular/fire/functions';
 import { provideStorage, getStorage, connectStorageEmulator } from '@angular/fire/storage';
-import { GlobalConstantsService } from './app/shared/services/global-constants.service';
+
 import { provideAuth, getAuth, useDeviceLanguage, connectAuthEmulator } from '@angular/fire/auth';
 import { provideRemoteConfig, getRemoteConfig, fetchAndActivate } from '@angular/fire/remote-config';
 import { getApp, provideFirebaseApp, initializeApp } from '@angular/fire/app';
@@ -172,6 +172,15 @@ function fetchNonce(): string {
     if (isDevMode()) {
       return 'development-nonce';
     }
+
+    const message =
+      'Ocorreu um erro ao validar a integridade do aplicativo.\nRecarregue a página.\nErro: Nonce não encontrado';
+
+    // @ts-expect-error - Alert is globally available in the browser
+    if (!alert(message)) {
+      window.location.reload();
+    }
+
     throw new Error('Nonce not found in cookies');
   }
   return nonce.split('=')[1];
