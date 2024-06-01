@@ -27,9 +27,9 @@ module.exports = function (config) {
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/ngv'),
       subdir: '.',
-      reporters: [{ type: 'html' }, { type: 'text-summary' }, [{ type: 'lcov' }]],
+      reporters: [{ type: 'html' }, { type: 'text-summary' }, { type: 'lcov' }],
     },
-    reporters: ['progress', 'kjhtml', 'coverage'],
+    reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
