@@ -38,6 +38,7 @@ import {
     KeyValuePipe,
   ],
 })
+// TODO: Refactor me
 export class FilterModalPage implements AfterViewInit {
   courses = CoursesService.courses;
 
@@ -48,12 +49,13 @@ export class FilterModalPage implements AfterViewInit {
   };
 
   ngAfterViewInit() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const elements: HTMLCollectionOf<any> = document.getElementsByClassName('course');
 
-    for (let i = 0; i < elements.length; i++) {
+    for (const element of elements) {
       // Check checkboxes that have id matching selectedFilter
-      if (this.selectedFilter['courses'].includes(elements[i].id)) {
-        elements[i].checked = true;
+      if (this.selectedFilter['courses'].includes(element.id)) {
+        element.checked = true;
       }
     }
   }
@@ -70,10 +72,11 @@ export class FilterModalPage implements AfterViewInit {
   }
   uncheckAll() {
     // Get elements with course.key id
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const elements: HTMLCollectionOf<any> = document.getElementsByClassName('course');
     // Uncheck all elements
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].checked = false;
+    for (const element of elements) {
+      element.checked = false;
     }
     // Clear all selectedFilter keys
     this.selectedFilter['courses'] = [];
@@ -86,6 +89,7 @@ export class FilterModalPage implements AfterViewInit {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any @typescript-eslint/no-unused-vars
   originalOrder = (a: KeyValue<any, any>, b: KeyValue<any, any>): number => {
     return 0;
   };

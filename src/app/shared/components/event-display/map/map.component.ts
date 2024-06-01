@@ -6,7 +6,7 @@ import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import OSM from 'ol/source/OSM';
 import Feature from 'ol/Feature';
 import { Icon, Style } from 'ol/style';
-import { fromLonLat, useGeographic } from 'ol/proj';
+import { useGeographic } from 'ol/proj';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 

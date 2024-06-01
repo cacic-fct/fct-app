@@ -141,7 +141,7 @@ export class SubscribePage implements OnInit {
     public enrollmentTypes: EnrollmentTypesService,
     private formBuilder: FormBuilder,
     public emojiService: EmojiService,
-    public dateService: DateService,
+    public dateService: DateService
   ) {
     this.majorEventID = this.route.snapshot.params['eventID'];
   }
@@ -232,7 +232,7 @@ export class SubscribePage implements OnInit {
 
     this.events$ = this.afs
       .collection<EventItem>(`events`, (ref) =>
-        ref.where('inMajorEvent', '==', this.majorEventID).orderBy('eventStartDate', 'asc'),
+        ref.where('inMajorEvent', '==', this.majorEventID).orderBy('eventStartDate', 'asc')
       )
       .valueChanges({ idField: 'id' })
       .pipe(
@@ -290,7 +290,7 @@ export class SubscribePage implements OnInit {
 
             return eventItem;
           });
-        }),
+        })
       );
 
     this.majorEvent$.pipe(untilDestroyed(this)).subscribe((majorEvent) => {
@@ -325,10 +325,11 @@ export class SubscribePage implements OnInit {
   filterEvent(eventFromGroup: string) {
     const eventItem = this.eventSchedule.find((event) => event.id === eventFromGroup);
     this.eventsSelected[eventItem.eventType] = this.eventsSelected[eventItem.eventType].filter(
-      (event) => event.id !== eventItem.id,
+      (event) => event.id !== eventItem.id
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   countCheckeds(e: any, event: EventItem) {
     const checked: boolean = e.currentTarget.checked;
     const name: string = e.currentTarget.name;
@@ -478,7 +479,7 @@ export class SubscribePage implements OnInit {
               .doc<Subscription>(`users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`)
               .valueChanges({ idField: 'id' })
               .pipe(take(1), trace('firestore'))
-              .subscribe((subscription) => {
+              .subscribe(() => {
                 if (this.paymentStatus !== 2) {
                   // Merge eventsSelected arrays
                   const eventsSelected = Object.values(this.eventsSelected).reduce((acc, val) => acc.concat(val), []);
@@ -524,7 +525,7 @@ export class SubscribePage implements OnInit {
                     .collection(`majorEvents/${this.majorEventID}/subscriptions`)
                     .doc<MajorEventSubscription>(user.uid)
                     .get()
-                    .subscribe((doc) => {
+                    .subscribe(() => {
                       if (status === 0) {
                         this.afs
                           .collection(`majorEvents/${this.majorEventID}/subscriptions`)
@@ -606,7 +607,7 @@ export class SubscribePage implements OnInit {
     eventsSelected.sort((a, b) => {
       return compareAsc(
         this.dateService.getDateFromTimestamp(a.eventStartDate),
-        this.dateService.getDateFromTimestamp(b.eventStartDate),
+        this.dateService.getDateFromTimestamp(b.eventStartDate)
       );
     });
 
@@ -782,5 +783,6 @@ export class SubscribePage implements OnInit {
 
 interface Subscription {
   id?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reference?: DocumentReference<any>;
 }

@@ -1,5 +1,5 @@
 import { EventItem } from '../../../services/event';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 /**
  * Requires the eventItem input to be passed in.

@@ -8,7 +8,7 @@ import { ToastController } from '@ionic/angular/standalone';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EventItem } from '../../../shared/services/event';
-import { take, Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { trace } from '@angular/fire/compat/performance';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
@@ -64,7 +64,7 @@ export class EventInfoDisplayPage implements OnInit {
     private toastController: ToastController,
     private router: Router,
     private route: ActivatedRoute,
-    private afs: AngularFirestore,
+    private afs: AngularFirestore
   ) {}
 
   ngOnInit() {

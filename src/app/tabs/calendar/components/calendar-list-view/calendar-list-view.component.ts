@@ -73,6 +73,7 @@ export class CalendarListViewComponent implements OnInit, OnChanges {
       switchMap(([filter, date]) => {
         return this.afs
           .collection<EventItem>('events', (ref) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let query: any = ref;
             if (date) {
               query = query.where('eventStartDate', '>=', this.baseDate);

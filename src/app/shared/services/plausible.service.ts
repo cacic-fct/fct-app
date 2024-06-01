@@ -10,9 +10,10 @@ export class PlausibleLocalService {
   registerPlausible(): void {
     window.plausible =
       window.plausible ||
-      function () {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      function (...args: any) {
         // @ts-expect-error - This is defined by Plausible in main.ts
-        (window.plausible.q = window.plausible.q || []).push(arguments);
+        (window.plausible.q = window.plausible.q || []).push(args);
       };
   }
 }

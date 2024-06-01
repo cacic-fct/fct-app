@@ -28,7 +28,7 @@ import {
   IonAvatar,
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
-import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propagation';
+import { ClickStopPropagationDirective } from 'src/app/shared/directives/click-stop-propagation';
 
 @UntilDestroy()
 @Component({
@@ -54,7 +54,7 @@ import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propa
     IonGrid,
     IonCol,
     IonRow,
-    ClickStopPropagation,
+    ClickStopPropagationDirective,
   ],
 })
 export class MenuPage implements OnInit {

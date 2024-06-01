@@ -162,6 +162,7 @@ export class AztecScannerComponent implements AfterViewInit {
         continue;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const deviceId = device.deviceId || (device as any).id;
       const label = device.label || `Video device ${videoDevices.length + 1}`;
       const groupId = device.groupId;
@@ -192,6 +193,7 @@ export class AztecScannerComponent implements AfterViewInit {
 
       permission = !!stream;
     } catch (error) {
+      console.error('Error getting permission:', error);
       if (stream) {
         this.terminateStream(stream);
       }
@@ -201,6 +203,7 @@ export class AztecScannerComponent implements AfterViewInit {
       if (stream) {
         this.terminateStream(stream);
       }
+      // eslint-disable-next-line no-unsafe-finally
       return permission;
     }
   }
@@ -290,7 +293,7 @@ export class AztecScannerComponent implements AfterViewInit {
     const timeout = !result ? 0 : delay;
     setTimeout(
       () => requestAnimationFrame(this.processFrame.bind(this, delay)), // Bind the processFrame method to the current instance of the class.
-      timeout,
+      timeout
     );
   }
 

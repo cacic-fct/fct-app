@@ -40,17 +40,14 @@ export class ItemListViewComponent implements OnInit, OnChanges {
 
   items$: Observable<EventItem[]>;
 
-  constructor(
-    private afs: AngularFirestore,
-    public emojiService: EmojiService,
-    public dateService: DateService,
-  ) {}
+  constructor(private afs: AngularFirestore, public emojiService: EmojiService, public dateService: DateService) {}
 
   ngOnInit() {
     this.items$ = combineLatest([this.dateFilter$, this.courseFilter$]).pipe(
       switchMap(([date, filter]) => {
         return this.afs
           .collection<EventItem>('events', (ref) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let query: any = ref;
             if (date) {
               query = query
@@ -65,7 +62,7 @@ export class ItemListViewComponent implements OnInit, OnChanges {
           })
           .valueChanges({ idField: 'id' })
           .pipe(trace('firestore'));
-      }),
+      })
     );
   }
 

@@ -28,11 +28,13 @@ export const redirectLoggedInToCalendar = () => redirectLoggedInTo(['calendario'
 export const caAndGreater = () =>
   pipe(
     customClaims,
-    map((claims: Record<string, any>) => (claims['role'] as number) < 3000),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    map((claims: Record<string, any>) => (claims['role'] as number) < 3000)
   );
 
 export const adminOnly = () =>
   pipe(
     customClaims,
-    map((claims: Record<string, any>) => (claims['role'] as number) === 1000),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    map((claims: Record<string, any>) => (claims['role'] as number) === 1000)
   );
