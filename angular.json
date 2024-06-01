@@ -107,10 +107,6 @@
             "tsConfig": "tsconfig.spec.json",
             "styles": [],
             "scripts": [],
-            "exclude": [
-              "tests/**/*.spec.ts",
-              "tests-examples/**/*.spec.ts"
-            ],
             "assets": [
               {
                 "glob": "favicon.ico",
