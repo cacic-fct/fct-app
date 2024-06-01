@@ -107,6 +107,9 @@
             "tsConfig": "tsconfig.spec.json",
             "styles": [],
             "scripts": [],
+            "exclude": [
+              "src/app/unused/**/*.ts"
+            ],
             "assets": [
               {
                 "glob": "favicon.ico",
