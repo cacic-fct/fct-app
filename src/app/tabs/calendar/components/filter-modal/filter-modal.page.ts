@@ -38,7 +38,7 @@ import {
     KeyValuePipe,
   ],
 })
-// TODO: Refactor me
+// TODO: Refactor me, use forms
 export class FilterModalPage implements AfterViewInit {
   courses = CoursesService.courses;
 
@@ -83,6 +83,7 @@ export class FilterModalPage implements AfterViewInit {
     for (let i = 0; i < elements.length; i++) {
       elements[i].checked = false;
     }
+
     // Clear all selectedFilter keys
     this.selectedFilter['courses'] = [];
   }
