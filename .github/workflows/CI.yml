@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/setup-deps
+      - uses: ./.github/workflows/setup-deps.yml
 
       - name: Build for production
         run: bun run build --configuration=production
