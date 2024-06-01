@@ -1,0 +1,19 @@
+name: ci
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/workflows/frontend/setup-deps
+
+      - uses: ./.github/workflows/frontend/lint
+
+      - uses: ./.github/workflows/frontend/tests-upload
+
+      - uses: ./.github/workflows/frontend/CI
+
+      
+
