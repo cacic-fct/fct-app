@@ -22,7 +22,6 @@ jobs:
       - name: Unit tests
         run: bun run test --configuration=ci
 
-  test:
       - name: Install dependencies
         run: playwright install --with-deps
 
