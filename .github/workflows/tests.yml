@@ -3,7 +3,7 @@ name: tests
 on: [push]
 
 jobs:
-  build:
+  unit:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +24,19 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      
       - name: Install dependencies
         run: bunx playwright install --with-deps
 
