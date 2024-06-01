@@ -1,0 +1,37 @@
+name: tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      
+      - name: Unit tests
+        run: bun run test --configuration=ci
+
+      - name: Install dependencies
+        run: bunx playwright install --with-deps
+
+      # - name: E2E tests
+      #   run: bun run e2e
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+        
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build-artifacts
+          path: dist/
