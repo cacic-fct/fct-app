@@ -359,7 +359,7 @@ export class SubscribePage implements OnInit {
 
           docData<Subscription>(userSubscriptionDocRef, { idField: 'id' }).subscribe(async (userSubscription) => {
             if (userSubscription) {
-              let paymentStatusLocal: number = this.setPaymentStatus(userSubscription['payment'].status);
+              const paymentStatusLocal: number = this.setPaymentStatus(userSubscription['payment'].status);
 
               // If user already had payment validated, don't allow them to change subscription
               if (paymentStatusLocal === 2) {
@@ -372,7 +372,7 @@ export class SubscribePage implements OnInit {
                   `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`
                 );
 
-                await setDoc(subscriptionDocRef, <Subscription>{
+                await setDoc(subscriptionDocRef, ({
                   eventsSelected: eventsSelected,
                   subscriptionType: subscriptionType,
                   time: serverTimestamp(),
@@ -382,7 +382,7 @@ export class SubscribePage implements OnInit {
                     timestamp: serverTimestamp(),
                     author: user.uid,
                   },
-                }).then(async () => {
+                } as Subscription)).then(async () => {
                   const userSubscriptionDocRef = doc(
                     this.firestore,
                     `users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`

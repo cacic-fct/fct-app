@@ -60,14 +60,14 @@ export class EventListFormComponent implements OnInit {
   @Input({ required: true }) mandatoryEvents!: string[];
 
   eventList: EventItem[] = [];
-  isEventScheduleBeingChecked: boolean = false;
+  isEventScheduleBeingChecked = false;
   today: Date = new Date();
   public dataForm: FormGroup;
   private firestore: Firestore = inject(Firestore);
-  public amountOfUncategorizedSelected: number = 0;
-  public amountOfCoursesSelected: number = 0;
-  public amountOfLecturesSelected: number = 0;
-  public totalAmountOfEventsSelected: number = 0;
+  public amountOfUncategorizedSelected = 0;
+  public amountOfCoursesSelected = 0;
+  public amountOfLecturesSelected = 0;
+  public totalAmountOfEventsSelected = 0;
 
   constructor(
     private modalController: ModalController,
@@ -259,7 +259,7 @@ export class EventListFormComponent implements OnInit {
 
   checkConflicts(selectedEventId: string): EventItem[] {
     const selectedEvent = this.eventList.find((event) => event.id === selectedEventId);
-    let conflicts: EventItem[] = [];
+    const conflicts: EventItem[] = [];
 
     if (selectedEvent) {
       this.eventList.forEach((event) => {
