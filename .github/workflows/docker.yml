@@ -1,10 +1,11 @@
 name: docker
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["ci"]
+    branches: [main]
+    types:
+      - completed
 
 env:
   REGISTRY: ghcr.io
@@ -58,4 +59,3 @@ jobs:
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true

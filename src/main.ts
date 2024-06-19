@@ -44,9 +44,13 @@ import localePt from '@angular/common/locales/pt';
 registerLocaleData(localePt);
 
 import { unwrapResourceUrl, trustedResourceUrl } from 'safevalues';
-import { setNonce } from '@ionic/core/loader';
+import { setNonce } from '@ionic/core/components';
 
 import { H } from 'highlight.run';
+
+console.debug('DEBUG: Nonce: Will fetch nonce');
+const nonce = fetchNonce();
+setNonce(nonce);
 
 H.init('1jdkoe52', {
   environment: isDevMode() ? 'dev' : 'production',
@@ -59,9 +63,6 @@ H.init('1jdkoe52', {
   privacySetting: 'none',
   sendMode: 'local',
 });
-
-const nonce = fetchNonce();
-setNonce(nonce);
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -105,7 +106,7 @@ bootstrapApplication(AppComponent, {
       AngularFireModule.initializeApp(environment.firebase),
 
       // TODO: https://github.com/cacic-fct/fct-app/issues/172
-      AngularFirestoreModule, //.enablePersistence({ synchronizeTabs: true }),
+      AngularFirestoreModule //.enablePersistence({ synchronizeTabs: true }),
     ),
 
     provideRemoteConfig(() => {
@@ -168,18 +169,19 @@ bootstrapApplication(AppComponent, {
 function fetchNonce(): string {
   const regex = new RegExp(`s*nonce=`);
   const nonce = document.cookie.split(';').find((cookie) => cookie.match(regex));
+  console.debug('DEBUG: Nonce:', nonce);
   if (!nonce) {
     if (isDevMode()) {
+      console.debug('DEBUG: Nonce: Using development-nonce');
       return 'development-nonce';
     }
 
     const message =
       'Ocorreu um erro ao validar a integridade do aplicativo.\nRecarregue a página.\nErro: Nonce não encontrado';
 
-    // @ts-expect-error - Alert is globally available in the browser
-    if (!alert(message)) {
-      window.location.reload();
-    }
+    window.alert(message);
+
+    window.location.reload();
 
     throw new Error('Nonce not found in cookies');
   }
