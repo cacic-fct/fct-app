@@ -133,6 +133,10 @@
   white-space: normal;
 }
 
+.opacity-50 {
+  opacity: 0.5;
+}
+
 .lottie-animation {
   @media (prefers-reduced-motion: reduce) {
     // Use visibility instead of display to avoid displacing other elements
