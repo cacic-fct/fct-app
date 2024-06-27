@@ -2,9 +2,10 @@
 build
 coverage
 
-/dist
-/.github
-/node_modules
+dist
+node_modules
 *.md
-/.angular
-/.husky
+.angular
+.husky
+frontend/src/assets/animations/**/*
+frontend/src/assets/certificates/**/*
