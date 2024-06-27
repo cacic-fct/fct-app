@@ -47,22 +47,13 @@ import { unwrapResourceUrl, trustedResourceUrl } from 'safevalues';
 import { setNonce } from '@ionic/core/components';
 
 import { H } from 'highlight.run';
+import { provideLottieOptions } from 'ngx-lottie';
 
 console.debug('DEBUG: Nonce: Will fetch nonce');
 const nonce = fetchNonce();
 setNonce(nonce);
 
-H.init('1jdkoe52', {
-  environment: isDevMode() ? 'dev' : 'production',
-  backendUrl: 'https://api.highlight.fctapp.yudi.me/public',
-  networkRecording: {
-    enabled: true,
-    recordHeadersAndBody: true,
-    urlBlocklist: [],
-  },
-  privacySetting: 'none',
-  sendMode: 'local',
-});
+setupAnalytics(nonce);
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -106,7 +97,7 @@ bootstrapApplication(AppComponent, {
       AngularFireModule.initializeApp(environment.firebase),
 
       // TODO: https://github.com/cacic-fct/fct-app/issues/172
-      AngularFirestoreModule //.enablePersistence({ synchronizeTabs: true }),
+      AngularFirestoreModule, //.enablePersistence({ synchronizeTabs: true }),
     ),
 
     provideRemoteConfig(() => {
@@ -163,6 +154,9 @@ bootstrapApplication(AppComponent, {
       useValue: environment.firebase.useEmulators ? ['localhost', 8081] : undefined,
     },
     provideHttpClient(withInterceptorsFromDi()),
+    provideLottieOptions({
+      player: () => import('lottie-web'),
+    }),
   ],
 }).catch((err) => console.log(err));
 
@@ -186,4 +180,37 @@ function fetchNonce(): string {
     throw new Error('Nonce not found in cookies');
   }
   return nonce.split('=')[1];
+}
+
+function setupAnalytics(nonce: string): void {
+  if (localStorage.getItem('disable-monitoring') !== 'true') {
+    console.debug('DEBUG: Highlight Monitoring: Enabled');
+    H.init('1jdkoe52', {
+      environment: isDevMode() ? 'dev' : 'production',
+      backendUrl: 'https://api-highlight.cacic.dev.br/public',
+      networkRecording: {
+        enabled: true,
+        recordHeadersAndBody: true,
+        urlBlocklist: [],
+      },
+      privacySetting: 'none',
+      sendMode: 'webworker',
+    });
+  } else {
+    console.debug('DEBUG: Highlight Monitoring: Disabled');
+  }
+
+  if (localStorage.getItem('disable-analytics') !== 'true') {
+    const script = document.createElement('script');
+    script.setAttribute('nonce', nonce);
+    script.async = true;
+    script.defer = true;
+    script.src = 'https://plausible.cacic.dev.br/js/script.js';
+    script.setAttribute('data-domain', 'cacic.dev.br');
+    document.head.appendChild(script);
+
+    console.debug('DEBUG: Plausible Analytics: Enabled');
+  } else {
+    console.debug('DEBUG: Plausible Analytics: Disabled');
+  }
 }

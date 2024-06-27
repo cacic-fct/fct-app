@@ -13,6 +13,7 @@ env:
 
 jobs:
   pack:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Build and push Docker image
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -53,6 +54,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            COMMIT_HASH=${{ github.sha }}
+
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1.1.1

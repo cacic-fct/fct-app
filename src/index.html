@@ -1,28 +1,30 @@
 <!doctype html>
 <html lang="pt-br">
   <head>
-    <meta charset="utf-8" />
-    <title>FCT App</title>
-    <meta
-      name="description"
-      content="Calendário de eventos da FCT Unesp, Faculdade de Ciências e Tecnologia da Universidade Estadual Paulista Júlio de Mesquita Filho elaborado pelo Centro Acadêmico de Ciência da Computação Alan Turing." />
-
+    <!-- Technical information -->
     <base href="/" />
-
+    <meta charset="utf-8" />
     <meta name="color-scheme" content="light dark" />
+
+    <!-- Disable zoom -->
     <meta
       name="viewport"
       content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="msapplication-tap-highlight" content="no" />
 
+    <!-- Don't highlight phone numbers automatically -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <title>FCT App</title>
     <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
 
-    <!-- Preconnect and DNS prefetch -->
-    <link rel="preconnect" href="https://api.highlight.fctapp.yudi.me/" crossorigin />
+    <!-- SEO -->
+    <meta name="description" content="Calendário de eventos dos alunos da FCT-Unesp" />
+    <meta
+      name="keywords"
+      content="Calendário de eventos, FCT-Unesp, Unesp Presidente Prudente, Faculdade de Ciência e Tecnologia, Universidade Estadual Paulista Júlio de Mesquita Filho, CACiC, Centro Acadêmico de Ciência da Computação" />
 
-    <!-- Analytics -->
-    <script defer data-domain="fctapp.yudi.me" src="https://plausible.fctapp.yudi.me/js/script.js"></script>
+    <!-- Preconnect and DNS prefetch -->
+    <link rel="preconnect" href="https://api-highlight.cacic.dev.br/" crossorigin />
 
     <!-- Google Auth -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -31,7 +33,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="FCT App" />
     <meta property="og:description" content="Calendário de eventos dos estudantes da FCT-Unesp." />
-    <meta property="og:image" content="https://fctapp.yudi.me/assets/icon/favicon.png" />
+    <meta property="og:image" content="https://fctapp.cacic.dev.br/assets/icon/favicon.png" />
 
     <!-- PWA  -->
     <link rel="manifest" href="manifest.webmanifest" />
@@ -253,6 +255,10 @@
 
   <body>
     <app-root></app-root>
-    <noscript>Enable JavaScript to use this application. Habilite o JavaScript para utilizar este aplicativo.</noscript>
+    <noscript>
+      Enable JavaScript to use this application.
+      <br />
+      Habilite o JavaScript para utilizar este aplicativo.
+    </noscript>
   </body>
 </html>

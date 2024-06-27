@@ -1,12 +1,15 @@
 # Build
 FROM node:alpine AS build
 
+ARG COMMIT_HASH
+
 WORKDIR /app
 
 COPY package.json bun.lockb .
 
 # https://github.com/oven-sh/bun/issues/5545
 RUN apk --no-cache add ca-certificates wget
+
 RUN if [[ $(uname -m) == "aarch64" ]] ; \
     then \
     # aarch64
@@ -29,6 +32,11 @@ RUN bun add -g @angular/cli
 RUN bun install --frozen-lockfile
 
 COPY . .
+
+ENV COMMIT_HASH=${COMMIT_HASH}
+
+RUN sed -i "s/commitHash-placeholder/${COMMIT_HASH}/g" src/environments/environment.prod.ts
+
 RUN bun run build --configuration=production
 
 # Serve

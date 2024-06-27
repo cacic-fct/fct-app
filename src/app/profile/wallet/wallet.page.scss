@@ -23,7 +23,7 @@ ion-card {
 }
 
 .font-20 {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .skeleton-1 {
@@ -42,8 +42,9 @@ ion-card {
 }
 
 .skeleton-aztec {
-  width: 320px;
-  height: 320px;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
 }
 
 .ru-barcode {

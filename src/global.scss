@@ -18,12 +18,13 @@
 @import '@ionic/angular/css/typography.css';
 @import '@ionic/angular/css/display.css';
 
-/* Optional CSS utils that can be commented out */
+/* Optional CSS utils */
 @import '@ionic/angular/css/padding.css';
 @import '@ionic/angular/css/float-elements.css';
 @import '@ionic/angular/css/text-alignment.css';
 @import '@ionic/angular/css/text-transformation.css';
 @import '@ionic/angular/css/flex-utils.css';
+@import '@ionic/angular/css/display.css';
 
 /* Dark theme */
 @import '@ionic/angular/css/palettes/dark.system.css';
@@ -116,17 +117,6 @@
   font-weight: 500;
 }
 
-// https://github.com/ionic-team/ionic-framework/issues/17269
-.alert-tappable.alert-radio {
-  height: auto;
-  contain: content;
-}
-
-.alert-radio-label.sc-ion-alert-md,
-.alert-radio-label.sc-ion-alert-ios {
-  white-space: normal;
-}
-
 .sc-ion-label-md-h {
   white-space: normal !important;
 }
@@ -145,4 +135,15 @@
 
 .opacity-50 {
   opacity: 0.5;
+}
+
+.lottie-animation {
+  @media (prefers-reduced-motion: reduce) {
+    // Use visibility instead of display to avoid displacing other elements
+    visibility: hidden;
+  }
+}
+
+.content-max-width {
+  max-width: 1096px;
 }
