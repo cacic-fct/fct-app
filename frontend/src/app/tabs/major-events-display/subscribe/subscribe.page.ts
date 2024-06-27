@@ -147,7 +147,7 @@ export class SubscribePage implements OnInit {
     public enrollmentTypes: EnrollmentTypesService,
 
     public emojiService: EmojiService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {
     this.majorEventID = this.route.snapshot.params['eventID'];
 
@@ -158,13 +158,13 @@ export class SubscribePage implements OnInit {
           if (user) {
             const subscriptionDocRef = doc(
               this.firestore,
-              `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`
+              `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
             );
             return docData(subscriptionDocRef) as Observable<MajorEventSubscription>;
           } else {
             return of(null);
           }
-        })
+        }),
       )
       .subscribe((subscription) => {
         if (subscription) {
@@ -190,11 +190,11 @@ export class SubscribePage implements OnInit {
           query(eventsCollection, where(documentId(), 'in', majorEvent.events), orderBy('eventStartDate')),
           {
             idField: 'id',
-          }
+          },
         ) as Observable<EventItem[]>;
 
         return eventsCollection$;
-      })
+      }),
     );
   }
 
@@ -354,7 +354,7 @@ export class SubscribePage implements OnInit {
 
           const userSubscriptionDocRef = doc(
             this.firestore,
-            `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`
+            `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
           );
 
           docData<Subscription>(userSubscriptionDocRef, { idField: 'id' }).subscribe(async (userSubscription) => {
@@ -369,10 +369,10 @@ export class SubscribePage implements OnInit {
               try {
                 const subscriptionDocRef = doc(
                   this.firestore,
-                  `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`
+                  `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
                 );
 
-                await setDoc(subscriptionDocRef, ({
+                await setDoc(subscriptionDocRef, {
                   eventsSelected: eventsSelected,
                   subscriptionType: subscriptionType,
                   time: serverTimestamp(),
@@ -382,10 +382,10 @@ export class SubscribePage implements OnInit {
                     timestamp: serverTimestamp(),
                     author: user.uid,
                   },
-                } as Subscription)).then(async () => {
+                } as Subscription).then(async () => {
                   const userSubscriptionDocRef = doc(
                     this.firestore,
-                    `users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`
+                    `users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`,
                   );
 
                   await setDoc(userSubscriptionDocRef, {

@@ -79,7 +79,7 @@ export class ConfirmModalComponent {
     private modalController: ModalController,
     public enrollmentTypes: EnrollmentTypesService,
     public emojiService: EmojiService,
-    public dateService: DateService
+    public dateService: DateService,
   ) {
     // Check if developer forgot to pass required inputs
     if (this.majorEvent$ === undefined) {
@@ -99,7 +99,7 @@ export class ConfirmModalComponent {
     this.displayEvents$ = combineLatest([this.events$, this.eventsSelected$]).pipe(
       map(([events, selectedIds]) => {
         return events.filter((event) => selectedIds.includes(event.id!));
-      })
+      }),
     );
   }
 
