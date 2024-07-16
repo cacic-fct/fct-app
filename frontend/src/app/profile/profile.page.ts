@@ -22,12 +22,12 @@ import {
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { albumsOutline, cogOutline, qrCodeOutline, settingsOutline } from 'ionicons/icons';
+import { albumsOutline, cogOutline, idCardOutline, qrCodeOutline, settingsOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-profile-info',
-  templateUrl: './profile-info.page.html',
-  styleUrls: ['./profile-info.page.scss'],
+  templateUrl: './profile.page.html',
+  styleUrls: ['./profile.page.scss'],
   standalone: true,
   imports: [
     IonRow,
@@ -51,13 +51,14 @@ import { albumsOutline, cogOutline, qrCodeOutline, settingsOutline } from 'ionic
     AsyncPipe,
   ],
 })
-export class ProfileInfoPage {
+export class ProfilePage {
   constructor() {
     addIcons({
       qrCodeOutline,
       albumsOutline,
       cogOutline,
       settingsOutline,
+      idCardOutline,
     });
   }
 }
