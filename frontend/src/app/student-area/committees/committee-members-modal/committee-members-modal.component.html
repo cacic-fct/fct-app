@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="close()">Fechar</ion-button>
+    </ion-buttons>
+    <ion-title>Sistemas SECOMPP</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p>Comissão responsável pelo desenvolvimento do FCT App.</p>
+  <p>Período: 00/00/0000 - 00/00/0000</p>
+  <ion-row class="ion-align-items-center">
+    <ion-col class="ion-text-center">
+      <ion-button color="danger" (click)="reportAlert('a')">Informar irregularidade</ion-button>
+      <br />
+      <ion-note>Denuncie problemas para o CACiC</ion-note>
+    </ion-col>
+  </ion-row>
+  <h2>Integrantes</h2>
+  <ion-list [inset]="true">
+    <ion-item>
+      <ion-label>
+        <h2>Pessoa 1</h2>
+        <p>Função: Líder</p>
+        <p>Período: 00/00/0000 - 00/00/0000</p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h2>Pessoa 2</h2>
+        <p>Função: Membro</p>
+        <p>Período: 00/00/0000 - 00/00/0000</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

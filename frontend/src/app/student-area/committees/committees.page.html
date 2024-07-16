@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Comissões</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Comissões</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Sistemas SECOMPP</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Comissão responsável pelo desenvolvimento do FCT App.</p>
+      <p>Período: 00/00/0000 - 00/00/0000</p>
+
+      <ion-button fill="clear" (click)="openModal()">Saber mais</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
