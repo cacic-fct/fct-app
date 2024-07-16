@@ -101,6 +101,14 @@ export const routes: Routes = [
     title: 'Ajustes',
     loadChildren: () => import('./settings/settings.routes').then((m) => m.routes),
   },
+  {
+    path: 'elections',
+    loadComponent: () => import('./elections/elections.page').then((m) => m.ElectionsPage),
+  },
+  {
+    path: 'ballot',
+    loadComponent: () => import('./elections/ballot/ballot.page').then((m) => m.BallotPage),
+  },
   // Redirect not found routes (404) to index
   // Must be the last route
   {

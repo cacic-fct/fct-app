@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Votação</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="content-max-width margin-horizontal-auto">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title size="large">Votação</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <div class="ion-margin">
+      <h1>Eleições CACiC 2024</h1>
+      <p>A votação encerra às 17:00 do dia 01 de abril de 2024</p>
+    </div>
+
+    <ion-card>
+      <ion-card-header> <ion-card-title> Cédula </ion-card-title> </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-radio-group slot="start">
+            <ion-item>
+              <ion-radio slot="start" justify="start" labelPlacement="end" value="candidato1">Chapa 1</ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-radio slot="start" justify="start" value="candidato2" labelPlacement="end">Chapa 2</ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-radio slot="start" justify="start" value="branco" labelPlacement="end">Branco</ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-radio slot="start" justify="start" value="nulo" labelPlacement="end">Nulo</ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-list>
+        <ion-button expand="block" color="success">Confirmar</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
