@@ -14,15 +14,20 @@
     </ion-toolbar>
   </ion-header>
 
+  @for (committee of committeesService.committees; track committee) {
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Sistemas SECOMPP</ion-card-title>
+      <ion-card-title>{{committee.name}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p>Comissão responsável pelo desenvolvimento do FCT App.</p>
-      <p>Período: 00/00/0000 - 00/00/0000</p>
+      <p>{{committee.description}}</p>
+      <p>
+        Período: {{ committee.startDate | date: 'dd/MM/yyyy' }} - {{ (committee.endDate | date: 'dd/MM/yyyy') ||
+        'desconhecido' }}
+      </p>
 
-      <ion-button fill="clear" (click)="openModal()">Saber mais</ion-button>
+      <ion-button fill="clear" (click)="openModal(committee)">Saber mais</ion-button>
     </ion-card-content>
   </ion-card>
+  }
 </ion-content>

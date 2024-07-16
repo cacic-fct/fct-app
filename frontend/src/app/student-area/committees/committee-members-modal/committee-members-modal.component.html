@@ -8,30 +8,31 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <p>Comissão responsável pelo desenvolvimento do FCT App.</p>
-  <p>Período: 00/00/0000 - 00/00/0000</p>
+  <p>{{ committee.description }}</p>
+  <p>
+    Período de atividade: {{ committee.startDate | date: 'dd/MM/yyyy' }} -
+    {{ (committee.endDate | date: 'dd/MM/yyyy') || 'desconhecido' }}
+  </p>
   <ion-row class="ion-align-items-center">
     <ion-col class="ion-text-center">
-      <ion-button color="danger" (click)="reportAlert('a')">Informar irregularidade</ion-button>
+      <ion-button color="danger" (click)="reportAlert(committee.name)">Informar irregularidade</ion-button>
       <br />
-      <ion-note>Denuncie problemas para o CACiC</ion-note>
+      <ion-note>Sua denúncia será encaminhada para o CACiC</ion-note>
     </ion-col>
   </ion-row>
   <h2>Integrantes</h2>
   <ion-list [inset]="true">
-    <ion-item>
-      <ion-label>
-        <h2>Pessoa 1</h2>
-        <p>Função: Líder</p>
-        <p>Período: 00/00/0000 - 00/00/0000</p>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <h2>Pessoa 2</h2>
-        <p>Função: Membro</p>
-        <p>Período: 00/00/0000 - 00/00/0000</p>
-      </ion-label>
-    </ion-item>
+    @for (member of committee.members; track member) {
+      <ion-item>
+        <ion-label>
+          <h2>{{ member.name }}</h2>
+          <p>{{ member.role }}</p>
+          <p>
+            Período: {{ member.joinedDate | date: 'dd/MM/yyyy' }} -
+            {{ (member.leftDate | date: 'dd/MM/yyyy') || 'desconhecido' }}
+          </p>
+        </ion-label>
+      </ion-item>
+    }
   </ion-list>
 </ion-content>

@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, inject, Input } from '@angular/core';
 import {
   IonList,
   IonItem,
@@ -15,6 +16,7 @@ import {
   AlertController,
   IonNote,
 } from '@ionic/angular/standalone';
+import { Committee } from 'src/app/shared/services/committees.service';
 import { Mailto, MailtoService } from 'src/app/shared/services/mailto.service';
 
 @Component({
@@ -35,9 +37,12 @@ import { Mailto, MailtoService } from 'src/app/shared/services/mailto.service';
     IonLabel,
     IonItem,
     IonList,
+    DatePipe,
   ],
 })
 export class CommitteeMembersModalComponent {
+  @Input() committee: Committee;
+
   modalController = inject(ModalController);
   mailtoService = inject(MailtoService);
   alertController = inject(AlertController);

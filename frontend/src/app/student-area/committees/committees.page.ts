@@ -17,6 +17,7 @@ import {
 } from '@ionic/angular/standalone';
 
 import { CommitteeMembersModalComponent } from 'src/app/student-area/committees/committee-members-modal/committee-members-modal.component';
+import { Committee, CommitteesService } from 'src/app/shared/services/committees.service';
 
 @Component({
   selector: 'app-committees',
@@ -41,10 +42,14 @@ import { CommitteeMembersModalComponent } from 'src/app/student-area/committees/
 })
 export class CommitteesPage {
   modalController = inject(ModalController);
+  committeesService = inject(CommitteesService);
 
-  async openModal() {
+  async openModal(committee: Committee) {
     const modal = await this.modalController.create({
       component: CommitteeMembersModalComponent,
+      componentProps: {
+        committee: committee,
+      },
     });
     modal.present();
   }
