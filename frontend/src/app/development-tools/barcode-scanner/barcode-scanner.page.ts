@@ -50,6 +50,7 @@ export class BarcodeScannerPage {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onCodeResult(event: any) {
     console.log(event);
     this.resultToast(event);
