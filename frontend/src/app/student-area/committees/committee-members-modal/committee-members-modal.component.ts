@@ -51,7 +51,7 @@ export class CommitteeMembersModalComponent {
     this.modalController.dismiss();
   }
 
-  async reportAlert(committeeData: any): Promise<void> {
+  async reportAlert(committeeData: Committee): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Atenção',
       message:
