@@ -2,19 +2,18 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import tailwind from '@astrojs/tailwind';
 import icon from 'astro-icon';
-
 import starlightDocSearch from '@astrojs/starlight-docsearch';
 import starlightLinksValidator from 'starlight-links-validator';
+
+import svelte from '@astrojs/svelte';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://docs.fctapp.cacic.dev.br',
-
   integrations: [
     starlight({
       title: 'FCT App Docs',
       favicon: './favicon.png',
-
       locales: {
         root: {
           label: 'Português',
@@ -22,10 +21,10 @@ export default defineConfig({
         },
       },
       social: {
-        github: 'https://github.com/cacic-fct/fct-app-docs/blob/main',
+        github: 'https://github.com/cacic-fct/fct-app/blob/main',
       },
       editLink: {
-        baseUrl: 'https://github.com/cacic-fct/fct-app-docs/edit/main',
+        baseUrl: 'https://github.com/cacic-fct/fct-app/edit/main/docs',
       },
       head: [
         {
@@ -74,7 +73,6 @@ export default defineConfig({
             directory: 'Frontend',
           },
         },
-
         {
           label: 'Backend',
           collapsed: true,
@@ -124,6 +122,7 @@ export default defineConfig({
           link: 'https://fctapp.cacic.dev.br/privacy',
         },
       ],
+      customCss: ['./src/tailwind.css'],
       plugins: [
         starlightDocSearch({
           appId: 'XCRYMK5HFM',
@@ -137,5 +136,6 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
     icon(),
+    svelte(),
   ],
 });

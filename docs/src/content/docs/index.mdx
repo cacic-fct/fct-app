@@ -3,14 +3,17 @@ title: FCT App Docs
 description: Documentação de desenvolvimento do FCT App
 hero:
   tagline: Documentação de desenvolvimento e gerenciamento
-  image:
-    file: ../../assets/fct-app-icon.png
   actions:
+    - text: Ver repositório
+      link: https://github.com/cacic-fct/fct-app
+      icon: external
     - text: Voltar ao app
       link: https://fctapp.cacic.dev.br
       icon: external
 ---
 
+import AppIcon from '../../assets/fct-app-icon.png';
+import { Image } from 'astro:assets';
 import { CardGrid, Card } from '@astrojs/starlight/components';
 
 <CardGrid>
@@ -20,10 +23,10 @@ import { CardGrid, Card } from '@astrojs/starlight/components';
     Confira a seção `Antes de colaborar`.
     </Card>
 
-    <Card title="Sou professor" icon="magnifier">
+    <Card title="Sou servidor da Unesp" icon="magnifier">
     Confira nossas boas práticas na seção de `Segurança` dentro de `DevOps`.
 
-    Saiba quem são os [`Encarregados de dados e de infraestrutura`](/devops/segurança/encarregados/).
+    Saiba quem são os [`Encarregados de dados e de infraestrutura`](/devops/segurança-geral/encarregados/).
     </Card>
 
   <Card title="Sou DevOps" icon="rocket">
@@ -51,7 +54,7 @@ import { CardGrid, Card } from '@astrojs/starlight/components';
     <Card title="Sou usuário" icon="open-book">
     Se estiver com algum problema, confira a seção de [`Solução de problemas`](/solução-de-problemas/problemas-do-usuário).
 
-      Entenda o armazenamento dos seus dados em [`Dados dos usuários`](/devops/segurança/dados-dos-usuários/).
+      Entenda o armazenamento dos seus dados em [`Dados dos usuários`](/devops/segurança-geral/dados-dos-usuários/).
 
     Saiba como ajudamos a cuidar do planeta em [`Responsabilidade ambiental`](/práticas-sociais/sustentabilidade).
     </Card>

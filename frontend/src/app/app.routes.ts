@@ -15,7 +15,6 @@ export const routes: Routes = [
     canActivate: [DevelopmentOnlyGuard],
   },
   // Redirects
-
   {
     path: 'privacidade',
     redirectTo: 'ajustes/legal/politica-de-privacidade',
@@ -23,17 +22,17 @@ export const routes: Routes = [
   },
   {
     path: 'privacy',
-    redirectTo: 'privacidade',
+    redirectTo: 'ajustes/legal/politica-de-privacidade',
     pathMatch: 'full',
   },
   {
     path: 'privacy-policy',
-    redirectTo: 'privacidade',
+    redirectTo: 'ajustes/legal/politica-de-privacidade',
     pathMatch: 'full',
   },
   {
     path: 'politica-de-privacidade',
-    redirectTo: 'privacidade',
+    redirectTo: 'ajustes/legal/politica-de-privacidade',
     pathMatch: 'full',
   },
   {
@@ -43,17 +42,19 @@ export const routes: Routes = [
   },
   {
     path: 'about',
-    redirectTo: 'sobre',
-    pathMatch: 'full',
-  },
-  {
-    path: 'about',
-    redirectTo: 'sobre',
+    redirectTo: 'ajustes/geral/sobre',
     pathMatch: 'full',
   },
   {
     path: 'humans.txt',
-    redirectTo: 'sobre',
+    redirectTo: 'ajustes/geral/sobre',
+    pathMatch: 'full',
+  },
+  {
+    path: 'login',
+    // No preceding slash to preserve query params
+    // https://github.com/angular/angular/issues/13315#issuecomment-427254639
+    redirectTo: 'entrar',
     pathMatch: 'full',
   },
   {
@@ -67,7 +68,7 @@ export const routes: Routes = [
     loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
   },
   {
-    path: 'login',
+    path: 'entrar',
     title: 'Entrar',
     loadComponent: () => import('src/app/auth/login/login.page').then((m) => m.LoginPage),
     ...canActivate(redirectLoggedInToMenu),
@@ -76,7 +77,7 @@ export const routes: Routes = [
     path: 'perfil',
     title: 'Perfil',
     data: { preload: true },
-    loadChildren: () => import('src/app/profile/profile-info.routes').then((m) => m.routes),
+    loadChildren: () => import('src/app/profile/profile.routes').then((m) => m.routes),
     // TODO: Commented out until we fix data being overwritten
     // ...canActivate(redirectUnauthorizedToLogin),
   },
@@ -106,6 +107,11 @@ export const routes: Routes = [
     path: 'ajustes',
     title: 'Ajustes',
     loadChildren: () => import('./settings/settings.routes').then((m) => m.routes),
+  },
+  {
+    path: 'comissoes',
+    title: 'Comissões',
+    loadComponent: () => import('./student-area/committees/committees.page').then((m) => m.CommitteesPage),
   },
   // Redirect not found routes (404) to index
   // Must be the last route

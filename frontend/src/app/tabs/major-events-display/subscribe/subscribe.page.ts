@@ -60,6 +60,8 @@ import {
 } from '@ionic/angular/standalone';
 import { MajorEventInfoSubscriptionComponent } from 'src/app/tabs/major-events-display/subscribe/major-event-info-subscription/major-event-info-subscription.component';
 import { EventListFormComponent } from 'src/app/tabs/major-events-display/subscribe/event-list-form/event-list-form.component';
+import { GlobalConstantsService } from 'src/app/shared/services/global-constants.service';
+import { User } from 'src/app/shared/services/user';
 
 @UntilDestroy()
 @Component({
@@ -199,6 +201,28 @@ export class SubscribePage implements OnInit {
   }
 
   ngOnInit() {
+    this.user$.pipe(take(1)).subscribe((user) => {
+      if (user) {
+        this.afs
+          .collection('users')
+          .doc<User>(user.uid)
+          .get()
+          .pipe(take(1))
+          .subscribe((doc) => {
+            // TODO: Transformar isso em um guard(?)
+            if (doc.exists) {
+              if (doc.data().dataVersion !== GlobalConstantsService.userDataVersion) {
+                console.debug("DEBUG: User's data is outdated, redirecting to update page");
+                this.router.navigate(['/ajustes/conta/informacoes-pessoais']);
+              }
+            } else {
+              console.debug("DEBUG: User's data doesn't exist, redirecting to update page");
+              this.router.navigate(['/ajustes/conta/informacoes-pessoais']);
+            }
+          });
+      }
+    });
+
     this.afs
       .collection('majorEvents')
       .doc(this.majorEventID)

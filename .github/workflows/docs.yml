@@ -23,27 +23,89 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install, build, and upload
-        uses: withastro/action@v2
-        with:
-          package-manager: bun@latest
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
 
-  scrape:
+      - name: Install dependencies
+        working-directory: ./docs
+        run: bun install --frozen-lockfile
+
+      - name: Build for production
+        working-directory: ./docs
+        run: bun run build --configuration=production --verbose
+
+      - name: Upload artifacts
+
+        uses: actions/upload-artifact@v4
+        with:
+          name: Docs-artifacts
+          path: docs/dist/
+          if-no-files-found: error
+
+  deploy:
     if: ${{github.ref == 'refs/heads/main'}}
     runs-on: ubuntu-latest
-    steps:
-      # Wait for Cloudflare to deploy the site
-      - name: Sleep for 5 minutes
-        run: sleep 5m
-        shell: bash
+    needs: build
+    permissions:
+      contents: read
+      deployments: write
 
-      - name: Algolia crawler creation and crawl
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Docs-artifacts
+          path: docs/dist/
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.DOCS_CLOUDFLARE_API_TOKEN }}
+          accountId: 034f5089bb082eb57cefc432b42b984d
+          workingDirectory: 'docs'
+          command: pages deploy dist --project-name=fct-app-docs --commit-dirty=true
+
+      - name: Create GitHub Deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const ref = context.payload.ref || context.ref;
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: ref,
+              required_contexts: [],
+              environment: 'fct-app-docs (production)',
+              description: 'fct-app-docs',
+              auto_merge: false,
+              production_environment: true,
+            });
+
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.data.id,
+              state: 'success',
+              environment_url: 'https://docs.fctapp.cacic.dev.br',
+            });
+
+  scrape:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Algolia Crawler creation and crawl
         uses: algolia/algoliasearch-crawler-github-actions@v1.1.10
         id: algolia_crawler
         with:
-          crawler-user-id: ${{ secrets.ALGOLIA_CRAWLER_USER_ID }}
-          crawler-api-key: ${{ secrets.ALGOLIA_CRAWLER_API_KEY }}
-          algolia-app-id: ${{ secrets.ALGOLIA_APP_ID }}
-          algolia-api-key: ${{ secrets.ALGOLIA_API_KEY }}
+          crawler-user-id: ${{ secrets.DOCS_ALGOLIA_CRAWLER_USER_ID }}
+          crawler-api-key: ${{ secrets.DOCS_ALGOLIA_CRAWLER_API_KEY }}
+          algolia-app-id: ${{ secrets.DOCS_ALGOLIA_APP_ID }}
+          algolia-api-key: ${{ secrets.DOCS_ALGOLIA_API_KEY }}
           site-url: 'https://docs.fctapp.cacic.dev.br'
           crawler-name: 'fctapp-yudi'

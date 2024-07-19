@@ -3,15 +3,17 @@ name: backend-ci
 on:
   push:
     paths:
-      - 'frontend/**'
-      - '.github/workflows'
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+      - '.github/workflows/backend-deploy.yml'
     branches:
       - '**'
 
   pull_request:
     paths:
-      - 'frontend/**'
-      - '.github/workflows'
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+      - '.github/workflows/backend-deploy.yml'
     branches:
       - '**'
 
