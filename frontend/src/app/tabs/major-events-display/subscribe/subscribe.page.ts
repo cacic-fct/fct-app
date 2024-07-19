@@ -6,8 +6,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { compareAsc } from 'date-fns';
-import { take, map, Observable, switchMap, of } from 'rxjs';
+import { take, Observable, switchMap, of } from 'rxjs';
 
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { EventItem } from 'src/app/shared/services/event';

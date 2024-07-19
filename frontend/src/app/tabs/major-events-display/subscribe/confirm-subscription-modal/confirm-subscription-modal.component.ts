@@ -1,5 +1,4 @@
 import { Component, Input, inject } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
 
 import { MajorEventItem } from '../../../../shared/services/major-event.service';
@@ -61,7 +60,7 @@ import { MajorEventInfoSubscriptionComponent } from 'src/app/tabs/major-events-d
     MajorEventInfoSubscriptionComponent,
   ],
 })
-export class ConfirmModalComponent {
+export class ConfirmSubscriptionModalComponent {
   @Input() majorEvent$!: Observable<MajorEventItem>;
   @Input() eventsSelected!: string[];
   @Input() minicursosCount!: number;
