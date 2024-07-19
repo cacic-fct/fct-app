@@ -22,7 +22,7 @@ import { Firestore, doc, docData } from '@angular/fire/firestore';
 import { User } from '@angular/fire/auth';
 import { trace } from '@angular/fire/compat/performance';
 import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/major-event.service';
-import { ClickStopPropagation } from 'src/app/shared/directives/click-stop-propagation';
+import { ClickStopPropagationDirective } from 'src/app/shared/directives/click-stop-propagation';
 import { addIcons } from 'ionicons';
 import { alertCircleOutline } from 'ionicons/icons';
 
@@ -32,7 +32,7 @@ import { alertCircleOutline } from 'ionicons/icons';
   styleUrls: ['./event-list-form.component.scss'],
   standalone: true,
   imports: [
-    ClickStopPropagation,
+    ClickStopPropagationDirective,
     FormsModule,
     ReactiveFormsModule,
     InfoModalComponent,
