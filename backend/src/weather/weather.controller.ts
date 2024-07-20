@@ -6,10 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { WeatherService } from './weather.service';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('weather')
+@UseInterceptors(CacheInterceptor)
 export class WeatherController {
   constructor(private readonly weatherService: WeatherService) {}
 
