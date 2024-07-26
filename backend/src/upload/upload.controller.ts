@@ -5,11 +5,12 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   HttpStatus,
-  Inject,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { UploadService } from './upload.service';
+import { TransformedImage } from './upload.interface';
+import { ImagePipe } from './upload.pipe';
 
 // Helper function to generate a unique filename
 const generateFilename = (originalname: string): string => {
@@ -35,8 +36,9 @@ export class UploadController {
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
         }),
+      ImagePipe,
     )
-    file: Express.Multer.File,
+    file: TransformedImage,
   ): Promise<any> {
     return this.uploadService.uploadFileToExternalService(file);
   }

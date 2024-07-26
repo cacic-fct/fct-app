@@ -1,26 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import * as FormData from 'form-data';
 import axios from 'axios';
-import * as sharp from 'sharp';
+import { TransformedImage } from './upload.interface';
 
 @Injectable()
 export class UploadService {
-  async uploadFileToExternalService(file: Express.Multer.File): Promise<any> {
+  async uploadFileToExternalService(file: TransformedImage): Promise<any> {
     const form = new FormData();
-
-    // Convert the image to AVIF format using sharp
-    const avifBuffer = await sharp(file.buffer).avif().toBuffer();
-    // This regex removes the file extension from the original filename
-    const filenameWithoutExtension = file.originalname.replace(/\.[^/.]+$/, '');
-
-    form.append('file', avifBuffer, {
-      filename: filenameWithoutExtension + '.avif',
+    form.append('file', file.image, {
+      filename: file.name + '.avif',
       contentType: 'image/avif',
     });
-
     try {
       const response = await axios.post(
-        `${process.env.SEAWEEDFS_IP}${filenameWithoutExtension + '.avif'}`,
+        `${process.env.SEAWEEDFS_IP}${file.name + '.avif'}`,
         // Only for test purpose, need to modify
         form,
         {
