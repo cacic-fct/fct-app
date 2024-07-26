@@ -7,9 +7,12 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import axios from 'axios';
+import { createWriteStream } from 'fs';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-
+// import * as bufferToBlob from 'buffer-to-blob';
+import * as FormData from 'form-data';
 // Helper function to generate a unique filename
 const generateFilename = (originalname: string): string => {
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -21,28 +24,8 @@ export class UploadController {
   constructor() {}
 
   @Post('image')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: join(__dirname, '..', '..', 'uploads'), // Specify the directory to save the file
-        filename: (req, file, callback) => {
-          const filename = generateFilename(file.originalname);
-          callback(null, filename); // Save file with a unique name
-        },
-      }),
-      fileFilter: (req, file, callback) => {
-        // Check file type
-        if (!file.originalname.match(/\.(jpg|jpeg|png|webp|pdf)$/)) {
-          return callback(
-            new Error('Only image and PDF files are allowed!'),
-            false,
-          );
-        }
-        callback(null, true);
-      },
-    }),
-  )
-  uploadFile(
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
@@ -56,7 +39,23 @@ export class UploadController {
         }),
     )
     file: Express.Multer.File,
-  ) {
-    return file;
+  ): Promise<any> {
+    const form = new FormData();
+    form.append('file', file.buffer, file.originalname);
+
+    try {
+      const response = await axios.post(
+        `${process.env.SEAWEEDFS_IP}${file.filename}`,
+        form,
+        {
+          headers: form.getHeaders(),
+        },
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        `Failed to upload file to external service: ${error.message}`,
+      );
+    }
   }
 }
