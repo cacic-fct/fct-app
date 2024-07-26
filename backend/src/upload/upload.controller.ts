@@ -5,14 +5,12 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   HttpStatus,
+  Inject,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import axios from 'axios';
-import { createWriteStream } from 'fs';
-import { diskStorage } from 'multer';
-import { extname, join } from 'path';
-// import * as bufferToBlob from 'buffer-to-blob';
-import * as FormData from 'form-data';
+import { extname } from 'path';
+import { UploadService } from './upload.service';
+
 // Helper function to generate a unique filename
 const generateFilename = (originalname: string): string => {
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -21,7 +19,7 @@ const generateFilename = (originalname: string): string => {
 
 @Controller('upload')
 export class UploadController {
-  constructor() {}
+  constructor(private uploadService: UploadService) {}
 
   @Post('image')
   @UseInterceptors(FileInterceptor('file'))
@@ -40,22 +38,6 @@ export class UploadController {
     )
     file: Express.Multer.File,
   ): Promise<any> {
-    const form = new FormData();
-    form.append('file', file.buffer, file.originalname);
-
-    try {
-      const response = await axios.post(
-        `${process.env.SEAWEEDFS_IP}${file.filename}`,
-        form,
-        {
-          headers: form.getHeaders(),
-        },
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        `Failed to upload file to external service: ${error.message}`,
-      );
-    }
+    return this.uploadService.uploadFileToExternalService(file);
   }
 }
