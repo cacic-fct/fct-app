@@ -10,10 +10,10 @@ export class UploadService {
 
     // Convert the image to AVIF format using sharp
     const avifBuffer = await sharp(file.buffer).avif().toBuffer();
+    // This regex removes the file extension from the original filename
     const filenameWithoutExtension = file.originalname.replace(/\.[^/.]+$/, '');
 
     form.append('file', avifBuffer, {
-      // This regex removes the file extension from the original filename
       filename: filenameWithoutExtension + '.avif',
       contentType: 'image/avif',
     });
