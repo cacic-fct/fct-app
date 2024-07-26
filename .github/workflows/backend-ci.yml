@@ -18,7 +18,7 @@ on:
       - '**'
 
 jobs:
-  build_functions:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +32,7 @@ jobs:
         working-directory: ./backend
         run: bun install --frozen-lockfile
 
-      - name: Build functions
+      - name: Build back end
         working-directory: ./backend
         run: bun run build
 
@@ -59,3 +59,50 @@ jobs:
       - name: Lint
         working-directory: ./backend
         run: bun run lint
+
+  unit-tests:
+    if: ${{ github.event_name == 'pull_request' }}
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: bun install --frozen-lockfile
+
+      - name: Unit tests
+        working-directory: ./backend
+        run: bun run test
+
+  unit-tests-upload:
+    # This job uses a secret
+    # Pull requests are untrusted
+    if: ${{ github.event_name == 'push' }}
+    name: Unit tests and upload to Codecov
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: bun install --frozen-lockfile
+
+      - name: Unit tests
+        working-directory: ./backend
+        run: bun run test:cov
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: backend/coverage/lcov.info
