@@ -18,7 +18,13 @@ import { BlacklistService } from './blacklist.service';
       signOptions: { expiresIn: '60m' },
     }),
   ],
-  providers: [AuthService, GoogleStrategy, JwtStrategy, JwtAuthGuard,BlacklistService],
+  providers: [
+    AuthService,
+    GoogleStrategy,
+    JwtStrategy,
+    JwtAuthGuard,
+    BlacklistService,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}
