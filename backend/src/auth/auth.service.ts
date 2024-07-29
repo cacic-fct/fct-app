@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserRole } from 'src/roles/roles.enum';
+import { Profile } from './profile.interface';
 
 @Injectable()
 export class AuthService {
@@ -13,9 +14,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateOAuthLogin(profile: any): Promise<string> {
+  async validateOAuthLogin(profile: Profile): Promise<string> {
     const { id, emails, name, photos } = profile;
-    console.log(profile);
     let user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
@@ -24,7 +24,7 @@ export class AuthService {
         firstName: name.givenName,
         lastName: name.familyName,
         picture: photos[0].value,
-        id: id,
+        id,
         role: [UserRole.USER],
       });
       await this.userRepository.save(user);
