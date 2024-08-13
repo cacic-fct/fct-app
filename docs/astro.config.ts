@@ -82,10 +82,7 @@ export default defineConfig({
         },
         {
           label: 'DevOps',
-          collapsed: true,
-          autogenerate: {
-            directory: 'DevOps',
-          },
+          link: 'https://cacic.dev.br/docs/Recursos/Servidores/FCTDTIWEBXP01',
         },
         {
           label: 'Procedimentos',
@@ -119,7 +116,7 @@ export default defineConfig({
         },
         {
           label: 'Política de privacidade',
-          link: 'https://fctapp.cacic.dev.br/privacy',
+          link: 'https://cacic.dev.br/legal/privacy-policy',
         },
       ],
       customCss: ['./src/tailwind.css'],
