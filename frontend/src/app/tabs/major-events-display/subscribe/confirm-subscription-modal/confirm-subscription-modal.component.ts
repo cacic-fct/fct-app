@@ -28,7 +28,7 @@ import {
   IonCardTitle,
 } from '@ionic/angular/standalone';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { MajorEventInfoSubscriptionComponent } from 'src/app/tabs/major-events-display/subscribe/major-event-info-subscription/major-event-info-subscription.component';
 
 @Component({

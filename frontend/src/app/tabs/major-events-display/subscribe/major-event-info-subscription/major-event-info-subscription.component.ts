@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { IonCardHeader, IonItem, IonIcon, IonCardContent, IonCardTitle, IonLabel } from '@ionic/angular/standalone';
 import { DateService } from 'src/app/shared/services/date.service';
@@ -12,13 +12,11 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
   standalone: true,
   imports: [CurrencyPipe, DatePipe, IonCardContent, IonIcon, IonCardHeader, IonItem, IonCardTitle, IonLabel],
 })
-export class MajorEventInfoSubscriptionComponent implements OnInit {
+export class MajorEventInfoSubscriptionComponent {
   @Input({ required: true }) majorEvent!: MajorEventItem;
 
   constructor(
     public dateService: DateService,
     public enrollmentTypes: EnrollmentTypesService,
   ) {}
-
-  ngOnInit() {}
 }

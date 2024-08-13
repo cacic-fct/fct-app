@@ -1,7 +1,7 @@
 <form [formGroup]="dataForm">
   @if (events$ | async; as eventsArray) {
     @for (event of eventsArray; track event; let i = $index) {
-      @if (i == 0 || !dateService.compareDayTimestamp(eventsArray[i - 1].eventStartDate, event.eventStartDate)) {
+      @if (i === 0 || !dateService.compareDayTimestamp(eventsArray[i - 1].eventStartDate, event.eventStartDate)) {
         <ion-item-divider mode="ios" sticky="true">
           <ion-label> {{ formatDate(dateService.getDateFromTimestamp(event.eventStartDate)) }} </ion-label>
         </ion-item-divider>
@@ -13,6 +13,7 @@
             class="twemoji"
             slot="start"
             aria-hidden="true"
+            alt="Emoji do evento"
             loading="lazy" />
           <ion-label>
             <h3 class="ion-text-wrap">{{ event.name }}</h3>
