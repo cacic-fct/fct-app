@@ -366,7 +366,7 @@ export class SubscribePage implements OnInit {
 
         let subscriptionType: number = Number.parseInt(this.opSelected);
 
-        if (isNaN(subscriptionType)) {
+        if (Number.isNaN(subscriptionType)) {
           subscriptionType = null;
         }
 
@@ -447,7 +447,8 @@ export class SubscribePage implements OnInit {
    * @param status
    * @returns Updated status
    */
-  setPaymentStatus(status: number): number {
+  setPaymentStatus(status: number): number | null {
+    let updatedStatus: number | null = status;
     if (this.paymentStatus !== undefined) {
       switch (this.paymentStatus) {
         case 4:
@@ -455,19 +456,17 @@ export class SubscribePage implements OnInit {
           // If user has already paid,
           // but subscription was denied due to insufficient slots or schedule conflict,
           // set status to "pending verification"
-          status = 1;
+          updatedStatus = 1;
           break;
         case null:
-          status = null;
+          updatedStatus = null;
           break;
 
-        default:
-          // If status === 1, 3, keep status as is
-          return status;
+        // If status === 1, 3, keep status as is
       }
     }
 
-    return status;
+    return updatedStatus;
   }
 
   async openConfirmModal(eventsSelected: string[]): Promise<boolean> {

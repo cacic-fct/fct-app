@@ -85,7 +85,7 @@ export class EventListFormComponent implements OnInit {
     this.events$.subscribe((events) => {
       this.eventList = events;
       events.forEach((event) => {
-        if (!this.dataForm.contains(event.id!)) {
+        if (event.id && !this.dataForm.contains(event.id)) {
           this.dataForm.addControl(event.id!, this.formBuilder.control(null));
         }
       });
@@ -280,7 +280,9 @@ export class EventListFormComponent implements OnInit {
           this.dataForm.get(eventFromGroup)?.setValue(false);
         });
       } else {
-        this.dataForm.get(conflict.id!)?.disable();
+        if (conflict.id) {
+          this.dataForm.get(conflict.id)?.disable();
+        }
       }
     });
   }
@@ -292,7 +294,9 @@ export class EventListFormComponent implements OnInit {
           this.dataForm.get(eventFromGroup)?.enable();
         });
       } else {
-        this.dataForm.get(conflict.id!)?.enable();
+        if (conflict.id) {
+          this.dataForm.get(conflict.id)?.enable();
+        }
       }
     });
   }
@@ -330,7 +334,10 @@ export class EventListFormComponent implements OnInit {
    * @returns
    */
   itemClick(eventItem: EventItem): void {
-    const eventID = eventItem.id!;
+    const eventID = eventItem.id;
+    if (!eventID) {
+      return;
+    }
     const formEvent = this.dataForm.get(eventID);
     console.debug('DEBUG: itemClick():', eventItem);
 
