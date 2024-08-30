@@ -157,16 +157,39 @@ export class EventListFormComponent implements OnInit {
   incrementAmountOfEventsSelected(event: EventItem) {
     switch (event.eventType) {
       case 'minicurso':
+        console.debug('DEBUG: Incrementing amount of courses selected');
         this.amountOfCoursesSelected++;
         this.totalAmountOfEventsSelected++;
         break;
       case 'palestra':
+        console.debug('DEBUG: Incrementing amount of lectures selected');
         this.amountOfLecturesSelected++;
         this.totalAmountOfEventsSelected++;
         break;
       default:
+        console.debug('DEBUG: Incrementing amount of uncategorized selected');
         this.amountOfUncategorizedSelected++;
         this.totalAmountOfEventsSelected++;
+        break;
+    }
+  }
+
+  decrementAmountOfEventsSelected(event: EventItem) {
+    switch (event.eventType) {
+      case 'minicurso':
+        console.debug('DEBUG: Decrementing amount of courses selected');
+        this.amountOfCoursesSelected--;
+        this.totalAmountOfEventsSelected--;
+        break;
+      case 'palestra':
+        console.debug('DEBUG: Decrementing amount of lectures selected');
+        this.amountOfLecturesSelected--;
+        this.totalAmountOfEventsSelected--;
+        break;
+      default:
+        console.debug('DEBUG: Decrementing amount of uncategorized selected');
+        this.amountOfUncategorizedSelected--;
+        this.totalAmountOfEventsSelected--;
         break;
     }
   }
@@ -202,7 +225,8 @@ export class EventListFormComponent implements OnInit {
     await modal.present();
   }
 
-  selectFromGroup(event: EventItem) {
+  selectFromGroup(event: EventItem, startedBy: string) {
+    console.debug('DEBUG: selectFromGroup():', event, 'started by', startedBy);
     if (!event.id) {
       return;
     }
@@ -238,6 +262,7 @@ export class EventListFormComponent implements OnInit {
       } else {
         this.incrementAmountOfEventsSelected(event);
       }
+      // If event has been unselected
     } else {
       const conflicts = this.checkConflicts(event.id);
       this.unblockEventGroup(conflicts);
@@ -246,6 +271,7 @@ export class EventListFormComponent implements OnInit {
       if (event.eventGroup?.groupEventIDs) {
         event.eventGroup.groupEventIDs.forEach((eventFromGroup) => {
           if (eventFromGroup === event.id) {
+            this.decrementAmountOfEventsSelected(event);
             return;
           }
 
@@ -254,6 +280,8 @@ export class EventListFormComponent implements OnInit {
           const conflicts = this.checkConflicts(eventFromGroup);
           this.unblockEventGroup(conflicts);
         });
+      } else {
+        this.decrementAmountOfEventsSelected(event);
       }
     }
   }
@@ -349,7 +377,7 @@ export class EventListFormComponent implements OnInit {
 
     formEvent.setValue(!formEvent.value);
 
-    this.selectFromGroup(eventItem);
+    this.selectFromGroup(eventItem, 'itemClick');
   }
 
   async presentLimitReachedToast(type: string, max: string) {
