@@ -89,7 +89,7 @@ export class EventListFormComponent implements OnInit {
       this.eventList = events;
       events.forEach((event) => {
         if (event.id && !this.dataForm.contains(event.id)) {
-          this.dataForm.addControl(event.id!, this.formBuilder.control(null));
+          this.dataForm.addControl(event.id, this.formBuilder.control(null));
         }
       });
     });

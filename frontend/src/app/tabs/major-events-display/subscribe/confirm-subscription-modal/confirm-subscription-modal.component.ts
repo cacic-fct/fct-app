@@ -105,7 +105,7 @@ export class ConfirmSubscriptionModalComponent implements OnInit {
 
     this.displayEvents$ = combineLatest([this.events$, this.eventsSelected$]).pipe(
       map(([events, selectedIds]) => {
-        return events.filter((event) => selectedIds.includes(event.id!));
+        return events.filter((event) => event.id && selectedIds.includes(event.id));
       }),
     );
   }
