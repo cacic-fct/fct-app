@@ -27,7 +27,10 @@
               }}
             </h4>
             <p>{{ event.slotsAvailable }} vagas restantes</p>
-            <p>Sua posição na fila: {{ event.numberOfSubscriptions + 1 | number: '1.0-0' }}</p>
+            <p>
+              Sua posição na fila:
+              {{ event.numberOfSubscriptions ? event.numberOfSubscriptions + 1 : ('desconhecida' | number: '1.0-0') }}
+            </p>
             <!-- <p>Conflito de horário com "item 2"</p>-->
           </ion-label>
           @if (event.description) {
@@ -41,7 +44,7 @@
             slot="end"
             name="{{ event.eventType }}"
             [attr.aria-label]="event.name"
-            [formControlName]="event.id"
+            [formControlName]="event.id!"
             (ionChange)="selectFromGroup(event, 'checkbox')"></ion-checkbox>
         </ion-item>
       </ion-list>

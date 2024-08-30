@@ -61,14 +61,14 @@ import { MajorEventInfoSubscriptionComponent } from 'src/app/tabs/major-events-d
   ],
 })
 export class ConfirmSubscriptionModalComponent implements OnInit {
-  @Input({ required: true }) majorEvent$: Observable<MajorEventItem>;
+  @Input({ required: true }) majorEvent$!: Observable<MajorEventItem>;
   @Input({ required: true }) eventsSelected!: string[];
-  @Input({ required: true }) minicursosCount: number;
-  @Input({ required: true }) palestrasCount: number;
-  @Input({ required: true }) subscriptionType: string;
-  @Input({ required: true }) events$: Observable<EventItem[]>;
+  @Input({ required: true }) minicursosCount!: number;
+  @Input({ required: true }) palestrasCount!: number;
+  @Input({ required: true }) subscriptionType!: string;
+  @Input({ required: true }) events$!: Observable<EventItem[]>;
 
-  displayEvents$: Observable<EventItem[]>;
+  displayEvents$: Observable<EventItem[]> | undefined;
 
   private eventsSelected$: BehaviorSubject<string[]> | undefined;
 

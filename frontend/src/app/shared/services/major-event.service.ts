@@ -90,4 +90,5 @@ export interface MajorEventSubscription {
   };
   subscriptionType: number;
   subscribedToEvents: string[];
+  id?: string;
 }

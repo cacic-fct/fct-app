@@ -53,10 +53,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export class EventListFormComponent implements OnInit {
   @Input({ required: true }) majorEvent$!: Observable<MajorEventItem>;
   @Input({ required: true }) majorEventID!: string;
-  @Input({ required: true }) isAlreadySubscribed!: boolean;
-  @Input({ required: true }) user$!: Observable<User>;
-  @Input({ required: true }) maxCourses!: number;
-  @Input({ required: true }) maxLectures!: number;
+  @Input({ required: true }) isAlreadySubscribed!: boolean | undefined;
+  @Input({ required: true }) user$!: Observable<User | null>;
+  @Input({ required: true }) maxCourses!: number | undefined;
+  @Input({ required: true }) maxLectures!: number | undefined;
   @Input({ required: true }) events$!: Observable<EventItem[]>;
   @Input({ required: true }) mandatoryEvents!: string[];
 
@@ -232,11 +232,21 @@ export class EventListFormComponent implements OnInit {
     }
 
     // If max amount of courses has been selected, unselect event
-    if (event.eventType === 'minicurso' && this.amountOfCoursesSelected >= this.maxCourses) {
+    if (
+      this.maxCourses !== undefined &&
+      this.maxCourses !== null &&
+      event.eventType === 'minicurso' &&
+      this.amountOfCoursesSelected >= this.maxCourses
+    ) {
       this.dataForm.get(event.id)?.setValue(false);
       this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
       return;
-    } else if (event.eventType === 'palestra' && this.amountOfLecturesSelected >= this.maxLectures) {
+    } else if (
+      this.maxLectures !== undefined &&
+      this.maxLectures !== null &&
+      event.eventType === 'palestra' &&
+      this.amountOfLecturesSelected >= this.maxLectures
+    ) {
       this.presentLimitReachedToast('palestras', this.maxLectures.toString());
       this.dataForm.get(event.id)?.setValue(false);
       return;

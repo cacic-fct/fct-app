@@ -127,7 +127,7 @@ export class SubscribePage implements OnInit {
 
   opSelected: string | undefined = undefined;
 
-  paymentStatus: number;
+  paymentStatus: number | undefined;
 
   // These are passed to the form component
   maxCourses: number | undefined;
@@ -212,7 +212,7 @@ export class SubscribePage implements OnInit {
           .subscribe((doc) => {
             // TODO: Transformar isso em um guard(?)
             if (doc.exists) {
-              if (doc.data().dataVersion !== GlobalConstantsService.userDataVersion) {
+              if (doc.data()?.dataVersion !== GlobalConstantsService.userDataVersion) {
                 console.debug("DEBUG: SubscribePage: User's data is outdated, redirecting to update page");
                 this.router.navigate(['/ajustes/conta/informacoes-pessoais']);
               }
@@ -371,7 +371,7 @@ export class SubscribePage implements OnInit {
           return;
         }
 
-        let subscriptionType: number = Number.parseInt(this.opSelected);
+        let subscriptionType: number | null = Number.parseInt(this.opSelected);
 
         if (Number.isNaN(subscriptionType)) {
           subscriptionType = null;
@@ -388,78 +388,78 @@ export class SubscribePage implements OnInit {
             `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
           );
 
-          docData<Subscription>(userSubscriptionDocRef, { idField: 'id' })
-            .pipe(take(1))
-            .subscribe(async (userSubscription) => {
-              let paymentStatusLocal = 0;
-              if (userSubscription) {
-                console.debug('DEBUG: SubscribePage: User is already subscribed');
-                paymentStatusLocal = this.setPaymentStatus(userSubscription['payment'].status);
+          const userData$ = docData(userSubscriptionDocRef, { idField: 'id' }) as Observable<MajorEventSubscription>;
 
-                // If user already had payment validated, don't allow them to change subscription
-                if (paymentStatusLocal === 2) {
-                  console.debug(
-                    'DEBUG: SubscribePage: Payment status is "validated", don\'t allow user to change subscription',
-                  );
-                  return;
-                }
+          userData$.pipe(take(1)).subscribe(async (userSubscription) => {
+            let paymentStatusLocal: number | null = 0;
+            if (userSubscription) {
+              console.debug('DEBUG: SubscribePage: User is already subscribed');
+              paymentStatusLocal = this.setPaymentStatus(userSubscription.payment.status);
+
+              // If user already had payment validated, don't allow them to change subscription
+              if (paymentStatusLocal === 2) {
+                console.debug(
+                  'DEBUG: SubscribePage: Payment status is "validated", don\'t allow user to change subscription',
+                );
+                return;
               }
+            }
 
-              try {
-                const subscriptionDocRef = doc(
+            try {
+              const subscriptionDocRef = doc(
+                this.firestore,
+                `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
+              );
+
+              console.debug('DEBUG: SubscribePage: Writing subscription data');
+
+              await setDoc(subscriptionDocRef, {
+                subscribedToEvents: eventsSelected,
+                subscriptionType: subscriptionType,
+                time: serverTimestamp(),
+                payment: {
+                  price: price,
+                  status: paymentStatusLocal,
+                  time: serverTimestamp(),
+                  author: user.uid,
+                  validationTime: null,
+                  validationAuthor: null,
+                },
+              } as MajorEventSubscription).then(async () => {
+                console.debug('DEBUG: SubscribePage: Subscription data written');
+
+                const userSubscriptionDocRef = doc(
                   this.firestore,
-                  `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
+                  `users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`,
                 );
 
-                console.debug('DEBUG: SubscribePage: Writing subscription data');
-
-                await setDoc(subscriptionDocRef, {
-                  subscribedToEvents: eventsSelected,
-                  subscriptionType: subscriptionType,
-                  time: serverTimestamp(),
-                  payment: {
-                    price: price,
-                    status: paymentStatusLocal,
-                    time: serverTimestamp(),
-                    author: user.uid,
-                    validationTime: null,
-                    validationAuthor: null,
-                  },
-                } as MajorEventSubscription).then(async () => {
-                  console.debug('DEBUG: SubscribePage: Subscription data written');
-
-                  const userSubscriptionDocRef = doc(
-                    this.firestore,
-                    `users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`,
-                  );
-
-                  console.debug('DEBUG: SubscribePage: Writing user subscription data');
-                  await setDoc(userSubscriptionDocRef, {
-                    reference: subscriptionDocRef,
-                  }).then(() => {
-                    console.debug('DEBUG: SubscribePage: User subscription data written');
-                    this.successSwal.fire();
-                    setTimeout(() => {
-                      this.successSwal.close();
-                      if (
-                        this.paymentStatus === 1 ||
-                        this.paymentStatus === 4 ||
-                        this.paymentStatus === 5 ||
-                        price === 0
-                      ) {
-                        this.router.navigate(['/inscricoes'], { replaceUrl: true });
-                      } else {
-                        this.router.navigate(['/inscricoes/pagar', this.majorEventID], {
-                          replaceUrl: true,
-                        });
-                      }
-                    }, 2000);
-                  });
+                console.debug('DEBUG: SubscribePage: Writing user subscription data');
+                await setDoc(userSubscriptionDocRef, {
+                  reference: subscriptionDocRef,
+                }).then(() => {
+                  console.debug('DEBUG: SubscribePage: User subscription data written');
+                  this.successSwal.fire();
+                  setTimeout(() => {
+                    this.successSwal.close();
+                    if (
+                      this.paymentStatus === 1 ||
+                      this.paymentStatus === 4 ||
+                      this.paymentStatus === 5 ||
+                      price === 0
+                    ) {
+                      this.router.navigate(['/inscricoes'], { replaceUrl: true });
+                    } else {
+                      this.router.navigate(['/inscricoes/pagar', this.majorEventID], {
+                        replaceUrl: true,
+                      });
+                    }
+                  }, 2000);
                 });
-              } catch (err) {
-                console.log(err);
-              }
-            });
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          });
         });
       });
     });
