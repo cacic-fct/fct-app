@@ -28,7 +28,6 @@ import {
   where,
   documentId,
   orderBy,
-  FieldValue,
   Timestamp,
 } from '@angular/fire/firestore';
 import { EmojiService } from 'src/app/shared/services/emoji.service';
@@ -415,19 +414,19 @@ export class SubscribePage implements OnInit {
 
                 console.debug('DEBUG: SubscribePage: Writing subscription data');
 
-                await setDoc(subscriptionDocRef, <MajorEventSubscription>{
+                await setDoc(subscriptionDocRef, {
                   subscribedToEvents: eventsSelected,
                   subscriptionType: subscriptionType,
-                  time: serverTimestamp() as Timestamp,
+                  time: serverTimestamp(),
                   payment: {
                     price: price,
                     status: paymentStatusLocal,
-                    time: serverTimestamp() as Timestamp,
+                    time: serverTimestamp(),
                     author: user.uid,
                     validationTime: null,
                     validationAuthor: null,
                   },
-                }).then(async () => {
+                } as MajorEventSubscription).then(async () => {
                   console.debug('DEBUG: SubscribePage: Subscription data written');
 
                   const userSubscriptionDocRef = doc(
