@@ -28,6 +28,8 @@ import {
   where,
   documentId,
   orderBy,
+  FieldValue,
+  Timestamp,
 } from '@angular/fire/firestore';
 import { EmojiService } from 'src/app/shared/services/emoji.service';
 import { DateService } from 'src/app/shared/services/date.service';
@@ -213,11 +215,11 @@ export class SubscribePage implements OnInit {
             // TODO: Transformar isso em um guard(?)
             if (doc.exists) {
               if (doc.data().dataVersion !== GlobalConstantsService.userDataVersion) {
-                console.debug("DEBUG: User's data is outdated, redirecting to update page");
+                console.debug("DEBUG: SubscribePage: User's data is outdated, redirecting to update page");
                 this.router.navigate(['/ajustes/conta/informacoes-pessoais']);
               }
             } else {
-              console.debug("DEBUG: User's data doesn't exist, redirecting to update page");
+              console.debug("DEBUG: SubscribePage: User's data doesn't exist, redirecting to update page");
               this.router.navigate(['/ajustes/conta/informacoes-pessoais']);
             }
           });
@@ -258,24 +260,26 @@ export class SubscribePage implements OnInit {
       if (user) {
         const subscriptionDocRef = doc(this.firestore, `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`);
 
-        docData(subscriptionDocRef).subscribe((subscription) => {
-          if (subscription) {
-            if (subscription['payment'].status === 2) {
-              this.router.navigate(['/eventos'], { replaceUrl: true });
+        docData(subscriptionDocRef)
+          .pipe(take(1))
+          .subscribe((subscription) => {
+            if (subscription) {
+              if (subscription['payment'].status === 2) {
+                this.router.navigate(['/eventos'], { replaceUrl: true });
 
-              this.alreadySubscribed.fire();
-              setTimeout(() => {
-                this.alreadySubscribed.close();
-              }, 1000);
-            } else {
-              this.paymentStatus = subscription['payment'].status;
+                this.alreadySubscribed.fire();
+                setTimeout(() => {
+                  this.alreadySubscribed.close();
+                }, 1000);
+              } else {
+                this.paymentStatus = subscription['payment'].status;
 
-              if (subscription['subscriptionType']) {
-                this.opSelected = subscription['subscriptionType'].toString();
+                if (subscription['subscriptionType']) {
+                  this.opSelected = subscription['subscriptionType'].toString();
+                }
               }
             }
-          }
-        });
+          });
       }
     });
 
@@ -345,6 +349,8 @@ export class SubscribePage implements OnInit {
           }
         }
 
+        console.log('DEBUG: SubscribePage: Subscription type selected:', this.opSelected);
+
         switch (this.opSelected) {
           case '0':
             price = majorEvent.price.students;
@@ -363,6 +369,7 @@ export class SubscribePage implements OnInit {
         }
 
         if (price === undefined) {
+          console.debug('DEBUG: SubscribePage: Price is undefined');
           return;
         }
 
@@ -374,6 +381,7 @@ export class SubscribePage implements OnInit {
 
         this.user$.pipe(take(1)).subscribe((user) => {
           if (!user) {
+            console.debug('DEBUG: SubscribePage: User is undefined');
             return;
           }
 
@@ -382,13 +390,21 @@ export class SubscribePage implements OnInit {
             `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
           );
 
-          docData<Subscription>(userSubscriptionDocRef, { idField: 'id' }).subscribe(async (userSubscription) => {
-            if (userSubscription) {
-              const paymentStatusLocal: number = this.setPaymentStatus(userSubscription['payment'].status);
+          docData<Subscription>(userSubscriptionDocRef, { idField: 'id' })
+            .pipe(take(1))
+            .subscribe(async (userSubscription) => {
+              let paymentStatusLocal = 0;
+              if (userSubscription) {
+                console.debug('DEBUG: SubscribePage: User is already subscribed');
+                paymentStatusLocal = this.setPaymentStatus(userSubscription['payment'].status);
 
-              // If user already had payment validated, don't allow them to change subscription
-              if (paymentStatusLocal === 2) {
-                return;
+                // If user already had payment validated, don't allow them to change subscription
+                if (paymentStatusLocal === 2) {
+                  console.debug(
+                    'DEBUG: SubscribePage: Payment status is "validated", don\'t allow user to change subscription',
+                  );
+                  return;
+                }
               }
 
               try {
@@ -397,25 +413,33 @@ export class SubscribePage implements OnInit {
                   `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
                 );
 
-                await setDoc(subscriptionDocRef, {
-                  eventsSelected: eventsSelected,
+                console.debug('DEBUG: SubscribePage: Writing subscription data');
+
+                await setDoc(subscriptionDocRef, <MajorEventSubscription>{
+                  subscribedToEvents: eventsSelected,
                   subscriptionType: subscriptionType,
-                  time: serverTimestamp(),
+                  time: serverTimestamp() as Timestamp,
                   payment: {
-                    amount: price,
+                    price: price,
                     status: paymentStatusLocal,
-                    timestamp: serverTimestamp(),
+                    time: serverTimestamp() as Timestamp,
                     author: user.uid,
+                    validationTime: null,
+                    validationAuthor: null,
                   },
-                } as Subscription).then(async () => {
+                }).then(async () => {
+                  console.debug('DEBUG: SubscribePage: Subscription data written');
+
                   const userSubscriptionDocRef = doc(
                     this.firestore,
                     `users/${user.uid}/majorEventSubscriptions/${this.majorEventID}`,
                   );
 
+                  console.debug('DEBUG: SubscribePage: Writing user subscription data');
                   await setDoc(userSubscriptionDocRef, {
                     reference: subscriptionDocRef,
                   }).then(() => {
+                    console.debug('DEBUG: SubscribePage: User subscription data written');
                     this.successSwal.fire();
                     setTimeout(() => {
                       this.successSwal.close();
@@ -437,8 +461,7 @@ export class SubscribePage implements OnInit {
               } catch (err) {
                 console.log(err);
               }
-            }
-          });
+            });
         });
       });
     });
@@ -480,12 +503,14 @@ export class SubscribePage implements OnInit {
         minicursosCount: this.formComponent.amountOfCoursesSelected,
         palestrasCount: this.formComponent.amountOfLecturesSelected,
         subscriptionType: this.opSelected,
+        events$: this.events$,
       },
       showBackdrop: true,
     });
     await modal.present();
 
     return modal.onDidDismiss().then((data) => {
+      console.debug('DEBUG: SubscribePage: Modal dismissed with data:', data);
       if (data.data) {
         return new Promise<boolean>((resolve) => {
           resolve(true);

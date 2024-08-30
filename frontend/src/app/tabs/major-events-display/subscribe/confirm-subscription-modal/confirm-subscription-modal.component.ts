@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
 
 import { MajorEventItem } from '../../../../shared/services/major-event.service';
@@ -60,7 +60,7 @@ import { MajorEventInfoSubscriptionComponent } from 'src/app/tabs/major-events-d
     MajorEventInfoSubscriptionComponent,
   ],
 })
-export class ConfirmSubscriptionModalComponent {
+export class ConfirmSubscriptionModalComponent implements OnInit {
   @Input({ required: true }) majorEvent$: Observable<MajorEventItem>;
   @Input({ required: true }) eventsSelected!: string[];
   @Input({ required: true }) minicursosCount: number;
@@ -70,7 +70,7 @@ export class ConfirmSubscriptionModalComponent {
 
   displayEvents$: Observable<EventItem[]>;
 
-  private eventsSelected$ = new BehaviorSubject<string[]>(this.eventsSelected);
+  private eventsSelected$: BehaviorSubject<string[]> | undefined;
 
   firestore = inject(Firestore);
 
@@ -79,8 +79,9 @@ export class ConfirmSubscriptionModalComponent {
     public enrollmentTypes: EnrollmentTypesService,
     public emojiService: EmojiService,
     public dateService: DateService,
-  ) {
-    // Check if developer forgot to pass required inputs
+  ) {}
+
+  ngOnInit() {
     if (this.majorEvent$ === undefined) {
       throw new Error('majorEvent$ is required');
     } else if (this.eventsSelected === undefined) {
@@ -89,11 +90,18 @@ export class ConfirmSubscriptionModalComponent {
       throw new Error('minicursosCount is required');
     } else if (this.palestrasCount === undefined) {
       throw new Error('palestrasCount is required');
-    } else if (this.subscriptionType === undefined) {
-      throw new Error('subscriptionType is required');
     } else if (this.events$ === undefined) {
       throw new Error('events$ is required');
     }
+
+    // TODO: Make this more beautiful
+    if (this.subscriptionType === undefined) {
+      console.warn(
+        'ConfirmSubscriptionModalComponent: subscriptionType is undefined. Does the event only have one price or did you forget to pass it in the parent component?',
+      );
+    }
+
+    this.eventsSelected$ = new BehaviorSubject(this.eventsSelected);
 
     this.displayEvents$ = combineLatest([this.events$, this.eventsSelected$]).pipe(
       map(([events, selectedIds]) => {
