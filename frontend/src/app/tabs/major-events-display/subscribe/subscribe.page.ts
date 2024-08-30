@@ -536,9 +536,3 @@ export class SubscribePage implements OnInit {
     toast.present();
   }
 }
-
-interface Subscription {
-  id?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  reference?: DocumentReference<any>;
-}
