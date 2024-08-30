@@ -3,7 +3,7 @@ import { MajorEventSubscription } from 'src/app/shared/services/major-event.serv
 import { EnrollmentTypesService } from 'src/app/shared/services/enrollment-types.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { take, Observable, switchMap, of } from 'rxjs';
@@ -383,12 +383,14 @@ export class SubscribePage implements OnInit {
             return;
           }
 
-          const userSubscriptionDocRef = doc(
+          const majorEventUserSubscriptionDocRef = doc(
             this.firestore,
             `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
           );
 
-          const userData$ = docData(userSubscriptionDocRef, { idField: 'id' }) as Observable<MajorEventSubscription>;
+          const userData$ = docData(majorEventUserSubscriptionDocRef, {
+            idField: 'id',
+          }) as Observable<MajorEventSubscription>;
 
           userData$.pipe(take(1)).subscribe(async (userSubscription) => {
             let paymentStatusLocal: number | null = 0;
@@ -406,14 +408,9 @@ export class SubscribePage implements OnInit {
             }
 
             try {
-              const subscriptionDocRef = doc(
-                this.firestore,
-                `majorEvents/${this.majorEventID}/subscriptions/${user.uid}`,
-              );
-
               console.debug('DEBUG: SubscribePage: Writing subscription data');
 
-              await setDoc(subscriptionDocRef, {
+              await setDoc(majorEventUserSubscriptionDocRef, {
                 subscribedToEvents: eventsSelected,
                 subscriptionType: subscriptionType,
                 time: serverTimestamp(),
@@ -435,7 +432,7 @@ export class SubscribePage implements OnInit {
 
                 console.debug('DEBUG: SubscribePage: Writing user subscription data');
                 await setDoc(userSubscriptionDocRef, {
-                  reference: subscriptionDocRef,
+                  reference: majorEventUserSubscriptionDocRef,
                 }).then(() => {
                   console.debug('DEBUG: SubscribePage: User subscription data written');
                   this.successSwal.fire();
