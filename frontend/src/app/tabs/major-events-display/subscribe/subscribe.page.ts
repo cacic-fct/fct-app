@@ -54,6 +54,7 @@ import {
   IonFabButton,
   IonButton,
   IonSpinner,
+  IonSelect,
   IonSelectOption,
   IonList,
 } from '@ionic/angular/standalone';
@@ -92,6 +93,7 @@ import { User } from 'src/app/shared/services/user';
     IonButton,
     IonSpinner,
     IonList,
+    IonSelect,
     IonSelectOption,
     ReactiveFormsModule,
     SweetAlert2Module,
