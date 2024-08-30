@@ -25,7 +25,8 @@ import { MajorEventItem, MajorEventSubscription } from 'src/app/shared/services/
 import { ClickStopPropagationDirective } from 'src/app/shared/directives/click-stop-propagation';
 import { addIcons } from 'ionicons';
 import { alertCircleOutline } from 'ionicons/icons';
-
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+@UntilDestroy()
 @Component({
   selector: 'app-event-list-form',
   templateUrl: './event-list-form.component.html',
@@ -81,8 +82,10 @@ export class EventListFormComponent implements OnInit {
     });
 
     this.dataForm = this.formBuilder.group({});
+  }
 
-    this.events$.subscribe((events) => {
+  ngOnInit() {
+    this.events$.pipe(untilDestroyed(this)).subscribe((events) => {
       this.eventList = events;
       events.forEach((event) => {
         if (event.id && !this.dataForm.contains(event.id)) {
@@ -90,9 +93,7 @@ export class EventListFormComponent implements OnInit {
         }
       });
     });
-  }
 
-  ngOnInit() {
     this.events$.pipe(take(1)).subscribe((events) => {
       this.autoSelectMandatory(this.mandatoryEvents);
 
