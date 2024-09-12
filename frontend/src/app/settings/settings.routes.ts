@@ -34,6 +34,6 @@ export const routes: Routes = [
   {
     path: 'conta',
     loadChildren: () => import('./account/account.routes').then((m) => m.routes),
-    ...canActivate(redirectUnauthorizedToLogin),
+    // ...canActivate(redirectUnauthorizedToLogin),
   },
 ];

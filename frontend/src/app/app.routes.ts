@@ -71,7 +71,7 @@ export const routes: Routes = [
     path: 'entrar',
     title: 'Entrar',
     loadComponent: () => import('src/app/auth/login/login.page').then((m) => m.LoginPage),
-    ...canActivate(redirectLoggedInToMenu),
+    // ...canActivate(redirectLoggedInToMenu),
   },
   {
     path: 'perfil',
@@ -85,19 +85,19 @@ export const routes: Routes = [
     path: 'eventos/inscrever/:eventID',
     title: 'Inscrição',
     loadChildren: () => import('src/app/tabs/major-events-display/subscribe/subscribe.routes').then((m) => m.routes),
-    ...canActivate(redirectUnauthorizedToLogin),
+    // ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'inscricoes',
     title: 'Minhas participações',
     loadChildren: () => import('src/app/profile/my-attendances/my-attendances.routes').then((m) => m.routes),
-    ...canActivate(redirectUnauthorizedToLogin),
+    // ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'confirmar-presenca/:eventID',
     title: 'Confirmar presença',
     loadChildren: () => import('src/app/modals/confirm-attendance/confirm-attendance.routes').then((m) => m.routes),
-    ...canActivate(redirectUnauthorizedToLogin),
+    // ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'certificado/verificar/:param',

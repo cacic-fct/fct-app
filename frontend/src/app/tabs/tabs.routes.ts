@@ -12,7 +12,7 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('src/app/landing/landing.page').then((m) => m.LandingPage),
-        ...canActivate(redirectLoggedInToCalendar),
+        // ...canActivate(redirectLoggedInToCalendar),
       },
       {
         path: 'calendario',
@@ -41,7 +41,7 @@ export const routes: Routes = [
         path: 'area-restrita',
         title: 'Ferramentas administrativas',
         loadChildren: () => import('src/app/restricted-area/restricted-area.routes').then((m) => m.routes),
-        ...canActivate(caAndGreater),
+        // ...canActivate(caAndGreater),
       },
     ],
   },

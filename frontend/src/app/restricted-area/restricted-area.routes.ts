@@ -15,13 +15,13 @@ export const routes: Routes = [
     path: 'gerenciar-admins',
     title: 'Gerenciar admins',
     loadChildren: () => import('src/app/restricted-area/manage-admins/manage-admins.routes').then((m) => m.routes),
-    ...canActivate(adminOnly),
+    // ...canActivate(adminOnly),
   },
   {
     path: 'gerenciar-grandes-eventos',
     title: 'Gerenciar grandes eventos',
     loadChildren: () => import('./manage-major-events/manage-major-events.routes').then((m) => m.routes),
-    ...canActivate(adminOnly),
+    // ...canActivate(adminOnly),
   },
   {
     path: 'gerenciar-eventos',
