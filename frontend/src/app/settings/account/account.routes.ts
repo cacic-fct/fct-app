@@ -14,4 +14,8 @@ export const routes: Routes = [
     loadComponent: () => import('src/app/settings/account/register/register.page').then((m) => m.RegisterPage),
     // ...canActivate(redirectUnauthorizedToLogin),
   },
+  {
+    path: 'provedores',
+    loadComponent: () => import('./manage-providers/manage-providers.page').then((m) => m.ManageProvidersPage),
+  },
 ];
