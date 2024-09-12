@@ -50,8 +50,6 @@ import { provideLottieOptions } from 'ngx-lottie';
 
 import { nonce } from 'src/main';
 
-
-
 function fetchNonce(): string {
   const regex = new RegExp(`s*nonce=`);
   const nonce = document.cookie.split(';').find((cookie) => cookie.match(regex));
@@ -177,12 +175,10 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     provideLottieOptions({
       player: () => import('lottie-web'),
-    }), provideClientHydration(),
+    }),
+    provideClientHydration(),
   ],
-}
-
-
-
+};
 
 function setupAnalytics(nonce: string): void {
   if (localStorage.getItem('disable-monitoring') !== 'true') {
