@@ -11,7 +11,7 @@ Caso encontre algum problema, entre em contato com a [equipe de desenvolvimento]
 ## Grande evento
 
 1. Ao criar o evento, confira se todas as informações foram escritas.
-1. [Verifique se a aba de eventos está ativa](/frontend/interface/abas/exibição-de-abas);
+1. [Verifique se a aba de eventos está ativa](/Frontend/Interface/Abas/Exibição%20de%20abas);
 1. Verifique se a inscrição funciona.
    - Verifique o upload e a validação de comprovante, caso o evento seja pago.
 

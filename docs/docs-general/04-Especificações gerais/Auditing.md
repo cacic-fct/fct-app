@@ -56,7 +56,7 @@ Possuirão acesso irrestrito e vitalício de leitura e escrita a todos códigos-
 - [@willshobwish](https://github.com/willshobwish)
 - [@Yudi](https://github.com/Yudi)\*
 
-> \*[Detém a propriedade do FCT App](/licenses).
+> \*[Detém a propriedade do FCT App](/Geral/Licenças).
 
 Estas pessoas foram escolhidas por serem ex-alunos do curso de Ciência da Computação da FCT e por terem contribuído significativamente para o projeto.
 
@@ -104,7 +104,7 @@ _Lead developers_ só podem embargar ou reverter embargos de _founding lead deve
 
 ### Código
 
-Conforme a [concessão do FCT App](/licenses):
+Conforme a [concessão do FCT App](/Geral/Licenças):
 
 O FCT App é disponibilizado sob a licença `AGPL-3.0-only` e não pode ser relicenciado.  
 O código do FCT App deve ser mantido em um repositório público no GitHub.
