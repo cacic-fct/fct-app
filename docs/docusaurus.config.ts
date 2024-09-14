@@ -152,11 +152,11 @@ const config: Config = {
           items: [
             {
               label: 'Política de privacidade',
-              to: '/blog',
+              href: 'https://cacic.dev.br/legal/privacy-policy',
             },
             {
               label: 'Licenças',
-              to: '/geral/',
+              to: '/Geral/Licenças',
             },
           ],
         },
