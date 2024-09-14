@@ -1,36 +1,51 @@
 {
-  "name": "fct-app-docs",
-  "type": "module",
-  "version": "0.0.1",
+  "name": "my-website",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "docusaurus": "docusaurus",
+    "dev": "docusaurus start --no-open",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "typecheck": "tsc"
   },
   "dependencies": {
-    "@astrojs/check": "^0.7.0",
-    "@astrojs/node": "^8.3.2",
-    "@astrojs/starlight": "^0.24.5",
-    "@astrojs/starlight-docsearch": "^0.1.1",
-    "@astrojs/svelte": "^5.6.0",
-    "astro": "^4.11.3",
-    "sharp": "^0.33.4",
-    "svelte": "^4.2.18"
+    "@docusaurus/core": "3.5.2",
+    "@docusaurus/preset-classic": "3.5.2",
+    "@mdx-js/react": "^3.0.1",
+    "clsx": "^2.1.1",
+    "docusaurus-plugin-openapi-docs": "^4.0.1",
+    "docusaurus-theme-openapi-docs": "^4.0.1",
+    "lucide-react": "^0.441.0",
+    "prism-react-renderer": "^2.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@astrojs/starlight-tailwind": "^2.0.3",
-    "@astrojs/tailwind": "^5.1.0",
-    "astro-icon": "^1.1.0",
-    "autoprefixer": "^10.4.19",
-    "daisyui": "^4.12.10",
-    "postcss-extend-rule": "^4.0.0",
-    "postcss-import": "^16.1.0",
-    "postcss-mixins": "^10.0.1",
-    "postcss-nesting": "^12.1.5",
-    "tailwindcss": "^3.4.4",
-    "typescript": "^5.5.3",
-    "starlight-links-validator": "^0.9.1"
+    "@docusaurus/module-type-aliases": "3.5.2",
+    "@docusaurus/tsconfig": "3.5.2",
+    "@docusaurus/types": "3.5.2",
+    "typescript": "~5.6.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0"
   }
 }
