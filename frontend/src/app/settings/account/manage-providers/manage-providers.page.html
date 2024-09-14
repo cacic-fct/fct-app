@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/ajustes/conta"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gerenciar provedores</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="content-max-width margin-horizontal-auto">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title size="large">Gerenciar provedores</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <app-explanation-card title="Provedores de acesso" icon="log-in-outline">
+      Provedores de acesso são serviços que permitem que você acesse o FCT App por meio da plataforma CACiC SSO.
+      <br />
+      Nesta página, é possível vincular os seus endereços de e-mail pessoal ou institucional à sua conta.
+    </app-explanation-card>
+
+    <ion-card>
+      <ion-list>
+        <ion-item>
+          Google - usuario&#64;gmail.com
+          <ion-button slot="end">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item>
+          Google - usuario&#64;unesp.br
+          <ion-button slot="end">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </div>
+</ion-content>
