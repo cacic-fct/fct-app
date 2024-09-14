@@ -125,7 +125,8 @@ Não use tradutores automáticos.
 
 ### Poupe recursos
 
-Veja a seção de Pushes na página de [sustentabilidade](/práticas-sociais/sustentabilidade#pushes)
+Veja a seção de Pushes na página de [sustentabilidade](/Geral/Práticas%20sociais/Sustentabilidade#pushes)
+
 
 ## Branches
 

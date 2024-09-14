@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 import { Code, Search, Container, Laptop, ClipboardPenLine, BookOpen } from 'lucide-react';
+import Link from '@docusaurus/Link';
 
 type FeatureItem = {
   title: string;
@@ -16,15 +17,15 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Confira a seção{' '}
-        <a href="https://docs.fctapp.cacic.dev.br/Geral/Antes de colaborar/Suas obrigações">
+        <Link to="https://docs.fctapp.cacic.dev.br/Geral/Antes de colaborar/Suas obrigações">
           <b>Antes de colaborar</b>
-        </a>
+        </Link>
         .
         <br />
         Conheça as experiências passadas na seção{' '}
-        <a href="/blog">
+        <Link to="/blog">
           <b>Blog</b>
-        </a>
+        </Link>
         .
       </>
     ),
@@ -35,15 +36,15 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Conheça nossas boas práticas na seção de{' '}
-        <a href="/Geral/Especificações gerais/Auditing">
+        <Link to="/Geral/Especificações gerais/Auditing">
           <b>Especificações gerais</b>
-        </a>
+        </Link>
         .
         <br />
         Saiba quem são os{' '}
-        <a href="https://cacic.dev.br/docs/Recursos/Servidores/FCTDTIWEBXP01#Encarregados/">
+        <Link to="https://cacic.dev.br/docs/Recursos/Servidores/FCTDTIWEBXP01#Encarregados/">
           <b>Encarregados de dados e de infraestrutura</b>
-        </a>
+        </Link>
         .
       </>
     ),
@@ -54,21 +55,21 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Confira a seção{' '}
-        <a href="/Geral/Antes de colaborar/Suas obrigações">
+        <Link to="/Geral/Antes de colaborar/Suas obrigações">
           <b>Antes de colaborar</b>
-        </a>
+        </Link>
         .
         <br />
         Entenda a seção de{' '}
-        <a href="https://cacic.dev.br/docs/Recursos/Servidores/FCTDTIWEBXP01">
+        <Link to="https://cacic.dev.br/docs/Recursos/Servidores/FCTDTIWEBXP01">
           <b>DevOps</b>
-        </a>
+        </Link>
         .
         <br />
         Conheça as experiências passadas na seção{' '}
-        <a href="/blog">
+        <Link to="/blog">
           <b>Blog</b>
-        </a>
+        </Link>
         .
       </>
     ),
@@ -79,21 +80,21 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Confira a seção de{' '}
-        <a href="/Geral/Introdu%C3%A7%C3%A3o">
+        <Link to="/Geral/Introdu%C3%A7%C3%A3o">
           <b>Especificações gerais</b>
-        </a>
+        </Link>
         .
         <br />
         Entenda os{' '}
-        <a href="/Administração/Introdução">
+        <Link to="/Administração/Introdução">
           <b>Procedimentos</b>
-        </a>
+        </Link>
         .
         <br />
         Saiba como{' '}
-        <a href="/Geral/Solução de problemas/Problemas do usuário">
+        <Link to="/Geral/Solução de problemas/Problemas do usuário">
           <b>Solucionar problemas</b>
-        </a>
+        </Link>
         .
       </>
     ),
@@ -104,21 +105,21 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Confira a seção de{' '}
-        <a href="/Geral/Introdu%C3%A7%C3%A3o">
+        <Link to="/Geral/Introdu%C3%A7%C3%A3o">
           <b>Especificações gerais</b>
-        </a>
+        </Link>
         .
         <br />
         Entenda os{' '}
-        <a href="/Administração/Introdução">
+        <Link to="/Administração/Introdução">
           <b>Procedimentos</b>
-        </a>
+        </Link>
         .
         <br />
         Saiba como{' '}
-        <a href="/Geral/Solução de problemas/Problemas do usuário">
+        <Link to="/Geral/Solução de problemas/Problemas do usuário">
           <b>Solucionar problemas do usuário</b>
-        </a>
+        </Link>
         .
       </>
     ),
@@ -129,21 +130,21 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Se estiver com algum problema, confira a seção de{' '}
-        <a href="/Geral/Solução de problemas/Problemas do usuário">
+        <Link to="/Geral/Solução de problemas/Problemas do usuário">
           <b>Solução de problemas</b>
-        </a>
+        </Link>
         .
         <br />
         Entenda o armazenamento dos seus dados em{' '}
-        <a href="/Geral/Especificações gerais/Dados dos usuários">
+        <Link to="/Geral/Especificações gerais/Dados dos usuários">
           <b>Dados dos usuários</b>
-        </a>
+        </Link>
         .
         <br />
         Saiba sobre nossas{' '}
-        <a href="/Geral/Práticas sociais/Acessibilidade">
+        <Link to="/Geral/Práticas sociais/Acessibilidade">
           <b>Práticas sociais</b>
-        </a>
+        </Link>
         .
       </>
     ),

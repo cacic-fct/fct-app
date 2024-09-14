@@ -17,13 +17,13 @@ function HomepageHeader() {
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link className="button button--secondary button--lg" href="https://github.com/cacic-fct/fct-app">
+          <Link className="button button--secondary button--lg" to="https://github.com/cacic-fct/fct-app">
             Repositório
           </Link>
         </div>
         <br />
         <div className={styles.buttons}>
-          <Link className="button button--secondary button--lg" href="https://fctapp.cacic.dev.br">
+          <Link className="button button--secondary button--lg" to="https://fctapp.cacic.dev.br">
             Voltar ao app
           </Link>
         </div>
