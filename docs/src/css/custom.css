@@ -1,0 +1,105 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/static/fonts/Inter/Inter-VariableFont_slnt_wght.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  src: url('/static/fonts/Source Code Pro/SourceCodePro-VariableFont_wght.woff2') format('woff2');
+}
+
+/*
+
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: italic; 
+  src: url('/static/Source Code Pro/SourceCodePro-Italic-VariableFont_wght.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-weight: 400; 
+  src: url('/static/Merriweather/Merriweather-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-weight: 900; 
+  src: url('/static/Merriweather/Merriweather-Black.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-weight: 900; 
+  font-style: italic; 
+  src: url('/static/Merriweather/Merriweather-BlackItalic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-weight: 700; 
+  src: url('/static/Merriweather/Merriweather-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-weight: 700; 
+  font-style: italic; 
+  src: url('/static/Merriweather/Merriweather-BoldItalic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-weight: 400; 
+  font-style: italic; 
+  src: url('/static/Merriweather/Merriweather-Italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-weight: 300; 
+  src: url('/static/Merriweather/Merriweather-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Merriweather";
+  font-weight: 300; 
+  font-style: italic; 
+  src: url('/static/Merriweather/Merriweather-LightItalic.woff2') format('woff2');
+}
+
+*/
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-font-family-base: 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Segoe UI',
+    'Roboto', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --ifm-font-family-monospace: 'Source Code Pro';
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}

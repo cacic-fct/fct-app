@@ -32,7 +32,7 @@ jobs:
 
       - name: Build for production
         working-directory: ./docs
-        run: bun run build --configuration=production --verbose
+        run: bun run build
 
       - name: Upload artifacts
 
