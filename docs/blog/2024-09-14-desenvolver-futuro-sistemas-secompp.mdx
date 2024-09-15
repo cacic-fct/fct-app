@@ -1,0 +1,375 @@
+---
+slug: futuro-sistemas-secompp
+title: Desenvolver um futuro sustentável para os sistemas da SECOMPP
+authors: yudi
+tags: [self-hosted]
+---
+
+A SECOMPP já teve vários sistemas reescritos do zero.  
+Como garantir que o próximo sistema tenha um desenvolvimento contínuo, para que as futuras gerações de estudantes não precisem fazer o mesmo trabalho das anteriores?
+
+{/* truncate */}
+
+## A importância de um sistema próprio
+
+A SECOMPP é um evento peculiar: embora assemelhe-se com os demais eventos científicos, as exigências mudam todos os anos:
+
+- Preços para tipos diferentes de frequentadores;
+- Inscrições abertas enquanto o evento acontece;
+- Crachás com código de barras;
+- Confecção de camisetas;
+- Minicursos com vagas limitadas;
+- Atividades de inscrição obrigatória;
+- Pagamento por Pix (antes era presencial);
+
+Por essa característica, a SECOMPP precisa de um sistema que seja flexível e que possa ser adaptado de acordo com as necessidades do evento.
+
+Embora essa flexibilidade possa ser atingida por meio de Formulários Google, pense na seguinte situação:
+
+O número de vagas disponíveis é muito inferior ao número de inscritos.  
+Pela falta de reatividade dos formulários, os interessados não poderão ver a quantidade de vagas restantes e continuarão a se inscrever mesmo após o esgotamento delas.  
+Como a organização fará o controle das vagas? O que ela fará com os inscritos excedentes?  
+A organização terá um grande trabalho para entrar em contato com cada um dos inscritos, além de ter de esperar por respostas, para não privilegiar ninguém da lista de espera.
+
+Isso exemplifica como Formulários Google não são a melhor solução para a SECOMPP.
+
+Sistemas terceiros são engessados demais e sistemas monetizados, como o Even3, trazem empecilhos por design.
+
+Logo, a melhor solução é desenvolver um sistema próprio.
+
+## O SYSCOMPP
+
+Receberam os nomes de "SYSCOMPP" os vários sistemas desenvolvidos e substituídos ao longo dos anos.
+
+A [última iteração do SYSCOMPP](https://github.com/cacic-fct/syscompp) foi desenvolvida pelo egresso Fábio Takaki (ingresso em 2014), com PHP e MySQL, e foi usada pela última vez em 2019.
+
+Com a pandemia da COVID-19 e a falta de interesse dos professores em realizar a SECOMPP, o sistema permaneceu sem uso por 2 anos, já que ele era exclusivo para o evento.
+
+Com a volta das atividades presenciais em 2022 e consequente realização do evento, a chapa frente ao CACiC à época buscou retomar as atividades do SYSCOMPP.  
+No entanto, ela encontrou dificuldades:
+
+- Ninguém possuia o código fonte;
+- Ninguém possuia acesso ao servidor;
+- Os alunos não sabiam quem eram os responsáveis pelo sistema.
+
+O ponto de partida foi a nota de rodapé que indicava o nome do desenvolvedor, que foi contatado e que forneceu o código fonte.  
+O acesso ao sistema foi concedido após diálogo com um servidor da DTI, egresso do curso.
+
+Após análise, o CACiC constatou que o sistema não era adequado para a SECOMPP de 2022, pois:
+
+- Com _quirks_, a organização do código impedia a adição de novas funcionalidades e a correção de bugs;
+- O sistema usava tecnologias obsoletas;
+- O servidor de hospedagem estava desatualizado e com vulnerabilidades graves conhecidas, como o Heartbleed;
+- Não havia documentação.
+
+Foi decidido que o FCT App, um projeto que estava sendo desenvolvido paralelamente, seria usado para a SECOMPP de 2022.
+
+### Desligamento do SYSCOMPP
+
+Embora tenha sido solicitado informalmente em 2021, o SYSCOMPP só foi desativado em 2024, por morosidade tanto do CACiC, quanto da DTI, por, respectivamente, não ter cobrado a execução e não ter atendido à solicitação de remoção dos conteúdos.
+
+Essa situação ressaltou a importância de se ter autonomia sobre a infraestrutura de hospedagem e de se ter um plano para retomar facilmente o acesso ao servidor.
+
+## O FCT App
+
+O FCT App inicialmente foi desenvolvido com o uso do Firebase, para dispensar a necessidade de um backend próprio e para acelerar o desenvolvimento.
+
+No entanto, a escolha do Firebase trouxe problemas de custo, que foram percebidos já na primeira utilização na SECOMPP de 2022:  
+O alto fluxo de acessos sucessivos (~120 inscritos) fez com que a cota gratuita de largura de banda do Firebase Hosting e de taxas de leituras do Firestore fossem ultrapassadas.  
+Embora o custo total tenha sido de somente R$ ~2,00, ele ficou a cargo de um aluno, que não foi reembolsado pela organização. Caso o valor tivesse sido maior, o aluno seria obrigado a arcar com o prejuízo?
+
+Além disso, com a incerteza da continuidade das atividades do CACiC, surgiram preocupações quanto a sucessão do sistema, já que ele obriga o cadastro de um cartão de crédito para a cobrança de faturas que não possuem limites de valores, que é outro fator de preocupação.
+
+## Comissão 2024
+
+Com o objetivo de dar continuidade ao projeto e sanar as deficiências do FCT App, uma comissão foi formada para reescrever o software para uma solução _self-hosted_.
+
+A comissão escreveu a documentação do FCT App, e fez um levantamento de requisitos para o novo sistema, que estão na própria documentação e nesta postagem do blog.
+
+No entanto, a comissão encontrou condições pouco ideais para a execução do trabalho:
+
+- Pouca disponibilidade dos membros;
+- Falta de interesse do curso em voluntariar-se para o desenvolvimento;
+  - Dos interessados, a maioria não possuía experiência sufienciente.
+
+## Análise de projetos de outras universidades
+
+Dentre as atividades desenvolvidas, a comissão de 2024 analisou projetos de código aberto de outras universidades.
+
+### Projetos
+
+<ProjectsTable />
+
+:::note
+Nem todos os projetos analisados estão listados, pois alguns repositórios foram perdidos. :-(
+:::
+
+A distribuição de tecnologias é semelhante aos resultados obtidos pela [pesquisa de 2024 do Stack Overflow](https://survey.stackoverflow.co/2024/technology#most-popular-technologies-webframe-learn).
+
+É evidente a predominância do NextJS e do Vue.  
+Dentre os projetos perdidos, estavam dois de Angular.
+
+No entanto, nota-se a presença de framework incomuns, como Handlebars e Gatsby.
+
+A solução de Handlebars adotada pelo projeto "Cecomp" entrega uma experiência de usuário ruim, pois toda navegação resulta em uma tela de carregamento que bloqueia a interação com a página.  
+A escolha em usar Gatsby é infortunada, pois há muitos anos o futuro do framework é dado como incerto.
+
+### Problemas encontrados
+
+#### Organização do projeto
+
+- Projeto sem licença;
+- Projeto com licença, mas sem arquivo `LICENSE`;
+- Falta de documentação acessível:
+  - Se alguma documentação existe, as instruções são insuficientes;
+- Monorepo:
+  - Projetos sem uso permanecem no repositório;
+  - Divisão desnecessária de frontends (sem a aplicação de uma estrutura de microfrontends);
+- Commits sem padrão:
+  - Commitlint não foi adicionado ou foi desativado posteriormente;
+  - Commits com mensagens longas, vagas ou com emojis.
+  - Commits vazios (sem alterações).
+
+##### GitHub
+
+- Uso desnecessário da língua inglesa:
+  - Por quê escrever as instruções de desenvolvimento e descrições de issues em inglês se os desenvolvedores são brasileiros?
+- Labels inadequadas:
+  - Pouco explicativas;
+  - Fixação de prazos por labels, o que deveria ser feito na aba de Projetos.
+- Issues e PRs:
+  - Sem labels;
+  - Linguajar pouco direto;
+  - PRs com muitas alterações não relacionadas;
+- Aplicativos não usados continuam instalados;
+- Desenvolvedores têm poderes no repositório ao invés do desenvolvimento acontecer em forks.
+
+#### Escolhas técnicas
+
+- Uso do `npm` ao invés de soluções mais rápidas;
+- Falta de Continuous Integration (CI);
+- Técnicas de deploy estranhas e manuais:
+  - GitHub Actions executa `git pull && docker compose up --build`. Como isso é executado no servidor?
+- Uso de frameworks muito nichados:
+  - Handlebars;
+  - Gatsby.
+- Uso de React Native:
+  - Pagam-se as taxas para publicação na App Store e Google Play?
+
+#### Segurança
+
+- Desenvolvedores têm acesso ao arquivo `.env` do backend;
+- Publicação de chaves privadas de API;
+- Publicação do arquivo do banco de dados sem criptografia;
+- Banco de dados com senha fraca;
+- Banco de dados com senha hardcoded no backend;
+- Vazamento de informações pessoais ou sensíveis em capturas de telas;
+- Domínio e DNS:
+  - Sem DMARC e DKIM;
+  - Registros sem uso permanecem no DNS;
+- Servidores web:
+  - Sem proxy, para evitar ataques de DoS;
+  - Não estão configurados com headers de segurança:
+    - Sem CSP, HSTS, X-Content-Type-Options, etc.
+  - Sem atualizações desde 2021, com vulnerabilidades conhecidas.
+
+#### Qualidade e organização do código
+
+- Desenvolvedores não testam antes do _merge_;
+- Múltiplas pastas que compartilham um mesmo propósito;
+- Sem tratamento de erros para requisições:
+  - Envio ou recebimento de dados falha e nada acontece;
+- Imagens não otimizadas somam-se significativamente ao tamanho do site:
+  - Em um dos projetos, o tamanho total de um site ficou em 20 MB.
+- Código antigo não removido:
+  - Em um dos projetos, o TailwindCSS é importado três vezes no frontend, ora por CDN, ora por pacote;
+- Pacotes sem uso permanecem no projeto;
+  - Aumentam o tempo para baixar dependências, que já é alto por conta do uso do `npm`;
+- Falta de padronização:
+  - Sem execução do Eslint ou do Prettier;
+  - Uso misto de JavaScript e TypeScript:
+    - Componentes ora com tipagem, ora sem;
+  - Componentes:
+    - Grandes demais (500 linhas);
+    - Pequenos demais (\<10 linhas, as quais poderiam estar em um componente maior).
+- Links quebrados (404);
+- Branch da produção mais avançada que a de desenvolvimento;
+- Passagens de dados (props) para _child-components_ sem sentido;
+
+##### Interface do usuário
+
+- Interface do usuário comum (não admin) não foi feita como mobile-first;
+- Interface não funciona em dispositivos com telas horizontais;
+- Falta de compatibilidade com leitores de tela;
+- Contraste inadequado;
+- Fonte pouco legível;
+- Reaproveitamento de componentes sem testes para averiguar o funcionamento da lógica em todos os locais;
+
+## Conclusões
+
+A existência de problemas nos projetos é natural, pois são mantidos por estudantes em nível de graduação e, muitas vezes, por uma única pessoa.
+
+A fim de
+
+Um projeto bem feito não
+
+Tecnologias mais opinadas e engessadas,
+
+Curva de aprendizado inicial mais íngreme, para seleção natural de desenvolvedores mais experientes.
+
+Com essas características, a comissão optou por manter o uso do Angular.
+
+export const ProjectsTable = () => {
+
+const projects = [
+{
+name: "SYSCOMPP",
+description: "Sistema da SECOMPP",
+technology: "CodeIgniter (PHP)",
+university: "ICMC-USP",
+url: "https://github.com/semcomp/semcomp/tree/670a964de8a7cf6fa01c34efbf37655d0f2583e0"
+},
+{
+name: "Semcomp",
+description: "Site da Semana de Computação",
+technology: "NextJS + TS",
+university: "ICMC-USP",
+url: "https://github.com/semcomp/semcomp/tree/670a964de8a7cf6fa01c34efbf37655d0f2583e0"
+},
+{
+name: "Xnths/symcomp",
+description: "Site do Simpósio da Computação",
+technology: "NextJS + JS",
+university: "IME-USP",
+url: "https://github.com/Xnths/symcomp/tree/ecd79c39c1d312299cf5909b4d16c7e27af4291e"
+},
+{
+name: "apoiobcc/site-semana-2023",
+description: "Site da Semana da Computação",
+technology: "NextJS + TS",
+university: "IME-USP",
+url: "https://github.com/apoiobcc/site-semana-2023"
+},
+{
+name: "apoiobcc/site-semana-2022",
+description: "Site da Semana da Computação",
+technology: "Vue + JS",
+university: "IME-USP",
+url: "https://github.com/apoiobcc/site-semana-2022"
+},
+{
+name: "cecomp-rp/site",
+description: "Site do Centro Estudantil da Ciência da Computação",
+technology: "Handlebars",
+university: "FFCLRP-USP",
+url: "https://github.com/cecomp-rp/site/tree/9450315d7f6a0bda97281a1f825067f073d663f2"
+},
+{
+name: "eccjr/site-cacic-2023",
+description: "Site do Centro Acadêmico de Ciência da Computação",
+technology: "Gatsby",
+university: "IBILCE-Unesp SJRP",
+url: "https://github.com/eccjr/site-cacic-2023"
+},
+{
+name: "semac.cc",
+description: "Site da Semana da Computação",
+technology: "NextJS",
+university: "IBILCE-Unesp SJRP",
+url: "https://web.archive.org/web/20240912160235/https://semac.cc/"
+},
+{
+name: "seccomp.com.br",
+description: "Site da Semana da Computação",
+technology: "Vue",
+university: "IGCE-Unesp RC",
+url: "https://web.archive.org/web/20240912160401/https://seccomp.com.br/"
+},
+{
+name: "petcompufc/petcompufc.github.io",
+description: "Site do PET Computação",
+technology: "Gatsby",
+university: "UFC",
+url: "https://github.com/petcompufc/petcompufc.github.io"
+},
+{
+name: "secompufscar/site-secomp",
+description: "Site da Semana de Computação",
+technology: "Flask",
+university: "UFSCar",
+url: "https://github.com/secompufscar/site-secomp/tree/7d74d378daf150db6c3678181caedd0c8c4ccf52"
+},
+{
+name: "secompufscar.com.br",
+description: "Site da Semana de Computação",
+technology: "NextJS",
+university: "UFSCar",
+url: "https://web.archive.org/web/20240812013048/https://www.secompufscar.com.br/"
+},
+{
+name: "secompufscar/site-secomp-vue",
+description: "Site da Semana de Computação",
+technology: "Vue + JS",
+university: "UFSCar",
+url: "https://github.com/secompufscar/site-secomp-vue"
+},
+{
+name: "secompufscar/site-secompbeta",
+description: "Site da Semana de Computação",
+technology: "React",
+university: "UFSCar",
+url: "https://github.com/secompufscar/site-secompbeta"
+},
+{
+name: "pedrozle/semcomp-unir",
+description: "Site da Semana de Computação",
+technology: "NextJS + TS",
+university: "UNIR",
+url: "https://github.com/pedrozle/semcomp-unir"
+},
+{
+name: "DevMobUFRJ/BandejApp",
+description: "Site dos Restaurantes Universitários",
+technology: "React",
+university: "UFRJ",
+url: "https://github.com/DevMobUFRJ/BandejApp/tree/196f62ae366b1ea2de52aecdfa10e34fe434eb51"
+},
+{
+name: "caecomp-ufrn",
+description: "Site do Centro Acadêmico de Engenharia de Computação",
+technology: "Vue + JS",
+university: "UFRN",
+url: "https://github.com/caecomp-ufrn/site-ca"
+}
+];
+
+return (
+
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Universidade</th>
+      <th>Descrição</th>
+      <th>Tecnologia</th>
+    </tr>
+  </thead>
+  <tbody>
+    {projects.map((project, index) => (
+      <tr key={index}>
+        <td>
+          <a href={project.url} target="_blank" rel="noopener noreferrer">
+            {project.name}
+          </a>
+        </td>
+        <td>{project.university}</td>
+        <td>{project.description}</td>
+        <td>{project.technology}</td>
+      </tr>
+    ))}
+
+  </tbody>
+</table>
+);
+
+}
