@@ -7,7 +7,7 @@ import { HttpModule } from '@nestjs/axios';
   imports: [CacheModule.register({ ttl: 100000, max: 1 }), HttpModule],
   // ttl in milliseconds
   // max is max itens stored in cache
-  controllers: [EventsController],
   providers: [WeatherService],
+  exports: [WeatherService],
 })
 export class WeatherModule {}
