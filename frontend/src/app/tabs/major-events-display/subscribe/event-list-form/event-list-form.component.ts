@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe, DecimalPipe, formatDate } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, WritableSignal, inject, signal } from '@angular/core';
 import {
   IonItem,
   IonList,
@@ -65,10 +65,10 @@ export class EventListFormComponent implements OnInit {
   today: Date = new Date();
   public dataForm: FormGroup;
   private firestore: Firestore = inject(Firestore);
-  public amountOfUncategorizedSelected = 0;
-  public amountOfCoursesSelected = 0;
-  public amountOfLecturesSelected = 0;
-  public totalAmountOfEventsSelected = 0;
+  public readonly amountOfUncategorizedSelected: WritableSignal<number> = signal(0);
+  public readonly amountOfCoursesSelected: WritableSignal<number> = signal(0);
+  public readonly amountOfLecturesSelected: WritableSignal<number> = signal(0);
+  public readonly totalAmountOfEventsSelected: WritableSignal<number> = signal(0);
 
   constructor(
     private modalController: ModalController,
@@ -85,6 +85,7 @@ export class EventListFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Do this every time the events change
     this.events$.pipe(untilDestroyed(this)).subscribe((events) => {
       this.eventList = events;
       events.forEach((event) => {
@@ -94,6 +95,7 @@ export class EventListFormComponent implements OnInit {
       });
     });
 
+    // Only do this once
     this.events$.pipe(take(1)).subscribe((events) => {
       this.autoSelectMandatory(this.mandatoryEvents);
 
@@ -125,21 +127,25 @@ export class EventListFormComponent implements OnInit {
         subscriptionData.pipe(take(1)).subscribe((subscription) => {
           if (subscription) {
             subscription.subscribedToEvents.forEach((eventID) => {
-              this.dataForm.get(eventID)?.setValue(true);
+              if (!this.dataForm.get(eventID)) {
+                throw new Error(`Event ${eventID} is in the subscription but not present in the form`);
+              }
 
               const event = this.eventList.find((event) => event.id === eventID);
-              // Check if event is in mandatoryList
 
               if (!event) {
-                return;
+                throw new Error(`Event ${eventID} is in the subscription but not present in the event list`);
               }
 
               if (this.mandatoryEvents.includes(eventID)) {
-                // If event is mandatory, disable it
-                this.dataForm.get(eventID)?.disable();
-              } else {
-                this.dataForm.get(eventID)?.enable();
+                // If event is mandatory, skip as it has already been selected on ngOnInit
+                return;
               }
+
+              this.dataForm.get(eventID)!.setValue(true);
+
+              const conflicts = this.checkConflicts(eventID);
+              this.blockEventGroup(conflicts);
 
               // If event is part of a group, but not the main event, don't count it
               if (event.eventGroup && event.eventGroup.mainEventID !== eventID) {
@@ -154,22 +160,32 @@ export class EventListFormComponent implements OnInit {
     });
   }
 
-  incrementAmountOfEventsSelected(event: EventItem) {
+  incrementAmountOfEventsSelected(event: EventItem | string) {
+    if (typeof event === 'string') {
+      // ts-expect-error - Type will be checked below
+      event = this.eventList.find((e) => e.id === event) || null;
+    }
+
+    if (!event) {
+      return;
+    }
+
+    // ts-expect-error - Type was checked above
     switch (event.eventType) {
       case 'minicurso':
-        console.debug('DEBUG: Incrementing amount of courses selected');
-        this.amountOfCoursesSelected++;
-        this.totalAmountOfEventsSelected++;
+        console.debug('DEBUG: incrementAmountOfEventsSelected: Incrementing amount of courses selected');
+        this.amountOfCoursesSelected.update((value) => value + 1);
+        this.totalAmountOfEventsSelected.update((value) => value + 1);
         break;
       case 'palestra':
-        console.debug('DEBUG: Incrementing amount of lectures selected');
-        this.amountOfLecturesSelected++;
-        this.totalAmountOfEventsSelected++;
+        console.debug('DEBUG: incrementAmountOfEventsSelected: Incrementing amount of lectures selected');
+        this.amountOfLecturesSelected.update((value) => value + 1);
+        this.totalAmountOfEventsSelected.update((value) => value + 1);
         break;
       default:
-        console.debug('DEBUG: Incrementing amount of uncategorized selected');
-        this.amountOfUncategorizedSelected++;
-        this.totalAmountOfEventsSelected++;
+        console.debug('DEBUG: incrementAmountOfEventsSelected: Incrementing amount of uncategorized selected');
+        this.amountOfUncategorizedSelected.update((value) => value + 1);
+        this.totalAmountOfEventsSelected.update((value) => value + 1);
         break;
     }
   }
@@ -177,40 +193,45 @@ export class EventListFormComponent implements OnInit {
   decrementAmountOfEventsSelected(event: EventItem) {
     switch (event.eventType) {
       case 'minicurso':
-        console.debug('DEBUG: Decrementing amount of courses selected');
-        this.amountOfCoursesSelected--;
-        this.totalAmountOfEventsSelected--;
+        console.debug('DEBUG: decrementAmountOfEventsSelected: Decrementing amount of courses selected');
+        this.amountOfCoursesSelected.update((value) => value - 1);
+        this.totalAmountOfEventsSelected.update((value) => value - 1);
         break;
       case 'palestra':
-        console.debug('DEBUG: Decrementing amount of lectures selected');
-        this.amountOfLecturesSelected--;
-        this.totalAmountOfEventsSelected--;
+        console.debug('DEBUG: decrementAmountOfEventsSelected: Decrementing amount of lectures selected');
+        this.amountOfLecturesSelected.update((value) => value - 1);
+        this.totalAmountOfEventsSelected.update((value) => value - 1);
         break;
       default:
-        console.debug('DEBUG: Decrementing amount of uncategorized selected');
-        this.amountOfUncategorizedSelected--;
-        this.totalAmountOfEventsSelected--;
+        console.debug('DEBUG: decrementAmountOfEventsSelected: Decrementing amount of uncategorized selected');
+        this.amountOfUncategorizedSelected.update((value) => value - 1);
+        this.totalAmountOfEventsSelected.update((value) => value - 1);
         break;
     }
   }
 
   autoSelectMandatory(mandatoryList: string[]) {
     if (mandatoryList.length === 0) {
+      console.debug('DEBUG: autoSelectMandatory: No events are mandatory');
       return;
     }
 
-    mandatoryList.forEach((event) => {
-      console.debug('DEBUG: Event is mandatory:', event);
-      const conflicts = this.checkConflicts(event);
+    mandatoryList.forEach((eventId) => {
+      if (!this.dataForm.get(eventId)) {
+        throw new Error(`Event ${eventId} is mandatory but not present in the form`);
+      }
+      console.debug('DEBUG: autoSelectMandatory: Event is mandatory:', eventId);
+      const conflicts = this.checkConflicts(eventId);
 
-      console.debug('DEBUG: Event', event, 'conflicts:', conflicts);
+      if (conflicts.length > 0) {
+        console.debug('DEBUG: autoSelectMandatory: Event', eventId, 'conflicts:', conflicts);
+      }
+
       this.blockEventGroup(conflicts);
+      this.incrementAmountOfEventsSelected(eventId);
 
-      console.log(this.dataForm.get(event));
-      console.log(this.dataForm.value);
-
-      this.dataForm.get(event)?.setValue(true);
-      this.dataForm.get(event)?.disable();
+      this.dataForm.get(eventId)!.setValue(true);
+      this.dataForm.get(eventId)!.disable();
     });
   }
 
@@ -231,29 +252,41 @@ export class EventListFormComponent implements OnInit {
       return;
     }
 
-    // If max amount of courses has been selected, unselect event
+    // If there are no slots available, disable event
+    // TODO: should enable again if more slots become available, but should also check for conflicts
     if (
-      this.maxCourses !== undefined &&
-      this.maxCourses !== null &&
-      event.eventType === 'minicurso' &&
-      this.amountOfCoursesSelected >= this.maxCourses
+      !event.slotsAvailable ||
+      event.slotsAvailable <= 0 ||
+      // Or if event has already started, disable it
+      this.dateService.getDateFromTimestamp(event.eventStartDate) < this.today
     ) {
-      this.dataForm.get(event.id)?.setValue(false);
-      this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
-      return;
-    } else if (
-      this.maxLectures !== undefined &&
-      this.maxLectures !== null &&
-      event.eventType === 'palestra' &&
-      this.amountOfLecturesSelected >= this.maxLectures
-    ) {
-      this.presentLimitReachedToast('palestras', this.maxLectures.toString());
-      this.dataForm.get(event.id)?.setValue(false);
+      this.blockEventGroup([event]);
       return;
     }
 
     // If event has been selected
     if (this.dataForm.get(event.id)?.value) {
+      // If max amount of courses has been selected, unselect event
+      if (
+        this.maxCourses !== undefined &&
+        this.maxCourses !== null &&
+        event.eventType === 'minicurso' &&
+        this.amountOfCoursesSelected() >= this.maxCourses
+      ) {
+        this.dataForm.get(event.id)?.setValue(false);
+        this.presentLimitReachedToast('minicursos', this.maxCourses.toString());
+        return;
+      } else if (
+        this.maxLectures !== undefined &&
+        this.maxLectures !== null &&
+        event.eventType === 'palestra' &&
+        this.amountOfLecturesSelected() >= this.maxLectures
+      ) {
+        this.presentLimitReachedToast('palestras', this.maxLectures.toString());
+        this.dataForm.get(event.id)?.setValue(false);
+        return;
+      }
+
       const conflicts = this.checkConflicts(event.id);
       this.blockEventGroup(conflicts);
 
@@ -321,6 +354,7 @@ export class EventListFormComponent implements OnInit {
       } else {
         if (conflict.id) {
           this.dataForm.get(conflict.id)?.disable();
+          this.dataForm.get(conflict.id)?.setValue(false);
         }
       }
     });
@@ -381,7 +415,7 @@ export class EventListFormComponent implements OnInit {
     console.debug('DEBUG: itemClick():', eventItem);
 
     if (!formEvent || formEvent?.disabled) {
-      this.presentDisabledToast();
+      this.presentDisabledToast(eventID);
       return;
     }
 
@@ -409,10 +443,18 @@ export class EventListFormComponent implements OnInit {
     toast.present();
   }
 
-  async presentDisabledToast() {
+  async presentDisabledToast(eventID: string) {
+    let header = `Evento indisponível`;
+    let message = `Confira o número de vagas ou se há choque de horário`;
+
+    if (this.mandatoryEvents.includes(eventID)) {
+      header = `Evento obrigatório`;
+      message = `Você não pode desmarcar este evento`;
+    }
+
     const toast = await this.toastController.create({
-      header: `Evento indisponível`,
-      message: `Confira o número de vagas ou se há choque de horário`,
+      header: header,
+      message: message,
       icon: 'alert-circle-outline',
       position: 'bottom',
       duration: 2000,

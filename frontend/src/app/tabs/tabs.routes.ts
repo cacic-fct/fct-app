@@ -1,9 +1,6 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
 
-import { canActivate } from '@angular/fire/compat/auth-guard';
-import { caAndGreater, redirectLoggedInToCalendar } from '../shared/services/routing/guards.service';
-
 export const routes: Routes = [
   {
     path: '',
@@ -20,6 +17,7 @@ export const routes: Routes = [
         data: { preload: true },
         loadChildren: () => import('src/app/tabs/calendar/calendar.routes').then((m) => m.routes),
       },
+
       {
         path: 'eventos',
         title: 'Lista de eventos',

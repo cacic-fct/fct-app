@@ -110,19 +110,21 @@
             <ion-col>
               <ion-button [routerLink]="['pagar', majorEventData.id]">
                 <ion-icon slot="start" name="cash"></ion-icon>
-                Efetuar pagamento
-              </ion-button>
-              <ion-button [routerLink]="['pagar', majorEventData.id]">
-                <ion-icon slot="start" name="paper-plane"></ion-icon>
-                Enviar comprovante
+                Pagamento
               </ion-button>
               <ion-button [routerLink]="['/eventos/inscrever', majorEventData.id]">
                 <ion-icon slot="start" name="pencil"></ion-icon>
-                Editar inscrição
+                Editar
               </ion-button>
+              @if (majorEventData.contactInfo) {
+              <ion-button (click)="contactOrganizer(majorEventData)">
+                <ion-icon slot="start" name="mail"></ion-icon>
+                Contatar
+              </ion-button>
+              }
               <ion-button [routerLink]="['detalhes', majorEventData.id]">
                 <ion-icon slot="start" name="ellipsis-horizontal"></ion-icon>
-                Mais detalhes
+                Detalhes
               </ion-button>
             </ion-col>
           </ion-row>
@@ -150,15 +152,21 @@
             <ion-col>
               <ion-button disabled="">
                 <ion-icon slot="start" name="time"></ion-icon>
-                Aguardando confirmação
+                Aguardando organizadores
               </ion-button>
               <ion-button [routerLink]="['/eventos/inscrever', majorEventData.id]">
                 <ion-icon slot="start" name="pencil"></ion-icon>
-                Editar inscrição
+                Editar
               </ion-button>
+              @if (majorEventData.contactInfo) {
+              <ion-button (click)="contactOrganizer(majorEventData)">
+                <ion-icon slot="start" name="mail"></ion-icon>
+                Contatar
+              </ion-button>
+              }
               <ion-button [routerLink]="['detalhes', majorEventData.id]">
                 <ion-icon slot="start" name="ellipsis-horizontal"></ion-icon>
-                Mais detalhes
+                Detalhes
               </ion-button>
             </ion-col>
           </ion-row>
@@ -193,9 +201,15 @@
                 <ion-icon slot="start" name="checkmark"></ion-icon>
                 Inscrito
               </ion-button>
+              @if (majorEventData.contactInfo) {
+              <ion-button (click)="contactOrganizer(majorEventData)">
+                <ion-icon slot="start" name="mail"></ion-icon>
+                Contatar
+              </ion-button>
+              }
               <ion-button [routerLink]="['detalhes', majorEventData.id]">
                 <ion-icon slot="start" name="ellipsis-horizontal"></ion-icon>
-                Mais detalhes
+                Detalhes
               </ion-button>
             </ion-col>
           </ion-row>
@@ -225,7 +239,7 @@
               </ion-button>
               <ion-button [routerLink]="['/eventos/inscrever', majorEventData.id]">
                 <ion-icon slot="start" name="pencil"></ion-icon>
-                Editar inscrição
+                Editar
               </ion-button>
             </ion-col>
           </ion-row>
@@ -305,7 +319,7 @@
             <ion-col>
               <ion-button color="secondary" [routerLink]="['detalhes', majorEventData.id]">
                 <ion-icon slot="start" name="ellipsis-horizontal"></ion-icon>
-                Mais detalhes
+                Detalhes
               </ion-button>
             </ion-col>
           </ion-row>

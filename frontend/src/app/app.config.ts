@@ -26,7 +26,7 @@ import { provideAppCheck, initializeAppCheck, ReCaptchaV3Provider } from '@angul
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-import { MarkdownModule } from 'ngx-markdown';
+import { provideMarkdown } from 'ngx-markdown';
 import { withInterceptorsFromDi, provideHttpClient, HttpClient } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { routes } from 'src/app/app.routes';
@@ -45,12 +45,13 @@ registerLocaleData(localePt);
 
 import { unwrapResourceUrl, trustedResourceUrl } from 'safevalues';
 
-import { H } from 'highlight.run';
 import { provideLottieOptions } from 'ngx-lottie';
+
+import { init as initSentry } from '@sentry/angular';
 
 import { nonce } from 'src/main';
 
-setupAnalytics(nonce);
+setupAnalytics();
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -65,6 +66,10 @@ export const appConfig: ApplicationConfig = {
 
     provideRouter(routes, withPreloading(PreloadingStrategyService), withComponentInputBinding()),
 
+    provideMarkdown({
+      loader: HttpClient,
+    }),
+
     importProvidersFrom(
       BrowserModule,
       ServiceWorkerModule.register(unwrapResourceUrl(trustedResourceUrl`/ngsw-worker.js`) as string, {
@@ -72,13 +77,12 @@ export const appConfig: ApplicationConfig = {
         registrationStrategy: 'registerImmediately',
       }),
       // Other modules
-      MarkdownModule.forRoot({ loader: HttpClient }),
       SweetAlert2Module.forRoot(),
       // AngularFire
       AngularFireModule.initializeApp(environment.firebase),
 
       // TODO: https://github.com/cacic-fct/fct-app/issues/172
-      AngularFirestoreModule, //.enablePersistence({ synchronizeTabs: true }),
+      AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
     ),
 
     provideFirebaseApp(() => initializeApp(environment.firebase)),
@@ -158,33 +162,35 @@ export const appConfig: ApplicationConfig = {
   ],
 };
 
-function setupAnalytics(nonce: string): void {
-  if (localStorage.getItem('disable-monitoring') !== 'true') {
-    console.debug('DEBUG: main.ts: Highlight Monitoring: Enabled');
-    H.init('1jdkoe52', {
-      environment: isDevMode() ? 'dev' : 'production',
-      backendUrl: 'https://api-highlight.cacic.dev.br/public',
-      networkRecording: {
-        enabled: true,
-        recordHeadersAndBody: true,
-        urlBlocklist: [],
-      },
-      privacySetting: 'none',
-      sendMode: 'webworker',
-    });
-  } else {
-    console.debug('DEBUG: main.ts: Highlight Monitoring: Disabled');
+export function setupAnalytics(): void {
+  if (isDevMode()) {
+    console.debug('DEBUG: main.ts: setupAnalytics: Disabled in development mode');
+    return;
   }
 
-  if (localStorage.getItem('disable-analytics') !== 'true') {
+  if (localStorage.getItem('disable-monitoring') !== 'true') {
+    console.debug('DEBUG: main.ts: Glitchtip Monitoring: Enabled');
+    initSentry({
+      dsn: 'https://44b2480fd6cd4402b61590135a093fd6@glitchtip.cacic.dev.br/1',
+      environment: isDevMode() ? 'development' : 'production',
+      release: environment.appVersion,
+    });
+  } else {
+    console.debug('DEBUG: main.ts: Glitchtip Monitoring: Disabled');
+  }
+
+  if (localStorage.getItem('disable-analytics') !== 'true' && !document.getElementById('plausible-script')) {
     const script = document.createElement('script');
-    script.setAttribute('nonce', nonce);
+    script.id = 'plausible-script';
     script.async = true;
     script.defer = true;
-    script.src = 'https://plausible.cacic.dev.br/js/script.js';
+    script.src = 'https://plausible.cacic.dev.br/js/script.file-downloads.pageview-props.outbound-links.js';
     script.setAttribute('data-domain', 'fctapp.cacic.dev.br');
-    document.head.appendChild(script);
 
+    // Pageview custom properties
+    script.setAttribute('event-app_version', environment.appVersion);
+
+    document.head.appendChild(script);
     console.debug('DEBUG: main.ts: Plausible Analytics: Enabled');
   } else {
     console.debug('DEBUG: main.ts: Plausible Analytics: Disabled');
