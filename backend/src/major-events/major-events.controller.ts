@@ -25,17 +25,23 @@ export class MajorEventsController {
     description: 'Inclusivo. Data em formato ISO',
     required: false,
   })
-  getAllEvents(
+  getAllMajorEvents(
     @Param('afterDate') afterDate: string,
     @Param('beforeDate') beforeDate: string,
   ) {}
-  @Post('') createEvent(@Query('eventData') eventData: string) {}
+  @Post('') createMajorEvent(@Query('eventData') eventData: string) {}
 
-  @Get(':majorEventId') getEvent(@Query('majorEventId') majorEventId: string) {}
-  @Patch(':majorEventId') updateEvent(
+  @Get(':majorEventId') getMajorEvent(
     @Query('majorEventId') majorEventId: string,
   ) {}
-  @Delete(':majorEventId') deleteEvent(
+  @Patch(':majorEventId') updateMajorEvent(
+    @Query('majorEventId') majorEventId: string,
+  ) {}
+  @Delete(':majorEventId') deleteMajorEvent(
+    @Query('majorEventId') majorEventId: string,
+  ) {}
+
+  @Get(':majorEventId/events') getEventsInMajorEvent(
     @Query('majorEventId') majorEventId: string,
   ) {}
 }

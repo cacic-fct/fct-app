@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
 import { EventCertificatesController } from './event-certificates.controller';
-import { EventCertificatesTemplatesModule } from './event-certificates-templates/event-certificates-templates.module';
+
 import { IssuedEventCertificatesController } from './issued-event-certificates/issued-event-certificates.controller';
+import { EventCertificatesTemplatesController } from 'src/certificates/event-certificates/event-certificates-templates/event-certificates-templates.controller';
 
 @Module({
-  controllers: [EventCertificatesController, IssuedEventCertificatesController],
-  imports: [EventCertificatesTemplatesModule],
+  controllers: [
+    EventCertificatesController,
+    IssuedEventCertificatesController,
+    EventCertificatesTemplatesController,
+  ],
 })
 export class EventCertificatesModule {}

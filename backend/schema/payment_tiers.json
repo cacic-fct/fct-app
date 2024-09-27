@@ -3,53 +3,44 @@
   "restrictions": [
     {
       "user_type": "student",
-      "tiers": [
-        1
-      ]
+      "tiers": [1]
     },
     {
       "user_type": "professor",
-      "tiers": [
-        2
-      ]
+      "tiers": [2]
     },
     {
       "user_type": "staff",
-      "tiers": [
-        1
-      ]
+      "tiers": [1]
     },
     {
       "user_type": "external",
-      "tiers": [
-        3,
-        4
-      ]
+      "tiers": [3, 4]
     }
   ],
   "tiers": [
     {
       "id": 1,
       "name": "Aluno ou funcionário Unesp",
-      "price": 30.00,
+      "price": 30.0,
       "description": "Deve ser aluno ou funcionário da Unesp (qualquer campus)"
     },
     {
       "id": 2,
       "name": "Docente Unesp",
-      "price": 35.00,
+      "price": 35.0,
       "description": "Deve ser docente Unesp"
     },
     {
       "id": 3,
       "name": "Externo (apenas palestras)",
-      "price": 15.00,
+      "price": 15.0,
       "description": "Extenos a Unesp, acesso apenas às palestras"
     },
     {
       "id": 4,
       "name": "Externo (palestras e minicursos)",
-      "price": 35.00,
+      "price": 35.0,
       "description": "Extenos a Unesp, acesso irrestrito ao evento"
     }
   ]

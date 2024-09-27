@@ -9,7 +9,9 @@ describe('EventCertificatesTemplatesController', () => {
       controllers: [EventCertificatesTemplatesController],
     }).compile();
 
-    controller = module.get<EventCertificatesTemplatesController>(EventCertificatesTemplatesController);
+    controller = module.get<EventCertificatesTemplatesController>(
+      EventCertificatesTemplatesController,
+    );
   });
 
   it('should be defined', () => {

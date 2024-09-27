@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "declaration": true, 
+    "declaration": true,
     "declarationMap": true,
-    "rootDir": ".",   
+    "rootDir": ".",
     "composite": true,
-    "strict": true,     
+    "strict": true
   },
   "references": []
 }
