@@ -26,6 +26,9 @@ import {
   IonIcon,
 } from '@ionic/angular/standalone';
 import { AsyncPipe } from '@angular/common';
+import { getString, RemoteConfig } from '@angular/fire/remote-config';
+import { addIcons } from 'ionicons';
+import { trashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-manage-admins',
@@ -55,12 +58,16 @@ import { AsyncPipe } from '@angular/common';
 export class ManageAdminsPage {
   private firestore: Firestore = inject(Firestore);
   private functions: Functions = inject(Functions);
+  private remoteConfig: RemoteConfig = inject(RemoteConfig);
 
-  adminList$: Observable<string[]>;
+  public adminList$: Observable<string[]>;
 
   addAdminForm: FormGroup = new FormGroup({
     adminEmail: new FormControl(''),
   });
+
+  public whitelist: string[];
+  public blacklist: string[];
 
   constructor(
     public toastController: ToastController,
@@ -69,11 +76,31 @@ export class ManageAdminsPage {
     this.adminList$ = docData(doc(this.firestore, 'claims', 'admin')).pipe(
       map((doc) => (doc ? doc['admins'] : [])),
     ) as Observable<string[]>;
+
+    // No need to be real-time getStringChanges, as the lists barely change
+    const whitelistString = getString(this.remoteConfig, 'adminWhitelist');
+    const blacklistString = getString(this.remoteConfig, 'adminBlacklist');
+
+    this.whitelist = whitelistString
+      // Remove brackets and quotes
+      .replace(/[[\]"']/g, '')
+      .split(',')
+      // Remove whitespace
+      .map((item) => item.trim());
+
+    this.blacklist = blacklistString
+      .replace(/[[\]"']/g, '')
+      .split(',')
+      .map((item) => item.trim());
+
+    addIcons({
+      trashOutline,
+    });
   }
 
   async errorToast(message: string) {
     const toast = await this.toastController.create({
-      message: message,
+      message: message || 'Erro desconhecido',
       duration: 2000,
     });
     toast.present();
@@ -88,14 +115,21 @@ export class ManageAdminsPage {
   }
 
   addAdmin() {
+    const email = this.addAdminForm.value.adminEmail;
+    if (this.blacklist.includes(email)) {
+      this.errorToast('Permissão negada');
+      this.addAdminForm.reset();
+      return;
+    }
+
     const addAdminRole = httpsCallable(this.functions, 'claims-addAdminRole');
-    addAdminRole({ email: this.addAdminForm.value.adminEmail })
+    addAdminRole({ email: email })
       .then(() => {
         this.successToast();
         this.addAdminForm.reset();
       })
       .catch((err) => {
-        this.errorToast(err);
+        this.errorToast(err.message);
         console.error(err);
       });
   }
@@ -107,19 +141,7 @@ export class ManageAdminsPage {
         this.successToast();
       })
       .catch((err) => {
-        this.errorToast(err);
-        console.error(err);
-      });
-  }
-
-  certificateMove() {
-    const moveCertificates = httpsCallable(this.functions, 'moveCertificates-moveCertificates');
-    moveCertificates()
-      .then(() => {
-        this.successToast();
-      })
-      .catch((err) => {
-        this.errorToast(err);
+        this.errorToast(err.message);
         console.error(err);
       });
   }

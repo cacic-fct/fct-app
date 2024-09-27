@@ -29,8 +29,7 @@ import { arrayRemove } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { CredentialResponse } from 'google-one-tap';
 import { PlausibleService } from '@notiz/ngx-plausible';
-
-import { H } from 'highlight.run';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -40,12 +39,15 @@ export class AuthService {
   private remoteConfig: RemoteConfig = inject(RemoteConfig);
 
   private auth: Auth = inject(Auth);
+  private document = inject(DOCUMENT);
   private functions: Functions = inject(Functions);
 
   authState$ = authState(this.auth);
 
   userData: UserAuth;
   localDataVersion: string = GlobalConstantsService.userDataVersion;
+
+  private plausibleScript = this.document.getElementById('plausible-script');
 
   constructor(
     public router: Router,
@@ -61,9 +63,8 @@ export class AuthService {
         localStorage.setItem('user', JSON.stringify(this.userData));
         JSON.parse(localStorage.getItem('user'));
 
-        H.identify(user.email, {
-          id: user.uid,
-        });
+        this.plausibleScript.setAttribute('event-author', user.uid);
+        this.plausibleScript.setAttribute('event-logged_in', 'true');
 
         getStringChanges(this.remoteConfig, 'professors').subscribe((professors) => {
           if (professors) {
@@ -132,6 +133,7 @@ export class AuthService {
           });
       } else {
         localStorage.removeItem('user');
+        this.plausibleScript.setAttribute('event-logged_in', 'false');
       }
     });
   }
@@ -323,61 +325,13 @@ export class AuthService {
     // Remove spaces from the string
     manualInput = manualInput.replace(/\s/g, '');
 
-    // Check if input has only one '+' and numbers
-    const isNumeric: boolean = /^\+?\d+$/.test(manualInput);
-
     // If string doesn't include "@" and isn't numeric only or is empty, return false
-    if ((!manualInput.includes('@') && !isNumeric) || manualInput === '') {
+    if (!manualInput.includes('@') || manualInput === '') {
       return { message: 'Os dados inseridos são inválidos', success: false, data: null };
-    }
-
-    if (isNumeric) {
-      if (manualInput.length < 11 || manualInput.length > 14) {
-        return { message: 'O número de telefone deve ter entre 11 e 14 dígitos', success: false, data: null };
-      }
-
-      // If string is numeric only and has length of 11, add country code
-      if (manualInput.length === 11) {
-        manualInput = `+55${manualInput}`;
-      } else if (manualInput.length === 13) {
-        manualInput = `+${manualInput}`;
-      }
     }
 
     const getUserUid = httpsCallable(this.functions, 'user_utils-getUserUid');
 
     return (await getUserUid({ string: manualInput })).data as StringDataReturnType;
   }
-
-  /* UNUSED */
-  /*
-     async verifyPhoneModal(phone: string): Promise<boolean> {
-      const modal = await this.modalController.create({
-        component: VerifyPhonePage,
-        componentProps: {
-          phone: phone,
-        },
-        backdropDismiss: false,
-        keyboardClose: false,
-      });
-  
-      await modal.present();
-  
-      return modal.onDidDismiss().then((response) => {
-        const data = response.data;
-        if (data) {
-          return new Promise<boolean>((resolve) => {
-            resolve(true);
-          });
-        }
-        return new Promise<boolean>((resolve) => {
-          resolve(false);
-        });
-      });
-    }
-  
-    async phoneUnlink() {
-      unlink(this.userData, PhoneAuthProvider.PROVIDER_ID);
-    }
-  */
 }

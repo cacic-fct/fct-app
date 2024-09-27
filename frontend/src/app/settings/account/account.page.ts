@@ -22,7 +22,7 @@ import { Auth, authState } from '@angular/fire/auth';
 
 import { Mailto, MailtoService } from 'src/app/shared/services/mailto.service';
 import { addIcons } from 'ionicons';
-import { idCardOutline, logOutOutline, trashBinOutline } from 'ionicons/icons';
+import { idCardOutline, logInOutline, logOutOutline, trashBinOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-account',
@@ -81,6 +81,7 @@ export class AccountPage {
       idCardOutline,
       trashBinOutline,
       logOutOutline,
+      logInOutline,
     });
   }
 

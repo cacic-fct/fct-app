@@ -137,7 +137,14 @@ export class SubscribePage implements OnInit {
   isAlreadySubscribed: boolean | undefined;
   majorEventID: string;
   events$: Observable<EventItem[]>;
-  mandatoryEvents: string[] = [];
+  // Se o evento faz parte de um grupo, inclua os IDs de todos os eventos do grupo
+  mandatoryEvents: string[] = [
+    'pn6TFo1O711IdG1r2j5E',
+    'ffVl1lPrmyMijjOpHAJS',
+    'enUgWuD1sbcX0KlVKYr9',
+    'Tca8etURwKAhjQ5JwWXW',
+    'BWdVspVpxw4a0KZQo9d9',
+  ];
 
   private firestore: Firestore = inject(Firestore);
 
@@ -323,7 +330,7 @@ export class SubscribePage implements OnInit {
   onSubmit() {
     const dataForm = this.formComponent.dataForm;
 
-    const eventsSelected: string[] = Object.keys(dataForm.value).filter((key) => dataForm.value[key]);
+    const eventsSelected: string[] = Object.keys(dataForm.getRawValue()).filter((key) => dataForm.getRawValue()[key]);
     const amountOfEventsSelected = eventsSelected.length;
 
     if (amountOfEventsSelected === 0) {
@@ -454,7 +461,7 @@ export class SubscribePage implements OnInit {
                 });
               });
             } catch (err) {
-              console.log(err);
+              console.error(err);
             }
           });
         });

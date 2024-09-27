@@ -2,7 +2,7 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { Timestamp } from '@angular/fire/firestore';
+import { increment, Timestamp } from '@angular/fire/firestore';
 import { Observable, map, take, combineLatest } from 'rxjs';
 import { MajorEventItem } from 'src/app/shared/services/major-event.service';
 import { User } from 'src/app/shared/services/user';
@@ -35,7 +35,6 @@ import {
   IonTitle,
   IonButton,
   IonCard,
-  IonCardHeader,
   IonCardTitle,
   IonCardSubtitle,
   IonRow,
@@ -74,7 +73,6 @@ import { environment } from 'src/environments/environment';
     IonButton,
     IonIcon,
     IonCard,
-    IonCardHeader,
     IonCardTitle,
     IonCardSubtitle,
     IonRow,
@@ -181,7 +179,7 @@ export class ValidateReceiptPage implements OnInit {
       const url = await getDownloadURL(reference);
       return url;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return '';
     }
   }
@@ -218,6 +216,16 @@ export class ValidateReceiptPage implements OnInit {
                   .doc(subscriberID)
                   .set({
                     time: serverTimestamp(),
+                  });
+
+                this.afs
+                  .collection('events')
+                  .doc<EventItem>(eventID)
+                  .update({
+                    // @ts-expect-error - This works
+                    slotsAvailable: increment(-1),
+                    // @ts-expect-error - This works
+                    numberOfSubscriptions: increment(-1),
                   });
 
                 this.afs

@@ -361,7 +361,7 @@ export class PageManageEvents implements OnInit {
       case 1:
         return 'Apenas 1 evento selecionado';
       default:
-        return `Agrupando ${length} eventos`;
+        return `Agrupar ${length} eventos`;
     }
   }
 
@@ -375,9 +375,7 @@ export class PageManageEvents implements OnInit {
     const alert = await this.alertController.create({
       header: 'Deseja deletar o grupo?',
       subHeader: `${event.eventGroup?.groupDisplayName}`,
-      message: `Um grupo só deve ser deletado se ocorreu algum engano em sua criação.<br><br>
-      Erros acontecerão se o grupo tiver certificados emitidos<br><br>
-      Este grupo contém ${event.eventGroup.groupEventIDs.length} eventos.`,
+      message: `Um grupo só deve ser deletado se ocorreu algum engano em sua criação. Erros acontecerão se o grupo tiver certificados emitidos. Este grupo contém ${event.eventGroup.groupEventIDs.length} eventos.`,
       buttons: [
         {
           text: 'Cancelar',
